@@ -40,6 +40,9 @@ export default class User extends compose(BaseModel, AuthFinder) {
     declare enabled: boolean;
 
     @column()
+    declare acceptedTermsAndConditions: boolean;
+
+    @column()
     declare fileId: string | null;
 
     @belongsTo((): typeof File => File)
@@ -66,6 +69,7 @@ export default class User extends compose(BaseModel, AuthFinder) {
             email: this.email,
             role: this.role,
             enabled: this.enabled,
+            acceptedTermsAndConditions: this.acceptedTermsAndConditions,
             profilePicture: this.profilePicture?.apiSerialize(),
             updatedAt: this.updatedAt?.toString(),
             createdAt: this.createdAt?.toString(),

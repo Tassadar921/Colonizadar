@@ -9,6 +9,14 @@ const FileController = () => import('#controllers/file_controller');
 router
     .group((): void => {
         router.post('/login', [AuthController, 'login']);
+
+        router
+            .group((): void => {
+                router.post('/send-mail', [AuthController, 'sendAccountCreationEmail']);
+                router.get('/confirm/:token', [AuthController, 'confirmAccountCreation']);
+            })
+            .prefix('account-creation');
+
         router
             .group((): void => {
                 router.post('/send-mail', [ProfileController, 'sendResetPasswordEmail']);

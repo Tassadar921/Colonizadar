@@ -7,6 +7,7 @@ type SerializedUser = {
     email: string;
     role: UserRoleEnum;
     enabled: boolean;
+    acceptedTermsAndConditions: boolean;
     profilePicture?: SerializedFile;
     updatedAt?: string;
     createdAt?: string;
