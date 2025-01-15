@@ -42,13 +42,6 @@
         "file": {
             "title": "Select a file",
             "description": "Drag & drop or click to select a file."
-        },
-        "size": {
-            "tb": "TB",
-            "gb": "GB",
-            "mb": "MB",
-            "kb": "KB",
-            "b": "B"
         }
     },
     "toast": {
@@ -78,52 +71,15 @@
                 "success": "Profile updated",
                 "error": "An error occurred while updating your profile"
             }
-        },
-        "tags": {
-            "get": {
-                "error": "An error occurred while fetching tags"
-            },
-            "new": {
-                "error": "An error occurred while creating new tag"
-            }
-        },
-        "upload": {
-            "success": "File saved",
-            "error": "An error occurred while saving file"
-        },
-        "file": {
-            "fetch": {
-                "error": "An error occurred while fetching file"
-            },
-            "download": {
-                "error": "An error occurred while downloading file"
-            },
-            "tags": {
-                "success": "Tags updated",
-                "error": "An error occurred while updating tags"
-            },
-            "rename": {
-                "success": "File renamed",
-                "error": "An error occurred while renaming file"
-            }
         }
     },
     "menu": {
         "home": "Home",
-        "upload": "Upload",
-        "browse": "Browse",
         "settings": "Settings",
         "profile": "Profile",
         "logout": "Logout",
         "login": "Login",
         "source-code": "Source code"
-    },
-    "settings": {
-        "title": "Settings",
-        "theme": "Theme",
-        "language": {
-            "title": "Preferred language"
-        }
     },
     "profile": {
         "title": "Profile",
@@ -161,26 +117,5 @@
     },
     "already-connected": {
         "title": "Already connected"
-    },
-    "upload": {
-        "title": "Upload",
-        "description": "Upload files to share with your friends",
-        "file": {
-            "title": "File to share"
-        },
-        "thumbnail": {
-            "title": "Thumbnail"
-        },
-        "search-tags": "Search tags"
-    },
-    "browse": {
-        "title": "Browse",
-        "description": "Browse all files uploaded by your and your friends",
-        "search": {
-            "label": "Search by file name"
-        }
-    },
-    "file": {
-        "title": "File details"
     }
 }

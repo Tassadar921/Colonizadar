@@ -42,13 +42,6 @@
         "file": {
             "title": "Sélectionnez un fichier",
             "description": "Glissez-déposez ou cliquez pour sélectionner un fichier."
-        },
-        "size": {
-            "tb": "To",
-            "gb": "Go",
-            "mb": "Mo",
-            "kb": "Ko",
-            "b": "o"
         }
     },
     "toast": {
@@ -78,52 +71,15 @@
                 "success": "Profil mis à jour",
                 "error": "Une erreur est survenue lors de la mise à jour du profil"
             }
-        },
-        "tags": {
-            "get": {
-                "error": "Une erreur est survenue lors de la récupération des tags"
-            },
-            "new": {
-                "error": "Une erreur est survenue lors de la création du tag"
-            }
-        },
-        "upload": {
-            "success": "Fichier sauvegardé",
-            "error": "Une erreur est survenue lors de la sauvegarde du fichier"
-        },
-        "file": {
-            "fetch": {
-                "error": "Une erreur est survenue lors de la récupération du fichier"
-            },
-            "download": {
-                "error": "Une erreur est survenue lors du téléchargement du fichier"
-            },
-            "tags": {
-                "success": "Tags mis à jour",
-                "error": "Une erreur est survenue lors de la mise à jour des tags"
-            },
-            "rename": {
-                "success": "Fichié renommé",
-                "error": "Une erreur est survenue lors du renommage du fichier"
-            }
         }
     },
     "menu": {
         "home": "Accueil",
-        "upload": "Upload",
-        "browse": "Parcourir",
         "settings": "Paramètres",
         "profile": "Profil",
         "logout": "Déconnexion",
         "login": "Connexion",
         "source-code": "Code source"
-    },
-    "settings": {
-        "title": "Paramètres",
-        "theme": "Thème",
-        "language": {
-            "title": "Langue préférée"
-        }
     },
     "profile": {
         "title": "Profil",
@@ -162,25 +118,4 @@
     "already-connected": {
         "title": "Déjà connecté"
     },
-    "upload": {
-        "title": "Upload",
-        "description": "Uploadez des fichiers pour les partager avec vos amis",
-        "file": {
-            "title": "Fichier à partager"
-        },
-        "thumbnail": {
-            "title": "Miniature"
-        },
-        "search-tags": "Rechercher des tags"
-    },
-    "browse": {
-        "title": "Parcourir",
-        "description": "Parcourez les fichiers uploadés par vous et vos amis",
-        "search": {
-            "label": "Rechercher par nom de fichier"
-        }
-    },
-    "file": {
-        "title": "Détails du fichier"
-    }
 }

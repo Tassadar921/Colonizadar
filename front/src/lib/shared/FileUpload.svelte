@@ -3,6 +3,7 @@
     import { t } from 'svelte-i18n';
     import { onMount } from 'svelte';
     import { raw } from '../../services/stringService.js';
+    import Loader from "./Loader.svelte";
 
     export let name = '';
     export let description = '';
@@ -13,12 +14,13 @@
     export let file = null;
     export let pathPrefix;
     export let id;
-    export let disabled = false; // New prop
+    export let disabled = false;
 
     let acceptedFormats = '';
     let isDragging = false;
     let previewSrc = `${process.env.VITE_API_BASE_URL}/api/static/${pathPrefix}/${id}?token=${localStorage.getItem('apiToken')}`;
     let inputRef;
+    let loading = false;
 
     onMount(() => {
         title = title ?? $t('common.file.description');
@@ -27,7 +29,6 @@
             .split(' ')
             .map((format) => `.${format}`)
             .join(',');
-        console.log(previewSrc);
     });
 
     const processFiles = (files) => {
@@ -35,6 +36,7 @@
             return;
         }
         if (files.length > 0) {
+            loading = true;
             file = files[0];
             fileName = file.name;
 
@@ -47,6 +49,7 @@
             } else {
                 previewSrc = '';
             }
+            loading = false;
         } else {
             file = null;
             fileName = '';
@@ -85,6 +88,8 @@
         }
     };
 </script>
+
+<Loader bind:loading />
 
 <div class="flex flex-col w-full my-5">
     {#if title}
