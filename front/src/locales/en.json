@@ -1,0 +1,186 @@
+{
+    "common": {
+        "yes": "Yes",
+        "no": "No",
+        "language": "Language",
+        "close": "Close",
+        "close-modal": "Close modal",
+        "cancel": "Cancel",
+        "back-to-home": "Back to homepage",
+        "search": "Search ...",
+        "name": "Name",
+        "created-at": "Created at",
+        "updated-at": "Updated at",
+        "title": {
+            "label": "Title",
+            "placeholder": "Jesus' photo"
+        },
+        "username": {
+            "label": "Username",
+            "placeholder": "John123"
+        },
+        "email": {
+            "label": "Email",
+            "placeholder": "john.smith@gmail.com"
+        },
+        "password": {
+            "label": "Password",
+            "placeholder": "xxx",
+            "match": "Passwords do not match",
+            "length": "Password must be at least 8 characters long",
+            "lowercase": "Password must contain at least one lowercase letter",
+            "uppercase": "Password must contain at least one uppercase letter",
+            "number": "Password must contain at least one number",
+            "special-character": "Password must contain at least one special character"
+        },
+        "confirm-password": {
+            "label": "Confirm password",
+            "placeholder": "xxx"
+        },
+        "reset-password": "Reset password",
+        "submit": "Submit",
+        "file": {
+            "title": "Select a file",
+            "description": "Drag & drop or click to select a file."
+        },
+        "size": {
+            "tb": "TB",
+            "gb": "GB",
+            "mb": "MB",
+            "kb": "KB",
+            "b": "B"
+        }
+    },
+    "toast": {
+        "login": {
+            "success": "You are now logged in",
+            "error": "Wrong credentials"
+        },
+        "logout": {
+            "success": "You are now disconnected",
+            "error": "An error occurred while disconnecting"
+        },
+        "reset-password": {
+            "mail": {
+                "success": "A mail has been sent to reset your password",
+                "error": "An error occurred while sending mail. Retry later."
+            },
+            "confirm": {
+                "success": "Password reset successfully",
+                "error": "An error occurred while confirming account creation. Retry later."
+            }
+        },
+        "profile": {
+            "get": {
+                "error": "An error occurred while fetching your profile"
+            },
+            "update": {
+                "success": "Profile updated",
+                "error": "An error occurred while updating your profile"
+            }
+        },
+        "tags": {
+            "get": {
+                "error": "An error occurred while fetching tags"
+            },
+            "new": {
+                "error": "An error occurred while creating new tag"
+            }
+        },
+        "upload": {
+            "success": "File saved",
+            "error": "An error occurred while saving file"
+        },
+        "file": {
+            "fetch": {
+                "error": "An error occurred while fetching file"
+            },
+            "download": {
+                "error": "An error occurred while downloading file"
+            },
+            "tags": {
+                "success": "Tags updated",
+                "error": "An error occurred while updating tags"
+            },
+            "rename": {
+                "success": "File renamed",
+                "error": "An error occurred while renaming file"
+            }
+        }
+    },
+    "menu": {
+        "home": "Home",
+        "upload": "Upload",
+        "browse": "Browse",
+        "settings": "Settings",
+        "profile": "Profile",
+        "logout": "Logout",
+        "login": "Login",
+        "source-code": "Source code"
+    },
+    "settings": {
+        "title": "Settings",
+        "theme": "Theme",
+        "language": {
+            "title": "Preferred language"
+        }
+    },
+    "profile": {
+        "title": "Profile",
+        "reset-password": "Reset password",
+        "profile-picture": {
+            "title": "Profile picture",
+            "description": "Upload here a profile picture"
+        }
+    },
+    "reset-password": {
+        "title": "Reset password",
+        "confirm": {
+            "title": "Finish reset password"
+        }
+    },
+    "home": {
+        "title": "Home"
+    },
+    "login": {
+        "title": "Login"
+    },
+    "logout": {
+        "title": "Logout",
+        "modal": {
+            "title": "Logout",
+            "text": "Are you sure you want to logout ?"
+        }
+    },
+    "forbidden": {
+        "title": "Forbidden",
+        "subtitle": "You have to be logged to access this app's part."
+    },
+    "not-found": {
+        "title": "Page not found"
+    },
+    "already-connected": {
+        "title": "Already connected"
+    },
+    "upload": {
+        "title": "Upload",
+        "description": "Upload files to share with your friends",
+        "file": {
+            "title": "File to share"
+        },
+        "thumbnail": {
+            "title": "Thumbnail"
+        },
+        "search-tags": "Search tags"
+    },
+    "browse": {
+        "title": "Browse",
+        "description": "Browse all files uploaded by your and your friends",
+        "search": {
+            "label": "Search by file name"
+        }
+    },
+    "file": {
+        "title": "File details"
+    }
+}
