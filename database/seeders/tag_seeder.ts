@@ -1,10 +1,10 @@
-import { BaseSeeder } from '@adonisjs/lucid/seeders'
-import TagRepository from '#repositories/tag_repository'
-import Tag from '#models/tag'
+import { BaseSeeder } from '@adonisjs/lucid/seeders';
+import TagRepository from '#repositories/tag_repository';
+import Tag from '#models/tag';
 
 export default class extends BaseSeeder {
     async run(): Promise<void> {
-        const tagRepository: TagRepository = new TagRepository()
+        const tagRepository: TagRepository = new TagRepository();
         const tags: { name: string; red: number; green: number; blue: number }[] = [
             { name: 'Singe', red: 125, green: 85, blue: 12 },
             { name: 'Paul', red: 210, green: 50, blue: 75 },
@@ -36,7 +36,7 @@ export default class extends BaseSeeder {
             { name: '2023', red: 200, green: 90, blue: 40 },
             { name: '2024', red: 50, green: 220, blue: 100 },
             { name: '2025', red: 240, green: 180, blue: 90 },
-        ]
+        ];
 
         for (const tag of tags) {
             if (!(await tagRepository.findOneBy({ name: tag.name }))) {
@@ -45,8 +45,8 @@ export default class extends BaseSeeder {
                     red: tag.red,
                     green: tag.green,
                     blue: tag.blue,
-                })
-                console.log(`Tag ${tag.name} created`)
+                });
+                console.log(`Tag ${tag.name} created`);
             }
         }
     }

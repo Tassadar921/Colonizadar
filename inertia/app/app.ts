@@ -1,13 +1,13 @@
 /// <reference path="../../adonisrc.ts" />
 /// <reference path="../../config/inertia.ts" />
 
-import '../css/app.css'
+import '../css/app.css';
 
-import { createInertiaApp } from '@inertiajs/svelte'
-import { resolvePageComponent } from '@adonisjs/inertia/helpers'
-import { hydrate, mount } from 'svelte'
+import { createInertiaApp } from '@inertiajs/svelte';
+import { resolvePageComponent } from '@adonisjs/inertia/helpers';
+import { hydrate, mount } from 'svelte';
 
-const appName = import.meta.env.VITE_APP_NAME || 'AdonisJS'
+const appName = import.meta.env.VITE_APP_NAME || 'AdonisJS';
 
 createInertiaApp({
     progress: { color: '#5468FF' },
@@ -15,17 +15,14 @@ createInertiaApp({
     title: (title) => `${title} - ${appName}`,
 
     resolve: (name) => {
-        return resolvePageComponent(
-            `../pages/${name}.svelte`,
-            import.meta.glob('../pages/**/*.svelte')
-        )
+        return resolvePageComponent(`../pages/${name}.svelte`, import.meta.glob('../pages/**/*.svelte'));
     },
 
     setup({ el, App, props }) {
         if (el.dataset.serverRendered === 'true') {
-            hydrate(App, { target: el, props })
+            hydrate(App, { target: el, props });
         } else {
-            mount(App, { target: el, props })
+            mount(App, { target: el, props });
         }
     },
-})
+});

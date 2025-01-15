@@ -1,9 +1,11 @@
 import type { ApplicationService } from '@adonisjs/core/types';
 import Language from '#models/language';
+import User from "#models/user";
 
 declare module '@adonisjs/core/http' {
     export interface HttpContext {
         language: Language;
+        user: User,
     }
 }
 

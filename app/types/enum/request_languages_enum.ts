@@ -7,4 +7,4 @@ enum RequestLanguagesEnum {
     US = 'en',
 }
 
-export default RequestLanguagesEnum
+export default RequestLanguagesEnum;

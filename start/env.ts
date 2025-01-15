@@ -9,7 +9,7 @@
 |
 */
 
-import { Env } from '@adonisjs/core/env'
+import { Env } from '@adonisjs/core/env';
 
 export default await Env.create(new URL('../', import.meta.url), {
     PORT: Env.schema.number(),
@@ -17,6 +17,7 @@ export default await Env.create(new URL('../', import.meta.url), {
     NODE_ENV: Env.schema.enum(['development', 'production', 'test'] as const),
     APP_KEY: Env.schema.string(),
     LOG_LEVEL: Env.schema.enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace']),
+    SESSION_DRIVER: Env.schema.enum(['cookie', 'memory'] as const),
 
     /*
   |----------------------------------------------------------
@@ -30,8 +31,8 @@ export default await Env.create(new URL('../', import.meta.url), {
     DB_PASSWORD: Env.schema.string.optional(),
     DB_DATABASE: Env.schema.string(),
 
-    API_URL: Env.schema.string(),
+    APP_URI: Env.schema.string(),
     ACCOUNT_SENDER_EMAIL: Env.schema.string(),
     BREVO_API_KEY: Env.schema.string(),
     FRIEND_EMAILS: Env.schema.string(),
-})
+});

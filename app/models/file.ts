@@ -1,32 +1,32 @@
-import { DateTime } from 'luxon'
-import { BaseModel, column } from '@adonisjs/lucid/orm'
-import SerializedFile from '#types/serialized/serialized_file'
+import { DateTime } from 'luxon';
+import { BaseModel, column } from '@adonisjs/lucid/orm';
+import SerializedFile from '#types/serialized/serialized_file';
 
 export default class File extends BaseModel {
     @column({ isPrimary: true })
-    declare id: string
+    declare id: string;
 
     @column()
-    declare name: string
+    declare name: string;
 
     @column()
-    declare path: string
+    declare path: string;
 
     @column()
-    declare extension: string
+    declare extension: string;
 
     @column()
-    declare mimeType: string
+    declare mimeType: string;
 
     // File size in bytes
     @column()
-    declare size: number
+    declare size: number;
 
     @column.dateTime({ autoCreate: true })
-    declare createdAt: DateTime
+    declare createdAt: DateTime;
 
     @column.dateTime({ autoCreate: true, autoUpdate: true })
-    declare updatedAt: DateTime
+    declare updatedAt: DateTime;
 
     public apiSerialize(): SerializedFile {
         return {
@@ -37,6 +37,6 @@ export default class File extends BaseModel {
             size: this.size,
             createdAt: this.createdAt?.toString(),
             updatedAt: this.updatedAt?.toString(),
-        }
+        };
     }
 }

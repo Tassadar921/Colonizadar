@@ -4,19 +4,17 @@ import { AccessToken } from '@adonisjs/auth/access_tokens';
 import { inject } from '@adonisjs/core';
 import UserRepository from '#repositories/user_repository';
 import RegexService from '#services/regex_service';
-import FrontClientRepository from '#repositories/front_client_repository';
-import FrontClient from '#models/front_client';
-import RoleEnum from '#types/enum/role_enum';
+import UserRoleEnum from '#types/enum/user_role_enum';
 import BrevoMailService from '#services/brevo_mail_service';
 import crypto from 'crypto';
 import { DateTime } from 'luxon';
 import { loginValidator, sendAccountCreationEmailValidator } from '#validators/auth';
+import env from '#start/env';
 
 @inject()
 export default class AuthController {
     constructor(
         private readonly userRepository: UserRepository,
-        private readonly frontClientRepository: FrontClientRepository,
         private readonly mailService: BrevoMailService,
         private readonly regexService: RegexService
     ) {}
@@ -30,19 +28,19 @@ export default class AuthController {
 
             const token: AccessToken = await User.accessTokens.create(user);
 
-            return response.send({ message: 'Logged in', token, user: await user.apiSerialize() });
+            return response.send({ message: 'Logged in', token, user: user.apiSerialize() });
         } catch (e) {
             return response.unauthorized({ error: 'API Login failed' });
         }
     }
 
     public async logout({ auth, response }: HttpContext): Promise<void> {
-        const user: User = await auth.use('web').authenticate();
+        await auth.use('web').logout();
         return response.send({ revoked: true });
     }
 
     public async sendAccountCreationEmail({ request, response }: HttpContext): Promise<void> {
-        const { username, email, password, frontClient, frontUri, consent } = await sendAccountCreationEmailValidator.validate(request.all());
+        const { username, email, password, consent } = await sendAccountCreationEmailValidator.validate(request.all());
 
         if (!this.regexService.isValidPassword(password)) {
             return response.badRequest({
@@ -50,11 +48,6 @@ export default class AuthController {
             });
         } else if (!consent) {
             return response.badRequest({ error: 'Content is required' });
-        }
-
-        const frontClientModel: FrontClient | null = await this.frontClientRepository.findOneBy({ name: frontClient, enabled: true });
-        if (!frontClientModel) {
-            return response.notFound({ error: 'Front client not found' });
         }
 
         let user: User | null = await this.userRepository.findOneBy({ email });
@@ -72,12 +65,12 @@ export default class AuthController {
 
         try {
             const token: string = crypto.randomBytes(32).toString('hex');
-            await this.mailService.sendAccountCreationEmail(email, `${frontUri}/${token}`);
+            await this.mailService.sendAccountCreationEmail(email, `${env.get('APP_URI')}/account-creation/confirm/${token}`);
             await User.create({
                 username,
                 email,
                 password,
-                role: RoleEnum.USER,
+                role: UserRoleEnum.USER,
                 creationToken: token,
                 acceptedTermsAndConditions: true,
             });
@@ -88,7 +81,7 @@ export default class AuthController {
         return response.send({ message: 'Check your mails to confirm account creation' });
     }
 
-    public async confirmAccountCreation({ request, response, language }: HttpContext): Promise<void> {
+    public async confirmAccountCreation({ request, response }: HttpContext): Promise<void> {
         const { token } = request.params();
 
         const user: User | null = await this.userRepository.findOneBy({ creationToken: token });
@@ -102,6 +95,10 @@ export default class AuthController {
 
         const accessToken: AccessToken = await User.accessTokens.create(user);
 
-        return response.send({ message: 'User successfully enabled', token: accessToken, user: await user.apiSerialize(language) });
+        return response.send({
+            message: 'User successfully enabled',
+            token: accessToken,
+            user: user.apiSerialize(),
+        });
     }
 }
