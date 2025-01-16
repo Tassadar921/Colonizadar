@@ -17,18 +17,7 @@
     };
 </script>
 
-<Modal
-    bind:showModal
-    {successText}
-    closeText={$t('common.no')}
-    {closable}
-    confirm={true}
-    {fullWidth}
-    on:open={handleOpen}
-    on:success
-    on:close
-    bind:dialog={containerRef}
->
+<Modal bind:showModal {successText} closeText={$t('common.no')} {closable} confirm={true} {fullWidth} on:open={handleOpen} on:success on:close bind:dialog={containerRef}>
     <slot name="header" slot="header" />
     <slot />
 </Modal>

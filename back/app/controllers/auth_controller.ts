@@ -2,12 +2,12 @@ import { HttpContext } from '@adonisjs/core/http';
 import User from '#models/user';
 import { AccessToken } from '@adonisjs/auth/access_tokens';
 import { inject } from '@adonisjs/core';
-import UserRoleEnum from "#types/enum/user_role_enum";
-import {DateTime} from "luxon";
-import UserRepository from "#repositories/user_repository";
-import {sendAccountCreationEmailValidator} from "#validators/auth";
-import BrevoMailService from "#services/brevo_mail_service";
-import RegexService from "#services/regex_service";
+import UserRoleEnum from '#types/enum/user_role_enum';
+import { DateTime } from 'luxon';
+import UserRepository from '#repositories/user_repository';
+import { sendAccountCreationEmailValidator } from '#validators/auth';
+import BrevoMailService from '#services/brevo_mail_service';
+import RegexService from '#services/regex_service';
 import crypto from 'crypto';
 import env from '#start/env';
 
@@ -16,7 +16,7 @@ export default class AuthController {
     constructor(
         private readonly userRepository: UserRepository,
         private readonly regexService: RegexService,
-        private readonly mailService: BrevoMailService,
+        private readonly mailService: BrevoMailService
     ) {}
     public async login({ request, response }: HttpContext): Promise<void> {
         try {

@@ -56,13 +56,7 @@
     <FormBackground />
 {/if}
 
-<form
-    {action}
-    on:submit={handleSubmit}
-    {method}
-    class="relative z-10 bg-gray-200 dark:bg-gray-700 rounded-2xl p-2 md:p-6 shadow-lg m-auto {showBackground ? 'mt-24' : ''}"
-    style="max-width: 500px;"
->
+<form {action} on:submit={handleSubmit} {method} class="relative z-10 bg-gray-200 dark:bg-gray-700 rounded-2xl p-2 md:p-6 shadow-lg m-auto {showBackground ? 'mt-24' : ''}" style="max-width: 500px;">
     <slot />
     {#if submittable}
         <div class="w-full flex justify-between mt-4">
@@ -73,9 +67,7 @@
                 type="submit"
                 bind:disabled={isSendButtonDisabled}
                 customStyle={true}
-                additionalStyle="bg-green-700 {isSendButtonDisabled
-                    ? 'cursor-not-allowed'
-                    : 'hover:bg-green-800'} transition-all duration-300 py-2 px-4 rounded-xl text-2xl font-bold"
+                additionalStyle="bg-green-700 {isSendButtonDisabled ? 'cursor-not-allowed' : 'hover:bg-green-800'} transition-all duration-300 py-2 px-4 rounded-xl text-2xl font-bold"
             >
                 <div class="flex flex-row items-center gap-3">
                     <p class="text-white">{$t('common.submit')}</p>

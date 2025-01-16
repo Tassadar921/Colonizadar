@@ -3,25 +3,25 @@
     import { t } from 'svelte-i18n';
     import Title from '../shared/Title.svelte';
 
-    let pages = [];
+    let products = [];
 
     $: pages = [
         {
-            title: $t('play.title'),
-            icon: 'game',
-            href: '/browse',
-            description: $t('play.description'),
+            title: $t('social.friends.title'),
+            icon: 'people',
+            href: '/friends',
+            description: $t('social.friends.description'),
         },
         {
-            title: $t('social.title'),
-            icon: 'people',
-            href: '/social',
-            description: $t('social.description'),
+            title: $t('social.blocked.title'),
+            icon: 'stop',
+            href: '/blocked',
+            description: $t('social.blocked.description'),
         },
     ];
 </script>
 
-<Title title={$t('home.title')} />
+<Title title={$t('social.title')} />
 
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-5">
     {#each pages as page}

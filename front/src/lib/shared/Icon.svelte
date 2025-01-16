@@ -51,6 +51,9 @@
         'EnglishFlag',
         'FrenchFlag',
         'Mastercard',
+        'People',
+        'Game',
+        'Stop',
     ];
 
     const toCamelCase = (str) => {

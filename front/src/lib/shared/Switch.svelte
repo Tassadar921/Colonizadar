@@ -17,14 +17,7 @@
 </script>
 
 {#if name}
-    <input
-        type="checkbox"
-        {name}
-        bind:checked={value}
-        {required}
-        class="sr-only peer"
-        style="position: absolute; opacity: 0; pointer-events: none;"
-    />
+    <input type="checkbox" {name} bind:checked={value} {required} class="sr-only peer" style="position: absolute; opacity: 0; pointer-events: none;" />
 {/if}
 <div class="flex flex-row gap-3">
     <label class="inline-flex items-center {disabled ? '' : 'cursor-pointer'}">

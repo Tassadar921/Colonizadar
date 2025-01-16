@@ -49,9 +49,7 @@
 <div class="relative mt-10 mb-5">
     <label
         for={name}
-        class="absolute pointer-events-none z-10 transition-all duration-800 ease-in-out font-medium {focused || value
-            ? 'text-primary-500 bottom-11 left-1'
-            : 'text-gray-500 bottom-2.5 left-3'}"
+        class="absolute pointer-events-none z-10 transition-all duration-800 ease-in-out font-medium {focused || value ? 'text-primary-500 bottom-11 left-1' : 'text-gray-500 bottom-2.5 left-3'}"
     >
         {label}
         {#if required}

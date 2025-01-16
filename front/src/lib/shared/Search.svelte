@@ -57,9 +57,8 @@
 <div class="relative w-full mt-8">
     <label
         for={name}
-        class="absolute pointer-events-none z-10 transition-all duration-800 ease-in-out {focused || search.length
-            ? 'text-primary-500 bottom-11 left-1'
-            : 'text-gray-500 bottom-2.5 left-3'}">{label}</label
+        class="absolute pointer-events-none z-10 transition-all duration-800 ease-in-out {focused || search.length ? 'text-primary-500 bottom-11 left-1' : 'text-gray-500 bottom-2.5 left-3'}"
+        >{label}</label
     >
     <input
         on:focus={handleFocus}

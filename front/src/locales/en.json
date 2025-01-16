@@ -117,5 +117,21 @@
     },
     "already-connected": {
         "title": "Already connected"
+    },
+    "social": {
+        "title": "Social",
+        "description": "Manage your friends & blocked users",
+        "friends": {
+            "title": "Friends",
+            "description": "Manage your friends"
+        },
+        "blocked": {
+            "title": "Blocked users",
+            "description": "Manage your blocked users"
+        }
+    },
+    "play": {
+        "title": "Play",
+        "description": ""
     }
 }

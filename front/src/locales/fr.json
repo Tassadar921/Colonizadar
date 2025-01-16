@@ -118,4 +118,20 @@
     "already-connected": {
         "title": "Déjà connecté"
     },
+    "social": {
+        "title": "Social",
+        "description": "Gérez vos amis et les utilisateurs bloqués",
+        "friends": {
+            "title": "Amis",
+            "description": "Gérez vos amis"
+        },
+        "blocked": {
+            "title": "Utilisateurs bloqués",
+            "description": "Gérez les utilisateurs bloqués"
+        }
+    },
+    "play": {
+        "title": "Jouer",
+        "description": ""
+    }
 }

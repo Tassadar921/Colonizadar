@@ -119,12 +119,7 @@
 <div class="relative inline-block w-full" on:focusin={() => (menuOpen = true)} on:focusout={handleFocusOut}>
     <Search label={$t('upload.search-tags')} bind:search={query} on:search={handleSearch} minChars={0} />
 
-    <div
-        id="myDropdown"
-        class="min-w-64 max-h-96 hidden absolute border border-gray-300 overflow-y-scroll"
-        class:block={menuOpen}
-        class:hidden={!menuOpen}
-    >
+    <div id="myDropdown" class="min-w-64 max-h-96 hidden absolute border border-gray-300 overflow-y-scroll" class:block={menuOpen} class:hidden={!menuOpen}>
         <ul>
             {#if query.length}
                 {#each filteredTags as tag}

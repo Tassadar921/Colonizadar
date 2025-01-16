@@ -17,8 +17,34 @@
     import AlreadyConnected from './lib/pages/AlreadyConnected.svelte';
     import Menu from './lib/menu/Menu.svelte';
     import { setLanguage } from './stores/languageStore.js';
+    import { location, navigate } from './stores/locationStore.js';
+    import { locale } from 'svelte-i18n';
+    import { showToast } from './services/toastService.js';
+    import Social from './lib/pages/Social.svelte';
+    import Friends from './lib/pages/Friends.svelte';
+    import Blocked from './lib/pages/Blocked.svelte';
 
-    export let url = '';
+    const supportedLanguages = ['en', 'fr'];
+
+    const initializeLanguage = () => {
+        const langRegex = new RegExp(`^\/(${supportedLanguages.join('|')})(\/|$)`);
+        const langMatch = langRegex.exec($location);
+
+        const initialSetLanguage = (language) => {
+            setLanguage(language);
+            locale.set(language);
+        };
+
+        let language = langMatch ? langMatch[1] : null;
+        if (!language || !supportedLanguages.includes(language)) {
+            language = 'en';
+            initialSetLanguage(language);
+            showToast('Invalid language. Defaulting to English.', 'error');
+            navigate(`/${language}`);
+        } else {
+            initialSetLanguage(language);
+        }
+    };
 
     const logInformations = async (token) => {
         const tokenExpiresAt = localStorage.getItem('apiTokenExpiration');
@@ -43,7 +69,7 @@
 
     onMount(async () => {
         axios.defaults.baseURL = process.env.VITE_API_BASE_URL;
-        setLanguage(localStorage.getItem('language'));
+        initializeLanguage();
 
         const theme = localStorage.getItem('theme');
         if (theme !== 'light' && theme !== 'dark') {
@@ -62,25 +88,33 @@
     <div class="px-3.5 min-h-screen">
         <Menu />
         {#if !$isLoading}
-            <Router {url}>
-                <Route path="/reset-password"><ResetPassword /></Route>
-                <Route path="/reset-password/confirm/:token" let:params><ConfirmResetPassword {...params} /></Route>
+            <Router>
+                <Route path="/:language/reset-password" component={ResetPassword} />
+                <Route path="/:language/reset-password/confirm/:token" let:params><ConfirmResetPassword {...params} /></Route>
 
                 {#if $profile}
-                    <Route path="/"><Homepage /></Route>
-                    <Route path="/login"><AlreadyConnected /></Route>
+                    <Route path="/:language" component={Homepage} />
+                    <Route path="/:language/login" component={AlreadyConnected} />
 
-                    <Route path="/profile"><Profile /></Route>
-                    <Route path="/logout"><Logout /></Route>
+                    <Route path="/:language/social" component={Social} />
+                    <Route path="/:language/social/friends" component={Friends} />
+                    <Route path="/:language/social/blocked" component={Blocked} />
+
+                    <Route path="/:language/profile" component={Profile} />
+                    <Route path="/:language/logout" component={Logout} />
                 {:else}
-                    <Route path="/"><Login /></Route>
-                    <Route path="/login"><Login /></Route>
+                    <Route path="/:language/" component={Login} />
+                    <Route path="/:language/login" component={Login} />
 
-                    <Route path="/profile"><Forbidden /></Route>
-                    <Route path="/logout"><Forbidden /></Route>
+                    <Route path="/:language/social" component={Forbidden} />
+                    <Route path="/:language/social/friends" component={Forbidden} />
+                    <Route path="/:language/social/blocked" component={Forbidden} />
+
+                    <Route path="/:language/profile" component={Forbidden} />
+                    <Route path="/:language/logout" component={Forbidden} />
                 {/if}
 
-                <Route path="*"><NotFound /></Route>
+                <Route path="*" component={NotFound} />
             </Router>
         {:else}
             <Loader loading={true} />
