@@ -7,13 +7,13 @@
 
     $: products = [
         {
-            title: $t('upload.title'),
+            title: $t('friends.title'),
             icon: 'upload',
             href: '/upload',
             description: $t('upload.description'),
         },
         {
-            title: $t('browse.title'),
+            title: $t('play.title'),
             icon: 'search',
             href: '/browse',
             description: $t('browse.description'),

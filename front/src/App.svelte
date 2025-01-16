@@ -6,7 +6,6 @@
     import Logout from './lib/pages/Logout.svelte';
     import ResetPassword from './lib/pages/ResetPassword.svelte';
     import ConfirmResetPassword from './lib/pages/ConfirmResetPassword.svelte';
-    import { defineCustomElements } from '@ionic/pwa-elements/loader';
     import Forbidden from './lib/pages/Forbidden.svelte';
     import { updateProfile, profile } from './stores/profileStore.js';
     import NotFound from './lib/pages/NotFound.svelte';
@@ -44,7 +43,6 @@
 
     onMount(async () => {
         axios.defaults.baseURL = process.env.VITE_API_BASE_URL;
-        await defineCustomElements(window);
         setLanguage(localStorage.getItem('language'));
 
         const theme = localStorage.getItem('theme');
