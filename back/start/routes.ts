@@ -1,5 +1,7 @@
 import router from '@adonisjs/core/services/router';
 import { middleware } from '#start/kernel';
+import transmit from "@adonisjs/transmit/services/main";
+import {HttpContext} from "@adonisjs/core/http";
 
 const EventStreamController = () => import('@adonisjs/transmit/controllers/event_stream_controller');
 const SubscribeController = () => import('@adonisjs/transmit/controllers/subscribe_controller');
@@ -67,11 +69,10 @@ router
     .prefix('api')
     .use([middleware.language()]);
 
-// SSE requests
-router
-    .group((): void => {
-        router.get('/events', [EventStreamController]);
-        router.post('/subscribe', [SubscribeController]);
-        router.post('/unsubscribe', [UnsubscribeController]);
-    })
-    .prefix('__transmit');
+router.get('/__transmit/events', [EventStreamController]);
+router.post('/__transmit/subscribe', [SubscribeController]);
+router.post('/__transmit/unsubscribe', [UnsubscribeController]);
+
+transmit.authorize<{ id: string }>('users/:id', (ctx: HttpContext, { id }: { id: string }): boolean => {
+    ctx.request
+})

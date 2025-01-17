@@ -1,15 +1,12 @@
 import { HttpContext } from '@adonisjs/core/http';
 import { inject } from '@adonisjs/core';
 import { AccessToken } from '@adonisjs/auth/access_tokens';
+import {queryStringAccessTokenValidator} from "#validators/query_string";
 
 @inject()
 export default class QueryStringAuthMiddleware {
     public async handle(ctx: HttpContext, next: () => Promise<void>): Promise<void> {
-        const token = ctx.request.input('token');
-
-        if (!token) {
-            return ctx.response.badRequest({ error: 'Token is required' });
-        }
+        const { token } = await queryStringAccessTokenValidator.validate(ctx.request.all());
 
         try {
             if (AccessToken.decode('oat_', token) === null) {

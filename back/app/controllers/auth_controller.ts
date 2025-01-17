@@ -7,7 +7,6 @@ import { DateTime } from 'luxon';
 import UserRepository from '#repositories/user_repository';
 import { sendAccountCreationEmailValidator } from '#validators/auth';
 import BrevoMailService from '#services/brevo_mail_service';
-import RegexService from '#services/regex_service';
 import crypto from 'crypto';
 import env from '#start/env';
 
@@ -15,7 +14,6 @@ import env from '#start/env';
 export default class AuthController {
     constructor(
         private readonly userRepository: UserRepository,
-        private readonly regexService: RegexService,
         private readonly mailService: BrevoMailService
     ) {}
     public async login({ request, response }: HttpContext): Promise<void> {
@@ -46,11 +44,7 @@ export default class AuthController {
     public async sendAccountCreationEmail({ request, response }: HttpContext): Promise<void> {
         const { username, email, password, consent } = await sendAccountCreationEmailValidator.validate(request.all());
 
-        if (!this.regexService.isValidPassword(password)) {
-            return response.badRequest({
-                error: 'Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, and one special character',
-            });
-        } else if (!consent) {
+        if (!consent) {
             return response.badRequest({ error: 'Content is required' });
         }
 

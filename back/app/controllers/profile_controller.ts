@@ -6,14 +6,13 @@ import User from '#models/user';
 import ResetPassword from '#models/reset_password';
 import crypto from 'crypto';
 import { DateTime } from 'luxon';
-import { AccessToken } from '@adonisjs/auth/access_tokens';
 import { inject } from '@adonisjs/core';
 import File from '#models/file';
 import app from '@adonisjs/core/services/app';
 import { cuid } from '@adonisjs/core/helpers';
 import FileService from '#services/file_service';
 import SlugifyService from '#services/slugify_service';
-import RegexService from '#services/regex_service';
+import {resetPasswordValidator, sendResetPasswordEmailValidator, updateProfileValidator} from "#validators/profile";
 
 @inject()
 export default class ProfileController {
@@ -23,26 +22,15 @@ export default class ProfileController {
         private readonly mailService: BrevoMailService,
         private readonly fileService: FileService,
         private readonly slugifyService: SlugifyService,
-        private readonly regexService: RegexService
     ) {}
 
-    public async getProfile({ auth, response }: HttpContext): Promise<void> {
-        const user: User & { currentAccessToken: AccessToken } = await auth.use('api').authenticate();
+    public async getProfile({ response, user }: HttpContext): Promise<void> {
         await user.load('profilePicture');
         return response.send({ user: user.apiSerialize() });
     }
 
     public async sendResetPasswordEmail({ request, response }: HttpContext): Promise<void> {
-        const { email, frontUri } = request.only(['email', 'frontUri']);
-        if (!email || !frontUri) {
-            return response.badRequest({
-                error: 'Email and frontUri are required',
-            });
-        } else if (!this.regexService.isValidUri(frontUri)) {
-            return response.badRequest({
-                error: 'frontUri has to be a valid uri',
-            });
-        }
+        const { email, frontUri } = await sendResetPasswordEmailValidator.validate(request.all());
 
         const user: User | null = await this.userRepository.findOneBy({
             email,
@@ -81,7 +69,7 @@ export default class ProfileController {
     }
 
     public async resetPassword({ request, response }: HttpContext): Promise<void> {
-        const { password, confirmPassword } = request.only(['password', 'confirmPassword']);
+        const { password } = await resetPasswordValidator.validate(request.all());
         const { token } = request.params();
 
         const resetPassword: ResetPassword | null = await this.resetPasswordRepository.findOneBy({
@@ -96,16 +84,6 @@ export default class ProfileController {
             return response.notFound({ error: 'User not found' });
         }
 
-        if (password !== confirmPassword) {
-            return response.badRequest({ error: 'Passwords do not match' });
-        }
-
-        if (!this.regexService.isValidPassword(password)) {
-            return response.badRequest({
-                error: 'Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, and one special character',
-            });
-        }
-
         await resetPassword.delete();
 
         user.password = password;
@@ -114,23 +92,10 @@ export default class ProfileController {
         return response.send({ success: true });
     }
 
-    public async updateProfile({ request, response, auth }: HttpContext): Promise<void> {
-        const user: User & { currentAccessToken: AccessToken } = await auth.use('api').authenticate();
-        const { username } = request.all();
-
-        if (!username || username.length < 3 || username.length > 50) {
-            return response.badRequest({
-                error: "Invalid username : it's required and has to be between 3 and 50 characters",
-            });
-        }
+    public async updateProfile({ request, response, user }: HttpContext): Promise<void> {
+        const { username, profilePicture } = await updateProfileValidator.validate(request.all());
 
         user.username = username;
-
-        const profilePicture = request.file('profilePicture', {
-            size: '2mb',
-            extnames: ['jpg', 'png', 'gif', 'jpeg'],
-        });
-
         await user.load('profilePicture');
 
         if (profilePicture && profilePicture.isValid && profilePicture.tmpPath) {
