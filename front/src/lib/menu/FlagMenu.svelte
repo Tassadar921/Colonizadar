@@ -23,7 +23,6 @@
     const selectFlag = (flag) => {
         const initialLanguage = localStorage.getItem('language');
         if (initialLanguage === flag.value) {
-            console.log('skip');
             return;
         }
 
