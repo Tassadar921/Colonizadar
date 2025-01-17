@@ -2,10 +2,14 @@ import { DateTime } from 'luxon';
 import { BaseModel, belongsTo, column } from '@adonisjs/lucid/orm';
 import User from '#models/user';
 import type { BelongsTo } from '@adonisjs/lucid/types/relations';
+import SerializedBlockedUser from '#types/serialized/serialized_blocked_user';
 
 export default class BlockedUser extends BaseModel {
     @column({ isPrimary: true })
     declare id: string;
+
+    @column()
+    declare frontId: number;
 
     @column()
     declare blockerId: string;
@@ -24,4 +28,13 @@ export default class BlockedUser extends BaseModel {
 
     @column.dateTime({ autoCreate: true, autoUpdate: true })
     declare updatedAt: DateTime;
+
+    public apiSerialize(): SerializedBlockedUser {
+        return {
+            id: this.frontId,
+            user: this.blocked.apiSerialize(),
+            updatedAt: this.updatedAt?.toString(),
+            createdAt: this.createdAt?.toString(),
+        };
+    }
 }

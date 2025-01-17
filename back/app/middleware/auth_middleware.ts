@@ -19,7 +19,7 @@ export default class AuthMiddleware {
             guards?: (keyof Authenticators)[];
         } = {}
     ): Promise<any> {
-        await ctx.auth.authenticateUsing(options.guards);
+        ctx.user = await ctx.auth.authenticateUsing(options.guards);
         return next();
     }
 }

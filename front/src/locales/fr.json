@@ -123,11 +123,19 @@
         "description": "Gérez vos amis et les utilisateurs bloqués",
         "friends": {
             "title": "Amis",
-            "description": "Gérez vos amis"
+            "description": "Gérez vos amis",
+            "search": {
+                "placeholder": "Jean123",
+                "label": "Pseudonyme de l'ami"
+            }
         },
         "blocked": {
             "title": "Utilisateurs bloqués",
-            "description": "Gérez les utilisateurs bloqués"
+            "description": "Gérez les utilisateurs bloqués",
+            "search": {
+                "placeholder": "Jean123",
+                "label": "Pseudonyme de l'utilisateur bloqué"
+            }
         }
     },
     "play": {

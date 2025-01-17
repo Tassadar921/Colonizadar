@@ -9,13 +9,13 @@
         {
             title: $t('social.friends.title'),
             icon: 'people',
-            href: '/friends',
+            href: '/social/friends',
             description: $t('social.friends.description'),
         },
         {
             title: $t('social.blocked.title'),
             icon: 'stop',
-            href: '/blocked',
+            href: '/social/blocked',
             description: $t('social.blocked.description'),
         },
     ];

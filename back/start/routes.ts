@@ -4,6 +4,8 @@ import { middleware } from '#start/kernel';
 const AuthController = () => import('#controllers/auth_controller');
 const ProfileController = () => import('#controllers/profile_controller');
 const FileController = () => import('#controllers/file_controller');
+const BlockedUserController = () => import('#controllers/blocked_user_controller');
+const FriendController = () => import('#controllers/friend_controller');
 
 // API requests
 router
@@ -38,6 +40,18 @@ router
                         router.post('/update', [ProfileController, 'updateProfile']);
                     })
                     .prefix('profile');
+
+                router
+                    .group((): void => {
+                        router.get('/', [FriendController, 'search']);
+                    })
+                    .prefix('friends');
+
+                router
+                    .group((): void => {
+                        router.get('/', [BlockedUserController, 'search']);
+                    })
+                    .prefix('blocked');
             })
             .use([middleware.auth({ guards: ['api'] })]);
 

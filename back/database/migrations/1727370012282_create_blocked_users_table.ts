@@ -7,6 +7,7 @@ export default class extends BaseSchema {
     public async up(): Promise<void> {
         this.schema.createTable(this.tableName, (table: Knex.CreateTableBuilder): void => {
             table.uuid('id').primary().defaultTo(this.raw('uuid_generate_v4()'));
+            table.specificType('front_id', 'serial').notNullable();
             table.uuid('blocker_id').notNullable().references('id').inTable('users').onDelete('CASCADE');
             table.uuid('blocked_id').notNullable().references('id').inTable('users').onDelete('CASCADE');
             table.timestamp('created_at', { useTz: true });

@@ -123,11 +123,19 @@
         "description": "Manage your friends & blocked users",
         "friends": {
             "title": "Friends",
-            "description": "Manage your friends"
+            "description": "Manage your friends",
+            "search": {
+                "placeholder": "John123",
+                "label": "Friend's username"
+            }
         },
         "blocked": {
             "title": "Blocked users",
-            "description": "Manage your blocked users"
+            "description": "Manage your blocked users",
+            "search": {
+                "placeholder": "John123",
+                "label": "Blocked user's username"
+            }
         }
     },
     "play": {
