@@ -16,7 +16,6 @@
     });
 
     const handleSearch = async () => {
-        console.log('ici');
         try {
             searchBaseUrl = `/api/friends?query=${query}`;
             const { data } = await axios.get(searchBaseUrl);
