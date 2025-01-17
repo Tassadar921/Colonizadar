@@ -33,7 +33,7 @@
     bind:results={paginatedFriends.friends}
     placeholder={$t('social.friends.search.placeholder')}
     label={$t('social.friends.search.label')}
-    name="searchFriend"
+    name="search-friend"
     minChars={3}
     bind:search={query}
     on:search={handleSearch}

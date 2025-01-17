@@ -14,13 +14,17 @@ export default class BlockedUser extends BaseModel {
     @column()
     declare blockerId: string;
 
-    @belongsTo((): typeof User => User)
+    @belongsTo((): typeof User => User, {
+        foreignKey: 'blockerId'
+    })
     declare blocker: BelongsTo<typeof User>;
 
     @column()
     declare blockedId: string;
 
-    @belongsTo((): typeof User => User)
+    @belongsTo((): typeof User => User, {
+        foreignKey: 'blockedId'
+    })
     declare blocked: BelongsTo<typeof User>;
 
     @column.dateTime({ autoCreate: true })
