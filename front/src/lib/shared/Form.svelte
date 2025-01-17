@@ -56,7 +56,7 @@
     <FormBackground />
 {/if}
 
-<form {action} on:submit={handleSubmit} {method} class="relative z-10 bg-gray-200 dark:bg-gray-700 rounded-2xl p-2 md:p-6 shadow-lg m-auto {showBackground ? 'mt-24' : ''}" style="max-width: 500px;">
+<form {action} on:submit={handleSubmit} {method} class="relative z-10 bg-gray-200 dark:bg-gray-700 rounded-2xl p-2 md:p-6 shadow-lg m-auto {showBackground ? 'mt-20' : ''}" style="max-width: 500px;">
     <slot />
     {#if submittable}
         <div class="w-full flex justify-between mt-4">

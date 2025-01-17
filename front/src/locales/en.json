@@ -74,15 +74,11 @@
         }
     },
     "menu": {
-        "home": "Home",
-        "settings": "Settings",
-        "profile": "Profile",
-        "logout": "Logout",
-        "login": "Login",
         "source-code": "Source code"
     },
     "profile": {
         "title": "Profile",
+        "description": "Update your profile",
         "reset-password": "Reset password",
         "profile-picture": {
             "title": "Profile picture",
@@ -140,6 +136,6 @@
     },
     "play": {
         "title": "Play",
-        "description": ""
+        "description": "Play alone or with your friends"
     }
 }

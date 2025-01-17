@@ -74,15 +74,11 @@
         }
     },
     "menu": {
-        "home": "Accueil",
-        "settings": "Paramètres",
-        "profile": "Profil",
-        "logout": "Déconnexion",
-        "login": "Connexion",
         "source-code": "Code source"
     },
     "profile": {
         "title": "Profil",
+        "description": "Mettez à jour votre profil",
         "reset-password": "Réinitialiser le mot de passe",
         "profile-picture": {
             "title": "Photo de profil",
@@ -140,6 +136,6 @@
     },
     "play": {
         "title": "Jouer",
-        "description": ""
+        "description": "Jouez seul ou avec vos amis"
     }
 }

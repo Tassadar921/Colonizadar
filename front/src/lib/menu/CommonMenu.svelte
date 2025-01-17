@@ -8,10 +8,12 @@
 
 <ul class={`${footer ? '' : 'space-y-4'} p-4`}>
     {#if $profile}
-        <MenuItem {footer} iconLeft="home" href="/" on:click>{$t('menu.home')}</MenuItem>
-        <MenuItem {footer} iconLeft="user" href="/profile" on:click>{$t('menu.profile')}</MenuItem>
-        <MenuItem {footer} iconLeft="userRemove" href="/logout" on:click>{$t('menu.logout')}</MenuItem>
+        <MenuItem {footer} iconLeft="home" href="/" on:click>{$t('home.title')}</MenuItem>
+        <MenuItem {footer} iconLeft="game" href="/game" on:click>{$t('play.title')}</MenuItem>
+        <MenuItem {footer} iconLeft="people" href="/social" on:click>{$t('social.title')}</MenuItem>
+        <MenuItem {footer} iconLeft="user" href="/profile" on:click>{$t('profile.title')}</MenuItem>
+        <MenuItem {footer} iconLeft="userRemove" href="/logout" on:click>{$t('logout.title')}</MenuItem>
     {:else}
-        <MenuItem {footer} iconLeft="user" href="/login" on:click>{$t('menu.login')}</MenuItem>
+        <MenuItem {footer} iconLeft="user" href="/login" on:click>{$t('login.title')}</MenuItem>
     {/if}
 </ul>
