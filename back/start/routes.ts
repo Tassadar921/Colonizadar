@@ -1,11 +1,16 @@
 import router from '@adonisjs/core/services/router';
 import { middleware } from '#start/kernel';
 
+const EventStreamController = () => import('@adonisjs/transmit/controllers/event_stream_controller');
+const SubscribeController = () => import('@adonisjs/transmit/controllers/subscribe_controller');
+const UnsubscribeController = () => import('@adonisjs/transmit/controllers/unsubscribe_controller');
+
 const AuthController = () => import('#controllers/auth_controller');
 const ProfileController = () => import('#controllers/profile_controller');
 const FileController = () => import('#controllers/file_controller');
 const BlockedUserController = () => import('#controllers/blocked_user_controller');
 const FriendController = () => import('#controllers/friend_controller');
+const NotificationController = () => import('#controllers/notification_controller');
 
 // API requests
 router
@@ -52,6 +57,8 @@ router
                         router.get('/', [BlockedUserController, 'search']);
                     })
                     .prefix('blocked');
+
+                router.get('/notifications', [NotificationController, 'get']);
             })
             .use([middleware.auth({ guards: ['api'] })]);
 
@@ -59,3 +66,12 @@ router
     })
     .prefix('api')
     .use([middleware.language()]);
+
+// SSE requests
+router
+    .group((): void => {
+        router.get('/events', [EventStreamController]);
+        router.post('/subscribe', [SubscribeController]);
+        router.post('/unsubscribe', [UnsubscribeController]);
+    })
+    .prefix('__transmit');

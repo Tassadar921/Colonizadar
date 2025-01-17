@@ -1,5 +1,5 @@
 <script>
-    import Link from "./Link.svelte";
+    import Link from './Link.svelte';
 
     export let items;
     export let hasBackground = false;

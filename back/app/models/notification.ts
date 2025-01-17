@@ -2,9 +2,9 @@ import { DateTime } from 'luxon';
 import { BaseModel, belongsTo, column } from '@adonisjs/lucid/orm';
 import User from '#models/user';
 import type { BelongsTo } from '@adonisjs/lucid/types/relations';
-import SerializedBlockedUser from '#types/serialized/serialized_blocked_user';
+import SerializedNotification from '#types/serialized/serialized_notification';
 
-export default class BlockedUser extends BaseModel {
+export default class Notification extends BaseModel {
     @column({ isPrimary: true })
     declare id: string;
 
@@ -12,20 +12,16 @@ export default class BlockedUser extends BaseModel {
     declare frontId: number;
 
     @column()
-    declare blockerId: string;
+    declare userId: string;
 
-    @belongsTo((): typeof User => User, {
-        foreignKey: 'blockerId',
-    })
-    declare blocker: BelongsTo<typeof User>;
+    @belongsTo((): typeof User => User)
+    declare user: BelongsTo<typeof User>;
 
     @column()
-    declare blockedId: string;
+    declare message: string;
 
-    @belongsTo((): typeof User => User, {
-        foreignKey: 'blockedId',
-    })
-    declare blocked: BelongsTo<typeof User>;
+    @column()
+    declare seen: boolean;
 
     @column.dateTime({ autoCreate: true })
     declare createdAt: DateTime;
@@ -33,12 +29,13 @@ export default class BlockedUser extends BaseModel {
     @column.dateTime({ autoCreate: true, autoUpdate: true })
     declare updatedAt: DateTime;
 
-    public apiSerialize(): SerializedBlockedUser {
+    public apiSerialize(): SerializedNotification {
         return {
             id: this.frontId,
-            user: this.blocked.apiSerialize(),
-            updatedAt: this.updatedAt?.toString(),
+            message: this.message,
+            seen: this.seen,
             createdAt: this.createdAt?.toString(),
+            updatedAt: this.updatedAt?.toString(),
         };
     }
 }

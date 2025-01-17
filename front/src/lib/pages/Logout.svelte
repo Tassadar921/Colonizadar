@@ -7,7 +7,7 @@
     import Title from '../shared/Title.svelte';
     import ConfirmModal from '../shared/ConfirmModal.svelte';
     import axios from 'axios';
-    import Breadcrumbs from "../shared/Breadcrumbs.svelte";
+    import Breadcrumbs from '../shared/Breadcrumbs.svelte';
 
     let showModal = true;
 
@@ -33,12 +33,7 @@
 
 <Title title={$t('logout.title')} />
 
-<Breadcrumbs
-    hasBackground={true}
-    items={[
-    { label: $t('home.title'), path:'/' },
-    { label: $t('logout.title') },
-]} />
+<Breadcrumbs hasBackground={true} items={[{ label: $t('home.title'), path: '/' }, { label: $t('logout.title') }]} />
 
 <ConfirmModal bind:showModal on:success={handleSuccess} on:close={handleClose}>
     <Subtitle slot="header">{$t('logout.modal.title')}</Subtitle>

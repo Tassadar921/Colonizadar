@@ -8,7 +8,7 @@
     import { t } from 'svelte-i18n';
     import { onMount } from 'svelte';
     import FileUpload from '../shared/FileUpload.svelte';
-    import Breadcrumbs from "../shared/Breadcrumbs.svelte";
+    import Breadcrumbs from '../shared/Breadcrumbs.svelte';
 
     let formValues = {
         username: '',
@@ -46,12 +46,7 @@
 
 <Title title={$t('profile.title')} hasBackground={true} />
 
-<Breadcrumbs
-    hasBackground={true}
-    items={[
-    { label: $t('home.title'), path:'/' },
-    { label: $t('profile.title') },
-]} />
+<Breadcrumbs hasBackground={true} items={[{ label: $t('home.title'), path: '/' }, { label: $t('profile.title') }]} />
 
 <Form action="/api/profile/update" method="POST" on:success={handleSuccess} on:error={handleError} bind:isValid>
     <Input name="username" placeholder={$t('common.username.label')} label={$t('common.username.label')} bind:value={formValues.username} min={3} max={50} />

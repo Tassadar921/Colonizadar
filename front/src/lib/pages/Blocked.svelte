@@ -5,7 +5,7 @@
     import axios from 'axios';
     import Search from '../shared/Search.svelte';
     import Pagination from '../shared/Pagination.svelte';
-    import Breadcrumbs from "../shared/Breadcrumbs.svelte";
+    import Breadcrumbs from '../shared/Breadcrumbs.svelte';
 
     let paginatedBlockedUsers = { blockedUsers: [] };
     let searchBaseUrl = '/api/blocked';
@@ -29,11 +29,7 @@
 
 <Title title={$t('social.blocked.title')} />
 
-<Breadcrumbs items={[
-    { label: $t('home.title'), path:'/' },
-    { label: $t('social.title'), path: '/social' },
-    { label: $t('social.blocked.title') },
-]} />
+<Breadcrumbs items={[{ label: $t('home.title'), path: '/' }, { label: $t('social.title'), path: '/social' }, { label: $t('social.blocked.title') }]} />
 
 <Search
     selected={true}

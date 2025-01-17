@@ -23,6 +23,8 @@
     import Social from './lib/pages/Social.svelte';
     import Friends from './lib/pages/Friends.svelte';
     import Blocked from './lib/pages/Blocked.svelte';
+    import { transmit } from './stores/TransmitStore.js';
+    import { Transmit } from '@adonisjs/transmit-client';
 
     const supportedLanguages = ['en', 'fr'];
 
@@ -81,6 +83,8 @@
             await logInformations(token);
             await updateProfile();
         }
+
+        transmit.set(new Transmit({ baseUrl: process.env.VITE_API_BASE_URL }));
     });
 </script>
 

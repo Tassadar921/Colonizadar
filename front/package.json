@@ -30,6 +30,7 @@
         "vite": "^5.3.1"
     },
     "dependencies": {
+        "@adonisjs/transmit-client": "^1.0.0",
         "@sveltejs/adapter-auto": "^3.2.2",
         "axios": "^1.7.7",
         "dotenv": "^16.4.5",

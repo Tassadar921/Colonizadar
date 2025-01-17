@@ -3,8 +3,6 @@
     import { t } from 'svelte-i18n';
     import Title from '../shared/Title.svelte';
 
-    let pages = [];
-
     $: pages = [
         {
             title: $t('play.title'),
