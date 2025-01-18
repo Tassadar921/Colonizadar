@@ -85,6 +85,8 @@
         }
 
         transmit.set(new Transmit({ baseUrl: process.env.VITE_API_BASE_URL }));
+        const test = $transmit.subscription(`test/${localStorage.getItem('apiToken')}`);
+        await test.create();
     });
 </script>
 
