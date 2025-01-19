@@ -120,14 +120,28 @@
         "friends": {
             "title": "Friends",
             "description": "Manage your friends",
+            "none": "No friend found",
             "search": {
                 "placeholder": "John123",
                 "label": "Friend's username"
+            },
+            "pending": {
+                "title": "Pending friend requests",
+                "none": "No pending friend request"
+            },
+            "add": {
+                "title": "Ask a new friend",
+                "none": "No user available",
+                "search": {
+                    "placeholder": "John123",
+                    "label": "User's username"
+                }
             }
         },
         "blocked": {
             "title": "Blocked users",
             "description": "Manage your blocked users",
+            "none": "No blocked user found",
             "search": {
                 "placeholder": "John123",
                 "label": "Blocked user's username"

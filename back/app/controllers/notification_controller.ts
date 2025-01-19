@@ -1,7 +1,7 @@
 import { inject } from '@adonisjs/core';
 import { HttpContext } from '@adonisjs/core/http';
 import NotificationRepository from '#repositories/notification_repository';
-import {getNotificationsValidator} from "#validators/notification";
+import { getNotificationsValidator } from '#validators/notification';
 
 @inject()
 export default class NotificationController {

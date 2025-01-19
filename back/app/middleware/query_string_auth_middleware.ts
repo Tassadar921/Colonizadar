@@ -1,7 +1,7 @@
 import { HttpContext } from '@adonisjs/core/http';
 import { inject } from '@adonisjs/core';
 import { AccessToken } from '@adonisjs/auth/access_tokens';
-import {queryStringAccessTokenValidator} from "#validators/query_string";
+import { queryStringAccessTokenValidator } from '#validators/query_string';
 
 @inject()
 export default class QueryStringAuthMiddleware {

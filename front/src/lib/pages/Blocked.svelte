@@ -43,8 +43,12 @@
 />
 
 <div class="flex flex-row flex-wrap gap-5 justify-center">
-    {#each paginatedBlockedUsers.blockedUsers as blockedUser}
-        <p>{blockedUser.user.username}</p>
-    {/each}
+    {#if paginatedBlockedUsers.blockedUsers.length}
+        {#each paginatedBlockedUsers.blockedUsers as blockedUser}
+            <p>{blockedUser.user.username}</p>
+        {/each}
+    {:else}
+        <p class="my-5">{$t('social.blocked.none')}</p>
+    {/if}
 </div>
 <Pagination bind:paginatedObject={paginatedBlockedUsers} bind:baseUrl={searchBaseUrl} />

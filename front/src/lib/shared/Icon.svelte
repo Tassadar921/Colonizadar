@@ -54,6 +54,7 @@
         'People',
         'Game',
         'Stop',
+        'Bell',
     ];
 
     const toCamelCase = (str) => {

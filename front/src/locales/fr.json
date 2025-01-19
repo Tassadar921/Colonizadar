@@ -120,14 +120,28 @@
         "friends": {
             "title": "Amis",
             "description": "Gérez vos amis",
+            "none": "Pas d'ami trouvé",
             "search": {
                 "placeholder": "Jean123",
                 "label": "Pseudonyme de l'ami"
+            },
+            "pending": {
+                "title": "Demandes d'ami en attente",
+                "none": "Pas de demande d'ami en attente"
+            },
+            "add": {
+                "title": "Inviter un nouvel ami",
+                "none": "Aucun utilisateur disponible",
+                "search": {
+                    "placeholder": "Jean123",
+                    "label": "Pseudonyme de l'utilisateur"
+                }
             }
         },
         "blocked": {
             "title": "Utilisateurs bloqués",
             "description": "Gérez les utilisateurs bloqués",
+            "none": "Pas d'utilisateur bloqué trouvé",
             "search": {
                 "placeholder": "Jean123",
                 "label": "Pseudonyme de l'utilisateur bloqué"

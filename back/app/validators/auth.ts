@@ -11,7 +11,12 @@ export const sendAccountCreationEmailValidator = vine.compile(
     vine.object({
         username: vine.string().trim().minLength(3).maxLength(50).alphaNumeric(),
         email: vine.string().trim().email(),
-        password: vine.string().trim().regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*(),.?":{}|<>]).{8,}$/).trim().confirmed({ confirmationField: 'confirmPassword' }),
+        password: vine
+            .string()
+            .trim()
+            .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*(),.?":{}|<>]).{8,}$/)
+            .trim()
+            .confirmed({ confirmationField: 'confirmPassword' }),
         frontClient: vine.string().trim(),
         frontUri: vine.string().trim().url(),
         consent: vine.boolean(),

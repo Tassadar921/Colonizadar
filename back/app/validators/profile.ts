@@ -9,7 +9,11 @@ export const sendResetPasswordEmailValidator = vine.compile(
 
 export const resetPasswordValidator = vine.compile(
     vine.object({
-        password: vine.string().trim().regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*(),.?":{}|<>]).{8,}$/).confirmed({ confirmationField: 'confirmPassword' }),
+        password: vine
+            .string()
+            .trim()
+            .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*(),.?":{}|<>]).{8,}$/)
+            .confirmed({ confirmationField: 'confirmPassword' }),
     })
 );
 
@@ -19,6 +23,6 @@ export const updateProfileValidator = vine.compile(
         profilePicture: vine.file({
             size: '2mb',
             extnames: ['jpg', 'png', 'gif', 'jpeg'],
-        })
+        }),
     })
 );

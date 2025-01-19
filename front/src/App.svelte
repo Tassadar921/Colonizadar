@@ -56,17 +56,12 @@
             return;
         }
         axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-        axios
-            .get('/api')
-            .then((response) => {
-                if (response.status !== 200) {
-                    throw new Error('Invalid token');
-                }
-            })
-            .catch(() => {
-                localStorage.removeItem('apiToken');
-                axios.defaults.headers.common['Authorization'] = '';
-            });
+        try {
+            await axios.get('/api');
+        } catch (e) {
+            localStorage.removeItem('apiToken');
+            axios.defaults.headers.common['Authorization'] = '';
+        }
     };
 
     onMount(async () => {
@@ -85,8 +80,11 @@
         }
 
         transmit.set(new Transmit({ baseUrl: process.env.VITE_API_BASE_URL }));
-        const test = $transmit.subscription(`test/${localStorage.getItem('apiToken')}`);
-        await test.create();
+        const notification = $transmit.subscription(`notification/${$profile.id}`);
+        await notification.create();
+        notification.onMessage((data) => {
+            showToast(data.message, 'warning');
+        });
     });
 </script>
 

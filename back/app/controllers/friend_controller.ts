@@ -1,7 +1,7 @@
 import { inject } from '@adonisjs/core';
 import FriendRepository from '#repositories/friend_repository';
 import { HttpContext } from '@adonisjs/core/http';
-import {getFriendsValidator} from "#validators/friend";
+import { getFriendsValidator } from '#validators/friend';
 
 @inject()
 export default class FriendsController {

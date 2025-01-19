@@ -1,8 +1,5 @@
 import router from '@adonisjs/core/services/router';
 import { middleware } from '#start/kernel';
-import transmit from "@adonisjs/transmit/services/main";
-import {HttpContext} from "@adonisjs/core/http";
-import TransmitAuthService from "#services/transmit_auth_service";
 
 const EventStreamController = () => import('@adonisjs/transmit/controllers/event_stream_controller');
 const SubscribeController = () => import('@adonisjs/transmit/controllers/subscribe_controller');
@@ -14,8 +11,8 @@ const FileController = () => import('#controllers/file_controller');
 const BlockedUserController = () => import('#controllers/blocked_user_controller');
 const FriendController = () => import('#controllers/friend_controller');
 const NotificationController = () => import('#controllers/notification_controller');
-
-const transmitService = new TransmitAuthService();
+const PendingFriendController = () => import('#controllers/pending_friend_controller');
+const UserController = () => import('#controllers/user_controller');
 
 // API requests
 router
@@ -54,6 +51,9 @@ router
                 router
                     .group((): void => {
                         router.get('/', [FriendController, 'search']);
+                        router.get('/pending', [PendingFriendController, 'search']);
+                        router.get('/add', [UserController, 'searchNotFriends']);
+                        router.post('/add', [PendingFriendController, 'add']);
                     })
                     .prefix('friends');
 
@@ -75,8 +75,3 @@ router
 router.get('/__transmit/events', [EventStreamController]);
 router.post('/__transmit/subscribe', [SubscribeController]);
 router.post('/__transmit/unsubscribe', [UnsubscribeController]);
-
-transmit.authorize<{ token: string }>('test/:token', async (_ctx: HttpContext, { token }: { token: string }): Promise<boolean> => {
-    console.log(await transmitService.auth(token));
-    return await transmitService.auth(token);
-});

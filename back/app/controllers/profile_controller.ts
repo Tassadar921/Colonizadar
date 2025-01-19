@@ -12,7 +12,7 @@ import app from '@adonisjs/core/services/app';
 import { cuid } from '@adonisjs/core/helpers';
 import FileService from '#services/file_service';
 import SlugifyService from '#services/slugify_service';
-import {resetPasswordValidator, sendResetPasswordEmailValidator, updateProfileValidator} from "#validators/profile";
+import { resetPasswordValidator, sendResetPasswordEmailValidator, updateProfileValidator } from '#validators/profile';
 
 @inject()
 export default class ProfileController {
@@ -21,7 +21,7 @@ export default class ProfileController {
         private readonly resetPasswordRepository: ResetPasswordRepository,
         private readonly mailService: BrevoMailService,
         private readonly fileService: FileService,
-        private readonly slugifyService: SlugifyService,
+        private readonly slugifyService: SlugifyService
     ) {}
 
     public async getProfile({ response, user }: HttpContext): Promise<void> {

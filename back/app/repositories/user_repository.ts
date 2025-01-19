@@ -9,7 +9,7 @@ export default class UserRepository extends BaseRepository<typeof User> {
         super(User);
     }
 
-    public async search(query: string, page: number, perPage: number, user: User): Promise<PaginatedUsers> {
+    public async searchNotFriends(query: string, page: number, perPage: number, user: User): Promise<PaginatedUsers> {
         const users: ModelPaginatorContract<User> = await User.query()
             .select('users.*')
             .leftJoin('blocked_users', 'users.id', 'blocked_users.blocked_id')

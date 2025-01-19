@@ -1,7 +1,7 @@
 import { inject } from '@adonisjs/core';
 import { HttpContext } from '@adonisjs/core/http';
 import BlockedUserRepository from '#repositories/blocked_user_repository';
-import {getBlockedUsersValidator} from "#validators/blocked";
+import { getBlockedUsersValidator } from '#validators/blocked';
 
 @inject()
 export default class BlockedController {

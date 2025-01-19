@@ -26,22 +26,6 @@
             description: $t('profile.description'),
         },
     ];
-
-    const setup = async () => {
-        const subscription = $transmit.subscription('test');
-        await subscription.create();
-        subscription.onMessage((data) => {
-            console.log(data);
-        });
-    };
-
-    $: {
-        console.log('ici');
-        if ($transmit) {
-            console.log('là');
-            setup();
-        }
-    }
 </script>
 
 <Title title={$t('social.title')} />

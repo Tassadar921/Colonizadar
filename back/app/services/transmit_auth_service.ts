@@ -1,5 +1,5 @@
-import {AccessToken} from "@adonisjs/auth/access_tokens";
-import { transmitAccessTokenValidator} from "#validators/query_string";
+import { AccessToken } from '@adonisjs/auth/access_tokens';
+import { transmitAccessTokenValidator } from '#validators/query_string';
 
 export default class TransmitAuthService {
     public async auth(token: string): Promise<boolean> {
