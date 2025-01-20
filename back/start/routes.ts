@@ -51,15 +51,22 @@ router
                 router
                     .group((): void => {
                         router.get('/', [FriendController, 'search']);
-                        router.get('/pending', [PendingFriendController, 'search']);
                         router.get('/add', [UserController, 'searchNotFriends']);
                         router.post('/add', [PendingFriendController, 'add']);
+                        router
+                            .group((): void => {
+                                router.get('/', [PendingFriendController, 'search']);
+                                router.delete('/cancel/:userId', [PendingFriendController, 'cancel']);
+                            })
+                            .prefix('pending');
                     })
                     .prefix('friends');
 
                 router
                     .group((): void => {
                         router.get('/', [BlockedUserController, 'search']);
+                        router.get('/add/:userId', [BlockedUserController, 'block']);
+                        router.delete('/cancel/:userId', [BlockedUserController, 'cancel']);
                     })
                     .prefix('blocked');
 

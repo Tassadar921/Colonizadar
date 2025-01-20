@@ -55,6 +55,9 @@
         'Game',
         'Stop',
         'Bell',
+        'RemoveUser',
+        'AddUser',
+        'Unblock',
     ];
 
     const toCamelCase = (str) => {

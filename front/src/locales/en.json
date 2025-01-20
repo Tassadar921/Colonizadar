@@ -71,6 +71,27 @@
                 "success": "Profile updated",
                 "error": "An error occurred while updating your profile"
             }
+        },
+        "friends": {
+            "search": {
+                "error": "An error occurred while searching friends"
+            },
+            "add": {
+                "success": "Friend request sent",
+                "error": "An error occurred while asking user as friend",
+                "cancel": {
+                    "success": "Friend request cancelled",
+                    "error": "An error occurred while cancelling the friend request"
+                }
+            }
+        },
+        "blocked": {
+            "success": "User blocked",
+            "error": "An error occurred while blocking user"
+        },
+        "unblock": {
+            "success": "User unblocked",
+            "error": "An error occurred while unblocking user"
         }
     },
     "menu": {
@@ -145,6 +166,16 @@
             "search": {
                 "placeholder": "John123",
                 "label": "Blocked user's username"
+            },
+            "modal": {
+                "title": "Blocking user",
+                "text": "will be blocked"
+            }
+        },
+        "unblock": {
+            "modal": {
+                "title": "Unblocking user",
+                "text": "will be unblocked"
             }
         }
     },

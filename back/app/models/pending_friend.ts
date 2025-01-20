@@ -20,7 +20,9 @@ export default class PendingFriend extends BaseModel {
     @column()
     declare friendId: string;
 
-    @belongsTo((): typeof User => User)
+    @belongsTo((): typeof User => User, {
+        foreignKey: 'friendId',
+    })
     declare friend: BelongsTo<typeof User>;
 
     @column.dateTime({ autoCreate: true })

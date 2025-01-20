@@ -7,10 +7,12 @@
     import Pagination from '../shared/Pagination.svelte';
     import Breadcrumbs from '../shared/Breadcrumbs.svelte';
     import Modal from '../shared/Modal.svelte';
-    import PendingFriends from '../friend/PendingFriends.svelte';
+    import PendingFriends from '../friends/PendingFriends.svelte';
     import Subtitle from '../shared/Subtitle.svelte';
-    import AddFriends from "../friend/AddFriends.svelte";
-    import IconButton from "../shared/IconButton.svelte";
+    import AddFriends from '../friends/AddFriends.svelte';
+    import IconButton from '../shared/IconButton.svelte';
+    import Button from '../shared/Button.svelte';
+    import Icon from '../shared/Icon.svelte';
 
     let paginatedFriends = { friends: [] };
     let searchBaseUrl = '/api/friends';
@@ -30,11 +32,19 @@
     };
 </script>
 
-<Title title={$t('social.friends.title')} />
+<div class="flex gap-3 items-center">
+    <Title title={$t('social.friends.title')} />
+    <Button
+        ariaLabel="Add a friend"
+        customStyle={true}
+        className="rounded-full bg-green-700 hover:bg-green-600 transition-colors duration-300 p-1 mb-1.5"
+        on:click={() => (showAddFriendsModal = true)}
+    >
+        <Icon name="plus" />
+    </Button>
+</div>
 
 <Breadcrumbs items={[{ label: $t('home.title'), path: '/' }, { label: $t('social.title'), path: '/social' }, { label: $t('social.friends.title') }]} />
-
-<IconButton icon="plus" on:click={() => showAddFriendsModal = true } />
 
 <Search
     selected={true}
@@ -42,7 +52,6 @@
     placeholder={$t('social.friends.search.placeholder')}
     label={$t('social.friends.search.label')}
     name="search-friend"
-    minChars={3}
     bind:search={query}
     on:search={handleSearch}
 />

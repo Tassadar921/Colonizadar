@@ -33,15 +33,25 @@ export default class PendingFriendRepository extends BaseRepository<typeof Pendi
         };
     }
 
-    public async findOneFromUsers(userId: string, user: User): Promise<PendingFriend | null> {
+    public async findOneFromUsers(from: User, askingTo: User): Promise<PendingFriend | null> {
         return PendingFriend.query()
             .where((query): void => {
-                query.where('userId', userId).andWhere('friendId', user.id);
+                query.where('userId', askingTo.id).andWhere('friendId', from.id);
             })
             .orWhere((query): void => {
-                query.where('userId', user.id).andWhere('friendId', userId);
+                query.where('userId', from.id).andWhere('friendId', askingTo.id);
             })
             .preload('friend')
             .first();
+    }
+
+    public async findFromUsers(from: User, askingTo: User): Promise<PendingFriend[]> {
+        return PendingFriend.query()
+            .where((query): void => {
+                query.where('userId', askingTo.id).andWhere('friendId', from.id);
+            })
+            .orWhere((query): void => {
+                query.where('userId', from.id).andWhere('friendId', askingTo.id);
+            });
     }
 }

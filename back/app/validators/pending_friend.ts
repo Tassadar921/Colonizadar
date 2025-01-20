@@ -10,6 +10,6 @@ export const getPendingFriendsValidator = vine.compile(
 
 export const addPendingFriendsValidator = vine.compile(
     vine.object({
-        userId: vine.string().trim().uuid(),
+        userId: vine.number().positive(),
     })
 );

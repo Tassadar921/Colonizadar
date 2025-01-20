@@ -71,6 +71,27 @@
                 "success": "Profil mis à jour",
                 "error": "Une erreur est survenue lors de la mise à jour du profil"
             }
+        },
+        "friends": {
+            "search": {
+                "error": "Une erreur est survenue lors de la recherche d'amis"
+            },
+            "add": {
+                "success": "Demande d'ami envoyée",
+                "error": "Une erreur est survenue lors de la demande en ami",
+                "cancel": {
+                    "success": "Demande d'ami annulée",
+                    "error": "Une erreur est survenue lors de l'annulation de la demande d'ami"
+                }
+            }
+        },
+        "blocked": {
+            "success": "Utilisateur bloqué",
+            "error": "Une erreur est survenue lors du blocage de l'utilisateur"
+        },
+        "unblock": {
+            "success": "Utilisateur débloqué",
+            "error": "Une erreur est survenue lors du déblocage de l'utilisateur"
         }
     },
     "menu": {
@@ -145,6 +166,16 @@
             "search": {
                 "placeholder": "Jean123",
                 "label": "Pseudonyme de l'utilisateur bloqué"
+            },
+            "modal": {
+                "title": "Bloquer l'utilisateur",
+                "text": "sera bloqué"
+            }
+        },
+        "unblock": {
+            "modal": {
+                "title": "Débloquer l'utilisateur",
+                "text": "sera débloqué"
             }
         }
     },

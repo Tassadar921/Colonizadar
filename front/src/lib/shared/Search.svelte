@@ -7,7 +7,7 @@
     export let search = '';
     export let placeholder = null;
     export let debounce = 300;
-    export let minChars = 3;
+    export let minChars = null;
     export let name = '';
     export let disabled = false;
     export let label = '';
@@ -19,7 +19,7 @@
     let focused = false;
 
     const searchFunction = async () => {
-        if (search.length < minChars) {
+        if (minChars && search.length < minChars) {
             results = [];
             return;
         }

@@ -4,14 +4,14 @@ import { addPendingFriendsValidator, getPendingFriendsValidator } from '#validat
 import PendingFriendRepository from '#repositories/pending_friend_repository';
 import PendingFriend from '#models/pending_friend';
 import transmit from '@adonisjs/transmit/services/main';
-import UserRepository from "#repositories/user_repository";
-import User from "#models/user";
+import UserRepository from '#repositories/user_repository';
+import User from '#models/user';
 
 @inject()
 export default class PendingFriendController {
     constructor(
         private readonly pendingFriendRepository: PendingFriendRepository,
-        private readonly userRepository: UserRepository,
+        private readonly userRepository: UserRepository
     ) {}
 
     public async search({ request, response, user }: HttpContext): Promise<void> {
@@ -29,18 +29,40 @@ export default class PendingFriendController {
             return response.notFound({ error: 'User not found' });
         }
 
-        let pendingFriend: PendingFriend | null = await this.pendingFriendRepository.findOneFromUsers(userId, user);
+        let pendingFriend: PendingFriend | null = await this.pendingFriendRepository.findOneFromUsers(user, askingToUser);
         if (!pendingFriend) {
             pendingFriend = await PendingFriend.create({
                 userId: user.id,
-                friendId: userId,
+                friendId: askingToUser.id,
             });
+            await pendingFriend.load('friend');
             await pendingFriend.refresh();
         }
 
-        transmit.broadcast(`friend-request/${userId}`, { message: 'friend request' });
+        transmit.broadcast(`friend-request/${userId}`, { message: 'friends request' });
         transmit.broadcast(`notification/${userId}`, { message: 'notification' });
 
         return response.send({ pendingFriend: pendingFriend.apiSerialize() });
+    }
+
+    public async cancel({ request, response, user }: HttpContext): Promise<void> {
+        const { userId } = request.params();
+
+        const askingToUser: User | null = await this.userRepository.findOneBy({ frontId: Number(userId) });
+        if (!askingToUser) {
+            return response.notFound({ error: 'User not found' });
+        }
+
+        let pendingFriend: PendingFriend | null = await this.pendingFriendRepository.findOneFromUsers(user, askingToUser);
+        if (!pendingFriend) {
+            return response.notFound({ error: 'This pending friends request does not exist' });
+        }
+
+        if (pendingFriend.userId === user.id || pendingFriend.friendId === user.id) {
+            await pendingFriend.delete();
+            return response.send({ message: 'Request deleted' });
+        }
+
+        return response.forbidden({ error: 'You are not related to this request' });
     }
 }

@@ -32,4 +32,14 @@ export default class BlockedUserRepository extends BaseRepository<typeof Blocked
             currentPage: page,
         };
     }
+
+    public async findFromUsers(user: User, otherUser: User): Promise<BlockedUser[]> {
+        return BlockedUser.query()
+            .where((query): void => {
+                query.where('blockerId', user.id).andWhere('blockedId', otherUser.id);
+            })
+            .orWhere((query): void => {
+                query.where('blockerId', otherUser.id).andWhere('blockedId', user.id);
+            });
+    }
 }
