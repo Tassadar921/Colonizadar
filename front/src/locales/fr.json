@@ -182,6 +182,13 @@
             }
         }
     },
+    "notifications": {
+        "title": "Notifications",
+        "friend-requests": {
+            "title": "Demandes d'ami",
+            "none": "Pas de demande d'ami en attente"
+        }
+    },
     "play": {
         "title": "Jouer",
         "description": "Jouez seul ou avec vos amis"

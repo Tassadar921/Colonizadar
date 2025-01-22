@@ -2,67 +2,34 @@
     import Title from '../shared/Title.svelte';
     import { t } from 'svelte-i18n';
     import Breadcrumbs from '../shared/Breadcrumbs.svelte';
-    import Button from '../shared/Button.svelte';
-    import Pagination from '../shared/Pagination.svelte';
-    import Icon from '../shared/Icon.svelte';
-    import { onMount } from 'svelte';
-    import axios from 'axios';
+    import {notifications, setPendingFriendRequests} from '../../stores/notificationStore.js';
+    import NotificationModule from "../notifications/NotificationModule.svelte";
 
-    let paginatedPendingFriendNotifications = { notifications: [] };
-    let pendingFriendSearchBaseUrl = '/api/notifications/pending-friends';
-    let selectedNotification = { message: '' };
-    let showModal = false;
+    const handleAcceptPendingRequest = async (event) => {
+        console.log(event.detail);
+        if ($notifications.friendRequests.length <= 3) {
+            await setPendingFriendRequests();
+        }
+    };
 
-    onMount(async () => {
-        const { data } = await axios.get(pendingFriendSearchBaseUrl);
-        paginatedPendingFriendNotifications = data.notifications;
-    });
-
-    const handleAccept = async () => {};
-
-    const handleRefuse = async () => {};
+    const handleRefusePendingRequest = async (event) => {
+        console.log(event.detail);
+        if ($notifications.friendRequests.length <= 3) {
+            await setPendingFriendRequests();
+        }
+    };
 </script>
 
 <Title title={$t('notifications.title')} />
 
 <Breadcrumbs hasBackground={true} items={[{ label: $t('home.title'), path: '/' }, { label: $t('notifications.title') }]} />
 
-<div class="flex flex-row flex-wrap gap-5 justify-center my-5">
-    {#if paginatedPendingFriendNotifications.notifications.length}
-        <div class="flex flex-col gap-1 w-full">
-            {#each paginatedPendingFriendNotifications.notifications as notificationObject}
-                <div class="flex justify-between items-center h-12 border border-gray-800 px-3">
-                    <div class="flex gap-5 flex-wrap items-center">
-                        <p>{notificationObject.from.username}</p>
-                    </div>
-                    <div class="flex gap-5">
-                        <Button
-                            ariaLabel="Accept as friend"
-                            customStyle={true}
-                            className="transition-colors duration-300 text-green-600 hover:text-green-500"
-                            on:click={() => handleAccept(notificationObject)}
-                        >
-                            <Icon name="confirm" />
-                        </Button>
-                        <Button
-                            ariaLabel="Refuse friend request"
-                            customStyle={true}
-                            className="transition-colors duration-300 text-red-600 hover:text-red-500"
-                            on:click={() => handleRefuse(notificationObject)}
-                        >
-                            <Icon name="close" />
-                        </Button>
-                    </div>
-                </div>
-            {/each}
-        </div>
-    {:else}
-        <p class="my-5">{$t('social.blocked.none')}</p>
-    {/if}
+<div class="grid grid-cols-1 md:grid-cols-2">
+    <NotificationModule
+        bind:notifications={$notifications.friendRequests}
+        title={$t('notifications.friend-requests.title')}
+        noneMessage={$t('notifications.friend-requests.none')}
+        on:accept={handleAcceptPendingRequest}
+        on:refuse={handleRefusePendingRequest}
+    />
 </div>
-<Pagination bind:paginatedObject={paginatedPendingFriendNotifications} bind:baseUrl={pendingFriendSearchBaseUrl} />
-
-<!--<ConfirmModal bind:showModal on:success={handleUnblockUser}>-->
-<!--    <Subtitle slot="header">{$t('social.unblock.modal.title')}</Subtitle>-->
-<!--    <p>{selectedNotification.username} {$t('social.unblock.modal.text')}</p>-->
-<!--</ConfirmModal>-->

@@ -56,4 +56,27 @@ export default class FriendsController {
 
         return response.forbidden({ error: 'You have no pending request from this user' });
     }
+
+    public async refuse({ request, response, user }: HttpContext): Promise<void> {
+        const { userId } = request.params();
+
+        const askingToUser: User | null = await this.userRepository.findOneBy({ frontId: Number(userId) });
+        if (!askingToUser) {
+            return response.notFound({ error: 'User not found' });
+        }
+
+        let pendingFriend: PendingFriend | null = await this.pendingFriendRepository.findOneFromUsers(user, askingToUser);
+        if (!pendingFriend) {
+            return response.notFound({ error: 'This pending friends request does not exist' });
+        }
+
+        if (pendingFriend.userId === user.id || pendingFriend.friendId === user.id) {
+            transmit.broadcast(`notification/add-friend/refuse/${userId}`);
+            await pendingFriend.notification.delete();
+            await pendingFriend.delete();
+            return response.send({ message: 'Friend request refused' });
+        }
+
+        return response.forbidden({ error: 'You have no pending request from this user' });
+    }
 }

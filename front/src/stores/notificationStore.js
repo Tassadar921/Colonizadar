@@ -1,7 +1,9 @@
 import { writable } from 'svelte/store';
 import axios from 'axios';
 
-export const notifications = writable({});
+export const notifications = writable({
+    friendRequests: [],
+});
 
 export function updateNotifications(data, type) {
     notifications.update((current) => {
@@ -38,5 +40,5 @@ export function removeNotification(notification, type) {
 
 export async function setPendingFriendRequests() {
     const { data } = await axios.get('/api/notifications/pending-friends?perPage=99');
-    updateNotifications(data.notifications, 'friend-request');
+    updateNotifications(data.notifications.notifications, 'friendRequests');
 }

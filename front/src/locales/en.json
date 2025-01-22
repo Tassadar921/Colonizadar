@@ -182,6 +182,13 @@
             }
         }
     },
+    "notifications": {
+        "title": "Notifications",
+        "friend-requests": {
+            "title": "Friend requests",
+            "none": "No pending friend request"
+        }
+    },
     "play": {
         "title": "Play",
         "description": "Play alone or with your friends"

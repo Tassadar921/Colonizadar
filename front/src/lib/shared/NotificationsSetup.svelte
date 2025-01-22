@@ -11,21 +11,24 @@
         transmit.set(new Transmit({ baseUrl: process.env.VITE_API_BASE_URL }));
     });
 
-    const setup = async () => {
+    const setupPendingFriendRequests = async () => {
         const addFriendNotification = $transmit.subscription(`notification/add-friend/${$profile.id}`);
         await addFriendNotification.create();
         addFriendNotification.onMessage((data) => {
-            addNotification(data.notificationObject, 'friend-request');
+            addNotification(data.notificationObject.notification, 'friendRequests');
             showToast(`${$t('toast.notification.friend-request')} ${data.notificationObject.notification.from.username}`, 'warning', '/notifications');
         });
         const cancelAddFriendNotification = $transmit.subscription(`notification/add-friend/cancel/${$profile.id}`);
         await cancelAddFriendNotification.create();
         cancelAddFriendNotification.onMessage((data) => {
-            removeNotification(data.notificationObject, 'friend-request');
+            removeNotification(data.notificationObject.notification, 'friendRequests');
         });
 
         await setPendingFriendRequests();
-        console.log($notifications);
+    }
+
+    const setup = async () => {
+        await setupPendingFriendRequests();
     };
 
     $: {
