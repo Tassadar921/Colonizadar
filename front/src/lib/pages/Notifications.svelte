@@ -4,6 +4,9 @@
     import Breadcrumbs from '../shared/Breadcrumbs.svelte';
     import {notifications, setPendingFriendRequests} from '../../stores/notificationStore.js';
     import NotificationModule from "../notifications/NotificationModule.svelte";
+    import Loader from "../shared/Loader.svelte";
+
+    let loading = false;
 
     const handleAcceptPendingRequest = async (event) => {
         console.log(event.detail);
@@ -19,6 +22,8 @@
         }
     };
 </script>
+
+<Loader bind:loading />
 
 <Title title={$t('notifications.title')} />
 

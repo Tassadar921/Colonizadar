@@ -23,7 +23,7 @@
     import { showToast } from './services/toastService.js';
     import Social from './lib/pages/Social.svelte';
     import Friends from './lib/pages/Friends.svelte';
-    import Blocked from './lib/pages/Blocked.svelte';
+    import Blocked from "./lib/pages/Blocked.svelte";
     import NotificationsSetup from './lib/shared/NotificationsSetup.svelte';
 
     const supportedLanguages = ['en', 'fr'];
@@ -92,30 +92,30 @@
                 <Route path="/:language/reset-password/confirm/:token" let:params><ConfirmResetPassword {...params} /></Route>
 
                 {#if $profile}
-                    <Route path="/:language" component={Homepage} />
-                    <Route path="/:language/login" component={AlreadyConnected} />
+                    <Route path="/:language"><Homepage /></Route>
+                    <Route path="/:language/login"><AlreadyConnected /></Route>
 
-                    <Route path="/:language/social" component={Social} />
-                    <Route path="/:language/social/friends" component={Friends} />
-                    <Route path="/:language/social/blocked" component={Blocked} />
+                    <Route path="/:language/social"><Social /></Route>
+                    <Route path="/:language/social/friends"><Friends /></Route>
+                    <Route path="/:language/social/blocked"><Blocked /></Route>
 
-                    <Route path="/:language/profile" component={Profile} />
-                    <Route path="/:language/notifications" component={Notifications} />
-                    <Route path="/:language/logout" component={Logout} />
+                    <Route path="/:language/profile"><Profile /></Route>
+                    <Route path="/:language/notifications" ><Notifications /></Route>
+                    <Route path="/:language/logout"><Logout /></Route>
                 {:else}
-                    <Route path="/:language/" component={Login} />
-                    <Route path="/:language/login" component={Login} />
+                    <Route path="/:language/"><Login /></Route>
+                    <Route path="/:language/login"><Login /></Route>
 
-                    <Route path="/:language/social" component={Forbidden} />
-                    <Route path="/:language/social/friends" component={Forbidden} />
-                    <Route path="/:language/social/blocked" component={Forbidden} />
+                    <Route path="/:language/social"><Forbidden /></Route>
+                    <Route path="/:language/social/friends"><Forbidden /></Route>
+                    <Route path="/:language/social/blocked"><Forbidden /></Route>
 
-                    <Route path="/:language/profile" component={Forbidden} />
-                    <Route path="/:language/notifications" component={Forbidden} />
-                    <Route path="/:language/logout" component={Forbidden} />
+                    <Route path="/:language/profile"><Forbidden /></Route>
+                    <Route path="/:language/notifications"><Forbidden /></Route>
+                    <Route path="/:language/logout"><Forbidden /></Route>
                 {/if}
 
-                <Route path="*" component={NotFound} />
+                <Route path="*"><NotFound /></Route>
             </Router>
         {:else}
             <Loader loading={true} />
