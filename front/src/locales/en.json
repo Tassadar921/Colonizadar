@@ -92,6 +92,9 @@
         "unblock": {
             "success": "User unblocked",
             "error": "An error occurred while unblocking user"
+        },
+        "notification": {
+            "friend-request": "You received a friend request from"
         }
     },
     "menu": {

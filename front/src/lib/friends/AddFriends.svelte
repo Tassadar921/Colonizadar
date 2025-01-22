@@ -4,12 +4,9 @@
     import axios from 'axios';
     import Pagination from '../shared/Pagination.svelte';
     import { showToast } from '../../services/toastService.js';
-    import { transmit } from '../../stores/TransmitStore.js';
-    import { profile } from '../../stores/profileStore.js';
     import Search from '../shared/Search.svelte';
     import Icon from '../shared/Icon.svelte';
     import Button from '../shared/Button.svelte';
-    import Modal from '../shared/Modal.svelte';
     import ConfirmModal from '../shared/ConfirmModal.svelte';
     import Subtitle from '../shared/Subtitle.svelte';
 
@@ -22,12 +19,6 @@
     onMount(async () => {
         const { data } = await axios.get(searchBaseUrl);
         paginatedUsers = data.users;
-
-        const friendRequest = $transmit.subscription(`friend-request/${$profile.id}`);
-        await friendRequest.create();
-        friendRequest.onMessage((request) => {
-            showToast(request.message, 'warning');
-        });
     });
 
     const handleSearch = async () => {

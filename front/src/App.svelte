@@ -15,6 +15,7 @@
     import Footer from './lib/shared/Footer.svelte';
     import Loader from './lib/shared/Loader.svelte';
     import AlreadyConnected from './lib/pages/AlreadyConnected.svelte';
+    import Notifications from './lib/pages/Notifications.svelte';
     import Menu from './lib/menu/Menu.svelte';
     import { setLanguage } from './stores/languageStore.js';
     import { location, navigate } from './stores/locationStore.js';
@@ -23,8 +24,7 @@
     import Social from './lib/pages/Social.svelte';
     import Friends from './lib/pages/Friends.svelte';
     import Blocked from './lib/pages/Blocked.svelte';
-    import { transmit } from './stores/TransmitStore.js';
-    import { Transmit } from '@adonisjs/transmit-client';
+    import NotificationsSetup from "./lib/shared/NotificationsSetup.svelte";
 
     const supportedLanguages = ['en', 'fr'];
 
@@ -78,15 +78,10 @@
             await logInformations(token);
             await updateProfile();
         }
-
-        transmit.set(new Transmit({ baseUrl: process.env.VITE_API_BASE_URL }));
-        const notification = $transmit.subscription(`notification/${$profile.id}`);
-        await notification.create();
-        notification.onMessage((data) => {
-            showToast(data.message, 'warning');
-        });
     });
 </script>
+
+<NotificationsSetup />
 
 <main class="flex flex-col bg-gray-200 dark:bg-gray-900 min-h-screen min-w-screen">
     <div class="px-3.5 min-h-screen">
@@ -105,6 +100,7 @@
                     <Route path="/:language/social/blocked" component={Blocked} />
 
                     <Route path="/:language/profile" component={Profile} />
+                    <Route path="/:language/notifications" component={Notifications} />
                     <Route path="/:language/logout" component={Logout} />
                 {:else}
                     <Route path="/:language/" component={Login} />
@@ -115,6 +111,7 @@
                     <Route path="/:language/social/blocked" component={Forbidden} />
 
                     <Route path="/:language/profile" component={Forbidden} />
+                    <Route path="/:language/notifications" component={Forbidden} />
                     <Route path="/:language/logout" component={Forbidden} />
                 {/if}
 

@@ -17,6 +17,9 @@ export default class PendingFriendRepository extends BaseRepository<typeof Pendi
                 queryBuilder.leftJoin('users', 'pending_friends.friend_id', 'users.id').where('users.username', 'ILIKE', `%${query}%`);
             })
             .preload('friend')
+            .preload('notification', (notificationQuery) => {
+                notificationQuery.preload('from')
+            })
             .paginate(page, perPage);
 
         return {
@@ -41,7 +44,7 @@ export default class PendingFriendRepository extends BaseRepository<typeof Pendi
             .orWhere((query): void => {
                 query.where('userId', from.id).andWhere('friendId', askingTo.id);
             })
-            .preload('friend')
+            .preload('notification')
             .first();
     }
 

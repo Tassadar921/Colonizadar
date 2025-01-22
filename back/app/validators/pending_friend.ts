@@ -8,7 +8,7 @@ export const getPendingFriendsValidator = vine.compile(
     })
 );
 
-export const addPendingFriendsValidator = vine.compile(
+export const addPendingFriendValidator = vine.compile(
     vine.object({
         userId: vine.number().positive(),
     })

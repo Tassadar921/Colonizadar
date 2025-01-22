@@ -3,8 +3,6 @@
     import { onMount } from 'svelte';
     import axios from 'axios';
     import Pagination from '../shared/Pagination.svelte';
-    import { showToast } from '../../services/toastService.js';
-    import { transmit } from '../../stores/TransmitStore.js';
 
     let paginatedPendingFriends = { pendingFriends: [] };
     let searchBaseUrl = '/api/friends/pending';
@@ -12,12 +10,6 @@
     onMount(async () => {
         const { data } = await axios.get(searchBaseUrl);
         paginatedPendingFriends = data.pendingFriends;
-
-        const friendRequest = $transmit.subscription(`friend-request/${localStorage.getItem('apiToken')}`);
-        await friendRequest.create();
-        friendRequest.onMessage((request) => {
-            showToast(request.message, 'warning');
-        });
     });
 </script>
 

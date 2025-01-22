@@ -1,6 +1,6 @@
 import vine from '@vinejs/vine';
 
-export const getNotificationsValidator = vine.compile(
+export const getPendingFriendNotificationsValidator = vine.compile(
     vine.object({
         page: vine.number().positive().optional(),
         perPage: vine.number().positive().optional(),

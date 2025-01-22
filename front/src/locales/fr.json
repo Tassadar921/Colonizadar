@@ -92,6 +92,9 @@
         "unblock": {
             "success": "Utilisateur débloqué",
             "error": "Une erreur est survenue lors du déblocage de l'utilisateur"
+        },
+        "notification": {
+            "friend-request": "Vous avez reçu une demande d'ami de"
         }
     },
     "menu": {

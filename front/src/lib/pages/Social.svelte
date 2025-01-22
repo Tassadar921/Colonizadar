@@ -3,8 +3,6 @@
     import { t } from 'svelte-i18n';
     import Title from '../shared/Title.svelte';
     import Breadcrumbs from '../shared/Breadcrumbs.svelte';
-    import { transmit } from '../../stores/TransmitStore.js';
-    import { onMount } from 'svelte';
 
     $: pages = [
         {

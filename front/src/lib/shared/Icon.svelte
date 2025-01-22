@@ -29,9 +29,6 @@
         'Upload',
         'Search',
         'Pen',
-        'Lego',
-        'List',
-        'Grid',
         'Plus',
         'Minus',
         'Save',
@@ -44,13 +41,11 @@
         'Clear',
         'ArrowLeft',
         'ArrowRight',
-        'Gavel',
         'OpenSource',
         'ChevronDown',
         'ChevronUp',
         'EnglishFlag',
         'FrenchFlag',
-        'Mastercard',
         'People',
         'Game',
         'Stop',
@@ -58,6 +53,7 @@
         'RemoveUser',
         'AddUser',
         'Unblock',
+        'Confirm',
     ];
 
     const toCamelCase = (str) => {
