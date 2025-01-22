@@ -1,9 +1,9 @@
 import { DateTime } from 'luxon';
-import {BaseModel, belongsTo, column, hasOne} from '@adonisjs/lucid/orm';
+import { BaseModel, belongsTo, column, hasOne } from '@adonisjs/lucid/orm';
 import User from '#models/user';
-import type {BelongsTo, HasOne} from '@adonisjs/lucid/types/relations';
+import type { BelongsTo, HasOne } from '@adonisjs/lucid/types/relations';
 import SerializedPendingFriend from '#types/serialized/serialized_pending_friend';
-import PendingFriendNotification from "#models/pending_friend_notification";
+import PendingFriendNotification from '#models/pending_friend_notification';
 
 export default class PendingFriend extends BaseModel {
     @column({ isPrimary: true })

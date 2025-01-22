@@ -6,13 +6,13 @@ import PendingFriend from '#models/pending_friend';
 import transmit from '@adonisjs/transmit/services/main';
 import UserRepository from '#repositories/user_repository';
 import User from '#models/user';
-import PendingFriendNotification from "#models/pending_friend_notification";
+import PendingFriendNotification from '#models/pending_friend_notification';
 
 @inject()
 export default class PendingFriendController {
     constructor(
         private readonly pendingFriendRepository: PendingFriendRepository,
-        private readonly userRepository: UserRepository,
+        private readonly userRepository: UserRepository
     ) {}
 
     public async search({ request, response, user }: HttpContext): Promise<void> {
@@ -48,7 +48,7 @@ export default class PendingFriendController {
 
             await pendingFriend.load('friend');
             await pendingFriend.load('notification', (notificationQuery): void => {
-                notificationQuery.preload('from')
+                notificationQuery.preload('from');
             });
 
             transmit.broadcast(`notification/add-friend/${userId}`, { notificationObject: pendingFriend.apiSerialize() });
@@ -73,7 +73,7 @@ export default class PendingFriendController {
         if (pendingFriend.userId === user.id || pendingFriend.friendId === user.id) {
             await pendingFriend.load('friend');
             await pendingFriend.load('notification', (notificationQuery): void => {
-                notificationQuery.preload('from')
+                notificationQuery.preload('from');
             });
             transmit.broadcast(`notification/add-friend/cancel/${userId}`, { notificationObject: pendingFriend.apiSerialize() });
             await pendingFriend.notification.delete();

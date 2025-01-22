@@ -3,7 +3,7 @@ import User from '#models/user';
 import { ModelPaginatorContract } from '@adonisjs/lucid/types/model';
 import PaginatedNotifications from '#types/paginated/paginated_pending_friend_notifications';
 import SerializedPendingFriendNotification from '#types/serialized/serialized_pending_friend_notification';
-import PendingFriendNotification from "#models/pending_friend_notification";
+import PendingFriendNotification from '#models/pending_friend_notification';
 
 export default class PendingFriendNotificationRepository extends BaseRepository<typeof PendingFriendNotification> {
     constructor() {
@@ -11,10 +11,7 @@ export default class PendingFriendNotificationRepository extends BaseRepository<
     }
 
     public async getCount(user: User): Promise<number> {
-        const countResult: PendingFriendNotification[] = await PendingFriendNotification
-            .query()
-            .where('for_id', user.id)
-            .count('* as total');
+        const countResult: PendingFriendNotification[] = await PendingFriendNotification.query().where('for_id', user.id).count('* as total');
         return countResult[0].$extras.total;
     }
 

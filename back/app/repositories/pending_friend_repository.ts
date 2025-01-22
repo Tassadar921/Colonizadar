@@ -18,7 +18,7 @@ export default class PendingFriendRepository extends BaseRepository<typeof Pendi
             })
             .preload('friend')
             .preload('notification', (notificationQuery) => {
-                notificationQuery.preload('from')
+                notificationQuery.preload('from');
             })
             .paginate(page, perPage);
 

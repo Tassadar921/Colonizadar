@@ -1,7 +1,7 @@
 import { inject } from '@adonisjs/core';
 import { HttpContext } from '@adonisjs/core/http';
 import { getPendingFriendNotificationsValidator } from '#validators/notification';
-import PendingFriendNotificationRepository from "#repositories/pending_friend_notification_repository";
+import PendingFriendNotificationRepository from '#repositories/pending_friend_notification_repository';
 
 @inject()
 export default class NotificationController {

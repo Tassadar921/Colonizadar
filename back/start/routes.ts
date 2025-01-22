@@ -70,9 +70,10 @@ router
                     })
                     .prefix('blocked');
 
-                router.group((): void => {
-                    router.get('/pending-friends', [NotificationController, 'getPendingFriends']);
-                })
+                router
+                    .group((): void => {
+                        router.get('/pending-friends', [NotificationController, 'getPendingFriends']);
+                    })
                     .prefix('notifications');
             })
             .use([middleware.auth({ guards: ['api'] })]);

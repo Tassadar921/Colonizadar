@@ -2,19 +2,19 @@ import { inject } from '@adonisjs/core';
 import FriendRepository from '#repositories/friend_repository';
 import { HttpContext } from '@adonisjs/core/http';
 import { getFriendsValidator } from '#validators/friend';
-import User from "#models/user";
-import PendingFriend from "#models/pending_friend";
-import transmit from "@adonisjs/transmit/services/main";
-import UserRepository from "#repositories/user_repository";
-import PendingFriendRepository from "#repositories/pending_friend_repository";
-import Friend from "#models/friend";
+import User from '#models/user';
+import PendingFriend from '#models/pending_friend';
+import transmit from '@adonisjs/transmit/services/main';
+import UserRepository from '#repositories/user_repository';
+import PendingFriendRepository from '#repositories/pending_friend_repository';
+import Friend from '#models/friend';
 
 @inject()
 export default class FriendsController {
     constructor(
         private readonly friendRepository: FriendRepository,
         private readonly userRepository: UserRepository,
-        private readonly pendingFriendRepository: PendingFriendRepository,
+        private readonly pendingFriendRepository: PendingFriendRepository
     ) {}
 
     public async search({ request, response, user }: HttpContext): Promise<void> {
@@ -43,10 +43,11 @@ export default class FriendsController {
                 {
                     userId: pendingFriend.userId,
                     friendId: pendingFriend.friendId,
-                }, {
+                },
+                {
                     userId: pendingFriend.friendId,
                     friendId: pendingFriend.userId,
-                }
+                },
             ]);
             await pendingFriend.notification.delete();
             await pendingFriend.delete();

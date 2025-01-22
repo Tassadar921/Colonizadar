@@ -2,11 +2,11 @@
     import Title from '../shared/Title.svelte';
     import { t } from 'svelte-i18n';
     import Breadcrumbs from '../shared/Breadcrumbs.svelte';
-    import Button from "../shared/Button.svelte";
-    import Pagination from "../shared/Pagination.svelte";
-    import Icon from "../shared/Icon.svelte";
-    import {onMount} from "svelte";
-    import axios from "axios";
+    import Button from '../shared/Button.svelte';
+    import Pagination from '../shared/Pagination.svelte';
+    import Icon from '../shared/Icon.svelte';
+    import { onMount } from 'svelte';
+    import axios from 'axios';
 
     let paginatedPendingFriendNotifications = { notifications: [] };
     let pendingFriendSearchBaseUrl = '/api/notifications/pending-friends';
@@ -18,13 +18,9 @@
         paginatedPendingFriendNotifications = data.notifications;
     });
 
-    const handleAccept = async () => {
+    const handleAccept = async () => {};
 
-    };
-
-    const handleRefuse = async () => {
-
-    };
+    const handleRefuse = async () => {};
 </script>
 
 <Title title={$t('notifications.title')} />
