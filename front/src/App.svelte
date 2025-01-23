@@ -23,7 +23,7 @@
     import { showToast } from './services/toastService.js';
     import Social from './lib/pages/Social.svelte';
     import Friends from './lib/pages/Friends.svelte';
-    import Blocked from "./lib/pages/Blocked.svelte";
+    import Blocked from './lib/pages/Blocked.svelte';
     import NotificationsSetup from './lib/notifications/NotificationsSetup.svelte';
 
     const supportedLanguages = ['en', 'fr'];
@@ -100,7 +100,7 @@
                     <Route path="/:language/social/blocked"><Blocked /></Route>
 
                     <Route path="/:language/profile"><Profile /></Route>
-                    <Route path="/:language/notifications" ><Notifications /></Route>
+                    <Route path="/:language/notifications"><Notifications /></Route>
                     <Route path="/:language/logout"><Logout /></Route>
                 {:else}
                     <Route path="/:language/"><Login /></Route>

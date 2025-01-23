@@ -9,24 +9,31 @@
     import Button from '../shared/Button.svelte';
     import ConfirmModal from '../shared/ConfirmModal.svelte';
     import Subtitle from '../shared/Subtitle.svelte';
-    import {transmit} from "../../stores/transmitStore.js";
-    import {Transmit} from "@adonisjs/transmit-client";
+    import { transmit } from '../../stores/transmitStore.js';
+    import { Transmit } from '@adonisjs/transmit-client';
     import { profile } from '../../stores/profileStore.js';
+    import { createEventDispatcher } from 'svelte';
+
+    const dispatch = createEventDispatcher();
 
     let paginatedUsers = { users: [] };
-    let searchBaseUrl = '/api/friends/add';
+    let searchBaseUrl = '/api/friends/add?';
     let query = '';
     let showModal = false;
     let blockingUser = { username: '' };
 
     onMount(async () => {
         transmit.set(new Transmit({ baseUrl: process.env.VITE_API_BASE_URL }));
-        const { data } = await axios.get(searchBaseUrl);
-        paginatedUsers = data.users;
+        await updateAddFriends();
     });
 
+    const updateAddFriends = async () => {
+        const { data } = await axios.get(searchBaseUrl);
+        paginatedUsers = data.users;
+    };
+
     const handleSearch = async () => {
-        searchBaseUrl = `/api/friends/add?query=${query}`;
+        searchBaseUrl = `/api/friends/add?${query ? `query=${query}` : ''}`;
         const response = await axios.get(searchBaseUrl);
         if (response.status === 200) {
             paginatedUsers = response.data.users;
@@ -84,9 +91,9 @@
     const setupEvents = async () => {
         const acceptFriendRequest = $transmit.subscription(`notification/add-friend/accept/${$profile.id}`);
         await acceptFriendRequest.create();
-        acceptFriendRequest.onMessage((user) => {
-            // showToast(`${user.username} ${}`)
-            updateUser(user.id, { friendRequested: false });
+        acceptFriendRequest.onMessage(async () => {
+            await updateAddFriends();
+            dispatch('update');
         });
 
         const refuseFriendRequest = $transmit.subscription(`notification/add-friend/refuse/${$profile.id}`);
@@ -118,7 +125,7 @@
     {#if paginatedUsers.users.length}
         <div class="flex flex-col gap-1 w-full">
             {#each paginatedUsers.users as user}
-                <div class="flex justify-between items-center h-12 border border-gray-800 px-3">
+                <div class="flex justify-between items-center h-12 border border-gray-300 dark:border-gray-800 rounded-xl hover:bg-gray-300 dark:hover:bg-gray-800 transition-colors duration-300 px-3">
                     <div class="flex gap-5 flex-wrap items-center">
                         {#if user.profilePicture}
                             <img

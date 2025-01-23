@@ -9,6 +9,7 @@ import PendingFriendRepository from '#repositories/pending_friend_repository';
 import Friend from '#models/friend';
 import FriendRepository from '#repositories/friend_repository';
 import BlockedUser from '#models/blocked_user';
+import transmit from '@adonisjs/transmit/services/main';
 
 @inject()
 export default class BlockedController {
@@ -40,7 +41,10 @@ export default class BlockedController {
         }
 
         const pendingFriends: PendingFriend[] = await this.pendingFriendRepository.findFromUsers(user, blockingUser);
-        pendingFriends.map(async (pendingFriend: PendingFriend): Promise<void> => await pendingFriend.delete());
+        pendingFriends.map(async (pendingFriend: PendingFriend): Promise<void> => {
+            transmit.broadcast(`notification/add-friend/cancel/${userId}`, { notificationObject: pendingFriend.apiSerialize() });
+            await pendingFriend.delete();
+        });
 
         const friends: Friend[] = await this.friendRepository.findFromUsers(user, blockingUser);
         friends.map(async (friend: Friend): Promise<void> => await friend.delete());

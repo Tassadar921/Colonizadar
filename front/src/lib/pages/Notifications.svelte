@@ -2,10 +2,11 @@
     import Title from '../shared/Title.svelte';
     import { t } from 'svelte-i18n';
     import Breadcrumbs from '../shared/Breadcrumbs.svelte';
-    import {notifications, removeNotification, setPendingFriendRequests} from '../../stores/notificationStore.js';
-    import NotificationModule from "../notifications/NotificationModule.svelte";
-    import Loader from "../shared/Loader.svelte";
-    import axios from "axios";
+    import { notifications, removeNotification, setPendingFriendRequests } from '../../stores/notificationStore.js';
+    import NotificationModule from '../notifications/NotificationModule.svelte';
+    import Loader from '../shared/Loader.svelte';
+    import axios from 'axios';
+    import { showToast } from '../../services/toastService.js';
 
     let loading = false;
 
@@ -13,6 +14,7 @@
         const response = await axios.post('/api/friends/accept', { userId: event.detail.from.id });
         if (response.status === 200) {
             removeNotification(event.detail, 'friendRequests');
+            showToast(`${event.detail.from.username} ${$t('toast.notification.friend-request.accept')}`, 'success', '/friends');
             if ($notifications.friendRequests.length <= 3) {
                 await setPendingFriendRequests();
             }
@@ -23,6 +25,7 @@
         const response = await axios.post('/api/friends/refuse', { userId: event.detail.from.id });
         if (response.status === 200) {
             removeNotification(event.detail, 'friendRequests');
+            showToast(`${$t('toast.notification.friend-request.refuse')} ${event.detail.from.username}`, 'success', '/friends');
             if ($notifications.friendRequests.length <= 3) {
                 await setPendingFriendRequests();
             }

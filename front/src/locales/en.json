@@ -96,9 +96,9 @@
         "notification": {
             "friend-request": {
                 "ask": "You received a friend request from",
-                "accept": "",
+                "accept": "has been added to your friends",
                 "accepted": "accepted you friend request",
-                "refuse": ""
+                "refuse": "You refused the friend request of"
             }
         }
     },

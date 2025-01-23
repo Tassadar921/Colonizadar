@@ -1,7 +1,7 @@
 import './app.css';
 import { init, register, locale } from 'svelte-i18n';
 import App from './App.svelte';
-import { mount } from "svelte";
+import { mount } from 'svelte';
 
 const language: string | null = localStorage.getItem('language');
 if (language !== 'en' && language !== 'fr') {

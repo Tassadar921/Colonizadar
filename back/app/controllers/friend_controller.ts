@@ -1,7 +1,7 @@
 import { inject } from '@adonisjs/core';
 import FriendRepository from '#repositories/friend_repository';
 import { HttpContext } from '@adonisjs/core/http';
-import {acceptFriendValidator, getFriendsValidator, refuseFriendValidator} from '#validators/friend';
+import { acceptFriendValidator, getFriendsValidator, refuseFriendValidator } from '#validators/friend';
 import User from '#models/user';
 import PendingFriend from '#models/pending_friend';
 import transmit from '@adonisjs/transmit/services/main';

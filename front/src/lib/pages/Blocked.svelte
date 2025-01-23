@@ -24,7 +24,7 @@
     });
 
     const handleSearch = async () => {
-        searchBaseUrl = `/api/blocked?query=${query}`;
+        searchBaseUrl = `/api/blocked?${query ? `query=${query}` : ''}`;
         const response = await axios.get(searchBaseUrl);
         if (response.status === 200) {
             paginatedBlockedUsers = response.data.blockedUsers;

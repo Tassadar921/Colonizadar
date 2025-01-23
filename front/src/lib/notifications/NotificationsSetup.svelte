@@ -32,7 +32,7 @@
         });
 
         await setPendingFriendRequests();
-    }
+    };
 
     const setup = async () => {
         await setupPendingFriendRequests();
