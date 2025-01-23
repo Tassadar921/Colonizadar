@@ -13,6 +13,7 @@
     import { Transmit } from '@adonisjs/transmit-client';
     import { profile } from '../../stores/profileStore.js';
     import { createEventDispatcher } from 'svelte';
+    import {addNotification, removeNotification, setPendingFriendRequests} from "../../stores/notificationStore.js";
 
     const dispatch = createEventDispatcher();
 
@@ -47,7 +48,7 @@
             userId: user.id,
         });
         if (response.status === 200) {
-            updateUser(user.id, { friendRequested: true });
+            updateUser(user.id, { sentFriendRequest: true });
             showToast($t('toast.friends.add.success'));
         } else {
             showToast($t('toast.friends.add.error'), 'error');
@@ -58,7 +59,7 @@
         const response = await axios.delete(`/api/friends/pending/cancel/${user.id}`);
 
         if (response.status === 200) {
-            updateUser(user.id, { friendRequested: false });
+            updateUser(user.id, { sentFriendRequest: false });
             showToast($t('toast.friends.add.cancel.success'));
         } else {
             showToast($t('toast.friends.add.cancel.error'), 'error');
@@ -89,6 +90,7 @@
     };
 
     const setupEvents = async () => {
+        // sender is updated when friend request is accepted by receiver
         const acceptFriendRequest = $transmit.subscription(`notification/add-friend/accept/${$profile.id}`);
         await acceptFriendRequest.create();
         acceptFriendRequest.onMessage(async () => {
@@ -96,11 +98,51 @@
             dispatch('update');
         });
 
+        // sender is updated when friend request is refused by receiver
         const refuseFriendRequest = $transmit.subscription(`notification/add-friend/refuse/${$profile.id}`);
         await refuseFriendRequest.create();
         refuseFriendRequest.onMessage((user) => {
-            updateUser(user.id, { friendRequested: false });
+            updateUser(user.id, { sentFriendRequest: false });
         });
+
+        // receiver is updated when request received
+        const receivedFriendRequest = $transmit.subscription(`notification/add-friend/${$profile.id}`);
+        await receivedFriendRequest.create();
+        receivedFriendRequest.onMessage((data) => {
+            updateUser(data.notificationObject.notification.from.id, { receivedFriendRequest: true });
+        });
+
+        // receiver is updated when his request is canceled by sender
+        const cancelFriendRequest = $transmit.subscription(`notification/add-friend/cancel/${$profile.id}`);
+        await cancelFriendRequest.create();
+        cancelFriendRequest.onMessage((data) => {
+            updateUser(data.notificationObject.notification.from.id, { receivedFriendRequest: false });
+        });
+
+        //receiver is updated when becomes blocked
+        const blockedUser = $transmit.subscription(`notification/blocked/${$profile.id}`);
+        await blockedUser.create();
+        blockedUser.onMessage((data) => {
+            paginatedUsers.users = paginatedUsers.users.filter((currentUser) => currentUser.id !== data.user.id);
+        });
+    };
+
+    const handleAcceptPendingRequest = async (user) => {
+        const response = await axios.post('/api/friends/accept', { userId: user.id });
+        if (response.status === 200) {
+            showToast(`${user.username} ${$t('toast.notification.friend-request.accept')}`, 'success', '/friends');
+            await setPendingFriendRequests();
+            updateUser(user.id, { receivedFriendRequest: false });
+        }
+    };
+
+    const handleRefusePendingRequest = async (user) => {
+        const response = await axios.post('/api/friends/refuse', { userId: user.id });
+        if (response.status === 200) {
+            showToast(`${$t('toast.notification.friend-request.refuse')} ${user.username}`, 'success', '/friends');
+            await setPendingFriendRequests();
+            updateUser(user.id, { receivedFriendRequest: false });
+        }
     };
 
     $: {
@@ -139,7 +181,7 @@
                         <p>{user.username}</p>
                     </div>
                     <div class="flex gap-5">
-                        {#if user.friendRequested}
+                        {#if user.sentFriendRequest}
                             <Button
                                 ariaLabel="Cancel friend request"
                                 customStyle={true}
@@ -148,17 +190,36 @@
                             >
                                 <Icon name="close" />
                             </Button>
+                        {:else if user.receivedFriendRequest}
+                            <div class="flex gap-5">
+                                <Button
+                                    ariaLabel="Accept as friend"
+                                    customStyle={true}
+                                    className="transition-colors duration-300 text-green-600 hover:text-green-400"
+                                    on:click={() => handleAcceptPendingRequest(user)}
+                                >
+                                    <Icon name="confirm" />
+                                </Button>
+                                <Button
+                                    ariaLabel="Refuse friend request"
+                                    customStyle={true}
+                                    className="transition-colors duration-300 text-red-600 hover:text-red-400"
+                                    on:click={() => handleRefusePendingRequest(user)}
+                                >
+                                    <Icon name="close" />
+                                </Button>
+                            </div>
                         {:else}
                             <Button
                                 ariaLabel="Send friend request"
                                 customStyle={true}
-                                className="transition-colors duration-300 text-green-600 hover:text-green-500 flex gap-1"
+                                className="transition-colors duration-300 text-green-600 hover:text-green-400 flex gap-1"
                                 on:click={() => handleAddFriend(user)}
                             >
                                 <Icon name="addUser" />
                             </Button>
                         {/if}
-                        <Button ariaLabel="Block user" customStyle={true} className="transition-colors duration-300 text-red-600 hover:text-red-500" on:click={() => handleShowBlockingModal(user)}>
+                        <Button ariaLabel="Block user" customStyle={true} className="transition-colors duration-300 text-red-600 hover:text-red-400" on:click={() => handleShowBlockingModal(user)}>
                             <Icon name="stop" />
                         </Button>
                     </div>

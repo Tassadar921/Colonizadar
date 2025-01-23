@@ -53,6 +53,7 @@ export default class BlockedController {
             blockerId: user.id,
             blockedId: blockingUser.id,
         });
+        transmit.broadcast(`notification/blocked/${userId}`, { user: user.apiSerialize() });
 
         return response.send({ message: 'User blocked' });
     }

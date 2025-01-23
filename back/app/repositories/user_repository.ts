@@ -11,7 +11,7 @@ export default class UserRepository extends BaseRepository<typeof User> {
 
     public async searchNotFriends(query: string, page: number, perPage: number, user: User): Promise<PaginatedUsers> {
         const users: ModelPaginatorContract<User> = await User.query()
-            .select('users.*', 'pending_friends.id AS pendingFriendId')
+            .select('users.*', 'received_pending_friends.id AS receivedPendingFriendId', 'sent_pending_friends.id AS sentPendingFriendId')
             .joinRaw(
                 `
                 LEFT JOIN blocked_users AS blocked
@@ -29,11 +29,17 @@ export default class UserRepository extends BaseRepository<typeof User> {
             )
             .joinRaw(
                 `
-                LEFT JOIN pending_friends AS pending_friends
-                ON (users.id = pending_friends.user_id AND pending_friends.friend_id = ?)
-                OR (users.id = pending_friends.friend_id AND pending_friends.user_id = ?)
+                LEFT JOIN pending_friends AS received_pending_friends
+                ON (users.id = received_pending_friends.user_id AND received_pending_friends.friend_id = ?)
               `,
-                [user.id, user.id]
+                [user.id]
+            )
+            .joinRaw(
+                `
+                LEFT JOIN pending_friends AS sent_pending_friends
+                ON (users.id = sent_pending_friends.friend_id AND sent_pending_friends.user_id = ?)
+              `,
+                [user.id]
             )
             .if(query, (queryBuilder): void => {
                 queryBuilder.where('users.username', 'ILIKE', `%${query}%`);
@@ -47,7 +53,7 @@ export default class UserRepository extends BaseRepository<typeof User> {
         return {
             users: await Promise.all(
                 users.all().map((user: User): SerializedUser => {
-                    return { ...user.apiSerialize(), friendRequested: !!user.$extras.pendingFriendId };
+                    return { ...user.apiSerialize(), receivedFriendRequest: !!user.$extras.receivedPendingFriendId, sentFriendRequest: !!user.$extras.sentPendingFriendId };
                 })
             ),
             firstPage: users.firstPage,

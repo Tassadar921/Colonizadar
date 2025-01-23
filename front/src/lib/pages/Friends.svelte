@@ -90,13 +90,13 @@
                         <Button
                             ariaLabel="Send friend request"
                             customStyle={true}
-                            className="transition-colors duration-300 text-green-600 hover:text-green-500 flex gap-1"
+                            className="transition-colors duration-300 text-green-600 hover:text-green-400 flex gap-1"
                             on:click={() => handleAddFriend(friend)}
                         >
                             <Icon name="addUser" />
                         </Button>
                     {/if}
-                    <Button ariaLabel="Block user" customStyle={true} className="transition-colors duration-300 text-red-600 hover:text-red-500" on:click={() => handleShowBlockingModal(user)}>
+                    <Button ariaLabel="Block user" customStyle={true} className="transition-colors duration-300 text-red-600 hover:text-red-400" on:click={() => handleShowBlockingModal(user)}>
                         <Icon name="stop" />
                     </Button>
                 </div>
