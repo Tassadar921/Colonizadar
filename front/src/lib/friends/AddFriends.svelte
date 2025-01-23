@@ -13,7 +13,7 @@
     import { Transmit } from '@adonisjs/transmit-client';
     import { profile } from '../../stores/profileStore.js';
     import { createEventDispatcher } from 'svelte';
-    import {addNotification, removeNotification, setPendingFriendRequests} from "../../stores/notificationStore.js";
+    import { addNotification, removeNotification, setPendingFriendRequests } from '../../stores/notificationStore.js';
 
     const dispatch = createEventDispatcher();
 
