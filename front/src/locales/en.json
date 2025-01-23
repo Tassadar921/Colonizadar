@@ -94,7 +94,12 @@
             "error": "An error occurred while unblocking user"
         },
         "notification": {
-            "friend-request": "You received a friend request from"
+            "friend-request": {
+                "ask": "You received a friend request from",
+                "accept": "",
+                "accepted": "accepted you friend request",
+                "refuse": ""
+            }
         }
     },
     "menu": {

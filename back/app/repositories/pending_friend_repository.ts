@@ -45,6 +45,8 @@ export default class PendingFriendRepository extends BaseRepository<typeof Pendi
                 query.where('userId', from.id).andWhere('friendId', askingTo.id);
             })
             .preload('notification')
+            .preload('friend')
+            .preload('user')
             .first();
     }
 

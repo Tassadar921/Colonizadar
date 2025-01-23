@@ -24,7 +24,7 @@
     import Social from './lib/pages/Social.svelte';
     import Friends from './lib/pages/Friends.svelte';
     import Blocked from "./lib/pages/Blocked.svelte";
-    import NotificationsSetup from './lib/shared/NotificationsSetup.svelte';
+    import NotificationsSetup from './lib/notifications/NotificationsSetup.svelte';
 
     const supportedLanguages = ['en', 'fr'];
 

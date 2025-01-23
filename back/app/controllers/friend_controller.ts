@@ -1,7 +1,7 @@
 import { inject } from '@adonisjs/core';
 import FriendRepository from '#repositories/friend_repository';
 import { HttpContext } from '@adonisjs/core/http';
-import { getFriendsValidator } from '#validators/friend';
+import {acceptFriendValidator, getFriendsValidator, refuseFriendValidator} from '#validators/friend';
 import User from '#models/user';
 import PendingFriend from '#models/pending_friend';
 import transmit from '@adonisjs/transmit/services/main';
@@ -24,8 +24,8 @@ export default class FriendsController {
         });
     }
 
-    public async add({ request, response, user }: HttpContext): Promise<void> {
-        const { userId } = request.params();
+    public async accept({ request, response, user }: HttpContext): Promise<void> {
+        const { userId } = await acceptFriendValidator.validate(request.all());
 
         const askingToUser: User | null = await this.userRepository.findOneBy({ frontId: Number(userId) });
         if (!askingToUser) {
@@ -38,7 +38,7 @@ export default class FriendsController {
         }
 
         if (pendingFriend.userId === user.id || pendingFriend.friendId === user.id) {
-            transmit.broadcast(`notification/add-friend/confirm/${userId}`);
+            transmit.broadcast(`notification/add-friend/accept/${pendingFriend.user.frontId}`, pendingFriend.friend.apiSerialize());
             await Friend.createMany([
                 {
                     userId: pendingFriend.userId,
@@ -58,7 +58,7 @@ export default class FriendsController {
     }
 
     public async refuse({ request, response, user }: HttpContext): Promise<void> {
-        const { userId } = request.params();
+        const { userId } = await refuseFriendValidator.validate(request.all());
 
         const askingToUser: User | null = await this.userRepository.findOneBy({ frontId: Number(userId) });
         if (!askingToUser) {
@@ -71,7 +71,7 @@ export default class FriendsController {
         }
 
         if (pendingFriend.userId === user.id || pendingFriend.friendId === user.id) {
-            transmit.broadcast(`notification/add-friend/refuse/${userId}`);
+            transmit.broadcast(`notification/add-friend/refuse/${pendingFriend.user.frontId}`, pendingFriend.friend.apiSerialize());
             await pendingFriend.notification.delete();
             await pendingFriend.delete();
             return response.send({ message: 'Friend request refused' });

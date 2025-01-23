@@ -9,6 +9,9 @@
     import Button from '../shared/Button.svelte';
     import ConfirmModal from '../shared/ConfirmModal.svelte';
     import Subtitle from '../shared/Subtitle.svelte';
+    import {transmit} from "../../stores/transmitStore.js";
+    import {Transmit} from "@adonisjs/transmit-client";
+    import { profile } from '../../stores/profileStore.js';
 
     let paginatedUsers = { users: [] };
     let searchBaseUrl = '/api/friends/add';
@@ -17,6 +20,7 @@
     let blockingUser = { username: '' };
 
     onMount(async () => {
+        transmit.set(new Transmit({ baseUrl: process.env.VITE_API_BASE_URL }));
         const { data } = await axios.get(searchBaseUrl);
         paginatedUsers = data.users;
     });
@@ -32,7 +36,7 @@
     };
 
     const handleAddFriend = async (user) => {
-        const response = await axios.post('/api/friends/add', {
+        const response = await axios.post('/api/friends/ask', {
             userId: user.id,
         });
         if (response.status === 200) {
@@ -76,6 +80,27 @@
         blockingUser = user;
         showModal = true;
     };
+
+    const setupEvents = async () => {
+        const acceptFriendRequest = $transmit.subscription(`notification/add-friend/accept/${$profile.id}`);
+        await acceptFriendRequest.create();
+        acceptFriendRequest.onMessage((user) => {
+            // showToast(`${user.username} ${}`)
+            updateUser(user.id, { friendRequested: false });
+        });
+
+        const refuseFriendRequest = $transmit.subscription(`notification/add-friend/refuse/${$profile.id}`);
+        await refuseFriendRequest.create();
+        refuseFriendRequest.onMessage((user) => {
+            updateUser(user.id, { friendRequested: false });
+        });
+    };
+
+    $: {
+        if ($profile) {
+            setupEvents();
+        }
+    }
 </script>
 
 <Search

@@ -9,8 +9,6 @@
     export let title;
     export let notifications = [];
     export let noneMessage;
-
-    $: console.log(notifications);
 </script>
 
 <div class="flex flex-col gap-5 my-5 overflow-y-scroll scrollbar-hide max-h-[400px]">

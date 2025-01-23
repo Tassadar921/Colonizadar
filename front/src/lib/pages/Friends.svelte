@@ -10,9 +10,10 @@
     import PendingFriends from '../friends/PendingFriends.svelte';
     import Subtitle from '../shared/Subtitle.svelte';
     import AddFriends from '../friends/AddFriends.svelte';
-    import IconButton from '../shared/IconButton.svelte';
     import Button from '../shared/Button.svelte';
     import Icon from '../shared/Icon.svelte';
+    import { profile } from '../../stores/profileStore.js';
+    import { transmit } from '../../stores/transmitStore.js';
 
     let paginatedFriends = { friends: [] };
     let searchBaseUrl = '/api/friends';

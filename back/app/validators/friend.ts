@@ -7,3 +7,15 @@ export const getFriendsValidator = vine.compile(
         perPage: vine.number().positive().optional(),
     })
 );
+
+export const acceptFriendValidator = vine.compile(
+    vine.object({
+        userId: vine.number().positive(),
+    })
+);
+
+export const refuseFriendValidator = vine.compile(
+    vine.object({
+        userId: vine.number().positive(),
+    })
+);

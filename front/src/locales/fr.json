@@ -94,7 +94,12 @@
             "error": "Une erreur est survenue lors du déblocage de l'utilisateur"
         },
         "notification": {
-            "friend-request": "Vous avez reçu une demande d'ami de"
+            "friend-request": {
+                "ask": "Vous avez reçu une demande d'ami de",
+                "accept": "",
+                "accepted": "a accepté votre demande d'ami",
+                "refuse": ""
+            }
         }
     },
     "menu": {

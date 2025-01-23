@@ -52,7 +52,10 @@ router
                     .group((): void => {
                         router.get('/', [FriendController, 'search']);
                         router.get('/add', [UserController, 'searchNotFriends']);
-                        router.post('/add', [PendingFriendController, 'add']);
+
+                        router.post('/ask', [PendingFriendController, 'add']);
+                        router.post('/accept', [FriendController, 'accept']);
+                        router.post('/refuse', [FriendController, 'refuse']);
                         router
                             .group((): void => {
                                 router.get('/', [PendingFriendController, 'search']);

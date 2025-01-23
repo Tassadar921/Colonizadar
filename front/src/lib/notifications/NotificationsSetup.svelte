@@ -16,12 +16,19 @@
         await addFriendNotification.create();
         addFriendNotification.onMessage((data) => {
             addNotification(data.notificationObject.notification, 'friendRequests');
-            showToast(`${$t('toast.notification.friend-request')} ${data.notificationObject.notification.from.username}`, 'warning', '/notifications');
+            showToast(`${$t('toast.notification.friend-request.ask')} ${data.notificationObject.notification.from.username}`, 'warning', '/notifications');
         });
+
         const cancelAddFriendNotification = $transmit.subscription(`notification/add-friend/cancel/${$profile.id}`);
         await cancelAddFriendNotification.create();
         cancelAddFriendNotification.onMessage((data) => {
             removeNotification(data.notificationObject.notification, 'friendRequests');
+        });
+
+        const acceptFriendRequest = $transmit.subscription(`notification/add-friend/accept/${$profile.id}`);
+        await acceptFriendRequest.create();
+        acceptFriendRequest.onMessage((user) => {
+            showToast(`${user.username} ${$t('toast.notification.friend-request.accepted')}`);
         });
 
         await setPendingFriendRequests();

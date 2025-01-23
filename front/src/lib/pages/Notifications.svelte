@@ -2,23 +2,30 @@
     import Title from '../shared/Title.svelte';
     import { t } from 'svelte-i18n';
     import Breadcrumbs from '../shared/Breadcrumbs.svelte';
-    import {notifications, setPendingFriendRequests} from '../../stores/notificationStore.js';
+    import {notifications, removeNotification, setPendingFriendRequests} from '../../stores/notificationStore.js';
     import NotificationModule from "../notifications/NotificationModule.svelte";
     import Loader from "../shared/Loader.svelte";
+    import axios from "axios";
 
     let loading = false;
 
     const handleAcceptPendingRequest = async (event) => {
-        console.log(event.detail);
-        if ($notifications.friendRequests.length <= 3) {
-            await setPendingFriendRequests();
+        const response = await axios.post('/api/friends/accept', { userId: event.detail.from.id });
+        if (response.status === 200) {
+            removeNotification(event.detail, 'friendRequests');
+            if ($notifications.friendRequests.length <= 3) {
+                await setPendingFriendRequests();
+            }
         }
     };
 
     const handleRefusePendingRequest = async (event) => {
-        console.log(event.detail);
-        if ($notifications.friendRequests.length <= 3) {
-            await setPendingFriendRequests();
+        const response = await axios.post('/api/friends/refuse', { userId: event.detail.from.id });
+        if (response.status === 200) {
+            removeNotification(event.detail, 'friendRequests');
+            if ($notifications.friendRequests.length <= 3) {
+                await setPendingFriendRequests();
+            }
         }
     };
 </script>
