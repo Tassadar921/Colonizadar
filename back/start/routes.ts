@@ -62,6 +62,7 @@ router
                                 router.delete('/cancel/:userId', [PendingFriendController, 'cancel']);
                             })
                             .prefix('pending');
+                        router.delete('/remove/:userId', [FriendController, 'remove']);
                     })
                     .prefix('friends');
 

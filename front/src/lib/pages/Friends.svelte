@@ -7,17 +7,21 @@
     import Pagination from '../shared/Pagination.svelte';
     import Breadcrumbs from '../shared/Breadcrumbs.svelte';
     import Modal from '../shared/Modal.svelte';
-    import PendingFriends from '../friends/PendingFriends.svelte';
     import Subtitle from '../shared/Subtitle.svelte';
     import AddFriends from '../friends/AddFriends.svelte';
     import Button from '../shared/Button.svelte';
     import Icon from '../shared/Icon.svelte';
+    import ConfirmModal from "../shared/ConfirmModal.svelte";
+    import {showToast} from "../../services/toastService.js";
+    import { profile } from '../../stores/profileStore.js';
+    import { transmit } from '../../stores/transmitStore.js';
 
     let paginatedFriends = { friends: [] };
     let searchBaseUrl = '/api/friends';
     let query = '';
-    let showPendingFriendsModal = false;
+    let selectedFriend = { username: '' };
     let showAddFriendsModal = false;
+    let showConfirmRemoveFriendModal = false;
 
     onMount(async () => {
         await updateFriends();
@@ -33,6 +37,35 @@
         const { data } = await axios.get(searchBaseUrl);
         paginatedFriends = data.friends;
     };
+
+    const handleShowRemoveFriendModal = (user) => {
+        selectedFriend = user;
+        showConfirmRemoveFriendModal = true;
+    };
+
+    const handleRemoveFriend = async () => {
+        const response = await axios.delete(`/api/friends/remove/${selectedFriend.id}`);
+        if (response.status === 200) {
+            paginatedFriends.friends = paginatedFriends.friends.filter((friendObject) => friendObject.friend.id !== selectedFriend.id);
+            showToast($t('toast.friends.remove.success'));
+            showConfirmRemoveFriendModal = false;
+        }
+    };
+
+    const setupEvents = async () => {
+        // update when a user removes us from its friends
+        const removeFriend = $transmit.subscription(`notification/friend/remove/${$profile.id}`);
+        await removeFriend.create();
+        removeFriend.onMessage(async (user) => {
+            paginatedFriends.friends = paginatedFriends.friends.filter((friendObject) => friendObject.friend.id !== user.id);
+        });
+    }
+
+    $: {
+        if ($profile) {
+            setupEvents();
+        }
+    }
 </script>
 
 <div class="flex gap-3 items-center">
@@ -76,26 +109,10 @@
                         {/if}
                         <p>{friendObject.friend.username}</p>
                     </div>
-                    <div class="flex gap-5">
-                        {#if friendObject.friend.friendRequested}
-                            <Button
-                                ariaLabel="Cancel friend request"
-                                customStyle={true}
-                                className="transition-colors duration-300 text-red-600 hover:text-red-500"
-                                on:click={() => handleCancelFriendRequest(friend)}
-                            >
-                                <Icon name="close" />
-                            </Button>
-                        {:else}
-                            <Button
-                                ariaLabel="Send friend request"
-                                customStyle={true}
-                                className="transition-colors duration-300 text-green-600 hover:text-green-400 flex gap-1"
-                                on:click={() => handleAddFriend(friend)}
-                            >
-                                <Icon name="addUser" />
-                            </Button>
-                        {/if}
+                    <div class="flex gap-10 pr-5">
+                        <Button ariaLabel="Remove friend" customStyle={true} className="transition-colors duration-300 text-red-600 hover:text-red-400" on:click={() => handleShowRemoveFriendModal(friendObject.friend)}>
+                            <Icon name="RemoveUser" />
+                        </Button>
                         <Button ariaLabel="Block user" customStyle={true} className="transition-colors duration-300 text-red-600 hover:text-red-400" on:click={() => handleShowBlockingModal(user)}>
                             <Icon name="stop" />
                         </Button>
@@ -109,12 +126,12 @@
 </div>
 <Pagination bind:paginatedObject={paginatedFriends} bind:baseUrl={searchBaseUrl} />
 
-<Modal bind:showModal={showPendingFriendsModal} fullWidth={true}>
-    <Subtitle slot="header">{$t('social.friends.pending.title')}</Subtitle>
-    <PendingFriends />
-</Modal>
-
 <Modal bind:showModal={showAddFriendsModal} fullWidth={true}>
     <Subtitle slot="header">{$t('social.friends.add.title')}</Subtitle>
-    <AddFriends on:update={updateFriends} />
+    <AddFriends on:updateFriends={updateFriends} />
 </Modal>
+
+<ConfirmModal bind:showModal={showConfirmRemoveFriendModal} on:success={handleRemoveFriend}>
+    <Subtitle slot="header">{$t('social.friends.remove.modal.title')}</Subtitle>
+    <p>{selectedFriend.username} {$t('social.friends.remove.modal.text')}</p>
+</ConfirmModal>

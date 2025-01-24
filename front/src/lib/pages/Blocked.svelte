@@ -46,7 +46,7 @@
         showModal = false;
     };
 
-    const handleShowBlockingModal = (user) => {
+    const handleShowUnblockModal = (user) => {
         selectedBlockedUser = user;
         showModal = true;
     };
@@ -89,7 +89,7 @@
                             ariaLabel="Unblock user"
                             customStyle={true}
                             className="transition-colors duration-300 text-green-600 hover:text-green-500 flex gap-1"
-                            on:click={() => handleShowBlockingModal(blocked.user)}
+                            on:click={() => handleShowUnblockModal(blocked.user)}
                         >
                             <Icon name="unblock" />
                         </Button>

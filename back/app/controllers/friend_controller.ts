@@ -37,25 +37,20 @@ export default class FriendsController {
             return response.notFound({ error: 'This pending friends request does not exist' });
         }
 
-        if (pendingFriend.userId === user.id || pendingFriend.friendId === user.id) {
-            transmit.broadcast(`notification/add-friend/accept/${pendingFriend.user.frontId}`, pendingFriend.friend.apiSerialize());
-            transmit.broadcast(`notification/add-friend/accept/${pendingFriend.friend.frontId}`, pendingFriend.user.apiSerialize());
-            await Friend.createMany([
-                {
-                    userId: pendingFriend.userId,
-                    friendId: pendingFriend.friendId,
-                },
-                {
-                    userId: pendingFriend.friendId,
-                    friendId: pendingFriend.userId,
-                },
-            ]);
-            await pendingFriend.notification.delete();
-            await pendingFriend.delete();
-            return response.send({ message: 'Friend added' });
-        }
-
-        return response.forbidden({ error: 'You have no pending request from this user' });
+        transmit.broadcast(`notification/add-friend/accept/${askingToUser.frontId}`, user.apiSerialize());
+        await Friend.createMany([
+            {
+                userId: user.id,
+                friendId: askingToUser.id,
+            },
+            {
+                userId: askingToUser.id,
+                friendId: user.id,
+            },
+        ]);
+        await pendingFriend.notification.delete();
+        await pendingFriend.delete();
+        return response.send({ message: 'Friend added' });
     }
 
     public async refuse({ request, response, user }: HttpContext): Promise<void> {
@@ -71,13 +66,29 @@ export default class FriendsController {
             return response.notFound({ error: 'This pending friends request does not exist' });
         }
 
-        if (pendingFriend.userId === user.id || pendingFriend.friendId === user.id) {
-            transmit.broadcast(`notification/add-friend/refuse/${pendingFriend.user.frontId}`, pendingFriend.friend.apiSerialize());
-            await pendingFriend.notification.delete();
-            await pendingFriend.delete();
-            return response.send({ message: 'Friend request refused' });
+        transmit.broadcast(`notification/add-friend/refuse/${user.frontId}`, askingToUser.apiSerialize());
+        await pendingFriend.notification.delete();
+        await pendingFriend.delete();
+        return response.send({ message: 'Friend request refused' });
+    }
+
+    public async remove({ request, response, user }: HttpContext): Promise<void> {
+        const { userId } = request.params();
+
+        const friend: User | null = await this.userRepository.findOneBy({ frontId: Number(userId) });
+        if (!friend) {
+            return response.notFound({ error: 'User not found' });
         }
 
-        return response.forbidden({ error: 'You have no pending request from this user' });
+        const friendRelationships: Friend[] = await this.friendRepository.findFromUsers(user, friend);
+        if (!friendRelationships.length) {
+            return response.notFound({ error: 'You are not friend with this user' });
+        }
+
+        friendRelationships.map(async (friend: Friend): Promise<void> => await friend.delete());
+
+        transmit.broadcast(`notification/friend/remove/${friend.frontId}`, user.apiSerialize());
+
+        return response.send({ message: 'Friend removed' });
     }
 }

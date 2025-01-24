@@ -83,6 +83,9 @@
                     "success": "Friend request cancelled",
                     "error": "An error occurred while cancelling the friend request"
                 }
+            },
+            "remove": {
+                "success": "Friend removed"
             }
         },
         "blocked": {
@@ -97,7 +100,7 @@
             "friend-request": {
                 "ask": "You received a friend request from",
                 "accept": "has been added to your friends",
-                "accepted": "accepted you friend request",
+                "accepted": "accepted your friend request",
                 "refuse": "You refused the friend request of"
             }
         }
@@ -154,16 +157,18 @@
                 "placeholder": "John123",
                 "label": "Friend's username"
             },
-            "pending": {
-                "title": "Pending friend requests",
-                "none": "No pending friend request"
-            },
             "add": {
                 "title": "Ask a new friend",
                 "none": "No user available",
                 "search": {
                     "placeholder": "John123",
                     "label": "User's username"
+                }
+            },
+            "remove": {
+                "modal": {
+                    "title": "Remove a friend",
+                    "text": "will be removed from your friends"
                 }
             }
         },

@@ -4,7 +4,6 @@ import { ModelPaginatorContract } from '@adonisjs/lucid/types/model';
 import PaginatedFriends from '#types/paginated/paginated_friends';
 import User from '#models/user';
 import SerializedFriend from '#types/serialized/serialized_friend';
-import PendingFriend from '#models/pending_friend';
 
 export default class FriendRepository extends BaseRepository<typeof Friend> {
     constructor() {
@@ -34,13 +33,13 @@ export default class FriendRepository extends BaseRepository<typeof Friend> {
         };
     }
 
-    public async findFromUsers(from: User, askingTo: User): Promise<PendingFriend[]> {
+    public async findFromUsers(user1: User, user2: User): Promise<Friend[]> {
         return Friend.query()
             .where((query): void => {
-                query.where('userId', askingTo.id).andWhere('friendId', from.id);
+                query.where('userId', user1.id).andWhere('friendId', user2.id);
             })
             .orWhere((query): void => {
-                query.where('userId', from.id).andWhere('friendId', askingTo.id);
+                query.where('userId', user2.id).andWhere('friendId', user1.id);
             });
     }
 }

@@ -46,8 +46,8 @@ export default class BlockedController {
             await pendingFriend.delete();
         });
 
-        const friends: Friend[] = await this.friendRepository.findFromUsers(user, blockingUser);
-        friends.map(async (friend: Friend): Promise<void> => await friend.delete());
+        const friendRelationships: Friend[] = await this.friendRepository.findFromUsers(user, blockingUser);
+        friendRelationships.map(async (friend: Friend): Promise<void> => await friend.delete());
 
         await BlockedUser.create({
             blockerId: user.id,

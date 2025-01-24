@@ -83,6 +83,9 @@
                     "success": "Demande d'ami annulée",
                     "error": "Une erreur est survenue lors de l'annulation de la demande d'ami"
                 }
+            },
+            "remove": {
+                "success": "Ami supprimé"
             }
         },
         "blocked": {
@@ -154,16 +157,18 @@
                 "placeholder": "Jean123",
                 "label": "Pseudonyme de l'ami"
             },
-            "pending": {
-                "title": "Demandes d'ami en attente",
-                "none": "Pas de demande d'ami en attente"
-            },
             "add": {
                 "title": "Inviter un nouvel ami",
                 "none": "Aucun utilisateur disponible",
                 "search": {
                     "placeholder": "Jean123",
                     "label": "Pseudonyme de l'utilisateur"
+                }
+            },
+            "remove": {
+                "modal": {
+                    "title": "Retirer un ami",
+                    "text": "sera supprimé de vos amis"
                 }
             }
         },
