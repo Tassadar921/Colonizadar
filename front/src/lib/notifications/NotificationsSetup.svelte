@@ -28,7 +28,7 @@
         const acceptFriendRequest = $transmit.subscription(`notification/add-friend/accept/${$profile.id}`);
         await acceptFriendRequest.create();
         acceptFriendRequest.onMessage((user) => {
-            showToast(`${user.username} ${$t('toast.notification.friend-request.accepted')}`);
+            showToast(`${user.username} ${$t('toast.notification.friend-request.accepted')}`, 'success', '/friends');
         });
 
         await setPendingFriendRequests();

@@ -119,11 +119,18 @@
             updateUser(data.notificationObject.notification.from.id, { receivedFriendRequest: false });
         });
 
-        //receiver is updated when becomes blocked
+        // receiver is updated when becomes blocked
         const blockedUser = $transmit.subscription(`notification/blocked/${$profile.id}`);
         await blockedUser.create();
         blockedUser.onMessage((data) => {
             paginatedUsers.users = paginatedUsers.users.filter((currentUser) => currentUser.id !== data.user.id);
+        });
+
+        // both are updated when receiver accepts friend request
+        const acceptedFriendRequest = $transmit.subscription(`notification/add-friend/accept/${$profile.id}`);
+        await acceptedFriendRequest.create();
+        acceptedFriendRequest.onMessage((user) => {
+            paginatedUsers.users = paginatedUsers.users.filter((currentUser) => currentUser.id !== user.id);
         });
     };
 

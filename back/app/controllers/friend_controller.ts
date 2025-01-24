@@ -39,6 +39,7 @@ export default class FriendsController {
 
         if (pendingFriend.userId === user.id || pendingFriend.friendId === user.id) {
             transmit.broadcast(`notification/add-friend/accept/${pendingFriend.user.frontId}`, pendingFriend.friend.apiSerialize());
+            transmit.broadcast(`notification/add-friend/accept/${pendingFriend.friend.frontId}`, pendingFriend.user.apiSerialize());
             await Friend.createMany([
                 {
                     userId: pendingFriend.userId,
