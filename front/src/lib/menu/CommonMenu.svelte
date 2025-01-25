@@ -9,7 +9,7 @@
 <ul class={`${footer ? '' : 'space-y-4'} p-4`}>
     {#if $profile}
         <MenuItem {footer} iconLeft="home" href="/" on:click>{$t('home.title')}</MenuItem>
-        <MenuItem {footer} iconLeft="game" href="/game" on:click>{$t('play.title')}</MenuItem>
+        <MenuItem {footer} iconLeft="game" href="/play" on:click>{$t('play.title')}</MenuItem>
         <MenuItem {footer} iconLeft="people" href="/social" on:click>{$t('social.title')}</MenuItem>
         <MenuItem {footer} iconLeft="user" href="/profile" on:click>{$t('profile.title')}</MenuItem>
         <MenuItem {footer} iconLeft="userRemove" href="/logout" on:click>{$t('logout.title')}</MenuItem>

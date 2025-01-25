@@ -25,6 +25,7 @@
     import Friends from './lib/pages/Friends.svelte';
     import Blocked from './lib/pages/Blocked.svelte';
     import NotificationsSetup from './lib/notifications/NotificationsSetup.svelte';
+    import Play from './lib/pages/Play.svelte';
 
     const supportedLanguages = ['en', 'fr'];
 
@@ -98,6 +99,8 @@
                     <Route path="/:language/social"><Social /></Route>
                     <Route path="/:language/social/friends"><Friends /></Route>
                     <Route path="/:language/social/blocked"><Blocked /></Route>
+
+                    <Route path="/:language/play"><Play /></Route>
 
                     <Route path="/:language/profile"><Profile /></Route>
                     <Route path="/:language/notifications"><Notifications /></Route>
