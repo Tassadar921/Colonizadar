@@ -200,7 +200,7 @@
                             <Button
                                 ariaLabel="Cancel friend request"
                                 customStyle={true}
-                                className="transition-colors duration-300 text-red-600 hover:text-red-500"
+                                className="transition-all duration-300 hover:scale-110 transform text-red-600 hover:text-red-500"
                                 on:click={() => handleCancelFriendRequest(user)}
                             >
                                 <Icon name="close" />
@@ -210,7 +210,7 @@
                                 <Button
                                     ariaLabel="Accept as friend"
                                     customStyle={true}
-                                    className="transition-colors duration-300 text-green-600 hover:text-green-400"
+                                    className="transition-all duration-300 hover:scale-110 transform text-green-600 hover:text-green-400"
                                     on:click={() => handleAcceptPendingRequest(user)}
                                 >
                                     <Icon name="confirm" />
@@ -218,7 +218,7 @@
                                 <Button
                                     ariaLabel="Refuse friend request"
                                     customStyle={true}
-                                    className="transition-colors duration-300 text-red-600 hover:text-red-400"
+                                    className="transition-all duration-300 hover:scale-110 transform text-red-600 hover:text-red-400"
                                     on:click={() => handleRefusePendingRequest(user)}
                                 >
                                     <Icon name="close" />
@@ -228,13 +228,18 @@
                             <Button
                                 ariaLabel="Send friend request"
                                 customStyle={true}
-                                className="transition-colors duration-300 text-green-600 hover:text-green-400 flex gap-1"
+                                className="transition-all duration-300 hover:scale-110 transform text-green-600 hover:text-green-400 flex gap-1"
                                 on:click={() => handleAddFriend(user)}
                             >
                                 <Icon name="addUser" />
                             </Button>
                         {/if}
-                        <Button ariaLabel="Block user" customStyle={true} className="transition-colors duration-300 text-red-600 hover:text-red-400" on:click={() => handleShowBlockingModal(user)}>
+                        <Button
+                            ariaLabel="Block user"
+                            customStyle={true}
+                            className="transition-all duration-300 hover:scale-110 transform text-red-600 hover:text-red-400"
+                            on:click={() => handleShowBlockingModal(user)}
+                        >
                             <Icon name="stop" />
                         </Button>
                     </div>

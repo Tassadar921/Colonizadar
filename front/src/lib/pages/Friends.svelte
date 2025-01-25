@@ -138,7 +138,7 @@
                         <Button
                             ariaLabel="Remove friend"
                             customStyle={true}
-                            className="transition-colors duration-300 text-red-600 hover:text-red-400"
+                            className="transition-all duration-300 hover:scale-110 transform text-red-600 hover:text-red-400"
                             on:click={() => handleShowRemoveFriendModal(friendObject.friend)}
                         >
                             <Icon name="RemoveUser" />
@@ -146,7 +146,7 @@
                         <Button
                             ariaLabel="Block user"
                             customStyle={true}
-                            className="transition-colors duration-300 text-red-600 hover:text-red-400"
+                            className="transition-all duration-300 hover:scale-110 transform text-red-600 hover:text-red-400"
                             on:click={() => handleShowBlockingModal(friendObject.friend)}
                         >
                             <Icon name="stop" />

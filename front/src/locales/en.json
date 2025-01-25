@@ -201,6 +201,18 @@
     },
     "play": {
         "title": "Play",
-        "description": "Play alone or with your friends"
+        "description": "Play alone or with your friends",
+        "create": {
+            "title": "Create a room"
+        },
+        "join": {
+            "title": "Join",
+            "modal": {
+                "token": {
+                    "label": "Token",
+                    "placeholder": "550e8400-e29b-41d4-a716-446655440000"
+                }
+            }
+        }
     }
 }

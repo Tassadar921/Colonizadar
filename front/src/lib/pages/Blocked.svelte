@@ -87,7 +87,7 @@
                     <Button
                         ariaLabel="Unblock user"
                         customStyle={true}
-                        className="transition-colors duration-300  text-green-600 hover:text-green-400"
+                        className="transition-all duration-300 hover:scale-110 transform text-green-600 hover:text-green-400"
                         on:click={() => handleShowUnblockModal(blocked.user)}
                     >
                         <Icon name="unblock" />
