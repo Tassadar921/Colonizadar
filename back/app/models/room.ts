@@ -28,16 +28,16 @@ export default class Room extends BaseModel {
     @column()
     declare ownerId: string;
 
+    @belongsTo((): typeof User => User, {
+        foreignKey: 'ownerId',
+    })
+    declare owner: BelongsTo<typeof User>;
+
     @column()
     declare gameId: string;
 
     @belongsTo((): typeof Game => Game)
     declare game: BelongsTo<typeof Game>;
-
-    @belongsTo((): typeof User => User, {
-        foreignKey: 'ownerId',
-    })
-    declare owner: BelongsTo<typeof User>;
 
     @hasMany((): typeof RoomPerson => RoomPerson)
     declare persons: HasMany<typeof RoomPerson>;

@@ -8,9 +8,9 @@ export default class extends BaseSchema {
         this.schema.createTable(this.tableName, (table: Knex.CreateTableBuilder): void => {
             table.uuid('id').primary().defaultTo(this.raw('uuid_generate_v4()'));
             table.uuid('tokenable_id').notNullable().unsigned().references('id').inTable('users').onDelete('CASCADE');
-            table.string('type').notNullable();
-            table.string('name').nullable();
-            table.string('hash').notNullable();
+            table.string('type', 255).notNullable();
+            table.string('name', 255).nullable();
+            table.string('hash', 255).notNullable();
             table.text('abilities').notNullable();
             table.timestamp('created_at');
             table.timestamp('updated_at');

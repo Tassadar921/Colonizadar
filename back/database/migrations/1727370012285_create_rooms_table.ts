@@ -8,6 +8,12 @@ export default class extends BaseSchema {
         this.schema.createTable(this.tableName, (table: Knex.CreateTableBuilder): void => {
             table.uuid('id').primary().defaultTo(this.raw('uuid_generate_v4()'));
             table.specificType('front_id', 'serial').notNullable();
+            table.string('name', 255).notNullable();
+            table.boolean('public').defaultTo(true);
+            table.string('password', 255).nullable();
+            table.uuid('token').defaultTo(this.raw('uuid_generate_v4()'));
+            table.uuid('owner_id').notNullable().references('id').inTable('users').onDelete('CASCADE');
+            table.uuid('game_id').notNullable().references('id').inTable('games').onDelete('CASCADE');
             table.timestamp('created_at', { useTz: true });
             table.timestamp('updated_at', { useTz: true });
         });
