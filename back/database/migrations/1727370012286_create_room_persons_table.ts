@@ -1,6 +1,6 @@
 import { BaseSchema } from '@adonisjs/lucid/schema';
 import { Knex } from 'knex';
-import RoomPeopleDifficultyEnum from "#types/enum/room_people_difficulty_enum";
+import RoomPeopleDifficultyEnum from '#types/enum/room_people_difficulty_enum';
 
 export default class extends BaseSchema {
     protected tableName: string = 'room_persons';
