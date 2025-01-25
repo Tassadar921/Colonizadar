@@ -9,6 +9,8 @@ type SerializedUser = {
     enabled: boolean;
     acceptedTermsAndConditions: boolean;
     profilePicture?: SerializedFile;
+    receivedFriendRequest?: boolean;
+    sentFriendRequest?: boolean;
     updatedAt?: string;
     createdAt?: string;
 };

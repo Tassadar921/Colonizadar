@@ -42,9 +42,7 @@
 
         <nav
             id="menu"
-            class="fixed top-0 left-0 w-64 h-full bg-gray-700 dark:bg-gray-800 text-white transform transition-transform duration-300 ease-in-out {isOpen
-                ? ''
-                : '-translate-x-full'}"
+            class="fixed top-0 left-0 w-64 h-full bg-gray-700 dark:bg-gray-800 text-white transform transition-transform duration-300 ease-in-out {isOpen ? '' : '-translate-x-full'}"
             style="z-index: 10000"
         >
             <div class="flex justify-between items-center p-4">

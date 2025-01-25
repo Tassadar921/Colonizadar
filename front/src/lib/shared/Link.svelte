@@ -1,6 +1,7 @@
 <script>
     import { navigate } from '../../stores/locationStore.js';
     import { createEventDispatcher } from 'svelte';
+    import { language } from '../../stores/languageStore.js';
 
     const dispatch = createEventDispatcher();
 
@@ -21,6 +22,6 @@
     };
 </script>
 
-<a {href} aria-label={ariaLabel} {target} class={className} {style} on:mouseenter on:mouseleave on:focus on:blur on:click={handleClick}>
+<a href={`/${$language}${href}`} aria-label={ariaLabel} {target} class={className} {style} on:mouseenter on:mouseleave on:focus on:blur on:click={handleClick}>
     <slot />
 </a>

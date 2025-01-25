@@ -71,18 +71,46 @@
                 "success": "Profil mis à jour",
                 "error": "Une erreur est survenue lors de la mise à jour du profil"
             }
+        },
+        "friends": {
+            "search": {
+                "error": "Une erreur est survenue lors de la recherche d'amis"
+            },
+            "add": {
+                "success": "Demande d'ami envoyée",
+                "error": "Une erreur est survenue lors de la demande en ami",
+                "cancel": {
+                    "success": "Demande d'ami annulée",
+                    "error": "Une erreur est survenue lors de l'annulation de la demande d'ami"
+                }
+            },
+            "remove": {
+                "success": "Ami supprimé"
+            }
+        },
+        "blocked": {
+            "success": "Utilisateur bloqué",
+            "error": "Une erreur est survenue lors du blocage de l'utilisateur"
+        },
+        "unblock": {
+            "success": "Utilisateur débloqué",
+            "error": "Une erreur est survenue lors du déblocage de l'utilisateur"
+        },
+        "notification": {
+            "friend-request": {
+                "ask": "Vous avez reçu une demande d'ami de",
+                "accept": "a été ajouté à vos amis",
+                "accepted": "a accepté votre demande d'ami",
+                "refuse": "Vous avez refusé la demande d'ami de"
+            }
         }
     },
     "menu": {
-        "home": "Accueil",
-        "settings": "Paramètres",
-        "profile": "Profil",
-        "logout": "Déconnexion",
-        "login": "Connexion",
         "source-code": "Code source"
     },
     "profile": {
         "title": "Profil",
+        "description": "Mettez à jour votre profil",
         "reset-password": "Réinitialiser le mot de passe",
         "profile-picture": {
             "title": "Photo de profil",
@@ -118,4 +146,61 @@
     "already-connected": {
         "title": "Déjà connecté"
     },
+    "social": {
+        "title": "Social",
+        "description": "Gérez vos amis et les utilisateurs bloqués",
+        "friends": {
+            "title": "Amis",
+            "description": "Gérez vos amis",
+            "none": "Pas d'ami trouvé",
+            "search": {
+                "placeholder": "Jean123",
+                "label": "Pseudonyme de l'ami"
+            },
+            "add": {
+                "title": "Inviter un nouvel ami",
+                "none": "Aucun utilisateur disponible",
+                "search": {
+                    "placeholder": "Jean123",
+                    "label": "Pseudonyme de l'utilisateur"
+                }
+            },
+            "remove": {
+                "modal": {
+                    "title": "Retirer un ami",
+                    "text": "sera supprimé de vos amis"
+                }
+            }
+        },
+        "blocked": {
+            "title": "Utilisateurs bloqués",
+            "description": "Gérez les utilisateurs bloqués",
+            "none": "Pas d'utilisateur bloqué trouvé",
+            "search": {
+                "placeholder": "Jean123",
+                "label": "Pseudonyme de l'utilisateur bloqué"
+            },
+            "modal": {
+                "title": "Bloquer l'utilisateur",
+                "text": "sera bloqué"
+            }
+        },
+        "unblock": {
+            "modal": {
+                "title": "Débloquer l'utilisateur",
+                "text": "sera débloqué"
+            }
+        }
+    },
+    "notifications": {
+        "title": "Notifications",
+        "friend-requests": {
+            "title": "Demandes d'ami",
+            "none": "Pas de demande d'ami en attente"
+        }
+    },
+    "play": {
+        "title": "Jouer",
+        "description": "Jouez seul ou avec vos amis"
+    }
 }

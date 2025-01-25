@@ -71,18 +71,46 @@
                 "success": "Profile updated",
                 "error": "An error occurred while updating your profile"
             }
+        },
+        "friends": {
+            "search": {
+                "error": "An error occurred while searching friends"
+            },
+            "add": {
+                "success": "Friend request sent",
+                "error": "An error occurred while asking user as friend",
+                "cancel": {
+                    "success": "Friend request cancelled",
+                    "error": "An error occurred while cancelling the friend request"
+                }
+            },
+            "remove": {
+                "success": "Friend removed"
+            }
+        },
+        "blocked": {
+            "success": "User blocked",
+            "error": "An error occurred while blocking user"
+        },
+        "unblock": {
+            "success": "User unblocked",
+            "error": "An error occurred while unblocking user"
+        },
+        "notification": {
+            "friend-request": {
+                "ask": "You received a friend request from",
+                "accept": "has been added to your friends",
+                "accepted": "accepted your friend request",
+                "refuse": "You refused the friend request of"
+            }
         }
     },
     "menu": {
-        "home": "Home",
-        "settings": "Settings",
-        "profile": "Profile",
-        "logout": "Logout",
-        "login": "Login",
         "source-code": "Source code"
     },
     "profile": {
         "title": "Profile",
+        "description": "Update your profile",
         "reset-password": "Reset password",
         "profile-picture": {
             "title": "Profile picture",
@@ -117,5 +145,62 @@
     },
     "already-connected": {
         "title": "Already connected"
+    },
+    "social": {
+        "title": "Social",
+        "description": "Manage your friends & blocked users",
+        "friends": {
+            "title": "Friends",
+            "description": "Manage your friends",
+            "none": "No friend found",
+            "search": {
+                "placeholder": "John123",
+                "label": "Friend's username"
+            },
+            "add": {
+                "title": "Ask a new friend",
+                "none": "No user available",
+                "search": {
+                    "placeholder": "John123",
+                    "label": "User's username"
+                }
+            },
+            "remove": {
+                "modal": {
+                    "title": "Remove a friend",
+                    "text": "will be removed from your friends"
+                }
+            }
+        },
+        "blocked": {
+            "title": "Blocked users",
+            "description": "Manage your blocked users",
+            "none": "No blocked user found",
+            "search": {
+                "placeholder": "John123",
+                "label": "Blocked user's username"
+            },
+            "modal": {
+                "title": "Blocking user",
+                "text": "will be blocked"
+            }
+        },
+        "unblock": {
+            "modal": {
+                "title": "Unblocking user",
+                "text": "will be unblocked"
+            }
+        }
+    },
+    "notifications": {
+        "title": "Notifications",
+        "friend-requests": {
+            "title": "Friend requests",
+            "none": "No pending friend request"
+        }
+    },
+    "play": {
+        "title": "Play",
+        "description": "Play alone or with your friends"
     }
 }

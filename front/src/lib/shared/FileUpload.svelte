@@ -3,7 +3,7 @@
     import { t } from 'svelte-i18n';
     import { onMount } from 'svelte';
     import { raw } from '../../services/stringService.js';
-    import Loader from "./Loader.svelte";
+    import Loader from './Loader.svelte';
 
     export let name = '';
     export let description = '';

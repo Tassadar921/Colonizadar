@@ -7,6 +7,7 @@
     import { t } from 'svelte-i18n';
     import { checkPassword } from '../../services/checkStringService.js';
     import { profile } from '../../stores/profileStore.js';
+    import Breadcrumbs from '../shared/Breadcrumbs.svelte';
 
     export let token = '';
 
@@ -37,6 +38,8 @@
 </script>
 
 <Title title={$t('reset-password.confirm.title')} hasBackground={true} />
+
+<Breadcrumbs hasBackground={true} items={[{ label: $t('home.title'), path: '/' }, { label: $t('reset-password.confirm.title') }]} />
 
 <Form action={`/api/reset-password/confirm/${token}`} method="POST" on:success={handleSuccess} on:error={handleFailure} bind:isValid={canSubmit}>
     <PasswordInput name="password" bind:value={password} />

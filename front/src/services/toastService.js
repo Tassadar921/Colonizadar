@@ -1,5 +1,6 @@
 import 'toastify-js/src/toastify.css';
 import Toastify from 'toastify-js';
+import { navigate } from '../stores/locationStore.js';
 
 const successToastStyle = {
     background: 'linear-gradient(to right, #00b09b, #96c93d)',
@@ -12,11 +13,11 @@ const errorToastStyle = {
 };
 
 const warningToastStyle = {
-    background: 'linear-gradient(to right, #f09819, #edde5d)',
+    background: 'linear-gradient(to right, #a66300, #a2951a)',
     borderRadius: '10px',
 };
 
-const showToast = (text, status = 'success', duration = 5000) => {
+const showToast = (text, status = 'success', redirectPath = null) => {
     let style = successToastStyle;
     if (status === 'error') {
         style = errorToastStyle;
@@ -26,8 +27,13 @@ const showToast = (text, status = 'success', duration = 5000) => {
 
     Toastify({
         text,
-        duration,
+        duration: 5000,
         style,
+        onClick: () => {
+            if (redirectPath) {
+                navigate(redirectPath);
+            }
+        },
     }).showToast();
 };
 

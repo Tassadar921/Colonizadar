@@ -15,10 +15,38 @@
     import Footer from './lib/shared/Footer.svelte';
     import Loader from './lib/shared/Loader.svelte';
     import AlreadyConnected from './lib/pages/AlreadyConnected.svelte';
+    import Notifications from './lib/pages/Notifications.svelte';
     import Menu from './lib/menu/Menu.svelte';
     import { setLanguage } from './stores/languageStore.js';
+    import { location, navigate } from './stores/locationStore.js';
+    import { locale } from 'svelte-i18n';
+    import { showToast } from './services/toastService.js';
+    import Social from './lib/pages/Social.svelte';
+    import Friends from './lib/pages/Friends.svelte';
+    import Blocked from './lib/pages/Blocked.svelte';
+    import NotificationsSetup from './lib/notifications/NotificationsSetup.svelte';
 
-    export let url = '';
+    const supportedLanguages = ['en', 'fr'];
+
+    const initializeLanguage = () => {
+        const langRegex = new RegExp(`^\/(${supportedLanguages.join('|')})(\/|$)`);
+        const langMatch = langRegex.exec($location);
+
+        const initialSetLanguage = (language) => {
+            setLanguage(language);
+            locale.set(language);
+        };
+
+        let language = langMatch ? langMatch[1] : null;
+        if (!language || !supportedLanguages.includes(language)) {
+            language = 'en';
+            initialSetLanguage(language);
+            showToast('Invalid language. Defaulting to English.', 'error');
+            navigate(`/${language}`);
+        } else {
+            initialSetLanguage(language);
+        }
+    };
 
     const logInformations = async (token) => {
         const tokenExpiresAt = localStorage.getItem('apiTokenExpiration');
@@ -28,22 +56,17 @@
             return;
         }
         axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-        axios
-            .get('/api')
-            .then((response) => {
-                if (response.status !== 200) {
-                    throw new Error('Invalid token');
-                }
-            })
-            .catch(() => {
-                localStorage.removeItem('apiToken');
-                axios.defaults.headers.common['Authorization'] = '';
-            });
+        try {
+            await axios.get('/api');
+        } catch (e) {
+            localStorage.removeItem('apiToken');
+            axios.defaults.headers.common['Authorization'] = '';
+        }
     };
 
     onMount(async () => {
         axios.defaults.baseURL = process.env.VITE_API_BASE_URL;
-        setLanguage(localStorage.getItem('language'));
+        initializeLanguage();
 
         const theme = localStorage.getItem('theme');
         if (theme !== 'light' && theme !== 'dark') {
@@ -58,26 +81,38 @@
     });
 </script>
 
+<NotificationsSetup />
+
 <main class="flex flex-col bg-gray-200 dark:bg-gray-900 min-h-screen min-w-screen">
     <div class="px-3.5 min-h-screen">
         <Menu />
         {#if !$isLoading}
-            <Router {url}>
-                <Route path="/reset-password"><ResetPassword /></Route>
-                <Route path="/reset-password/confirm/:token" let:params><ConfirmResetPassword {...params} /></Route>
+            <Router>
+                <Route path="/:language/reset-password" component={ResetPassword} />
+                <Route path="/:language/reset-password/confirm/:token" let:params><ConfirmResetPassword {...params} /></Route>
 
                 {#if $profile}
-                    <Route path="/"><Homepage /></Route>
-                    <Route path="/login"><AlreadyConnected /></Route>
+                    <Route path="/:language"><Homepage /></Route>
+                    <Route path="/:language/login"><AlreadyConnected /></Route>
 
-                    <Route path="/profile"><Profile /></Route>
-                    <Route path="/logout"><Logout /></Route>
+                    <Route path="/:language/social"><Social /></Route>
+                    <Route path="/:language/social/friends"><Friends /></Route>
+                    <Route path="/:language/social/blocked"><Blocked /></Route>
+
+                    <Route path="/:language/profile"><Profile /></Route>
+                    <Route path="/:language/notifications"><Notifications /></Route>
+                    <Route path="/:language/logout"><Logout /></Route>
                 {:else}
-                    <Route path="/"><Login /></Route>
-                    <Route path="/login"><Login /></Route>
+                    <Route path="/:language/"><Login /></Route>
+                    <Route path="/:language/login"><Login /></Route>
 
-                    <Route path="/profile"><Forbidden /></Route>
-                    <Route path="/logout"><Forbidden /></Route>
+                    <Route path="/:language/social"><Forbidden /></Route>
+                    <Route path="/:language/social/friends"><Forbidden /></Route>
+                    <Route path="/:language/social/blocked"><Forbidden /></Route>
+
+                    <Route path="/:language/profile"><Forbidden /></Route>
+                    <Route path="/:language/notifications"><Forbidden /></Route>
+                    <Route path="/:language/logout"><Forbidden /></Route>
                 {/if}
 
                 <Route path="*"><NotFound /></Route>

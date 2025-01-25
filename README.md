@@ -1,6 +1,6 @@
 # Colonizadar
 
-### Front : Svelte 4, TailwindCSS, Capacitor
+### Front : Svelte 5, TailwindCSS
 
 ### Back : Adonisjs 6.14.1
 

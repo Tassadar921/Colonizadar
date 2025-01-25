@@ -10,7 +10,7 @@ export default class AddUser extends BaseCommand {
     private readonly regexService: RegexService = new RegexService();
 
     private email: string = '';
-    private role: UserRoleEnum = UserRoleEnum.FRIEND;
+    private role: UserRoleEnum = UserRoleEnum.USER;
 
     public static commandName: string = 'add:user';
     public static description: string = 'Add a new user';
@@ -48,8 +48,8 @@ export default class AddUser extends BaseCommand {
                 message: 'Admin (Complete access : add, remove files)',
             },
             {
-                name: UserRoleEnum.FRIEND,
-                message: 'Friend (Can only add files)',
+                name: UserRoleEnum.USER,
+                message: 'User',
             },
         ]);
     }

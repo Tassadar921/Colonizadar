@@ -3,7 +3,8 @@
     import Button from '../shared/Button.svelte';
     import Icon from '../shared/Icon.svelte';
     import { locale } from 'svelte-i18n';
-    import { setLanguage } from '../../stores/languageStore.js';
+    import { setLanguage, language } from '../../stores/languageStore.js';
+    import { location, navigate } from '../../stores/locationStore.js';
 
     let flags = [
         { icon: 'englishFlag', label: 'English', value: 'en' },
@@ -20,10 +21,18 @@
     };
 
     const selectFlag = (flag) => {
-        localStorage.setItem('language', flag.value);
+        const initialLanguage = localStorage.getItem('language');
+        if (initialLanguage === flag.value) {
+            return;
+        }
+
         setLanguage(flag.value);
         locale.set(flag.value);
         selectedFlag = flag;
+
+        const currentPath = $location.replace(`/${initialLanguage}`, '');
+        navigate(`/${flag.value}${currentPath}`);
+
         isExpanded = false;
     };
 
@@ -34,11 +43,11 @@
     };
 
     onMount(() => {
-        selectedFlag = flags.find((flag) => flag.value === localStorage.getItem('language')) || flags[0];
-
         document.addEventListener('click', handleClickOutside);
         return () => document.removeEventListener('click', handleClickOutside);
     });
+
+    $: selectedFlag = flags.find((flag) => flag.value === localStorage.getItem('language')) || flags[0];
 </script>
 
 <div class="relative inline-block" bind:this={buttonEl}>
@@ -50,18 +59,11 @@
     </Button>
 
     {#if isExpanded}
-        <div
-            class="absolute mt-2 bg-white dark:bg-gray-800 shadow-md rounded-lg z-50 w-32 p-2 border border-gray-200"
-            bind:this={popoverEl}
-            style="right: 0;"
-        >
+        <div class="absolute mt-2 bg-white dark:bg-gray-800 shadow-md rounded-lg z-50 w-32 p-2 border border-gray-200" bind:this={popoverEl} style="right: 0;">
             {#each flags as flag}
                 <Button
                     customStyle={true}
-                    className="w-full flex items-center space-x-2 mb-1 p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md shadow-md {selectedFlag.value ===
-                    flag.value
-                        ? 'shadow-green-500'
-                        : ''}"
+                    className="w-full flex items-center space-x-2 mb-1 p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md shadow-md {selectedFlag.value === flag.value ? 'shadow-green-500' : ''}"
                     on:click={() => selectFlag(flag)}
                 >
                     <Icon name={flag.icon} />
