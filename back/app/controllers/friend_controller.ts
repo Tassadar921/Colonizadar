@@ -37,7 +37,7 @@ export default class FriendsController {
             return response.notFound({ error: 'This pending friends request does not exist' });
         }
 
-        transmit.broadcast(`notification/add-friend/accept/${askingToUser.frontId}`, user.apiSerialize());
+        transmit.broadcast(`notification/add-friend/accept/${userId}`, user.apiSerialize());
         await Friend.createMany([
             {
                 userId: user.id,
@@ -87,7 +87,7 @@ export default class FriendsController {
 
         friendRelationships.map(async (friend: Friend): Promise<void> => await friend.delete());
 
-        transmit.broadcast(`notification/friend/remove/${friend.frontId}`, user.apiSerialize());
+        transmit.broadcast(`notification/friend/remove/${userId}`, user.apiSerialize());
         transmit.broadcast(`notification/friend/remove/${user.frontId}`, friend.apiSerialize());
 
         return response.send({ message: 'Friend removed' });

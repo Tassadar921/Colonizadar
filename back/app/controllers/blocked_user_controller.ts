@@ -42,7 +42,7 @@ export default class BlockedController {
 
         const pendingFriends: PendingFriend[] = await this.pendingFriendRepository.findFromUsers(user, blockingUser);
         pendingFriends.map(async (pendingFriend: PendingFriend): Promise<void> => {
-            transmit.broadcast(`notification/add-friend/cancel/${userId}`, { notificationObject: pendingFriend.apiSerialize() });
+            transmit.broadcast(`notification/add-friend/cancel/${userId}`, pendingFriend.apiSerialize());
             await pendingFriend.delete();
         });
 
@@ -53,7 +53,7 @@ export default class BlockedController {
             blockerId: user.id,
             blockedId: blockingUser.id,
         });
-        transmit.broadcast(`notification/blocked/${userId}`, { user: user.apiSerialize() });
+        transmit.broadcast(`notification/blocked/${userId}`, user.apiSerialize());
 
         return response.send({ message: 'User blocked' });
     }
@@ -72,6 +72,8 @@ export default class BlockedController {
         }
 
         blockedUsers.map(async (blockedUser: BlockedUser): Promise<void> => await blockedUser.delete());
+
+        transmit.broadcast(`notification/unblocked/${userId}`);
 
         return response.send({ message: 'User unblocked' });
     }

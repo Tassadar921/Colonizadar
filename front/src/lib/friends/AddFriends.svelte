@@ -109,21 +109,28 @@
         const receivedFriendRequest = $transmit.subscription(`notification/add-friend/${$profile.id}`);
         await receivedFriendRequest.create();
         receivedFriendRequest.onMessage((data) => {
-            updateUser(data.notificationObject.notification.from.id, { receivedFriendRequest: true });
+            updateUser(data.notification.from.id, { receivedFriendRequest: true });
         });
 
         // receiver updated when his request is canceled by sender
         const cancelFriendRequest = $transmit.subscription(`notification/add-friend/cancel/${$profile.id}`);
         await cancelFriendRequest.create();
         cancelFriendRequest.onMessage((data) => {
-            updateUser(data.notificationObject.notification.from.id, { receivedFriendRequest: false });
+            updateUser(data.notification.from.id, { receivedFriendRequest: false });
         });
 
         // receiver updated when becomes blocked
         const blockedUser = $transmit.subscription(`notification/blocked/${$profile.id}`);
         await blockedUser.create();
-        blockedUser.onMessage((data) => {
-            paginatedUsers.users = paginatedUsers.users.filter((currentUser) => currentUser.id !== data.user.id);
+        blockedUser.onMessage((user) => {
+            paginatedUsers.users = paginatedUsers.users.filter((currentUser) => currentUser.id !== user.id);
+        });
+
+        // receiver updated when becomes unblocked
+        const unblockedUser = $transmit.subscription(`notification/unblocked/${$profile.id}`);
+        await unblockedUser.create();
+        unblockedUser.onMessage(async () => {
+            await updateAddFriends();
         });
 
         // update when a user removes us from its friends

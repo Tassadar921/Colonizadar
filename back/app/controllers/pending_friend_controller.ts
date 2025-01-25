@@ -51,7 +51,7 @@ export default class PendingFriendController {
                 notificationQuery.preload('from');
             });
 
-            transmit.broadcast(`notification/add-friend/${userId}`, { notificationObject: pendingFriend.apiSerialize() });
+            transmit.broadcast(`notification/add-friend/${userId}`, pendingFriend.apiSerialize());
         }
 
         return response.send({ pendingFriend: pendingFriend.apiSerialize() });
@@ -75,7 +75,7 @@ export default class PendingFriendController {
             await pendingFriend.load('notification', (notificationQuery): void => {
                 notificationQuery.preload('from');
             });
-            transmit.broadcast(`notification/add-friend/cancel/${userId}`, { notificationObject: pendingFriend.apiSerialize() });
+            transmit.broadcast(`notification/add-friend/cancel/${userId}`, pendingFriend.apiSerialize());
             await pendingFriend.notification.delete();
             await pendingFriend.delete();
             return response.send({ message: 'Request deleted' });

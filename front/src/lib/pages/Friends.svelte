@@ -19,9 +19,12 @@
     let paginatedFriends = { friends: [] };
     let searchBaseUrl = '/api/friends';
     let query = '';
+
     let selectedFriend = { username: '' };
+
     let showAddFriendsModal = false;
     let showConfirmRemoveFriendModal = false;
+    let showBlockingModal = false;
 
     onMount(async () => {
         await updateFriends();
@@ -52,11 +55,33 @@
         }
     };
 
+    const handleShowBlockingModal = (user) => {
+        selectedFriend = user;
+        showBlockingModal = true;
+    };
+
+    const handleBlockUser = async () => {
+        const response = await axios.get(`/api/blocked/add/${selectedFriend.id}`);
+        if (response.status === 200) {
+            paginatedFriends.friends = paginatedFriends.friends.filter((friendObject) => friendObject.friend.id !== selectedFriend.id);
+            showToast($t('toast.blocked.success'));
+            showBlockingModal = false;
+        } else {
+            showToast($t('toast.blocked.error'), 'error');
+        }
+    };
+
     const setupEvents = async () => {
-        // update when a user removes us from its friends
+        // update when a friend removes us from its friends
         const removeFriend = $transmit.subscription(`notification/friend/remove/${$profile.id}`);
         await removeFriend.create();
         removeFriend.onMessage(async (user) => {
+            paginatedFriends.friends = paginatedFriends.friends.filter((friendObject) => friendObject.friend.id !== user.id);
+        });
+
+        const blockFriend = $transmit.subscription(`notification/blocked/${$profile.id}`);
+        await blockFriend.create();
+        blockFriend.onMessage(async (user) => {
             paginatedFriends.friends = paginatedFriends.friends.filter((friendObject) => friendObject.friend.id !== user.id);
         });
     }
@@ -113,7 +138,7 @@
                         <Button ariaLabel="Remove friend" customStyle={true} className="transition-colors duration-300 text-red-600 hover:text-red-400" on:click={() => handleShowRemoveFriendModal(friendObject.friend)}>
                             <Icon name="RemoveUser" />
                         </Button>
-                        <Button ariaLabel="Block user" customStyle={true} className="transition-colors duration-300 text-red-600 hover:text-red-400" on:click={() => handleShowBlockingModal(user)}>
+                        <Button ariaLabel="Block user" customStyle={true} className="transition-colors duration-300 text-red-600 hover:text-red-400" on:click={() => handleShowBlockingModal(friendObject.friend)}>
                             <Icon name="stop" />
                         </Button>
                     </div>
@@ -134,4 +159,9 @@
 <ConfirmModal bind:showModal={showConfirmRemoveFriendModal} on:success={handleRemoveFriend}>
     <Subtitle slot="header">{$t('social.friends.remove.modal.title')}</Subtitle>
     <p>{selectedFriend.username} {$t('social.friends.remove.modal.text')}</p>
+</ConfirmModal>
+
+<ConfirmModal bind:showModal={showBlockingModal} on:success={handleBlockUser}>
+    <Subtitle slot="header">{$t('social.blocked.modal.title')}</Subtitle>
+    <p>{selectedFriend.username} {$t('social.blocked.modal.text')}</p>
 </ConfirmModal>
