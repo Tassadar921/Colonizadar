@@ -71,7 +71,7 @@
     {#if paginatedBlockedUsers.blockedUsers.length}
         <div class="flex flex-col gap-1 w-full">
             {#each paginatedBlockedUsers.blockedUsers as blocked}
-                <div class="flex justify-between items-center h-12 border border-gray-800 px-3">
+                <div class="flex justify-between items-center h-12 border border-gray-300 dark:border-gray-800 rounded-xl hover:bg-gray-300 dark:hover:bg-gray-800 transition-colors duration-300 px-3">
                     <div class="flex gap-5 flex-wrap items-center">
                         {#if blocked.user.profilePicture}
                             <img
@@ -84,16 +84,14 @@
                         {/if}
                         <p>{blocked.user.username}</p>
                     </div>
-                    <div class="flex gap-5">
-                        <Button
-                            ariaLabel="Unblock user"
-                            customStyle={true}
-                            className="transition-colors duration-300 text-green-600 hover:text-green-500 flex gap-1"
-                            on:click={() => handleShowUnblockModal(blocked.user)}
-                        >
-                            <Icon name="unblock" />
-                        </Button>
-                    </div>
+                    <Button
+                        ariaLabel="Unblock user"
+                        customStyle={true}
+                        className="transition-colors duration-300  text-green-600 hover:text-green-400"
+                        on:click={() => handleShowUnblockModal(blocked.user)}
+                    >
+                        <Icon name="unblock" />
+                    </Button>
                 </div>
             {/each}
         </div>

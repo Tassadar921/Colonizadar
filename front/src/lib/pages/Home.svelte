@@ -7,7 +7,7 @@
         {
             title: $t('play.title'),
             icon: 'game',
-            href: '/game',
+            href: '/play',
             description: $t('play.description'),
         },
         {

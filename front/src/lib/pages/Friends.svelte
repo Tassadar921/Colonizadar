@@ -11,8 +11,8 @@
     import AddFriends from '../friends/AddFriends.svelte';
     import Button from '../shared/Button.svelte';
     import Icon from '../shared/Icon.svelte';
-    import ConfirmModal from "../shared/ConfirmModal.svelte";
-    import {showToast} from "../../services/toastService.js";
+    import ConfirmModal from '../shared/ConfirmModal.svelte';
+    import { showToast } from '../../services/toastService.js';
     import { profile } from '../../stores/profileStore.js';
     import { transmit } from '../../stores/transmitStore.js';
 
@@ -84,7 +84,7 @@
         blockFriend.onMessage(async (user) => {
             paginatedFriends.friends = paginatedFriends.friends.filter((friendObject) => friendObject.friend.id !== user.id);
         });
-    }
+    };
 
     $: {
         if ($profile) {
@@ -135,10 +135,20 @@
                         <p>{friendObject.friend.username}</p>
                     </div>
                     <div class="flex gap-10 pr-5">
-                        <Button ariaLabel="Remove friend" customStyle={true} className="transition-colors duration-300 text-red-600 hover:text-red-400" on:click={() => handleShowRemoveFriendModal(friendObject.friend)}>
+                        <Button
+                            ariaLabel="Remove friend"
+                            customStyle={true}
+                            className="transition-colors duration-300 text-red-600 hover:text-red-400"
+                            on:click={() => handleShowRemoveFriendModal(friendObject.friend)}
+                        >
                             <Icon name="RemoveUser" />
                         </Button>
-                        <Button ariaLabel="Block user" customStyle={true} className="transition-colors duration-300 text-red-600 hover:text-red-400" on:click={() => handleShowBlockingModal(friendObject.friend)}>
+                        <Button
+                            ariaLabel="Block user"
+                            customStyle={true}
+                            className="transition-colors duration-300 text-red-600 hover:text-red-400"
+                            on:click={() => handleShowBlockingModal(friendObject.friend)}
+                        >
                             <Icon name="stop" />
                         </Button>
                     </div>
