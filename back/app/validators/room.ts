@@ -1,9 +1,9 @@
 import vine from '@vinejs/vine';
 
-export const loginValidator = vine.compile(
+export const createRoomValidator = vine.compile(
     vine.object({
-        email: vine.string().trim().email(),
-        password: vine.string().trim(),
+        name: vine.string().minLength(3).maxLength(50).alphaNumeric(),
+        password: vine.string().optional(),
     })
 );
 

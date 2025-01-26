@@ -1,4 +1,4 @@
-enum RoomPeopleDifficultyEnum {
+enum RoomPlayerDifficultyEnum {
     PASSIVE = 'passive',
     EASY = 'easy',
     MEDIUM = 'medium',
@@ -6,4 +6,4 @@ enum RoomPeopleDifficultyEnum {
     EXTREME = 'extreme',
 }
 
-export default RoomPeopleDifficultyEnum;
+export default RoomPlayerDifficultyEnum;

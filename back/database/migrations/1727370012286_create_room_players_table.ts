@@ -1,9 +1,9 @@
 import { BaseSchema } from '@adonisjs/lucid/schema';
 import { Knex } from 'knex';
-import RoomPeopleDifficultyEnum from '#types/enum/room_people_difficulty_enum';
+import RoomPeopleDifficultyEnum from '#types/enum/room_player_difficulty_enum';
 
 export default class extends BaseSchema {
-    protected tableName: string = 'room_persons';
+    protected tableName: string = 'room_players';
 
     public async up(): Promise<void> {
         this.schema.createTable(this.tableName, (table: Knex.CreateTableBuilder): void => {
