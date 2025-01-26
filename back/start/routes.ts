@@ -13,6 +13,7 @@ const FriendController = () => import('#controllers/friend_controller');
 const NotificationController = () => import('#controllers/notification_controller');
 const PendingFriendController = () => import('#controllers/pending_friend_controller');
 const UserController = () => import('#controllers/user_controller');
+const RoomController = () => import('#controllers/room_controller');
 
 // API requests
 router
@@ -79,6 +80,11 @@ router
                         router.get('/pending-friends', [NotificationController, 'getPendingFriends']);
                     })
                     .prefix('notifications');
+
+                router.group((): void => {
+                    router.post('/create', [RoomController, 'create']);
+                })
+                    .prefix('room');
             })
             .use([middleware.auth({ guards: ['api'] })]);
 

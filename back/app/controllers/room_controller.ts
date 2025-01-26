@@ -4,6 +4,7 @@ import { createRoomValidator, joinRoomValidator } from '#validators/room';
 import Room from '#models/room';
 import RoomRepository from '#repositories/room_repository';
 import RoomStatusEnum from '#types/enum/room_status_enum';
+import RoomPlayer from "#models/room_player";
 
 @inject()
 export default class RoomController {
@@ -15,7 +16,7 @@ export default class RoomController {
             status: RoomStatusEnum.ACTIVE,
         });
         if (activeRoom) {
-            return response.send()
+            return response.send({ room: activeRoom.apiSerialize() });
         }
 
         const { name, password } = await createRoomValidator.validate(request.all());
@@ -24,7 +25,19 @@ export default class RoomController {
             name,
             public: !password,
             password: password ?? null,
+            ownerId: user.id,
         });
+        await room.refresh();
+
+        await RoomPlayer.create({
+            userId: user.id,
+            isUserConnected: true,
+            roomId: room.id,
+        });
+
+        await room.load('players');
+
+        return response.send({ room: room.apiSerialize() });
     }
 
     public async join({ request, response, user }: HttpContext): Promise<void> {
