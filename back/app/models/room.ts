@@ -5,6 +5,7 @@ import type { BelongsTo, HasMany } from '@adonisjs/lucid/types/relations';
 import User from '#models/user';
 import RoomPerson from '#models/room_person';
 import Game from '#models/game';
+import RoomStatusEnum from "#types/enum/room_status_enum";
 
 export default class Room extends BaseModel {
     @column({ isPrimary: true })
@@ -24,6 +25,9 @@ export default class Room extends BaseModel {
 
     @column()
     declare token: string;
+
+    @column()
+    declare status: RoomStatusEnum
 
     @column()
     declare ownerId: string;

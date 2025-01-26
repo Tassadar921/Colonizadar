@@ -19,6 +19,9 @@ export default class RoomPerson extends BaseModel {
     declare user: BelongsTo<typeof User>;
 
     @column()
+    declare isUserConnected: boolean;
+
+    @column()
     declare difficulty: RoomPeopleDifficultyEnum;
 
     @column()

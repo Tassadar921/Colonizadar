@@ -10,6 +10,7 @@ export default class extends BaseSchema {
             table.uuid('id').primary().defaultTo(this.raw('uuid_generate_v4()'));
             table.specificType('front_id', 'serial').notNullable();
             table.uuid('user_id').notNullable().references('id').inTable('users').onDelete('CASCADE');
+            table.boolean('is_user_connected').defaultTo(false);
             table.enum('difficulty', Object.values(RoomPeopleDifficultyEnum)).notNullable().defaultTo(RoomPeopleDifficultyEnum.MEDIUM);
             table.uuid('room_id').notNullable().references('id').inTable('rooms').onDelete('CASCADE');
             table.timestamp('created_at', { useTz: true });

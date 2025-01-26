@@ -1,5 +1,6 @@
 import { BaseSchema } from '@adonisjs/lucid/schema';
 import { Knex } from 'knex';
+import RoomStatusEnum from "#types/enum/room_status_enum";
 
 export default class extends BaseSchema {
     protected tableName: string = 'rooms';
@@ -12,8 +13,8 @@ export default class extends BaseSchema {
             table.boolean('public').defaultTo(true);
             table.string('password', 255).nullable();
             table.uuid('token').defaultTo(this.raw('uuid_generate_v4()'));
+            table.enum('status', Object.values(RoomStatusEnum)).notNullable().defaultTo(RoomStatusEnum.ACTIVE);
             table.uuid('owner_id').notNullable().references('id').inTable('users').onDelete('CASCADE');
-            table.uuid('game_id').notNullable().references('id').inTable('games').onDelete('CASCADE');
             table.timestamp('created_at', { useTz: true });
             table.timestamp('updated_at', { useTz: true });
         });
