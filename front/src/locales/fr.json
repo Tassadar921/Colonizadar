@@ -105,6 +105,13 @@
                 "accepted": "a accepté votre demande d'ami",
                 "refuse": "Vous avez refusé la demande d'ami de"
             }
+        },
+        "room": {
+            "error": "Une erreur est survenue lors de l'intégration au salon",
+            "create": {
+                "success": "Salon créé",
+                "error": "Une erreur est survenue lors de la création du salon"
+            }
         }
     },
     "menu": {
@@ -204,21 +211,24 @@
     "play": {
         "title": "Jouer",
         "description": "Jouez seul ou avec vos amis",
-        "create": {
-            "title": "Créer un salon",
-            "modal": {
-                "name": {
-                    "label": "Nom",
-                    "placeholder": "Salon de Jean123"
+        "room": {
+            "title": "Salon",
+            "create": {
+                "title": "Créer un salon",
+                "modal": {
+                    "name": {
+                        "label": "Nom",
+                        "placeholder": "Salon de Jean123"
+                    }
                 }
-            }
-        },
-        "join": {
-            "title": "Rejoindre",
-            "modal": {
-                "token": {
-                    "label": "Token",
-                    "placeholder": "550e8400-e29b-41d4-a716-446655440000"
+            },
+            "join": {
+                "title": "Rejoindre",
+                "modal": {
+                    "token": {
+                        "label": "Token",
+                        "placeholder": "550e8400-e29b-41d4-a716-446655440000"
+                    }
                 }
             }
         }

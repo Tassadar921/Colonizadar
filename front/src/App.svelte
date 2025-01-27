@@ -26,6 +26,7 @@
     import Blocked from './lib/pages/Blocked.svelte';
     import NotificationsSetup from './lib/notifications/NotificationsSetup.svelte';
     import Play from './lib/pages/Play.svelte';
+    import Room from "./lib/pages/Room.svelte";
 
     const supportedLanguages = ['en', 'fr'];
 
@@ -89,7 +90,7 @@
         <Menu />
         {#if !$isLoading}
             <Router>
-                <Route path="/:language/reset-password" component={ResetPassword} />
+                <Route path="/:language/reset-password"><ResetPassword /></Route>
                 <Route path="/:language/reset-password/confirm/:token" let:params><ConfirmResetPassword {...params} /></Route>
 
                 {#if $profile}
@@ -101,6 +102,7 @@
                     <Route path="/:language/social/blocked"><Blocked /></Route>
 
                     <Route path="/:language/play"><Play /></Route>
+                    <Route path="/:language/play/room/:roomId" let:params><Room {...params} /></Route>
 
                     <Route path="/:language/profile"><Profile /></Route>
                     <Route path="/:language/notifications"><Notifications /></Route>

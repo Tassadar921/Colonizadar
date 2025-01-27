@@ -12,3 +12,9 @@ export const joinRoomValidator = vine.compile(
         token: vine.string().uuid(),
     })
 );
+
+export const getRoomValidator = vine.compile(
+    vine.object({
+        roomId: vine.number().positive(),
+    })
+);

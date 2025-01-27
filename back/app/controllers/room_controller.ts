@@ -1,6 +1,6 @@
-import { inject } from '@adonisjs/core';
-import { HttpContext } from '@adonisjs/core/http';
-import { createRoomValidator, joinRoomValidator } from '#validators/room';
+import {inject} from '@adonisjs/core';
+import {HttpContext} from '@adonisjs/core/http';
+import {createRoomValidator, getRoomValidator, joinRoomValidator} from '#validators/room';
 import Room from '#models/room';
 import RoomRepository from '#repositories/room_repository';
 import RoomStatusEnum from '#types/enum/room_status_enum';
@@ -16,7 +16,8 @@ export default class RoomController {
             status: RoomStatusEnum.ACTIVE,
         });
         if (activeRoom) {
-            return response.send({ room: activeRoom.apiSerialize() });
+            activeRoom.status = RoomStatusEnum.CLOSED;
+            await activeRoom.save();
         }
 
         const { name, password } = await createRoomValidator.validate(request.all());
@@ -35,8 +36,19 @@ export default class RoomController {
             roomId: room.id,
         });
 
-        await room.load('players');
+        return response.send({ roomId: room.frontId });
+    }
 
+    public async get({ request, response, user }: HttpContext): Promise<void> {
+        const { roomId } = await getRoomValidator.validate(request.params());
+
+        const room: Room | null = await this.roomRepository.findOneBy({
+            frontId: roomId
+        }, ['players', 'owner']);
+        // TODO: repository custom method => preload players' users
+        if (!room || !(room.ownerId === user.id) || !room.players.some((player: RoomPlayer): boolean => player.userId === user.id)) {
+            return response.badRequest({ error: 'Room not found' });
+        }
         return response.send({ room: room.apiSerialize() });
     }
 
