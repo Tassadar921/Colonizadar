@@ -42,11 +42,8 @@ export default class RoomController {
     public async get({ request, response, user }: HttpContext): Promise<void> {
         const { roomId } = await getRoomValidator.validate(request.params());
 
-        const room: Room | null = await this.roomRepository.findOneBy({
-            frontId: roomId
-        }, ['players', 'owner']);
-        // TODO: repository custom method => preload players' users
-        if (!room || !(room.ownerId === user.id) || !room.players.some((player: RoomPlayer): boolean => player.userId === user.id)) {
+        const room: Room | null = await this.roomRepository.getFromUserAndFrontId(user, roomId);
+        if (!room) {
             return response.badRequest({ error: 'Room not found' });
         }
         return response.send({ room: room.apiSerialize() });
