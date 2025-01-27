@@ -10,6 +10,8 @@
     import { isValidUuid } from '../../services/checkStringService.js';
     import Loader from "../shared/Loader.svelte";
     import axios from "axios";
+    import Switch from "../shared/Switch.svelte";
+    import PasswordInput from "../shared/PasswordInput.svelte";
 
     let showJoinModal = false;
     let showCreateModal = false;
@@ -19,6 +21,8 @@
 
     let token;
     let name;
+    let isPrivate = false;
+    let password;
 
     let loading = false;
 
@@ -81,5 +85,11 @@
     <Subtitle slot="header">{$t('play.create.title')}</Subtitle>
     <Form showBackground={false} bind:isValid={isCreateSubmittable} on:success={handleCreateSuccess} on:error={handleCreateFailure}>
         <Input name="token" label={$t('play.create.modal.name.label')} placeholder={$t('play.create.modal.name.placeholder')} bind:value={name} required />
+        <div class="grid grid-cols-1 md:grid-cols-2">
+            <Switch size={4} bind:value={isPrivate} label={$t('common.private')} />
+            {#if isPrivate}
+                <PasswordInput bind:value={password} />
+            {/if}
+        </div>
     </Form>
 </Modal>

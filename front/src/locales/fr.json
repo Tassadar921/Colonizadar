@@ -11,6 +11,8 @@
         "name": "Nom",
         "created-at": "Créé le",
         "updated-at": "Mis à jour le",
+        "public": "Public",
+        "private": "Privé",
         "title": {
             "label": "Titre",
             "placeholder": "Photo de Jésus"
