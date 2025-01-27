@@ -57,7 +57,7 @@
 <Breadcrumbs items={[{ label: $t('home.title'), path: '/' }, { label: $t('social.title'), path: '/social' }, { label: $t('social.blocked.title') }]} />
 
 <Search
-    selected={true}
+    selected
     bind:results={paginatedBlockedUsers.blockedUsers}
     placeholder={$t('social.blocked.search.placeholder')}
     label={$t('social.blocked.search.label')}
@@ -86,7 +86,7 @@
                     </div>
                     <Button
                         ariaLabel="Unblock user"
-                        customStyle={true}
+                        customStyle
                         className="transition-all duration-300 hover:scale-110 transform text-green-600 hover:text-green-400"
                         on:click={() => handleShowUnblockModal(blocked.user)}
                     >

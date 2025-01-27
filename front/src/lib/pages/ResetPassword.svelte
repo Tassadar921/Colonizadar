@@ -31,11 +31,11 @@
     $: isValid = email && isValidEmail(email);
 </script>
 
-<Title title={$t('reset-password.title')} hasBackground={true} />
+<Title title={$t('reset-password.title')} hasBackground />
 
-<Breadcrumbs hasBackground={true} items={[{ label: $t('home.title'), path: '/' }, { label: $t('reset-password.title') }]} />
+<Breadcrumbs hasBackground items={[{ label: $t('home.title'), path: '/' }, { label: $t('reset-password.title') }]} />
 
 <Form action="/api/reset-password/send-mail" method="POST" on:success={handleSuccess} on:error={handleFailure} bind:isValid>
     <input type="hidden" name="frontUri" value={`${process.env.VITE_FRONT_URI}/reset-password/confirm`} />
-    <Input label={$t('common.email.label')} placeholder={$t('common.email.placeholder')} type="email" name="email" bind:value={email} required={true} {readonly} />
+    <Input label={$t('common.email.label')} placeholder={$t('common.email.placeholder')} type="email" name="email" bind:value={email} required {readonly} />
 </Form>

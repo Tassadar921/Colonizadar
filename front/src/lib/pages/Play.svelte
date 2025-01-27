@@ -8,25 +8,60 @@
     import Subtitle from '../shared/Subtitle.svelte';
     import Input from '../shared/Input.svelte';
     import { isValidUuid } from '../../services/checkStringService.js';
+    import Loader from "../shared/Loader.svelte";
+    import axios from "axios";
 
     let showJoinModal = false;
+    let showCreateModal = false;
+
     let isJoinSubmittable = false;
+    let isCreateSubmittable = false;
+
     let token;
+    let name;
+
+    let loading = false;
+
+    const handleJoinSuccess = () => {
+        console.log('join success');
+    };
+
+    const handleJoinFailure = () => {
+        console.log('join failure');
+    };
+
+    const handleCreateSuccess = () => {
+        console.log('create success');
+    };
+
+    const handleCreateFailure = () => {
+        console.log('create failure');
+    };
+
+    const handleCreate = async () => {
+        const response = await axios.post()
+    };
 
     $: isJoinSubmittable = token && isValidUuid(token);
 </script>
 
-<Title title={$t('play.title')} hasBackground={true} />
+<Loader bind:loading />
 
-<Breadcrumbs items={[{ label: $t('home.title'), path: '/' }, { label: $t('play.title') }]} hasBackground={true} />
+<Title title={$t('play.title')} hasBackground />
+
+<Breadcrumbs items={[{ label: $t('home.title'), path: '/' }, { label: $t('play.title') }]} hasBackground />
 
 <Form submittable={false}>
     <div class="flex flex-col gap-3 p-3">
-        <Button customStyle={true} className="transition-all duration-300 hover:scale-105 transform bg-green-700 hover:bg-green-600 hover: px-3 py-2 rounded-xl">
+        <Button
+            on:click={() => showCreateModal = true}
+            customStyle
+            className="transition-all duration-300 hover:scale-105 transform bg-green-700 hover:bg-green-600 hover: px-3 py-2 rounded-xl"
+        >
             <span class="text-white text-xl font-bold">{$t('play.create.title')}</span>
         </Button>
         <Button
-            customStyle={true}
+            customStyle
             on:click={() => (showJoinModal = true)}
             className="transition-all duration-300 hover:scale-105 transform bg-primary-800 hover:bg-primary-700 hover: px-3 py-2 rounded-xl"
         >
@@ -37,7 +72,14 @@
 
 <Modal bind:showModal={showJoinModal}>
     <Subtitle slot="header">{$t('play.join.title')}</Subtitle>
-    <Form showBackground={false} bind:isValid={isJoinSubmittable}>
-        <Input name="token" label={$t('play.join.modal.token.label')} placeholder={$t('play.join.modal.token.placeholder')} bind:value={token} />
+    <Form showBackground={false} bind:isValid={isJoinSubmittable} on:success={handleJoinSuccess} on:error={handleJoinFailure}>
+        <Input name="token" label={$t('play.join.modal.token.label')} placeholder={$t('play.join.modal.token.placeholder')} bind:value={token} required />
+    </Form>
+</Modal>
+
+<Modal bind:showModal={showCreateModal}>
+    <Subtitle slot="header">{$t('play.create.title')}</Subtitle>
+    <Form showBackground={false} bind:isValid={isCreateSubmittable} on:success={handleCreateSuccess} on:error={handleCreateFailure}>
+        <Input name="token" label={$t('play.create.modal.name.label')} placeholder={$t('play.create.modal.name.placeholder')} bind:value={name} required />
     </Form>
 </Modal>

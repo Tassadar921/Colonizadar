@@ -203,7 +203,13 @@
         "title": "Play",
         "description": "Play alone or with your friends",
         "create": {
-            "title": "Create a room"
+            "title": "Create a room",
+            "modal": {
+                "name": {
+                    "label": "Name",
+                    "placeholder": "Room of John123"
+                }
+            }
         },
         "join": {
             "title": "Join",

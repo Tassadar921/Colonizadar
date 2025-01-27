@@ -37,7 +37,7 @@
 
 <Title title={$t('notifications.title')} />
 
-<Breadcrumbs hasBackground={true} items={[{ label: $t('home.title'), path: '/' }, { label: $t('notifications.title') }]} />
+<Breadcrumbs hasBackground items={[{ label: $t('home.title'), path: '/' }, { label: $t('notifications.title') }]} />
 
 <div class="grid grid-cols-1 md:grid-cols-2">
     <NotificationModule

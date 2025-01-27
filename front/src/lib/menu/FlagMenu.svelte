@@ -51,7 +51,7 @@
 </script>
 
 <div class="relative inline-block" bind:this={buttonEl}>
-    <Button customStyle={true} className="mb-2 flex items-center space-x-2" on:click={togglePopover}>
+    <Button customStyle className="mb-2 flex items-center space-x-2" on:click={togglePopover}>
         <Icon bind:name={selectedFlag.icon} />
         <div class="dark:text-primary-500 transform transition-transform duration-300" class:rotate-180={isExpanded}>
             <Icon bind:name={chevronIcon} />
@@ -62,7 +62,7 @@
         <div class="absolute mt-2 bg-white dark:bg-gray-800 shadow-md rounded-lg z-50 w-32 p-2 border border-gray-200" bind:this={popoverEl} style="right: 0;">
             {#each flags as flag}
                 <Button
-                    customStyle={true}
+                    customStyle
                     className="w-full flex items-center space-x-2 mb-1 p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md shadow-md {selectedFlag.value === flag.value ? 'shadow-green-500' : ''}"
                     on:click={() => selectFlag(flag)}
                 >

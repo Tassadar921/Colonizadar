@@ -27,7 +27,7 @@
 
 <Button
     on:click
-    customStyle={true}
+    customStyle
     style="z-index: 5000"
     className="text-white shadow-lg flex items-center justify-center fixed size-10 rounded-full bg-primary-600 hover:bg-primary-900 transition-colors duration-300 {verticalClasses[
         vertical

@@ -168,7 +168,7 @@
 </script>
 
 <Search
-    selected={true}
+    selected
     bind:results={paginatedUsers.users}
     placeholder={$t('social.friends.add.search.placeholder')}
     label={$t('social.friends.add.search.label')}
@@ -199,7 +199,7 @@
                         {#if user.sentFriendRequest}
                             <Button
                                 ariaLabel="Cancel friend request"
-                                customStyle={true}
+                                customStyle
                                 className="transition-all duration-300 hover:scale-110 transform text-red-600 hover:text-red-500"
                                 on:click={() => handleCancelFriendRequest(user)}
                             >
@@ -209,7 +209,7 @@
                             <div class="flex gap-5">
                                 <Button
                                     ariaLabel="Accept as friend"
-                                    customStyle={true}
+                                    customStyle
                                     className="transition-all duration-300 hover:scale-110 transform text-green-600 hover:text-green-400"
                                     on:click={() => handleAcceptPendingRequest(user)}
                                 >
@@ -217,7 +217,7 @@
                                 </Button>
                                 <Button
                                     ariaLabel="Refuse friend request"
-                                    customStyle={true}
+                                    customStyle
                                     className="transition-all duration-300 hover:scale-110 transform text-red-600 hover:text-red-400"
                                     on:click={() => handleRefusePendingRequest(user)}
                                 >
@@ -227,7 +227,7 @@
                         {:else}
                             <Button
                                 ariaLabel="Send friend request"
-                                customStyle={true}
+                                customStyle
                                 className="transition-all duration-300 hover:scale-110 transform text-green-600 hover:text-green-400 flex gap-1"
                                 on:click={() => handleAddFriend(user)}
                             >
@@ -236,7 +236,7 @@
                         {/if}
                         <Button
                             ariaLabel="Block user"
-                            customStyle={true}
+                            customStyle
                             className="transition-all duration-300 hover:scale-110 transform text-red-600 hover:text-red-400"
                             on:click={() => handleShowBlockingModal(user)}
                         >

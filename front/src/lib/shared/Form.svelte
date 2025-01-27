@@ -66,7 +66,7 @@
             <Button
                 type="submit"
                 bind:disabled={isSendButtonDisabled}
-                customStyle={true}
+                customStyle
                 additionalStyle="bg-green-700 {isSendButtonDisabled ? 'cursor-not-allowed' : 'hover:bg-green-800'} transition-all duration-300 py-2 px-4 rounded-xl text-2xl font-bold"
             >
                 <div class="flex flex-row items-center gap-3">
