@@ -11,6 +11,8 @@
         "name": "Name",
         "created-at": "Created at",
         "updated-at": "Updated at",
+        "public": "Public",
+        "private": "Private",
         "title": {
             "label": "Title",
             "placeholder": "Jesus' photo"
@@ -102,6 +104,13 @@
                 "accept": "has been added to your friends",
                 "accepted": "accepted your friend request",
                 "refuse": "You refused the friend request of"
+            }
+        },
+        "room": {
+            "error": "An error occurred while joining room",
+            "create": {
+                "success": "Room created",
+                "error": "An error occurred while creating the room"
             }
         }
     },
@@ -201,6 +210,27 @@
     },
     "play": {
         "title": "Play",
-        "description": "Play alone or with your friends"
+        "description": "Play alone or with your friends",
+        "room": {
+            "title": "Room",
+            "create": {
+                "title": "Create a room",
+                "modal": {
+                    "name": {
+                        "label": "Name",
+                        "placeholder": "Room of John123"
+                    }
+                }
+            },
+            "join": {
+                "title": "Join",
+                "modal": {
+                    "token": {
+                        "label": "Token",
+                        "placeholder": "550e8400-e29b-41d4-a716-446655440000"
+                    }
+                }
+            }
+        }
     }
 }

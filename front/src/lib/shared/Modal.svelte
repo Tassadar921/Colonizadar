@@ -36,7 +36,7 @@
 
 <dialog bind:this={dialog} on:close={() => (showModal = false)} style={`width: ${fullWidth ? '90%' : '50%'}`} class={`rounded-lg border-none p-0`}>
     {#if closable}
-        <Button type="button" ariaLabel={$t('common.close-modal')} className="fixed inset-0 w-full h-full cursor-default" customStyle={true} on:click={handleClose} />
+        <Button type="button" ariaLabel={$t('common.close-modal')} className="fixed inset-0 w-full h-full cursor-default" customStyle on:click={handleClose} />
     {/if}
 
     <div class="p-2 md:p-4 bg-white dark:bg-gray-700 rounded-lg relative">

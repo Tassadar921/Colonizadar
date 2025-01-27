@@ -23,7 +23,7 @@
                     <div class="flex gap-10 pr-5">
                         <Button
                             ariaLabel="Accept as friend"
-                            customStyle={true}
+                            customStyle
                             className="transition-colors duration-300 text-green-600 hover:text-green-400"
                             on:click={() => dispatch('accept', notificationObject)}
                         >
@@ -31,7 +31,7 @@
                         </Button>
                         <Button
                             ariaLabel="Refuse friend request"
-                            customStyle={true}
+                            customStyle
                             className="transition-colors duration-300 text-red-600 hover:text-red-400"
                             on:click={() => dispatch('refuse', notificationObject)}
                         >

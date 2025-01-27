@@ -33,7 +33,7 @@
     <div class="mt-3">
         <Button
             idName="menu-button"
-            customStyle={true}
+            customStyle
             className={`text-primary-500 hover:text-primary-800 duration-300 transition-colors ${isOpen ? 'opacity-0' : ''}`}
             on:click={() => (isOpen = !isOpen)}
         >

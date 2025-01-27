@@ -33,13 +33,13 @@
     $: isValid = email && password;
 </script>
 
-<Title title={$t('login.title')} hasBackground={true} />
+<Title title={$t('login.title')} hasBackground />
 
-<Breadcrumbs hasBackground={true} items={[{ label: $t('home.title'), path: '/' }, { label: $t('login.title') }]} />
+<Breadcrumbs hasBackground items={[{ label: $t('home.title'), path: '/' }, { label: $t('login.title') }]} />
 
 <Form action="/api/login" method="post" on:success={handleSuccess} on:error={handleFailure} bind:isValid>
-    <Input type="email" name="email" placeholder={$t('common.email.placeholder')} label={$t('common.email.label')} bind:value={email} required={true} />
-    <PasswordInput bind:value={password} required={true} />
+    <Input type="email" name="email" placeholder={$t('common.email.placeholder')} label={$t('common.email.label')} bind:value={email} />
+    <PasswordInput bind:value={password} />
     <div class="w-full mb-3">
         <Link href="/reset-password" className="text-primary-500 hover:text-white duration-300 transition-colors">Forgot password ?</Link>
     </div>
