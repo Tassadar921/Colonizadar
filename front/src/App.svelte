@@ -26,7 +26,7 @@
     import Blocked from './lib/pages/Blocked.svelte';
     import NotificationsSetup from './lib/notifications/NotificationsSetup.svelte';
     import Play from './lib/pages/Play.svelte';
-    import Room from "./lib/pages/Room.svelte";
+    import Room from './lib/pages/Room.svelte';
 
     const supportedLanguages = ['en', 'fr'];
 

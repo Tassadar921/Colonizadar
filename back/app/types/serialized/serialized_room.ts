@@ -1,6 +1,6 @@
-import RoomStatusEnum from "#types/enum/room_status_enum";
-import SerializedUser from "#types/serialized/serialized_user";
-import SerializedRoomPlayer from "#types/serialized/serialized_room_player";
+import RoomStatusEnum from '#types/enum/room_status_enum';
+import SerializedUser from '#types/serialized/serialized_user';
+import SerializedRoomPlayer from '#types/serialized/serialized_room_player';
 
 type SerializedRoom = {
     id: number;

@@ -4,7 +4,7 @@ import User from '#models/user';
 import type { BelongsTo } from '@adonisjs/lucid/types/relations';
 import RoomPlayerDifficultyEnum from '#types/enum/room_player_difficulty_enum';
 import Room from '#models/room';
-import SerializedRoomPlayer from "#types/serialized/serialized_room_player";
+import SerializedRoomPlayer from '#types/serialized/serialized_room_player';
 
 export default class RoomPlayer extends BaseModel {
     @column({ isPrimary: true })
@@ -45,6 +45,6 @@ export default class RoomPlayer extends BaseModel {
             difficulty: this.difficulty,
             createdAt: this.createdAt?.toString(),
             updatedAt: this.updatedAt?.toString(),
-        }
+        };
     }
 }

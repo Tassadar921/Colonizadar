@@ -81,10 +81,11 @@ router
                     })
                     .prefix('notifications');
 
-                router.group((): void => {
-                    router.post('/create', [RoomController, 'create']);
-                    router.get('/:roomId', [RoomController, 'get']);
-                })
+                router
+                    .group((): void => {
+                        router.post('/create', [RoomController, 'create']);
+                        router.get('/:roomId', [RoomController, 'get']);
+                    })
                     .prefix('room');
             })
             .use([middleware.auth({ guards: ['api'] })]);

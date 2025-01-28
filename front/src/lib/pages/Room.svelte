@@ -1,11 +1,11 @@
 <script>
-    import {t} from 'svelte-i18n';
+    import { t } from 'svelte-i18n';
     import Title from '../shared/Title.svelte';
-    import {onMount} from "svelte";
-    import Breadcrumbs from "../shared/Breadcrumbs.svelte";
-    import {showToast} from "../../services/toastService.js";
-    import {navigate} from "../../stores/locationStore.js";
-    import axios from "axios";
+    import { onMount } from 'svelte';
+    import Breadcrumbs from '../shared/Breadcrumbs.svelte';
+    import { showToast } from '../../services/toastService.js';
+    import { navigate } from '../../stores/locationStore.js';
+    import axios from 'axios';
 
     export let roomId;
 
@@ -28,6 +28,6 @@
     });
 </script>
 
-<Title title={room.name ? room.name : $t('play.room.title')}/>
+<Title title={room.name ? room.name : $t('play.room.title')} />
 
-<Breadcrumbs items={[{ label: $t('home.title'), path: '/' }, { label: $t('play.title'), path: '/play' }, { label: $t('play.room.title') }]} hasBackground/>
+<Breadcrumbs items={[{ label: $t('home.title'), path: '/' }, { label: $t('play.title'), path: '/play' }, { label: $t('play.room.title') }]} hasBackground />

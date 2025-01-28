@@ -8,11 +8,11 @@
     import Subtitle from '../shared/Subtitle.svelte';
     import Input from '../shared/Input.svelte';
     import { isValidUuid } from '../../services/checkStringService.js';
-    import Loader from "../shared/Loader.svelte";
-    import Switch from "../shared/Switch.svelte";
-    import PasswordInput from "../shared/PasswordInput.svelte";
-    import {showToast} from "../../services/toastService.js";
-    import {navigate} from "../../stores/locationStore.js";
+    import Loader from '../shared/Loader.svelte';
+    import Switch from '../shared/Switch.svelte';
+    import PasswordInput from '../shared/PasswordInput.svelte';
+    import { showToast } from '../../services/toastService.js';
+    import { navigate } from '../../stores/locationStore.js';
 
     let showJoinModal = false;
     let showCreateModal = false;
@@ -58,18 +58,10 @@
 
 <Form submittable={false}>
     <div class="flex flex-col gap-3 p-3">
-        <Button
-            on:click={() => showCreateModal = true}
-            customStyle
-            className="transition-all duration-300 hover:scale-105 transform bg-green-700 hover:bg-green-600 hover: px-3 py-2 rounded-xl"
-        >
+        <Button on:click={() => (showCreateModal = true)} customStyle className="transition-all duration-300 hover:scale-105 transform bg-green-700 hover:bg-green-600 hover: px-3 py-2 rounded-xl">
             <span class="text-white text-xl font-bold">{$t('play.room.create.title')}</span>
         </Button>
-        <Button
-            customStyle
-            on:click={() => (showJoinModal = true)}
-            className="transition-all duration-300 hover:scale-105 transform bg-primary-800 hover:bg-primary-700 hover: px-3 py-2 rounded-xl"
-        >
+        <Button customStyle on:click={() => (showJoinModal = true)} className="transition-all duration-300 hover:scale-105 transform bg-primary-800 hover:bg-primary-700 hover: px-3 py-2 rounded-xl">
             <span class="text-white text-xl font-bold">{$t('play.room.join.title')}</span>
         </Button>
     </div>

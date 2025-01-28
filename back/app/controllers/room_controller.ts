@@ -1,10 +1,10 @@
-import {inject} from '@adonisjs/core';
-import {HttpContext} from '@adonisjs/core/http';
-import {createRoomValidator, getRoomValidator, joinRoomValidator} from '#validators/room';
+import { inject } from '@adonisjs/core';
+import { HttpContext } from '@adonisjs/core/http';
+import { createRoomValidator, getRoomValidator, joinRoomValidator } from '#validators/room';
 import Room from '#models/room';
 import RoomRepository from '#repositories/room_repository';
 import RoomStatusEnum from '#types/enum/room_status_enum';
-import RoomPlayer from "#models/room_player";
+import RoomPlayer from '#models/room_player';
 
 @inject()
 export default class RoomController {
