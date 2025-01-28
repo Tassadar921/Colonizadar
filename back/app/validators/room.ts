@@ -9,7 +9,8 @@ export const createRoomValidator = vine.compile(
 
 export const joinRoomValidator = vine.compile(
     vine.object({
-        token: vine.string().uuid(),
+        token: vine.string().uuid().optional(),
+        roomId: vine.number().positive().optional(),
     })
 );
 
@@ -22,5 +23,6 @@ export const getRoomValidator = vine.compile(
 export const inviteRoomValidator = vine.compile(
     vine.object({
         userId: vine.number().positive(),
+        roomId: vine.number().positive(),
     })
 );

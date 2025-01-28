@@ -1,20 +1,15 @@
 <script>
     import { t } from 'svelte-i18n';
-    import Title from '../shared/Title.svelte';
     import { onMount } from 'svelte';
     import axios from 'axios';
     import Search from '../shared/Search.svelte';
     import Pagination from '../shared/Pagination.svelte';
-    import Breadcrumbs from '../shared/Breadcrumbs.svelte';
-    import Modal from '../shared/Modal.svelte';
-    import Subtitle from '../shared/Subtitle.svelte';
-    import AddFriends from '../friends/AddFriends.svelte';
     import Button from '../shared/Button.svelte';
     import Icon from '../shared/Icon.svelte';
-    import ConfirmModal from '../shared/ConfirmModal.svelte';
-    import { showToast } from '../../services/toastService.js';
     import { profile } from '../../stores/profileStore.js';
     import { transmit } from '../../stores/transmitStore.js';
+
+    export let room;
 
     let paginatedFriends = { friends: [] };
     let searchBaseUrl = '/api/friends';
@@ -35,7 +30,13 @@
         paginatedFriends = data.friends;
     };
 
-    const handleInviteFriend = async (user) => {};
+    const handleInviteFriend = async (user) => {
+        const response = await axios.post('/api/room/invite', {
+            userId: user.id,
+            roomId: room.id,
+        });
+        console.log(response);
+    };
 
     const setupEvents = async () => {
         // update when a friend removes us from its friends

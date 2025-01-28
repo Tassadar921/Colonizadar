@@ -108,5 +108,5 @@
 
 <Modal bind:showModal={showInviteFriendModal}>
     <Subtitle slot="header">{$t('play.room.invite.title')}</Subtitle>
-    <InviteFriends />
+    <InviteFriends {room} />
 </Modal>

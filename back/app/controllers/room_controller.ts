@@ -59,22 +59,66 @@ export default class RoomController {
     }
 
     public async invite({ request, response, user }: HttpContext): Promise<void> {
-        const { userId } = await inviteRoomValidator.validate(request.all());
+        const { userId, roomId } = await inviteRoomValidator.validate(request.all());
         const friend: User | null = await this.userRepository.findOneBy({ frontId: Number(userId) });
         if (!friend) {
             return response.notFound({ error: 'User not found' });
         }
 
         const friendRelationship: Friend | null = await this.friendRepository.findOneFromUsers(user, friend);
-        if (friendRelationship) {
+        if (!friendRelationship) {
             return response.notFound({ error: 'You are not friend with this user' });
         }
 
-        transmit.broadcast(`notification/play/invite/${userId}`, user.apiSerialize());
+        const room: Room | null = await this.roomRepository.findOneBy({ frontId: roomId });
+        if (!room) {
+            return response.notFound({ error: 'Room not found' });
+        }
+
+        transmit.broadcast(`notification/play/invite/${userId}`, { roomId, from: user.apiSerialize() });
         return response.send({ message: 'Invitation sent' });
     }
 
     public async join({ request, response, user }: HttpContext): Promise<void> {
-        const { token } = await joinRoomValidator.validate(request.all());
+        const { token, roomId } = await joinRoomValidator.validate(request.all());
+        let room: Room | null = null;
+        if (!token && !roomId) {
+            return response.badRequest({ error: 'Either token or roomId have to be sent' });
+        } else if (token) {
+            room = await this.roomRepository.findOneBy({ token }, ['players']);
+        } else if (roomId) {
+            room = await this.roomRepository.findOneBy({ frontId: roomId }, ['players']);
+        }
+
+        if (!room) {
+            return response.notFound({ error: 'Room not found' });
+        }
+
+        if (!room.players.some((player: RoomPlayer): boolean => player.userId === user.id)) {
+            await RoomPlayer.create({
+                userId: user.id,
+                roomId: room.id,
+            });
+        }
+
+        return response.send({ roomId: room.frontId });
+    }
+
+    public async joined({ request, response, user }: HttpContext): Promise<void> {
+        const { roomId } = await joinRoomValidator.validate(request.all());
+
+        let room: Room | null = await this.roomRepository.findOneBy({ frontId: roomId }, ['players']);
+        if (!room) {
+            return response.badRequest({ error: 'Either token or roomId have to be sent' });
+        }
+
+        if (!room.players.some((player: RoomPlayer): boolean => player.userId === user.id)) {
+            await RoomPlayer.create({
+                userId: user.id,
+                roomId: room.id,
+            });
+        }
+
+        return response.send({ roomId: room.frontId });
     }
 }
