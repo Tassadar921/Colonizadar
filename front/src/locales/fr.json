@@ -47,6 +47,9 @@
         }
     },
     "toast": {
+        "copy": {
+            "success": "Copié dans le presse-papier"
+        },
         "login": {
             "success": "Vous êtes maintenant connecté",
             "error": "Identifiants invalides"
@@ -230,6 +233,9 @@
                         "placeholder": "550e8400-e29b-41d4-a716-446655440000"
                     }
                 }
+            },
+            "invite": {
+                "title": "Inviter un ami"
             }
         }
     }

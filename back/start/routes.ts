@@ -84,7 +84,13 @@ router
                 router
                     .group((): void => {
                         router.post('/create', [RoomController, 'create']);
-                        router.get('/:roomId', [RoomController, 'get']);
+                        router.post('/invite', [RoomController, 'invite']);
+                        router
+                            .group((): void => {
+                                router.get('/', [RoomController, 'get']);
+                                // TODO : /kick to kick user
+                            })
+                            .prefix(':roomId');
                     })
                     .prefix('room');
             })

@@ -47,6 +47,9 @@
         }
     },
     "toast": {
+        "copy": {
+            "success": "Copied to clipboard"
+        },
         "login": {
             "success": "You are now logged in",
             "error": "Wrong credentials"
@@ -230,6 +233,9 @@
                         "placeholder": "550e8400-e29b-41d4-a716-446655440000"
                     }
                 }
+            },
+            "invite": {
+                "title": "Invite a friend"
             }
         }
     }

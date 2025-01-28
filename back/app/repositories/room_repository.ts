@@ -17,6 +17,12 @@ export default class RoomRepository extends BaseRepository<typeof Room> {
             .andWhere((query): void => {
                 query.where('rooms.owner_id', user.id).orWhere('room_players.user_id', user.id);
             })
+            .preload('owner')
+            .preload('players', (playersQuery): void => {
+                playersQuery.preload('user', (userQuery): void => {
+                    userQuery.preload('profilePicture');
+                });
+            })
             .first();
     }
 }

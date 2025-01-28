@@ -18,3 +18,9 @@ export const getRoomValidator = vine.compile(
         roomId: vine.number().positive(),
     })
 );
+
+export const inviteRoomValidator = vine.compile(
+    vine.object({
+        userId: vine.number().positive(),
+    })
+);
