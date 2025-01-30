@@ -1,5 +1,12 @@
 import vine from '@vinejs/vine';
 
+export const roomMiddlewareValidator = vine.compile(
+    vine.object({
+        roomId: vine.number().positive().optional(),
+        token: vine.string().uuid().optional(),
+    })
+);
+
 export const createRoomValidator = vine.compile(
     vine.object({
         name: vine.string().minLength(3).maxLength(50).alphaNumeric(),
@@ -7,22 +14,8 @@ export const createRoomValidator = vine.compile(
     })
 );
 
-export const joinRoomValidator = vine.compile(
-    vine.object({
-        token: vine.string().uuid().optional(),
-        roomId: vine.number().positive().optional(),
-    })
-);
-
-export const getRoomValidator = vine.compile(
-    vine.object({
-        roomId: vine.number().positive(),
-    })
-);
-
 export const inviteRoomValidator = vine.compile(
     vine.object({
         userId: vine.number().positive(),
-        roomId: vine.number().positive(),
     })
 );

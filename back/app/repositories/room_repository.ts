@@ -8,14 +8,27 @@ export default class RoomRepository extends BaseRepository<typeof Room> {
         super(Room);
     }
 
-    public async getFromUserAndFrontId(user: User, roomId: number): Promise<Room | null> {
+    public async getFromFrontId(roomId: number): Promise<Room | null> {
+        return Room.query()
+            .where('status', RoomStatusEnum.ACTIVE)
+            .andWhere('front_id', roomId)
+            .preload('owner')
+            .preload('players', (playersQuery): void => {
+                playersQuery.preload('user', (userQuery): void => {
+                    userQuery.preload('profilePicture');
+                });
+            })
+            .first();
+    }
+
+    public async getFromUserAndToken(user: User, token: string): Promise<Room | null> {
         return Room.query()
             .select('rooms.*')
             .leftJoin('room_players', 'rooms.id', 'room_players.room_id')
             .where('rooms.status', RoomStatusEnum.ACTIVE)
-            .andWhere('rooms.front_id', roomId)
+            .andWhere('rooms.token', token)
             .andWhere((query): void => {
-                query.where('rooms.owner_id', user.id).orWhere('room_players.user_id', user.id);
+                query.where('room_players.user_id', user.id);
             })
             .preload('owner')
             .preload('players', (playersQuery): void => {

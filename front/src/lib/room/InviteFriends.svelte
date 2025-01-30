@@ -8,6 +8,7 @@
     import Icon from '../shared/Icon.svelte';
     import { profile } from '../../stores/profileStore.js';
     import { transmit } from '../../stores/transmitStore.js';
+    import { showToast } from '../../services/toastService.js';
 
     export let room;
 
@@ -31,11 +32,18 @@
     };
 
     const handleInviteFriend = async (user) => {
-        const response = await axios.post('/api/room/invite', {
-            userId: user.id,
-            roomId: room.id,
-        });
-        console.log(response);
+        try {
+            const response = await axios.post(`/api/room/${room.id}/invite`, {
+                userId: user.id,
+            });
+            if (response.status === 200) {
+                showToast($t(`${user.username} ${$t('toast.invite.success')}`));
+            } else {
+                showToast($t('toast.invite.error'));
+            }
+        } catch (e) {
+            showToast($t('toast.invite.error'));
+        }
     };
 
     const setupEvents = async () => {

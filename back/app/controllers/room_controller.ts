@@ -1,6 +1,6 @@
 import { inject } from '@adonisjs/core';
 import { HttpContext } from '@adonisjs/core/http';
-import { createRoomValidator, getRoomValidator, inviteRoomValidator, joinRoomValidator } from '#validators/room';
+import { createRoomValidator, inviteRoomValidator } from '#validators/room';
 import Room from '#models/room';
 import RoomRepository from '#repositories/room_repository';
 import RoomStatusEnum from '#types/enum/room_status_enum';
@@ -48,18 +48,8 @@ export default class RoomController {
         return response.send({ roomId: room.frontId });
     }
 
-    public async get({ request, response, user }: HttpContext): Promise<void> {
-        const { roomId } = await getRoomValidator.validate(request.params());
-
-        const room: Room | null = await this.roomRepository.getFromUserAndFrontId(user, roomId);
-        if (!room) {
-            return response.badRequest({ error: 'Room not found' });
-        }
-        return response.send({ room: room.apiSerialize() });
-    }
-
-    public async invite({ request, response, user }: HttpContext): Promise<void> {
-        const { userId, roomId } = await inviteRoomValidator.validate(request.all());
+    public async invite({ request, response, user, room }: HttpContext): Promise<void> {
+        const { userId } = await inviteRoomValidator.validate(request.all());
         const friend: User | null = await this.userRepository.findOneBy({ frontId: Number(userId) });
         if (!friend) {
             return response.notFound({ error: 'User not found' });
@@ -70,55 +60,36 @@ export default class RoomController {
             return response.notFound({ error: 'You are not friend with this user' });
         }
 
-        const room: Room | null = await this.roomRepository.findOneBy({ frontId: roomId });
-        if (!room) {
-            return response.notFound({ error: 'Room not found' });
-        }
-
-        transmit.broadcast(`notification/play/invite/${userId}`, { roomId, from: user.apiSerialize() });
+        transmit.broadcast(`notification/play/invite/${userId}`, { roomId: room.frontId, from: user.apiSerialize() });
         return response.send({ message: 'Invitation sent' });
     }
 
-    public async join({ request, response, user }: HttpContext): Promise<void> {
-        const { token, roomId } = await joinRoomValidator.validate(request.all());
-        let room: Room | null = null;
-        if (!token && !roomId) {
-            return response.badRequest({ error: 'Either token or roomId have to be sent' });
-        } else if (token) {
-            room = await this.roomRepository.findOneBy({ token }, ['players']);
-        } else if (roomId) {
-            room = await this.roomRepository.findOneBy({ frontId: roomId }, ['players']);
-        }
-
-        if (!room) {
-            return response.notFound({ error: 'Room not found' });
-        }
-
+    public async join({ response, user, room }: HttpContext): Promise<void> {
         if (!room.players.some((player: RoomPlayer): boolean => player.userId === user.id)) {
-            await RoomPlayer.create({
-                userId: user.id,
-                roomId: room.id,
-            });
+            if (room.players.length < 6) {
+                await RoomPlayer.create({
+                    userId: user.id,
+                    roomId: room.id,
+                });
+            } else {
+                response.badRequest({ error: 'Too many players' });
+            }
         }
 
-        return response.send({ roomId: room.frontId });
+        return response.send({ message: 'Room joined' });
     }
 
-    public async joined({ request, response, user }: HttpContext): Promise<void> {
-        const { roomId } = await joinRoomValidator.validate(request.all());
-
-        let room: Room | null = await this.roomRepository.findOneBy({ frontId: roomId }, ['players']);
-        if (!room) {
-            return response.badRequest({ error: 'Either token or roomId have to be sent' });
-        }
-
+    public async joined({ response, user, room }: HttpContext): Promise<void> {
         if (!room.players.some((player: RoomPlayer): boolean => player.userId === user.id)) {
-            await RoomPlayer.create({
-                userId: user.id,
-                roomId: room.id,
-            });
+            return response.badRequest({ error: 'You have no reserved place into the room' });
         }
 
-        return response.send({ roomId: room.frontId });
+        const player: RoomPlayer = <RoomPlayer>room.players.find((player: RoomPlayer): boolean => player.userId === user.id);
+        player.isUserConnected = true;
+        await player.save();
+
+        transmit.broadcast(`notification/play/room/${room.frontId}/joined`, { room: room.apiSerialize(), user: user.apiSerialize() });
+
+        return response.send({ room: room.apiSerialize() });
     }
 }

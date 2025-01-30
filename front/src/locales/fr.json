@@ -101,12 +101,22 @@
             "success": "Utilisateur débloqué",
             "error": "Une erreur est survenue lors du déblocage de l'utilisateur"
         },
+        "invite": {
+            "success": "a été invité dans votre salon",
+            "error": "Une erreur est survenue lors de l'invitation de l'utilisateur"
+        },
         "notification": {
             "friend-request": {
                 "ask": "Vous avez reçu une demande d'ami de",
                 "accept": "a été ajouté à vos amis",
                 "accepted": "a accepté votre demande d'ami",
                 "refuse": "Vous avez refusé la demande d'ami de"
+            },
+            "play": {
+                "invited": "vous a invité à rejoindre son salon",
+                "room": {
+                    "joined": "a rejoint le salon"
+                }
             }
         },
         "room": {

@@ -1,7 +1,7 @@
 <script>
     import { t } from 'svelte-i18n';
     import Title from '../shared/Title.svelte';
-    import { onMount } from 'svelte';
+    import { afterUpdate, onMount } from 'svelte';
     import Breadcrumbs from '../shared/Breadcrumbs.svelte';
     import { showToast } from '../../services/toastService.js';
     import { navigate } from '../../stores/locationStore.js';
@@ -12,26 +12,32 @@
     import Modal from '../shared/Modal.svelte';
     import Subtitle from '../shared/Subtitle.svelte';
     import InviteFriends from '../room/InviteFriends.svelte';
+    import { transmit } from '../../stores/transmitStore.js';
 
     export let roomId;
 
     let room = { name: '' };
     let showInviteFriendModal = false;
 
-    onMount(async () => {
-        const loadingError = () => {
+    const fetchRoomData = async () => {
+        try {
+            const response = await axios.get(`/api/room/${roomId}/joined`);
+            if (response.status === 200) {
+                room = response.data.room;
+            } else {
+                showToast($t('toast.room.error'), 'error');
+                navigate('/play');
+            }
+        } catch (e) {
             showToast($t('toast.room.error'), 'error');
             navigate('/play');
-        };
-        if (!roomId) {
-            loadingError();
         }
-        const response = await axios.get(`/api/room/${roomId}`);
-        if (response.status !== 200) {
-            loadingError();
-        }
-        room = response.data.room;
-        console.log(room);
+    };
+
+    onMount(fetchRoomData);
+
+    afterUpdate(() => {
+        fetchRoomData();
     });
 
     const handleCopy = () => {
@@ -47,8 +53,8 @@
 <Breadcrumbs items={[{ label: $t('home.title'), path: '/' }, { label: $t('play.title'), path: '/play' }, { label: $t('play.room.title') }]} />
 
 <div class="grid grid-cols-1 sm:grid-cols-2">
-    <div class="flex h-10 text-white mt-3 text-sm px-3">
-        <Button ariaLabel="Copy token" customStyle={true} className="group flex flex-grow items-center px-2 hover:cursor-pointer text-black dark:text-white" on:click={handleCopy}>
+    <div class="flex justify-center h-10 text-white mt-3 text-sm px-3">
+        <Button ariaLabel="Copy token" customStyle={true} className="group flex items-center px-2 hover:cursor-pointer text-black dark:text-white" on:click={handleCopy}>
             <span class="group-hover:text-primary-500 transition-all duration-300 group-hover:scale-110">{room.token}</span>
             <div class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 ml-7">
                 <Icon name="copy" />
@@ -83,7 +89,7 @@
                         <img alt={player.user.username} src={process.env.VITE_DEFAULT_IMAGE} class="max-h-10 rounded-full" />
                     {/if}
                     <p>{player.user.username}</p>
-                    {#if $profile.id === player.user.id}
+                    {#if room.owner.id === player.user.id}
                         <div class="text-yellow-500">
                             <Icon name="crown" />
                         </div>

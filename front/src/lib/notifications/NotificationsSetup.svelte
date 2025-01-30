@@ -6,7 +6,8 @@
     import { onMount } from 'svelte';
     import { t } from 'svelte-i18n';
     import { profile } from '../../stores/profileStore.js';
-    import axios from "axios";
+    import axios from 'axios';
+    import { navigate } from '../../stores/locationStore.js';
 
     onMount(() => {
         transmit.set(new Transmit({ baseUrl: process.env.VITE_API_BASE_URL }));
@@ -35,12 +36,15 @@
         const inviteRequest = $transmit.subscription(`notification/play/invite/${$profile.id}`);
         await inviteRequest.create();
         inviteRequest.onMessage((data) => {
-            const handleJoin = async () => {
+            const handleJoin = async (roomId) => {
                 const response = await axios.post('/api/room/join', {
-                    roomId: data.roomId,
+                    roomId,
                 });
+                if (response.status === 200) {
+                    navigate(`/play/room/${roomId}`);
+                }
             };
-            showToast(`${data.from.username} ${$t('toast.notification.play.invited')}`, 'warning', () => console.log('test'));
+            showToast(`${data.from.username} ${$t('toast.notification.play.invited')}`, 'warning', () => handleJoin(data.roomId));
         });
 
         await setPendingFriendRequests();

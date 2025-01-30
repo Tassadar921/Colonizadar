@@ -101,12 +101,22 @@
             "success": "User unblocked",
             "error": "An error occurred while unblocking user"
         },
+        "invite": {
+            "success": "has been invited to your room",
+            "error": "An error occurred while inviting user"
+        },
         "notification": {
             "friend-request": {
                 "ask": "You received a friend request from",
                 "accept": "has been added to your friends",
                 "accepted": "accepted your friend request",
                 "refuse": "You refused the friend request of"
+            },
+            "play": {
+                "invited": "invited you to join his room",
+                "room": {
+                    "joined": "joined the room"
+                }
             }
         },
         "room": {
