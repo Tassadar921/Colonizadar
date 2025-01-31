@@ -84,11 +84,11 @@ router
                 router
                     .group((): void => {
                         router.post('/create', [RoomController, 'create']);
-                        router.post('/join', [RoomController, 'join']).use([middleware.room()]);
                         router
                             .group((): void => {
                                 router.post('/invite', [RoomController, 'invite']);
                                 router.get('/joined', [RoomController, 'joined']);
+                                router.delete('/leave', [RoomController, 'leave']);
                                 // TODO : /kick to kick user
                             })
                             .prefix(':roomId')

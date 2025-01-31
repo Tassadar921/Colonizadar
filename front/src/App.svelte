@@ -102,7 +102,9 @@
                     <Route path="/:language/social/blocked"><Blocked /></Route>
 
                     <Route path="/:language/play"><Play /></Route>
-                    <Route path="/:language/play/room/:roomId" let:params><Room {...params} /></Route>
+                    <Route path="/:language/play/room/:roomId" let:params>
+                        <Room key={params.roomId} roomId={params.roomId} />
+                    </Route>
 
                     <Route path="/:language/profile"><Profile /></Route>
                     <Route path="/:language/notifications"><Notifications /></Route>

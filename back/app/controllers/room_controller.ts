@@ -64,7 +64,7 @@ export default class RoomController {
         return response.send({ message: 'Invitation sent' });
     }
 
-    public async join({ response, user, room }: HttpContext): Promise<void> {
+    public async joined({ response, user, room }: HttpContext): Promise<void> {
         if (!room.players.some((player: RoomPlayer): boolean => player.userId === user.id)) {
             if (room.players.length < 6) {
                 await RoomPlayer.create({
@@ -72,24 +72,40 @@ export default class RoomController {
                     roomId: room.id,
                 });
             } else {
-                response.badRequest({ error: 'Too many players' });
+                return response.badRequest({ error: 'Too many players' });
             }
         }
 
-        return response.send({ message: 'Room joined' });
-    }
-
-    public async joined({ response, user, room }: HttpContext): Promise<void> {
-        if (!room.players.some((player: RoomPlayer): boolean => player.userId === user.id)) {
-            return response.badRequest({ error: 'You have no reserved place into the room' });
-        }
-
+        await room.load('players', (playersQuery): void => {
+            playersQuery.preload('user', (userQuery): void => {
+                userQuery.preload('profilePicture');
+            });
+        });
         const player: RoomPlayer = <RoomPlayer>room.players.find((player: RoomPlayer): boolean => player.userId === user.id);
         player.isUserConnected = true;
         await player.save();
 
-        transmit.broadcast(`notification/play/room/${room.frontId}/joined`, { room: room.apiSerialize(), user: user.apiSerialize() });
+        await user.load('profilePicture');
+
+        transmit.broadcast(`notification/play/room/${room.frontId}/joined`, { user: user.apiSerialize() });
 
         return response.send({ room: room.apiSerialize() });
+    }
+
+    public async leave({ response, user, room }: HttpContext): Promise<void> {
+        if (room.ownerId === user.id) {
+
+        }
+
+        const player: RoomPlayer | undefined = room.players.find((player: RoomPlayer): boolean => player.userId === user.id);
+        if (!player) {
+            return response.notFound({ error: 'You are not into this room' });
+        }
+
+        await player.delete();
+
+        transmit.broadcast(`notification/play/room/${room.frontId}/leave`, { user: user.apiSerialize() });
+
+        return response.send({ message: 'Room left' });
     }
 }

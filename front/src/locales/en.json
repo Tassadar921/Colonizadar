@@ -114,8 +114,11 @@
             },
             "play": {
                 "invited": "invited you to join his room",
+                "accepted": "Request accepted",
                 "room": {
-                    "joined": "joined the room"
+                    "joined": "joined the room",
+                    "left": "left the room",
+                    "closed": "Room closed"
                 }
             }
         },

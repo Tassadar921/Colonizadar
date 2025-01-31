@@ -37,12 +37,8 @@
         await inviteRequest.create();
         inviteRequest.onMessage((data) => {
             const handleJoin = async (roomId) => {
-                const response = await axios.post('/api/room/join', {
-                    roomId,
-                });
-                if (response.status === 200) {
-                    navigate(`/play/room/${roomId}`);
-                }
+                showToast($t('toast.notification.play.accepted'));
+                navigate(`/play/room/${roomId}`);
             };
             showToast(`${data.from.username} ${$t('toast.notification.play.invited')}`, 'warning', () => handleJoin(data.roomId));
         });
