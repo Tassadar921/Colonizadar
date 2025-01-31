@@ -94,7 +94,6 @@ export default class RoomController {
 
     public async leave({ response, user, room }: HttpContext): Promise<void> {
         if (room.ownerId === user.id) {
-
         }
 
         const player: RoomPlayer | undefined = room.players.find((player: RoomPlayer): boolean => player.userId === user.id);
