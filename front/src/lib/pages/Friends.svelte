@@ -97,7 +97,7 @@
     <Title title={$t('social.friends.title')} />
     <Button
         ariaLabel="Add a friend"
-        customStyle={true}
+        customStyle
         className="rounded-full bg-green-500 hover:bg-green-600 dark:bg-green-700 dark:hover:bg-green-600 transition-colors duration-300 p-1 mb-1.5"
         on:click={() => (showAddFriendsModal = true)}
     >
@@ -108,7 +108,7 @@
 <Breadcrumbs items={[{ label: $t('home.title'), path: '/' }, { label: $t('social.title'), path: '/social' }, { label: $t('social.friends.title') }]} />
 
 <Search
-    selected={true}
+    selected
     bind:results={paginatedFriends.friends}
     placeholder={$t('social.friends.search.placeholder')}
     label={$t('social.friends.search.label')}
@@ -137,16 +137,16 @@
                     <div class="flex gap-10 pr-5">
                         <Button
                             ariaLabel="Remove friend"
-                            customStyle={true}
-                            className="transition-colors duration-300 text-red-600 hover:text-red-400"
+                            customStyle
+                            className="transition-all duration-300 hover:scale-110 transform text-red-600 hover:text-red-400"
                             on:click={() => handleShowRemoveFriendModal(friendObject.friend)}
                         >
                             <Icon name="RemoveUser" />
                         </Button>
                         <Button
                             ariaLabel="Block user"
-                            customStyle={true}
-                            className="transition-colors duration-300 text-red-600 hover:text-red-400"
+                            customStyle
+                            className="transition-all duration-300 hover:scale-110 transform text-red-600 hover:text-red-400"
                             on:click={() => handleShowBlockingModal(friendObject.friend)}
                         >
                             <Icon name="stop" />
@@ -161,7 +161,7 @@
 </div>
 <Pagination bind:paginatedObject={paginatedFriends} bind:baseUrl={searchBaseUrl} />
 
-<Modal bind:showModal={showAddFriendsModal} fullWidth={true}>
+<Modal bind:showModal={showAddFriendsModal} fullWidth>
     <Subtitle slot="header">{$t('social.friends.add.title')}</Subtitle>
     <AddFriends on:updateFriends={updateFriends} />
 </Modal>

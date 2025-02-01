@@ -66,7 +66,7 @@ export default class FriendsController {
             return response.notFound({ error: 'This pending friends request does not exist' });
         }
 
-        transmit.broadcast(`notification/add-friend/refuse/${user.frontId}`, askingToUser.apiSerialize());
+        transmit.broadcast(`notification/add-friend/refuse/${userId}`, user.apiSerialize());
         await pendingFriend.notification.delete();
         await pendingFriend.delete();
         return response.send({ message: 'Friend request refused' });

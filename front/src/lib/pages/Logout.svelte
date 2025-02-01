@@ -33,7 +33,7 @@
 
 <Title title={$t('logout.title')} />
 
-<Breadcrumbs hasBackground={true} items={[{ label: $t('home.title'), path: '/' }, { label: $t('logout.title') }]} />
+<Breadcrumbs hasBackground items={[{ label: $t('home.title'), path: '/' }, { label: $t('logout.title') }]} />
 
 <ConfirmModal bind:showModal on:success={handleSuccess} on:close={handleClose}>
     <Subtitle slot="header">{$t('logout.modal.title')}</Subtitle>
