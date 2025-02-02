@@ -38,4 +38,13 @@ export default class RoomRepository extends BaseRepository<typeof Room> {
             })
             .first();
     }
+
+    public async getPaginatedForHeartbeatChecks(page: number) {
+        return Room.query()
+            .where('rooms.status', RoomStatusEnum.ACTIVE)
+            .preload('players', (playersQuery): void => {
+                playersQuery.preload('user');
+            })
+            .paginate(page, 50);
+    }
 }

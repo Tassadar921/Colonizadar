@@ -1,5 +1,5 @@
 import { inject } from '@adonisjs/core';
-import { HttpContext } from '@adonisjs/core/http';
+import { HttpContext, Response } from '@adonisjs/core/http';
 import { createRoomValidator, inviteRoomValidator } from '#validators/room';
 import Room from '#models/room';
 import RoomRepository from '#repositories/room_repository';
@@ -10,6 +10,8 @@ import FriendRepository from '#repositories/friend_repository';
 import UserRepository from '#repositories/user_repository';
 import transmit from '@adonisjs/transmit/services/main';
 import Friend from '#models/friend';
+import {DateTime} from "luxon";
+import RoomPlayerDifficultyEnum from "#types/enum/room_player_difficulty_enum";
 
 @inject()
 export default class RoomController {
@@ -20,6 +22,7 @@ export default class RoomController {
     ) {}
 
     public async create({ request, response, user }: HttpContext): Promise<void> {
+        console.log('=========================');
         const activeRoom: Room | null = await this.roomRepository.findOneBy({
             ownerId: user.id,
             status: RoomStatusEnum.ACTIVE,
@@ -43,6 +46,7 @@ export default class RoomController {
             userId: user.id,
             isUserConnected: true,
             roomId: room.id,
+            difficulty: RoomPlayerDifficultyEnum.USER,
         });
 
         return response.send({ roomId: room.frontId });
@@ -70,6 +74,7 @@ export default class RoomController {
                 await RoomPlayer.create({
                     userId: user.id,
                     roomId: room.id,
+                    difficulty: RoomPlayerDifficultyEnum.USER,
                 });
             } else {
                 return response.badRequest({ error: 'Too many players' });
@@ -93,18 +98,40 @@ export default class RoomController {
     }
 
     public async leave({ response, user, room }: HttpContext): Promise<void> {
-        if (room.ownerId === user.id) {
-        }
+        await this.disconnect(user, room, response);
 
+        return response.send({ message: 'Room left' });
+    }
+
+    public async heartbeat({ response, user, room }: HttpContext): Promise<void> {
         const player: RoomPlayer | undefined = room.players.find((player: RoomPlayer): boolean => player.userId === user.id);
+        console.log(player.user.username)
         if (!player) {
             return response.notFound({ error: 'You are not into this room' });
         }
 
-        await player.delete();
+        player.lastHeartbeat = DateTime.now();
+        await player.save();
 
-        transmit.broadcast(`notification/play/room/${room.frontId}/leave`, { user: user.apiSerialize() });
+        return response.send({ message: 'Heartbeat updated' });
+    }
 
-        return response.send({ message: 'Room left' });
+    private async disconnect(user: User, room: Room, response: Response): Promise<void> {
+        console.log(user.username);
+        if (room.ownerId === user.id) {
+            room.status = RoomStatusEnum.CLOSED;
+            await room.save();
+
+            transmit.broadcast(`notification/play/room/${room.frontId}/closed`);
+        } else {
+            const player: RoomPlayer | undefined = room.players.find((player: RoomPlayer): boolean => player.userId === user.id);
+            if (!player) {
+                return response.notFound({ error: 'You are not into this room' });
+            }
+
+            await player.delete();
+
+            transmit.broadcast(`notification/play/room/${room.frontId}/leave`, { user: user.apiSerialize() });
+        }
     }
 }

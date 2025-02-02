@@ -12,27 +12,38 @@
     import Subtitle from '../shared/Subtitle.svelte';
     import InviteFriends from '../room/InviteFriends.svelte';
     import { transmit } from '../../stores/transmitStore.js';
-    import { onDestroy } from 'svelte';
+    import { onMount, onDestroy } from 'svelte';
 
     export let roomId;
 
     let room = { name: '', players: [] };
     let showInviteFriendModal = false;
+    let heartbeat;
 
-    const roomClosedNotification = $transmit.subscription(`notification/play/room/${room.id}/closed`);
-    const kickedNotification = $transmit.subscription(`notification/play/room/${room.id}/${$profile.id}/kicked`);
-    const userJoinedNotification = $transmit.subscription(`notification/play/room/${room.id}/joined`);
-    const userLeftNotification = $transmit.subscription(`notification/play/room/${room.id}/leave`);
+    let roomClosedNotification;
+    let kickedNotification;
+    let userJoinedNotification;
+    let userLeftNotification;
 
     async function fetchRoomData() {
         try {
+            roomClosedNotification ? await roomClosedNotification.delete() : null;
+            kickedNotification ? await kickedNotification.delete() : null;
+            userJoinedNotification ? await userJoinedNotification.delete() : null;
+            userLeftNotification ? await userLeftNotification.delete() : null;
+
             const response = await axios.get(`/api/room/${roomId}/joined`);
             if (response.status === 200) {
                 room = response.data.room;
+                roomClosedNotification = $transmit.subscription(`notification/play/room/${room.id}/closed`);
+                kickedNotification = $transmit.subscription(`notification/play/room/${room.id}/${$profile.id}/kicked`);
+                userJoinedNotification = $transmit.subscription(`notification/play/room/${room.id}/joined`);
+                userLeftNotification = $transmit.subscription(`notification/play/room/${room.id}/leave`);
 
                 await roomClosedNotification.create();
-                roomClosedNotification.onMessage(() => {
-                    showToast($t(''), 'warning');
+                roomClosedNotification.onMessage(async () => {
+                    showToast($t('toast.notification.play.room.closed'), 'warning');
+                    await unloadCleanup();
                     navigate('/play');
                 });
 
@@ -53,10 +64,12 @@
                 });
             } else {
                 showToast($t('toast.room.error'), 'error');
+                await unloadCleanup();
                 navigate('/play');
             }
         } catch (e) {
             showToast($t('toast.room.error'), 'error');
+            await unloadCleanup();
             navigate('/play');
         }
     }
@@ -77,10 +90,31 @@
         // }
     };
 
+    const unloadCleanup = async () => {
+        try {
+            await axios.delete(`/api/room/${roomId}/leave`);
+            await roomClosedNotification.delete();
+            await kickedNotification.delete();
+            await userJoinedNotification.delete();
+            await userLeftNotification.delete();
+        } catch (e) {}
+        clearInterval(heartbeat);
+    };
+
+    onMount(() => {
+        heartbeat = setInterval(async () => {
+            try {
+                await axios.get(`/api/room/${roomId}/heartbeat`);
+                console.log('heartbeat');
+            } catch (e) {
+                await unloadCleanup();
+                navigate('/play');
+            }
+        }, 1000);
+    });
+
     onDestroy(async () => {
-        await axios.delete(`/api/room/${roomId}/leave`);
-        await userJoinedNotification.delete();
-        await userLeftNotification.delete();
+        await unloadCleanup();
     });
 
     $: if (roomId) {
@@ -118,7 +152,7 @@
     <div class="flex flex-col gap-1 w-full">
         {#each room.players as player}
             <div
-                class="relative flex justify-between items-center h-12 border border-gray-300 dark:border-gray-800 rounded-xl hover:bg-gray-300 dark:hover:bg-gray-800 transition-colors duration-300 px-3"
+                class="flex justify-between items-center h-12 border {$profile.id === player.user.id ? 'border-gray-400 dark:border-gray-700' : 'border-gray-300 dark:border-gray-800'} rounded-xl hover:bg-gray-300 dark:hover:bg-gray-800 transition-colors duration-300 px-3"
             >
                 <div class="flex gap-5 flex-wrap items-center">
                     {#if player.user.profilePicture}
@@ -142,14 +176,13 @@
                         <Button
                             ariaLabel="Kick user from room"
                             customStyle
-                            className="transition-all duration-300 hover:scale-110 transform text-red-600 hover:text-red-400"
+                            className="transition-all duration-300 hover:scale-110 mt-2 transform text-red-600 hover:text-red-400"
                             on:click={() => handleKick(player.user)}
                         >
                             <Icon name="close" />
                         </Button>
                     </div>
                 {/if}
-                <!--                <div class="absolute w-full h-full rounded-xl bg-gray-200 dark:bg-gray-800 opacity-30"></div>-->
             </div>
         {/each}
     </div>

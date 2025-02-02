@@ -19,6 +19,7 @@ export default class RoomPlayer extends BaseModel {
     @belongsTo((): typeof User => User)
     declare user: BelongsTo<typeof User>;
 
+    // field used to know if the user is connected one in-game
     @column()
     declare isUserConnected: boolean;
 
@@ -30,6 +31,9 @@ export default class RoomPlayer extends BaseModel {
 
     @belongsTo((): typeof Room => Room)
     declare room: BelongsTo<typeof Room>;
+
+    @column.dateTime({ autoCreate: true })
+    declare lastHeartbeat: DateTime;
 
     @column.dateTime({ autoCreate: true })
     declare createdAt: DateTime;

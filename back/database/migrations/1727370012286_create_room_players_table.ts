@@ -1,6 +1,6 @@
 import { BaseSchema } from '@adonisjs/lucid/schema';
 import { Knex } from 'knex';
-import RoomPeopleDifficultyEnum from '#types/enum/room_player_difficulty_enum';
+import RoomPlayerDifficultyEnum from '#types/enum/room_player_difficulty_enum';
 
 export default class extends BaseSchema {
     protected tableName: string = 'room_players';
@@ -11,8 +11,9 @@ export default class extends BaseSchema {
             table.specificType('front_id', 'serial').notNullable();
             table.uuid('user_id').notNullable().references('id').inTable('users').onDelete('CASCADE');
             table.boolean('is_user_connected').defaultTo(false);
-            table.enum('difficulty', Object.values(RoomPeopleDifficultyEnum)).notNullable().defaultTo(RoomPeopleDifficultyEnum.MEDIUM);
+            table.enum('difficulty', Object.values(RoomPlayerDifficultyEnum)).notNullable().defaultTo(RoomPlayerDifficultyEnum.MEDIUM);
             table.uuid('room_id').notNullable().references('id').inTable('rooms').onDelete('CASCADE');
+            table.timestamp('last_heartbeat', { useTz: true });
             table.timestamp('created_at', { useTz: true });
             table.timestamp('updated_at', { useTz: true });
         });

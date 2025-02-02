@@ -1,4 +1,5 @@
 enum RoomPlayerDifficultyEnum {
+    USER = 'user',
     PASSIVE = 'passive',
     EASY = 'easy',
     MEDIUM = 'medium',
