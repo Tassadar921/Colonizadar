@@ -127,6 +127,10 @@
             "create": {
                 "success": "Room created",
                 "error": "An error occurred while creating the room"
+            },
+            "add-bot": {
+                "success": "Bot added",
+                "error": "An error occurred while adding the bot"
             }
         }
     },

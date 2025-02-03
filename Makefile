@@ -1,4 +1,4 @@
-.PHONY: format format-front format-back start
+.PHONY: format format-front format-back start list-routes
 
 format: format-front format-back
 
@@ -11,3 +11,6 @@ format-back:
 start:
 	gnome-terminal --tab --title="front" -- zsh -c "cd front && npm run dev; exec zsh" & \
     exec gnome-terminal --tab --title="back" -- zsh -c "cd back && npm run dev; exec zsh"
+
+list-routes:
+	cd back && node ace list:routes

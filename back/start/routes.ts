@@ -84,12 +84,14 @@ router
                 router
                     .group((): void => {
                         router.post('/create', [RoomController, 'create']);
+                        router.get('/difficulties', [RoomController, 'getDifficulties']);
                         router
                             .group((): void => {
                                 router.post('/invite', [RoomController, 'invite']);
                                 router.get('/joined', [RoomController, 'joined']);
                                 router.delete('/leave', [RoomController, 'leave']);
                                 router.get('/heartbeat', [RoomController, 'heartbeat']);
+                                router.post('add-bot', [RoomController, 'addBot']);
                                 // TODO : /kick to kick user
                             })
                             .prefix(':roomId')

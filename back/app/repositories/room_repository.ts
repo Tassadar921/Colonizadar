@@ -14,9 +14,11 @@ export default class RoomRepository extends BaseRepository<typeof Room> {
             .andWhere('front_id', roomId)
             .preload('owner')
             .preload('players', (playersQuery): void => {
-                playersQuery.preload('user', (userQuery): void => {
-                    userQuery.preload('profilePicture');
-                });
+                playersQuery
+                    .preload('user', (userQuery): void => {
+                        userQuery.preload('profilePicture');
+                    })
+                    .preload('roomPlayerBotName');
             })
             .first();
     }
@@ -32,9 +34,11 @@ export default class RoomRepository extends BaseRepository<typeof Room> {
             })
             .preload('owner')
             .preload('players', (playersQuery): void => {
-                playersQuery.preload('user', (userQuery): void => {
-                    userQuery.preload('profilePicture');
-                });
+                playersQuery
+                    .preload('user', (userQuery): void => {
+                        userQuery.preload('profilePicture');
+                    })
+                    .preload('roomPlayerBotName');
             })
             .first();
     }
@@ -43,7 +47,7 @@ export default class RoomRepository extends BaseRepository<typeof Room> {
         return Room.query()
             .where('rooms.status', RoomStatusEnum.ACTIVE)
             .preload('players', (playersQuery): void => {
-                playersQuery.preload('user');
+                playersQuery.andWhereNotNull('user_id').preload('user');
             })
             .paginate(page, 50);
     }

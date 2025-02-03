@@ -10,8 +10,8 @@ import FriendRepository from '#repositories/friend_repository';
 import UserRepository from '#repositories/user_repository';
 import transmit from '@adonisjs/transmit/services/main';
 import Friend from '#models/friend';
-import {DateTime} from "luxon";
-import RoomPlayerDifficultyEnum from "#types/enum/room_player_difficulty_enum";
+import { DateTime } from 'luxon';
+import RoomPlayerDifficultyEnum from '#types/enum/room_player_difficulty_enum';
 
 @inject()
 export default class RoomController {
@@ -105,7 +105,6 @@ export default class RoomController {
 
     public async heartbeat({ response, user, room }: HttpContext): Promise<void> {
         const player: RoomPlayer | undefined = room.players.find((player: RoomPlayer): boolean => player.userId === user.id);
-        console.log(player.user.username)
         if (!player) {
             return response.notFound({ error: 'You are not into this room' });
         }
@@ -116,8 +115,27 @@ export default class RoomController {
         return response.send({ message: 'Heartbeat updated' });
     }
 
+    public async addBot({ response, user, room }: HttpContext): Promise<void> {
+        if (room.ownerId !== user.id) {
+            return response.forbidden({ error: 'You are not the owner of this room' });
+        }
+        if (room.players.length < 6) {
+            const player: RoomPlayer = await RoomPlayer.create({
+                roomId: room.id,
+                difficulty: RoomPlayerDifficultyEnum.MEDIUM,
+            });
+
+            return response.send({ player: player.apiSerialize() });
+        } else {
+            return response.badRequest({ error: 'Too many players' });
+        }
+    }
+
+    public async getDifficulties({ response }: HttpContext): Promise<void> {
+        return response.send({ difficulties: Object.values(RoomPlayerDifficultyEnum) });
+    }
+
     private async disconnect(user: User, room: Room, response: Response): Promise<void> {
-        console.log(user.username);
         if (room.ownerId === user.id) {
             room.status = RoomStatusEnum.CLOSED;
             await room.save();

@@ -13,10 +13,11 @@
     import InviteFriends from '../room/InviteFriends.svelte';
     import { transmit } from '../../stores/transmitStore.js';
     import { onMount, onDestroy } from 'svelte';
+    import AddBot from "../room/AddBot.svelte";
 
     export let roomId;
 
-    let room = { name: '', players: [] };
+    let room = { name: '', players: [], owner: { id: -1 } };
     let showInviteFriendModal = false;
     let heartbeat;
 
@@ -105,7 +106,6 @@
         heartbeat = setInterval(async () => {
             try {
                 await axios.get(`/api/room/${roomId}/heartbeat`);
-                console.log('heartbeat');
             } catch (e) {
                 await unloadCleanup();
                 navigate('/play');
@@ -185,6 +185,9 @@
                 {/if}
             </div>
         {/each}
+        {#if room.players.length < 6 && $profile.id === room.owner.id}
+            <AddBot bind:room />
+        {/if}
     </div>
 </div>
 
