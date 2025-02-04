@@ -38,4 +38,5 @@ export const middleware = router.named({
     auth: () => import('#middleware/auth_middleware'),
     language: () => import('#middleware/language_middleware'),
     queryStringAuth: () => import('#middleware/query_string_auth_middleware'),
+    room: () => import('#middleware/room_middleware'),
 });

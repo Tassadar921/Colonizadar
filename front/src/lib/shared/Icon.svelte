@@ -54,6 +54,9 @@
         'AddUser',
         'Unblock',
         'Confirm',
+        'Crown',
+        'Invite',
+        'Copy',
     ];
 
     const toCamelCase = (str) => {

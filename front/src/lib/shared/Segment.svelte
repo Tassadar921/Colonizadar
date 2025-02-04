@@ -35,7 +35,7 @@
     {#each options as option}
         <Button
             disabled={option.disabled}
-            customStyle={true}
+            customStyle
             additionalStyle="flex-1 py-2 text-center transition-colors duration-300 rounded-2xl {option.value === selected ? 'bg-primary-800 text-white' : 'text-black hover:text-primary-800'}"
             on:click={() => handleSelect(option)}
             on:mouseover={(event) => handleMouseOver(option, event)}

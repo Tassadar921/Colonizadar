@@ -12,7 +12,7 @@ import app from '@adonisjs/core/services/app';
 import { cuid } from '@adonisjs/core/helpers';
 import FileService from '#services/file_service';
 import SlugifyService from '#services/slugify_service';
-import { resetPasswordValidator, sendResetPasswordEmailValidator, updateProfileValidator } from '#validators/profile';
+import { resetPasswordValidator, sendResetPasswordEmailValidator, updateProfileValidator, uploadProfilePictureValidator } from '#validators/profile';
 
 @inject()
 export default class ProfileController {
@@ -93,12 +93,13 @@ export default class ProfileController {
     }
 
     public async updateProfile({ request, response, user }: HttpContext): Promise<void> {
-        const { username, profilePicture } = await updateProfileValidator.validate(request.all());
+        const { username } = await updateProfileValidator.validate(request.all());
+        const { profilePicture } = await request.validateUsing(uploadProfilePictureValidator);
 
         user.username = username;
         await user.load('profilePicture');
 
-        if (profilePicture && profilePicture.isValid && profilePicture.tmpPath) {
+        if (profilePicture) {
             if (user.fileId) {
                 user.fileId = null;
                 await user.save();
