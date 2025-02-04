@@ -123,6 +123,7 @@ export default class RoomController {
             return response.forbidden({ error: 'You are not the owner of this room' });
         }
         if (room.players.length < 6) {
+            // TODO : replace random by random AND not already in room
             const botName: BotName | null = await BotName.query().orderByRaw('RANDOM()').first();
             const player: RoomPlayer = await RoomPlayer.create({
                 roomId: room.id,
