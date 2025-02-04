@@ -8,6 +8,7 @@ import Game from '#models/game';
 import RoomStatusEnum from '#types/enum/room_status_enum';
 import SerializedRoom from '#types/serialized/serialized_room';
 import SerializedRoomPlayer from '#types/serialized/serialized_room_player';
+import Language from "#models/language";
 
 export default class Room extends BaseModel {
     @column({ isPrimary: true })
@@ -61,7 +62,7 @@ export default class Room extends BaseModel {
         }
     }
 
-    public apiSerialize(): SerializedRoom {
+    public apiSerialize(language: Language): SerializedRoom {
         return {
             id: this.frontId,
             name: this.name,
@@ -69,7 +70,7 @@ export default class Room extends BaseModel {
             token: this.token,
             status: this.status,
             owner: this.owner.apiSerialize(),
-            players: this.players.map((player: RoomPlayer): SerializedRoomPlayer => player.apiSerialize()),
+            players: this.players.map((player: RoomPlayer): SerializedRoomPlayer => player.apiSerialize(language)),
             createdAt: this.createdAt?.toString(),
             updatedAt: this.updatedAt?.toString(),
         };

@@ -3,6 +3,7 @@ import Room from '#models/room';
 import { DateTime } from 'luxon';
 import transmit from '@adonisjs/transmit/services/main';
 import RoomRepository from '#repositories/room_repository';
+import path from "node:path";
 
 export default class RoomProvider {
     protected roomRepository: RoomRepository = new RoomRepository();
@@ -28,6 +29,11 @@ export default class RoomProvider {
      * The process has been started
      */
     public async ready(): Promise<void> {
+        // Skip interval if running command
+        if (process.argv.includes(`/${path.relative('/', '')}/ace`)) {
+            return;
+        }
+
         setInterval(async (): Promise<void> => {
             const rooms = await this.roomRepository.getPaginatedForHeartbeatChecks(1);
             await this.processRoomPage(rooms.all());

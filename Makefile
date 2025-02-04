@@ -1,5 +1,3 @@
-.PHONY: format format-front format-back start list-routes
-
 format: format-front format-back
 
 format-front:
@@ -14,3 +12,6 @@ start:
 
 list-routes:
 	cd back && node ace list:routes
+
+db:
+	cd back && node ace migration:fresh && node ace db:seed

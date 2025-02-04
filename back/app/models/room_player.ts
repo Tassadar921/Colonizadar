@@ -22,10 +22,10 @@ export default class RoomPlayer extends BaseModel {
     declare user: BelongsTo<typeof User>;
 
     @column()
-    declare BotNameId: string;
+    declare botNameId: string;
 
     @belongsTo((): typeof BotName => BotName)
-    declare BotName: BelongsTo<typeof BotName>;
+    declare botName: BelongsTo<typeof BotName>;
 
     // field used to know if the user is connected once in-game
     @column()
@@ -53,7 +53,7 @@ export default class RoomPlayer extends BaseModel {
         return {
             id: this.frontId,
             user: this.user?.apiSerialize(),
-            botName: this.BotName?.translate(language),
+            botName: this.botName?.translate(language),
             isUserConnected: this.isUserConnected,
             difficulty: this.difficulty,
             createdAt: this.createdAt?.toString(),

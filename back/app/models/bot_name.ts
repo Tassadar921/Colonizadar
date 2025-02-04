@@ -1,6 +1,7 @@
 import { DateTime } from 'luxon';
 import { BaseModel, column } from '@adonisjs/lucid/orm';
 import Language from "#models/language";
+import SerializedBotName from "#types/serialized/serialized_bot_name";
 
 export default class BotName extends BaseModel {
     @column({ isPrimary: true })
@@ -30,5 +31,14 @@ export default class BotName extends BaseModel {
             default:
                 return this.english;
         }
+    }
+
+    public apiSerialize(language: Language): SerializedBotName {
+        return {
+            id: this.frontId,
+            name: this.translate(language),
+            createdAt: this.createdAt?.toString(),
+            updatedAt: this.updatedAt?.toString(),
+        };
     }
 }

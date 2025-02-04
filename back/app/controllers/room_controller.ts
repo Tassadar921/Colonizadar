@@ -68,7 +68,7 @@ export default class RoomController {
         return response.send({ message: 'Invitation sent' });
     }
 
-    public async joined({ response, user, room }: HttpContext): Promise<void> {
+    public async joined({ response, user, room, language }: HttpContext): Promise<void> {
         if (!room.players.some((player: RoomPlayer): boolean => player.userId === user.id)) {
             if (room.players.length < 6) {
                 await RoomPlayer.create({
@@ -94,7 +94,7 @@ export default class RoomController {
 
         transmit.broadcast(`notification/play/room/${room.frontId}/joined`, { user: user.apiSerialize() });
 
-        return response.send({ room: room.apiSerialize() });
+        return response.send({ room: room.apiSerialize(language) });
     }
 
     public async leave({ response, user, room }: HttpContext): Promise<void> {
@@ -115,7 +115,7 @@ export default class RoomController {
         return response.send({ message: 'Heartbeat updated' });
     }
 
-    public async addBot({ response, user, room }: HttpContext): Promise<void> {
+    public async addBot({ response, user, room, language }: HttpContext): Promise<void> {
         if (room.ownerId !== user.id) {
             return response.forbidden({ error: 'You are not the owner of this room' });
         }
@@ -125,7 +125,7 @@ export default class RoomController {
                 difficulty: RoomPlayerDifficultyEnum.MEDIUM,
             });
 
-            return response.send({ player: player.apiSerialize() });
+            return response.send({ player: player.apiSerialize(language) });
         } else {
             return response.badRequest({ error: 'Too many players' });
         }
