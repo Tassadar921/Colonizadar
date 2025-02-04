@@ -1,7 +1,7 @@
 import { DateTime } from 'luxon';
 import { BaseModel, column } from '@adonisjs/lucid/orm';
-import Language from "#models/language";
-import SerializedBotName from "#types/serialized/serialized_bot_name";
+import Language from '#models/language';
+import SerializedBotName from '#types/serialized/serialized_bot_name';
 
 export default class BotName extends BaseModel {
     @column({ isPrimary: true })

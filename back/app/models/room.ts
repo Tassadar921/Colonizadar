@@ -8,7 +8,7 @@ import Game from '#models/game';
 import RoomStatusEnum from '#types/enum/room_status_enum';
 import SerializedRoom from '#types/serialized/serialized_room';
 import SerializedRoomPlayer from '#types/serialized/serialized_room_player';
-import Language from "#models/language";
+import Language from '#models/language';
 
 export default class Room extends BaseModel {
     @column({ isPrimary: true })

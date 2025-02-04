@@ -13,7 +13,7 @@
     import InviteFriends from '../room/InviteFriends.svelte';
     import { transmit } from '../../stores/transmitStore.js';
     import { onMount, onDestroy } from 'svelte';
-    import AddBot from "../room/AddBot.svelte";
+    import AddBot from '../room/AddBot.svelte';
 
     export let roomId;
 
@@ -110,7 +110,7 @@
                 await unloadCleanup();
                 navigate('/play');
             }
-        }, 1000);
+        }, 500);
     });
 
     onDestroy(async () => {
@@ -120,6 +120,8 @@
     $: if (roomId) {
         fetchRoomData();
     }
+
+    $: console.log(room.players);
 </script>
 
 <Title title={room.name ? room.name : $t('play.room.title')} />
@@ -152,26 +154,42 @@
     <div class="flex flex-col gap-1 w-full">
         {#each room.players as player}
             <div
-                class="flex justify-between items-center h-12 border {$profile.id === player.user.id ? 'border-gray-400 dark:border-gray-700' : 'border-gray-300 dark:border-gray-800'} rounded-xl hover:bg-gray-300 dark:hover:bg-gray-800 transition-colors duration-300 px-3"
+                class="flex justify-between items-center h-12 border {player.user && $profile.id === player.user.id
+                    ? 'border-gray-400 dark:border-gray-700'
+                    : 'border-gray-300 dark:border-gray-800'} rounded-xl hover:bg-gray-300 dark:hover:bg-gray-800 transition-colors duration-300 px-3"
             >
-                <div class="flex gap-5 flex-wrap items-center">
-                    {#if player.user.profilePicture}
-                        <img
-                            alt={player.user.username}
-                            src={`${process.env.VITE_API_BASE_URL}/api/static/profile-picture/${player.user.id}?token=${localStorage.getItem('apiToken')}`}
-                            class="w-10 rounded-full"
-                        />
-                    {:else}
-                        <img alt={player.user.username} src={process.env.VITE_DEFAULT_IMAGE} class="max-h-10 rounded-full" />
-                    {/if}
-                    <p>{player.user.username}</p>
-                    {#if room.owner.id === player.user.id}
-                        <div class="text-yellow-500">
-                            <Icon name="crown" />
+                {#if player.user}
+                    <div class="flex gap-5 flex-wrap items-center">
+                        {#if player.user.profilePicture}
+                            <img
+                                alt={player.user.username}
+                                src={`${process.env.VITE_API_BASE_URL}/api/static/profile-picture/${player.user.id}?token=${localStorage.getItem('apiToken')}`}
+                                class="w-10 rounded-full"
+                            />
+                        {:else}
+                            <img alt={player.user.username} src={process.env.VITE_DEFAULT_IMAGE} class="max-h-10 rounded-full" />
+                        {/if}
+                        <p>{player.user.username}</p>
+                        {#if room.owner.id === player.user.id}
+                            <div class="text-yellow-500">
+                                <Icon name="crown" />
+                            </div>
+                        {/if}
+                    </div>
+                    {#if $profile.id === room.owner.id && $profile.id !== player.user.id}
+                        <div>
+                            <Button
+                                ariaLabel="Kick user from room"
+                                customStyle
+                                className="transition-all duration-300 hover:scale-110 mt-2 transform text-red-600 hover:text-red-400"
+                                on:click={() => handleKick(player.user)}
+                            >
+                                <Icon name="close" />
+                            </Button>
                         </div>
                     {/if}
-                </div>
-                {#if $profile.id === room.owner.id && $profile.id !== player.user.id}
+                {:else if player.botName}
+                    <p>{player.botName}</p>
                     <div>
                         <Button
                             ariaLabel="Kick user from room"

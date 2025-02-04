@@ -5,8 +5,8 @@ import type { BelongsTo } from '@adonisjs/lucid/types/relations';
 import RoomPlayerDifficultyEnum from '#types/enum/room_player_difficulty_enum';
 import Room from '#models/room';
 import SerializedRoomPlayer from '#types/serialized/serialized_room_player';
-import BotName from "#models/bot_name";
-import Language from "#models/language";
+import BotName from '#models/bot_name';
+import Language from '#models/language';
 
 export default class RoomPlayer extends BaseModel {
     @column({ isPrimary: true })

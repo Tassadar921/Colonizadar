@@ -18,7 +18,8 @@ export default class RoomRepository extends BaseRepository<typeof Room> {
                     .preload('user', (userQuery): void => {
                         userQuery.preload('profilePicture');
                     })
-                    .preload('roomPlayerBotName');
+                    .preload('botName')
+                    .orderBy('frontId');
             })
             .first();
     }
@@ -38,7 +39,8 @@ export default class RoomRepository extends BaseRepository<typeof Room> {
                     .preload('user', (userQuery): void => {
                         userQuery.preload('profilePicture');
                     })
-                    .preload('roomPlayerBotName');
+                    .preload('botName')
+                    .orderBy('frontId');
             })
             .first();
     }
@@ -50,5 +52,17 @@ export default class RoomRepository extends BaseRepository<typeof Room> {
                 playersQuery.andWhereNotNull('user_id').preload('user');
             })
             .paginate(page, 50);
+    }
+
+    public async getDistinctBotNamesFromRoom(room: Room): Promise<string[]> {
+        const rooms: Room[] = await Room.query()
+            .select('room_players.bot_name_id')
+            .where('rooms.id', room.id)
+            .leftJoin('room_players', 'rooms.id', 'room_players.room_id')
+            .distinct('room_players.bot_name_id')
+            .andWhereNull('room_players.user_id')
+            .andWhereNotNull('room_players.bot_name_id');
+
+        return <string[]>rooms[0]?.$extras.bot_name_ids ?? [];
     }
 }

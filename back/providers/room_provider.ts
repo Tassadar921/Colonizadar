@@ -3,7 +3,7 @@ import Room from '#models/room';
 import { DateTime } from 'luxon';
 import transmit from '@adonisjs/transmit/services/main';
 import RoomRepository from '#repositories/room_repository';
-import path from "node:path";
+import path from 'node:path';
 
 export default class RoomProvider {
     protected roomRepository: RoomRepository = new RoomRepository();
@@ -60,10 +60,11 @@ export default class RoomProvider {
         const now: DateTime = DateTime.now();
         for (const room of rooms) {
             for (const player of room.players) {
-                if (player.lastHeartbeat && now.diff(player.lastHeartbeat, 'seconds').seconds > 5) {
+                if (player.lastHeartbeat && now.diff(player.lastHeartbeat, 'seconds').seconds > 15) {
                     console.log(`Player ${player.user.username} kicked from room ${room.name}`);
                     await player.delete();
 
+                    // TODO : replace leave by kicked
                     transmit.broadcast(`notification/play/room/${room.frontId}/leave`, { user: player.user.apiSerialize() });
                 }
             }

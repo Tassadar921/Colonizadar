@@ -12,6 +12,7 @@ import transmit from '@adonisjs/transmit/services/main';
 import Friend from '#models/friend';
 import { DateTime } from 'luxon';
 import RoomPlayerDifficultyEnum from '#types/enum/room_player_difficulty_enum';
+import BotName from '#models/bot_name';
 
 @inject()
 export default class RoomController {
@@ -22,7 +23,6 @@ export default class RoomController {
     ) {}
 
     public async create({ request, response, user }: HttpContext): Promise<void> {
-        console.log('=========================');
         const activeRoom: Room | null = await this.roomRepository.findOneBy({
             ownerId: user.id,
             status: RoomStatusEnum.ACTIVE,
@@ -82,9 +82,12 @@ export default class RoomController {
         }
 
         await room.load('players', (playersQuery): void => {
-            playersQuery.preload('user', (userQuery): void => {
-                userQuery.preload('profilePicture');
-            });
+            playersQuery
+                .preload('user', (userQuery): void => {
+                    userQuery.preload('profilePicture');
+                })
+                .preload('botName')
+                .orderBy('frontId');
         });
         const player: RoomPlayer = <RoomPlayer>room.players.find((player: RoomPlayer): boolean => player.userId === user.id);
         player.isUserConnected = true;
@@ -120,10 +123,17 @@ export default class RoomController {
             return response.forbidden({ error: 'You are not the owner of this room' });
         }
         if (room.players.length < 6) {
+            const botName: BotName | null = await BotName.query().orderByRaw('RANDOM()').first();
             const player: RoomPlayer = await RoomPlayer.create({
                 roomId: room.id,
                 difficulty: RoomPlayerDifficultyEnum.MEDIUM,
+                botNameId: botName?.id,
             });
+
+            await player.load('botName');
+            await player.refresh();
+
+            // TODO: send transmit notification to room
 
             return response.send({ player: player.apiSerialize(language) });
         } else {

@@ -1,20 +1,17 @@
 <script>
-    import Button from "../shared/Button.svelte";
-    import Icon from "../shared/Icon.svelte";
-    import axios from "axios";
-    import { createEventDispatcher } from 'svelte';
-    import {showToast} from "../../services/toastService.js";
+    import Button from '../shared/Button.svelte';
+    import Icon from '../shared/Icon.svelte';
+    import axios from 'axios';
+    import { showToast } from '../../services/toastService.js';
     import { t } from 'svelte-i18n';
-
-    const dispatch = createEventDispatcher();
 
     export let room;
 
     const handleAddBot = async () => {
         try {
-            const response = await axios.post(`/api/room/${room.id}/add-bot`);
+            const response = await axios.post(`/api/room/${room.id}/add-bot?language=${localStorage.getItem('language')}`);
             if (response.status === 200) {
-                showToast($t('toast.room.add-bot.success'));
+                showToast(`${$t('toast.room.add-bot.success')} : ${response.data.player.botName}`);
                 room.players = [...room.players, response.data.player];
             } else {
                 showToast($t('toast.room.add-bot.error'), 'error');
