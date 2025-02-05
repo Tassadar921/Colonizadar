@@ -44,7 +44,6 @@
         if (!language || !supportedLanguages.includes(language)) {
             language = 'en';
             initialSetLanguage(language);
-            showToast('Invalid language. Defaulting to English.', 'error');
             navigate(`/${language}`);
         } else {
             initialSetLanguage(language);

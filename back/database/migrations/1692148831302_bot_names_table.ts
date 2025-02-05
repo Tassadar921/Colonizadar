@@ -10,6 +10,7 @@ export default class extends BaseSchema {
             table.specificType('front_id', 'serial').notNullable();
             table.string('english', 255).notNullable();
             table.string('french', 255).notNullable();
+            table.string('image_path', 512).notNullable();
             table.timestamp('created_at', { useTz: true });
             table.timestamp('updated_at', { useTz: true });
         });
