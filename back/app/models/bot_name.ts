@@ -16,6 +16,9 @@ export default class BotName extends BaseModel {
     @column()
     declare english: string;
 
+    @column()
+    declare imagePath: string;
+
     @column.dateTime({ autoCreate: true })
     declare createdAt: DateTime;
 
@@ -37,6 +40,7 @@ export default class BotName extends BaseModel {
         return {
             id: this.frontId,
             name: this.translate(language),
+            imagePath: this.imagePath,
             createdAt: this.createdAt?.toString(),
             updatedAt: this.updatedAt?.toString(),
         };
