@@ -5,6 +5,7 @@
     import { locale } from 'svelte-i18n';
     import { setLanguage, language } from '../../stores/languageStore.js';
     import { location, navigate } from '../../stores/locationStore.js';
+    import axios from "axios";
 
     let flags = [
         { icon: 'englishFlag', label: 'English', value: 'en' },
@@ -28,6 +29,7 @@
 
         setLanguage(flag.value);
         locale.set(flag.value);
+        axios.defaults.headers.common['Accept-Language'] = `${flag.value}-${flag.value.toUpperCase()}`;
         selectedFlag = flag;
 
         const currentPath = $location.replace(`/${initialLanguage}`, '');

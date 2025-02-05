@@ -37,6 +37,7 @@
         const initialSetLanguage = (language) => {
             setLanguage(language);
             locale.set(language);
+            axios.defaults.headers.common['Accept-Language'] = `${language}-${language.toUpperCase()}`;
         };
 
         let language = langMatch ? langMatch[1] : null;

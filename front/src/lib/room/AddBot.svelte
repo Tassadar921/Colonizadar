@@ -9,7 +9,7 @@
 
     const handleAddBot = async () => {
         try {
-            const response = await axios.post(`/api/room/${room.id}/add-bot?language=${localStorage.getItem('language')}`);
+            const response = await axios.post(`/api/room/${room.id}/add-bot`);
             if (response.status === 200) {
                 showToast(`${$t('toast.room.add-bot.success')} : ${response.data.player.botName}`);
                 room.players = [...room.players, response.data.player];
