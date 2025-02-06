@@ -3,14 +3,14 @@ import { HttpContext } from '@adonisjs/core/http';
 import app from '@adonisjs/core/services/app';
 import UserRepository from '#repositories/user_repository';
 import User from '#models/user';
-import BotRepository from "#repositories/bot_repository";
-import Bot from "#models/bot";
+import BotRepository from '#repositories/bot_repository';
+import Bot from '#models/bot';
 
 @inject()
 export default class FileController {
     constructor(
         private readonly userRepository: UserRepository,
-        private readonly botRepository: BotRepository,
+        private readonly botRepository: BotRepository
     ) {}
 
     public async serveStaticProfilePictureFile({ request, response }: HttpContext): Promise<void> {

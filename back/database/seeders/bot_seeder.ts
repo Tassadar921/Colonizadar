@@ -4,8 +4,8 @@ import BotRepository from '#repositories/bot_repository';
 import fs from 'fs/promises';
 import path from 'path';
 import mime from 'mime-types';
-import File from "#models/file";
-import app from "@adonisjs/core/services/app";
+import File from '#models/file';
+import app from '@adonisjs/core/services/app';
 
 export default class extends BaseSeeder {
     async run(): Promise<void> {

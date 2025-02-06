@@ -13,7 +13,7 @@ import { cuid } from '@adonisjs/core/helpers';
 import FileService from '#services/file_service';
 import SlugifyService from '#services/slugify_service';
 import { resetPasswordValidator, sendResetPasswordEmailValidator, updateProfileValidator, uploadProfilePictureValidator } from '#validators/profile';
-import path from "node:path";
+import path from 'node:path';
 
 @inject()
 export default class ProfileController {
