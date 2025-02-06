@@ -14,6 +14,7 @@
     import { transmit } from '../../stores/transmitStore.js';
     import { onMount, onDestroy } from 'svelte';
     import AddBot from '../room/AddBot.svelte';
+    import { location } from '../../stores/locationStore.js';
 
     export let roomId;
 
@@ -45,7 +46,9 @@
                 roomClosedNotification.onMessage(async () => {
                     showToast($t('toast.notification.play.room.closed'), 'warning');
                     await unloadCleanup();
-                    navigate('/play');
+                    if ($location.includes('/play/room')) {
+                        navigate('/play');
+                    }
                 });
 
                 await userJoinedNotification.create();
@@ -93,13 +96,13 @@
 
     const unloadCleanup = async () => {
         try {
+            clearInterval(heartbeat);
             await axios.delete(`/api/room/${roomId}/leave`);
             await roomClosedNotification.delete();
             await kickedNotification.delete();
             await userJoinedNotification.delete();
             await userLeftNotification.delete();
         } catch (e) {}
-        clearInterval(heartbeat);
     };
 
     onMount(() => {
@@ -188,8 +191,15 @@
                             </Button>
                         </div>
                     {/if}
-                {:else if player.botName}
-                    <p>{player.botName}</p>
+                {:else if player.bot}
+                    <div class="flex gap-5 flex-wrap items-center">
+                        <img
+                            alt={player.bot.name}
+                            src={`${process.env.VITE_API_BASE_URL}/api/static/bot-picture/${player.bot.id}?token=${localStorage.getItem('apiToken')}`}
+                            class="w-10 rounded-full"
+                        />
+                        <p>{player.bot.name}</p>
+                    </div>
                     <div>
                         <Button
                             ariaLabel="Kick user from room"

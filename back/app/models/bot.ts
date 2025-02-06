@@ -1,9 +1,11 @@
 import { DateTime } from 'luxon';
-import { BaseModel, column } from '@adonisjs/lucid/orm';
+import { BaseModel, belongsTo, column } from '@adonisjs/lucid/orm';
 import Language from '#models/language';
-import SerializedBotName from '#types/serialized/serialized_bot_name';
+import SerializedBot from '#types/serialized/serialized_bot';
+import File from '#models/file';
+import type { BelongsTo } from '@adonisjs/lucid/types/relations';
 
-export default class BotName extends BaseModel {
+export default class Bot extends BaseModel {
     @column({ isPrimary: true })
     declare id: string;
 
@@ -11,13 +13,18 @@ export default class BotName extends BaseModel {
     declare frontId: number;
 
     @column()
-    declare french: string;
+    declare frenchName: string;
 
     @column()
-    declare english: string;
+    declare englishName: string;
 
     @column()
-    declare imagePath: string;
+    declare pictureId: string | null;
+
+    @belongsTo((): typeof File => File, {
+        foreignKey: 'pictureId',
+    })
+    declare picture: BelongsTo<typeof File>;
 
     @column.dateTime({ autoCreate: true })
     declare createdAt: DateTime;
@@ -28,19 +35,19 @@ export default class BotName extends BaseModel {
     public translate(language: Language): string {
         switch (language.code) {
             case 'fr':
-                return this.french;
+                return this.frenchName;
             case 'en':
-                return this.english;
+                return this.englishName;
             default:
-                return this.english;
+                return this.englishName;
         }
     }
 
-    public apiSerialize(language: Language): SerializedBotName {
+    public apiSerialize(language: Language): SerializedBot {
         return {
             id: this.frontId,
             name: this.translate(language),
-            imagePath: this.imagePath,
+            picture: this.picture.apiSerialize(),
             createdAt: this.createdAt?.toString(),
             updatedAt: this.updatedAt?.toString(),
         };

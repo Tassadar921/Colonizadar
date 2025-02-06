@@ -102,6 +102,7 @@ router
             .use([middleware.auth({ guards: ['api'] })]);
 
         router.get('/static/profile-picture/:userId', [FileController, 'serveStaticProfilePictureFile']).use([middleware.queryStringAuth()]);
+        router.get('/static/bot-picture/:botId', [FileController, 'serveStaticBotPictureFile']).use([middleware.queryStringAuth()]);
     })
     .prefix('api')
     .use([middleware.language()]);

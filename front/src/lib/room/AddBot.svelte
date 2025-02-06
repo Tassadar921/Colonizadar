@@ -11,13 +11,13 @@
         try {
             const response = await axios.post(`/api/room/${room.id}/add-bot`);
             if (response.status === 200) {
-                showToast(`${$t('toast.room.add-bot.success')} : ${response.data.player.botName}`);
+                showToast(`${$t('toast.room.add-bot.success')} : ${response.data.player.bot.name}`);
                 room.players = [...room.players, response.data.player];
             } else {
-                showToast($t('toast.room.add-bot.error'), 'error');
+                showToast(response.data.error, 'error');
             }
         } catch (e) {
-            showToast($t('toast.room.add-bot.error'), 'error');
+            showToast(response.data.error, 'error');
         }
     };
 </script>

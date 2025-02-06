@@ -12,7 +12,7 @@ import transmit from '@adonisjs/transmit/services/main';
 import Friend from '#models/friend';
 import { DateTime } from 'luxon';
 import RoomPlayerDifficultyEnum from '#types/enum/room_player_difficulty_enum';
-import BotName from '#models/bot_name';
+import Bot from '#models/bot';
 
 @inject()
 export default class RoomController {
@@ -86,7 +86,9 @@ export default class RoomController {
                 .preload('user', (userQuery): void => {
                     userQuery.preload('profilePicture');
                 })
-                .preload('botName')
+                .preload('bot', (botQuery): void => {
+                    botQuery.preload('picture');
+                })
                 .orderBy('frontId');
         });
         const player: RoomPlayer = <RoomPlayer>room.players.find((player: RoomPlayer): boolean => player.userId === user.id);
@@ -124,14 +126,16 @@ export default class RoomController {
         }
         if (room.players.length < 6) {
             // TODO : replace random by random AND not already in room
-            const botName: BotName | null = await BotName.query().orderByRaw('RANDOM()').first();
+            const bot: Bot | null = await Bot.query().orderByRaw('RANDOM()').first();
             const player: RoomPlayer = await RoomPlayer.create({
                 roomId: room.id,
                 difficulty: RoomPlayerDifficultyEnum.MEDIUM,
-                botNameId: botName?.id,
+                botId: bot?.id,
             });
 
-            await player.load('botName');
+            await player.load('bot', (botQuery): void => {
+                botQuery.preload('picture');
+            });
             await player.refresh();
 
             // TODO: send transmit notification to room

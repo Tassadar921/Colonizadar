@@ -5,8 +5,8 @@ import type { BelongsTo } from '@adonisjs/lucid/types/relations';
 import RoomPlayerDifficultyEnum from '#types/enum/room_player_difficulty_enum';
 import Room from '#models/room';
 import SerializedRoomPlayer from '#types/serialized/serialized_room_player';
-import BotName from '#models/bot_name';
 import Language from '#models/language';
+import Bot from '#models/bot';
 
 export default class RoomPlayer extends BaseModel {
     @column({ isPrimary: true })
@@ -22,10 +22,10 @@ export default class RoomPlayer extends BaseModel {
     declare user: BelongsTo<typeof User>;
 
     @column()
-    declare botNameId: string;
+    declare botId: string;
 
-    @belongsTo((): typeof BotName => BotName)
-    declare botName: BelongsTo<typeof BotName>;
+    @belongsTo((): typeof Bot => Bot)
+    declare bot: BelongsTo<typeof Bot>;
 
     // field used to know if the user is connected once in-game
     @column()
@@ -53,7 +53,7 @@ export default class RoomPlayer extends BaseModel {
         return {
             id: this.frontId,
             user: this.user?.apiSerialize(),
-            botName: this.botName?.translate(language),
+            bot: this.bot?.apiSerialize(language),
             isUserConnected: this.isUserConnected,
             difficulty: this.difficulty,
             createdAt: this.createdAt?.toString(),

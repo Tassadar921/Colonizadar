@@ -18,7 +18,9 @@ export default class RoomRepository extends BaseRepository<typeof Room> {
                     .preload('user', (userQuery): void => {
                         userQuery.preload('profilePicture');
                     })
-                    .preload('botName')
+                    .preload('bot', (botQuery): void => {
+                        botQuery.preload('picture');
+                    })
                     .orderBy('frontId');
             })
             .first();
@@ -39,7 +41,9 @@ export default class RoomRepository extends BaseRepository<typeof Room> {
                     .preload('user', (userQuery): void => {
                         userQuery.preload('profilePicture');
                     })
-                    .preload('botName')
+                    .preload('bot', (botQuery): void => {
+                        botQuery.preload('picture');
+                    })
                     .orderBy('frontId');
             })
             .first();

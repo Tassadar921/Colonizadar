@@ -43,9 +43,11 @@ export default class User extends compose(BaseModel, AuthFinder) {
     declare acceptedTermsAndConditions: boolean;
 
     @column()
-    declare fileId: string | null;
+    declare profilePictureId: string | null;
 
-    @belongsTo((): typeof File => File)
+    @belongsTo((): typeof File => File, {
+        foreignKey: 'profilePictureId',
+    })
     declare profilePicture: BelongsTo<typeof File>;
 
     @column.dateTime({ autoCreate: true })
