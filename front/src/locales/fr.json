@@ -253,7 +253,8 @@
             },
             "invite": {
                 "title": "Inviter un ami"
-            }
+            },
+            "add-bot": "Ajouter un bot"
         }
     }
 }

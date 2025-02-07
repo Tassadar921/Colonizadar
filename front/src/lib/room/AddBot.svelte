@@ -10,23 +10,22 @@
     const handleAddBot = async () => {
         try {
             const response = await axios.post(`/api/room/${room.id}/add-bot`);
-            if (response.status === 200) {
-                showToast(`${$t('toast.room.add-bot.success')} : ${response.data.player.bot.name}`);
-                room.players = [...room.players, response.data.player];
-            } else {
-                showToast(response.data.error, 'error');
-            }
+            showToast(`${$t('toast.room.add-bot.success')} : ${response.data.player.bot.name}`);
+            room.players = [...room.players, response.data.player];
         } catch (e) {
-            showToast(response.data.error, 'error');
+            showToast(e.response.data.error, 'error');
         }
     };
 </script>
 
-<Button
-    ariaLabel="Add a bot"
-    customStyle
-    className="rounded-full bg-green-500 hover:bg-green-600 dark:bg-green-700 dark:hover:bg-green-600 transition-colors duration-300 p-1 mb-1.5"
-    on:click={handleAddBot}
->
-    <Icon name="plus" />
-</Button>
+<div>
+    <Button
+        ariaLabel="Add a bot"
+        customStyle
+        className="flex items-center gap-3 rounded-full hover:scale-105 bg-green-500 hover:bg-green-600 dark:bg-green-700 dark:hover:bg-green-600 transition-all duration-300 p-1 px-4"
+        on:click={handleAddBot}
+    >
+        <Icon name="plus" />
+        <span>{$t('play.room.add-bot')}</span>
+    </Button>
+</div>

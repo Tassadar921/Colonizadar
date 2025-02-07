@@ -54,6 +54,7 @@
             paginatedFriends.friends = paginatedFriends.friends.filter((friendObject) => friendObject.friend.id !== user.id);
         });
 
+        // update when a friend blocks user
         const blockFriend = $transmit.subscription(`notification/blocked/${$profile.id}`);
         await blockFriend.create();
         blockFriend.onMessage(async (user) => {
@@ -96,14 +97,16 @@
                         <p>{friendObject.friend.username}</p>
                     </div>
                     <div class="flex gap-10 pr-5">
-                        <Button
-                            ariaLabel="Invite a friend"
-                            customStyle
-                            className="transition-all duration-300 hover:scale-110 transform text-green-600 hover:text-green-400"
-                            on:click={() => handleInviteFriend(friendObject.friend)}
-                        >
-                            <Icon name="invite" />
-                        </Button>
+                        {#if !room.players.some((player) => player.user.id === friendObject.friend.id)}
+                            <Button
+                                ariaLabel="Invite a friend"
+                                customStyle
+                                className="transition-all duration-300 hover:scale-110 transform text-green-600 hover:text-green-400"
+                                on:click={() => handleInviteFriend(friendObject.friend)}
+                            >
+                                <Icon name="invite" />
+                            </Button>
+                        {/if}
                     </div>
                 </div>
             {/each}

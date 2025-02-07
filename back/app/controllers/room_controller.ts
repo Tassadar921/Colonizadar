@@ -1,6 +1,6 @@
 import { inject } from '@adonisjs/core';
 import { HttpContext, Response } from '@adonisjs/core/http';
-import { createRoomValidator, inviteRoomValidator } from '#validators/room';
+import {createRoomValidator, inviteRoomValidator, kickValidator} from '#validators/room';
 import Room from '#models/room';
 import RoomRepository from '#repositories/room_repository';
 import RoomStatusEnum from '#types/enum/room_status_enum';
@@ -148,6 +148,24 @@ export default class RoomController {
 
     public async getDifficulties({ response }: HttpContext): Promise<void> {
         return response.send({ difficulties: Object.values(RoomPlayerDifficultyEnum) });
+    }
+
+    public async kick({ request, response, user, room }: HttpContext): Promise<void> {
+        if (room.ownerId !== user.id) {
+            return response.forbidden({ error: 'You are not the owner of this room' });
+        }
+
+        const { playerId } = await kickValidator.validate(request.params());
+
+        const player: RoomPlayer | undefined = room.players.find((player: RoomPlayer): boolean => player.frontId === playerId);
+        if (!player) {
+            return response.notFound({ error: 'Player is not into this room' });
+        }
+
+        await player.delete();
+
+        // TODO: send transmit notification to room
+        return response.send({ message: 'Player kicked' });
     }
 
     private async disconnect(user: User, room: Room, response: Response): Promise<void> {

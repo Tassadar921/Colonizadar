@@ -26,3 +26,9 @@ export const addBotValidator = vine.compile(
         difficulty: vine.number().positive().max(Object.values(RoomPlayerDifficultyEnum).length),
     })
 );
+
+export const kickValidator = vine.compile(
+    vine.object({
+        playerId: vine.number().positive(),
+    })
+);

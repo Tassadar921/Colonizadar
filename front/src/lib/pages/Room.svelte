@@ -11,10 +11,10 @@
     import Modal from '../shared/Modal.svelte';
     import Subtitle from '../shared/Subtitle.svelte';
     import InviteFriends from '../room/InviteFriends.svelte';
-    import { transmit } from '../../stores/transmitStore.js';
     import { onMount, onDestroy } from 'svelte';
     import AddBot from '../room/AddBot.svelte';
-    import { location } from '../../stores/locationStore.js';
+    import KickPlayer from '../room/KickPlayer.svelte';
+    import RoomNotifications from "../room/RoomNotifications.svelte";
 
     export let roomId;
 
@@ -22,50 +22,11 @@
     let showInviteFriendModal = false;
     let heartbeat;
 
-    let roomClosedNotification;
-    let kickedNotification;
-    let userJoinedNotification;
-    let userLeftNotification;
-
     async function fetchRoomData() {
         try {
-            roomClosedNotification ? await roomClosedNotification.delete() : null;
-            kickedNotification ? await kickedNotification.delete() : null;
-            userJoinedNotification ? await userJoinedNotification.delete() : null;
-            userLeftNotification ? await userLeftNotification.delete() : null;
-
             const response = await axios.get(`/api/room/${roomId}/joined`);
             if (response.status === 200) {
                 room = response.data.room;
-                roomClosedNotification = $transmit.subscription(`notification/play/room/${room.id}/closed`);
-                kickedNotification = $transmit.subscription(`notification/play/room/${room.id}/${$profile.id}/kicked`);
-                userJoinedNotification = $transmit.subscription(`notification/play/room/${room.id}/joined`);
-                userLeftNotification = $transmit.subscription(`notification/play/room/${room.id}/leave`);
-
-                await roomClosedNotification.create();
-                roomClosedNotification.onMessage(async () => {
-                    showToast($t('toast.notification.play.room.closed'), 'warning');
-                    await unloadCleanup();
-                    if ($location.includes('/play/room')) {
-                        navigate('/play');
-                    }
-                });
-
-                await userJoinedNotification.create();
-                userJoinedNotification.onMessage((data) => {
-                    if (!room.players.some((player) => player.user.id === data.user.id)) {
-                        room.players = [...room.players, { user: data.user }];
-                        showToast(`${data.user.username} ${$t('toast.notification.play.room.joined')}`);
-                    }
-                });
-
-                await userLeftNotification.create();
-                userLeftNotification.onMessage((data) => {
-                    if (data.user.id !== $profile.id) {
-                        room.players = room.players.filter((player) => player.user.id !== data.user.id);
-                        showToast(`${data.user.username} ${$t('toast.notification.play.room.left')}`, 'warning');
-                    }
-                });
             } else {
                 showToast($t('toast.room.error'), 'error');
                 await unloadCleanup();
@@ -83,25 +44,10 @@
         showToast($t('toast.copy.success'));
     };
 
-    const handleKick = async (user) => {
-        // TODO : handle kick user
-        // try {
-        //     await axios.post(`/api/room/${roomId}/kick`, { userId: user.id });
-        //     showToast(`${user.username} ${$t('toast.notification.play.room.kicked')}`);
-        //     room.players = room.players.filter((p) => p.user.id !== user.id);
-        // } catch (error) {
-        //     showToast($t('toast.room.kick.error'), 'error');
-        // }
-    };
-
     const unloadCleanup = async () => {
         try {
             clearInterval(heartbeat);
             await axios.delete(`/api/room/${roomId}/leave`);
-            await roomClosedNotification.delete();
-            await kickedNotification.delete();
-            await userJoinedNotification.delete();
-            await userLeftNotification.delete();
         } catch (e) {}
     };
 
@@ -123,13 +69,17 @@
     $: if (roomId) {
         fetchRoomData();
     }
-
-    $: console.log(room.players);
 </script>
 
 <Title title={room.name ? room.name : $t('play.room.title')} />
 
-<Breadcrumbs items={[{ label: $t('home.title'), path: '/' }, { label: $t('play.title'), path: '/play' }, { label: $t('play.room.title') }]} />
+<Breadcrumbs items={[
+    { label: $t('home.title'), path: '/' },
+    { label: $t('play.title'), path: '/play' },
+    { label: $t('play.room.title') }
+]} />
+
+<RoomNotifications bind:room resetTransmits={unloadCleanup} />
 
 <div class="grid grid-cols-1 sm:grid-cols-2">
     <div class="flex justify-center h-10 text-white mt-3 text-sm px-3">
@@ -156,11 +106,10 @@
 <div class="flex flex-row flex-wrap gap-5 justify-center my-5">
     <div class="flex flex-col gap-1 w-full">
         {#each room.players as player}
-            <div
-                class="flex justify-between items-center h-12 border {player.user && $profile.id === player.user.id
+            <div class="flex justify-between items-center h-12 border {player.user && $profile.id === player.user.id
                     ? 'border-gray-400 dark:border-gray-700'
-                    : 'border-gray-300 dark:border-gray-800'} rounded-xl hover:bg-gray-300 dark:hover:bg-gray-800 transition-colors duration-300 px-3"
-            >
+                    : 'border-gray-300 dark:border-gray-800'} rounded-xl hover:bg-gray-300 dark:hover:bg-gray-800 transition-colors duration-300 px-3">
+
                 {#if player.user}
                     <div class="flex gap-5 flex-wrap items-center">
                         {#if player.user.profilePicture}
@@ -179,18 +128,6 @@
                             </div>
                         {/if}
                     </div>
-                    {#if $profile.id === room.owner.id && $profile.id !== player.user.id}
-                        <div>
-                            <Button
-                                ariaLabel="Kick user from room"
-                                customStyle
-                                className="transition-all duration-300 hover:scale-110 mt-2 transform text-red-600 hover:text-red-400"
-                                on:click={() => handleKick(player.user)}
-                            >
-                                <Icon name="close" />
-                            </Button>
-                        </div>
-                    {/if}
                 {:else if player.bot}
                     <div class="flex gap-5 flex-wrap items-center">
                         <img
@@ -200,16 +137,10 @@
                         />
                         <p>{player.bot.name}</p>
                     </div>
-                    <div>
-                        <Button
-                            ariaLabel="Kick user from room"
-                            customStyle
-                            className="transition-all duration-300 hover:scale-110 mt-2 transform text-red-600 hover:text-red-400"
-                            on:click={() => handleKick(player.user)}
-                        >
-                            <Icon name="close" />
-                        </Button>
-                    </div>
+                {/if}
+
+                {#if $profile.id === room.owner.id && $profile.id !== player.user?.id}
+                    <KickPlayer bind:room bind:player />
                 {/if}
             </div>
         {/each}
@@ -221,5 +152,5 @@
 
 <Modal bind:showModal={showInviteFriendModal} fullWidth>
     <Subtitle slot="header">{$t('play.room.invite.title')}</Subtitle>
-    <InviteFriends {room} />
+    <InviteFriends bind:room />
 </Modal>

@@ -92,7 +92,7 @@ router
                                 router.delete('/leave', [RoomController, 'leave']);
                                 router.get('/heartbeat', [RoomController, 'heartbeat']);
                                 router.post('add-bot', [RoomController, 'addBot']);
-                                // TODO : /kick to kick user
+                                router.delete('kick/:playerId', [RoomController, 'kick']);
                             })
                             .prefix(':roomId')
                             .use([middleware.room()]);
