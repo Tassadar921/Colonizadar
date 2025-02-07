@@ -14,7 +14,7 @@
     import { onMount, onDestroy } from 'svelte';
     import AddBot from '../room/AddBot.svelte';
     import KickPlayer from '../room/KickPlayer.svelte';
-    import RoomNotifications from "../room/RoomNotifications.svelte";
+    import RoomNotifications from '../room/RoomNotifications.svelte';
 
     export let roomId;
 
@@ -73,11 +73,7 @@
 
 <Title title={room.name ? room.name : $t('play.room.title')} />
 
-<Breadcrumbs items={[
-    { label: $t('home.title'), path: '/' },
-    { label: $t('play.title'), path: '/play' },
-    { label: $t('play.room.title') }
-]} />
+<Breadcrumbs items={[{ label: $t('home.title'), path: '/' }, { label: $t('play.title'), path: '/play' }, { label: $t('play.room.title') }]} />
 
 <RoomNotifications bind:room resetTransmits={unloadCleanup} />
 
@@ -106,10 +102,11 @@
 <div class="flex flex-row flex-wrap gap-5 justify-center my-5">
     <div class="flex flex-col gap-1 w-full">
         {#each room.players as player}
-            <div class="flex justify-between items-center h-12 border {player.user && $profile.id === player.user.id
+            <div
+                class="flex justify-between items-center h-12 border {player.user && $profile.id === player.user.id
                     ? 'border-gray-400 dark:border-gray-700'
-                    : 'border-gray-300 dark:border-gray-800'} rounded-xl hover:bg-gray-300 dark:hover:bg-gray-800 transition-colors duration-300 px-3">
-
+                    : 'border-gray-300 dark:border-gray-800'} rounded-xl hover:bg-gray-300 dark:hover:bg-gray-800 transition-colors duration-300 px-3"
+            >
                 {#if player.user}
                     <div class="flex gap-5 flex-wrap items-center">
                         {#if player.user.profilePicture}
