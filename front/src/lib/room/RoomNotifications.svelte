@@ -36,8 +36,8 @@
 
         await userJoinedNotification.create();
         userJoinedNotification.onMessage((data) => {
-            if (!room.players.some((player) => player.user.id === data.user.id)) {
-                room.players = [...room.players, { user: data.user }];
+            if (!room.players.some((player) => player.id === data.player.id)) {
+                room.players = [...room.players, data.player];
                 showToast(`${data.user.username} ${$t('toast.notification.play.room.joined')}`);
             }
         });

@@ -13,13 +13,15 @@ import Friend from '#models/friend';
 import { DateTime } from 'luxon';
 import RoomPlayerDifficultyEnum from '#types/enum/room_player_difficulty_enum';
 import Bot from '#models/bot';
+import BotRepository from "#repositories/bot_repository";
 
 @inject()
 export default class RoomController {
     constructor(
         private readonly roomRepository: RoomRepository,
         private readonly userRepository: UserRepository,
-        private readonly friendRepository: FriendRepository
+        private readonly friendRepository: FriendRepository,
+        private readonly botRepository: BotRepository,
     ) {}
 
     public async create({ request, response, user }: HttpContext): Promise<void> {
@@ -97,7 +99,7 @@ export default class RoomController {
 
         await user.load('profilePicture');
 
-        transmit.broadcast(`notification/play/room/${room.frontId}/joined`, { user: user.apiSerialize() });
+        transmit.broadcast(`notification/play/room/${room.frontId}/joined`, { player: player.apiSerialize(language) });
 
         return response.send({ room: room.apiSerialize(language) });
     }
@@ -124,9 +126,9 @@ export default class RoomController {
         if (room.ownerId !== user.id) {
             return response.forbidden({ error: 'You are not the owner of this room' });
         }
+
         if (room.players.length < 6) {
-            // TODO : replace random by random AND not already in room
-            const bot: Bot | null = await Bot.query().orderByRaw('RANDOM()').first();
+            let bot: Bot = await this.botRepository.getOneForRoom(room);
             const player: RoomPlayer = await RoomPlayer.create({
                 roomId: room.id,
                 difficulty: RoomPlayerDifficultyEnum.MEDIUM,
@@ -138,7 +140,7 @@ export default class RoomController {
             });
             await player.refresh();
 
-            // TODO: send transmit notification to room
+            transmit.broadcast(`notification/play/room/${room.frontId}/joined`, { player: player.apiSerialize(language) });
 
             return response.send({ player: player.apiSerialize(language) });
         } else {
