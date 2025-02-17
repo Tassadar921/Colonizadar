@@ -13,7 +13,8 @@ import Friend from '#models/friend';
 import { DateTime } from 'luxon';
 import RoomPlayerDifficultyEnum from '#types/enum/room_player_difficulty_enum';
 import Bot from '#models/bot';
-import BotRepository from "#repositories/bot_repository";
+import BotRepository from '#repositories/bot_repository';
+import Language from '#models/language';
 
 @inject()
 export default class RoomController {
@@ -21,7 +22,7 @@ export default class RoomController {
         private readonly roomRepository: RoomRepository,
         private readonly userRepository: UserRepository,
         private readonly friendRepository: FriendRepository,
-        private readonly botRepository: BotRepository,
+        private readonly botRepository: BotRepository
     ) {}
 
     public async create({ request, response, user }: HttpContext): Promise<void> {
@@ -104,8 +105,8 @@ export default class RoomController {
         return response.send({ room: room.apiSerialize(language) });
     }
 
-    public async leave({ response, user, room }: HttpContext): Promise<void> {
-        await this.disconnect(user, room, response);
+    public async leave({ response, user, room, language }: HttpContext): Promise<void> {
+        await this.disconnect(user, room, language, response);
 
         return response.send({ message: 'Room left' });
     }
@@ -152,7 +153,7 @@ export default class RoomController {
         return response.send({ difficulties: Object.values(RoomPlayerDifficultyEnum) });
     }
 
-    public async kick({ request, response, user, room }: HttpContext): Promise<void> {
+    public async kick({ request, response, user, room, language }: HttpContext): Promise<void> {
         if (room.ownerId !== user.id) {
             return response.forbidden({ error: 'You are not the owner of this room' });
         }
@@ -166,11 +167,16 @@ export default class RoomController {
 
         await player.delete();
 
-        // TODO: send transmit notification to room
+        if (player.userId) {
+            transmit.broadcast(`notification/play/room/${room.frontId}/${playerId}/kicked`);
+        }
+
+        transmit.broadcast(`notification/play/room/${room.frontId}/leave`, { player: player.apiSerialize(language) });
+
         return response.send({ message: 'Player kicked' });
     }
 
-    private async disconnect(user: User, room: Room, response: Response): Promise<void> {
+    private async disconnect(user: User, room: Room, language: Language, response: Response): Promise<void> {
         if (room.ownerId === user.id) {
             room.status = RoomStatusEnum.CLOSED;
             await room.save();
@@ -184,7 +190,7 @@ export default class RoomController {
 
             await player.delete();
 
-            transmit.broadcast(`notification/play/room/${room.frontId}/leave`, { user: user.apiSerialize() });
+            transmit.broadcast(`notification/play/room/${room.frontId}/leave`, { player: player.apiSerialize(language) });
         }
     }
 }

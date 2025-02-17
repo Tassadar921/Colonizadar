@@ -97,7 +97,7 @@
                         <p>{friendObject.friend.username}</p>
                     </div>
                     <div class="flex gap-10 pr-5">
-                        {#if !room.players.some((player) => player.user.id === friendObject.friend.id)}
+                        {#if !room.players.some((player) => player.user && player.user.id === friendObject.friend.id)}
                             <Button
                                 ariaLabel="Invite a friend"
                                 customStyle

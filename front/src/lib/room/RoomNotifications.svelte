@@ -11,7 +11,6 @@
     export let resetTransmits;
 
     let roomClosedNotification;
-    let kickedNotification;
     let userJoinedNotification;
     let userLeftNotification;
 
@@ -21,7 +20,6 @@
         await cleanupTransmits();
 
         roomClosedNotification = $transmit.subscription(`notification/play/room/${room.id}/closed`);
-        kickedNotification = $transmit.subscription(`notification/play/room/${room.id}/${$profile.id}/kicked`);
         userJoinedNotification = $transmit.subscription(`notification/play/room/${room.id}/joined`);
         userLeftNotification = $transmit.subscription(`notification/play/room/${room.id}/leave`);
 
@@ -38,22 +36,19 @@
         userJoinedNotification.onMessage((data) => {
             if (!room.players.some((player) => player.id === data.player.id)) {
                 room.players = [...room.players, data.player];
-                showToast(`${data.user.username} ${$t('toast.notification.play.room.joined')}`);
             }
         });
 
         await userLeftNotification.create();
         userLeftNotification.onMessage((data) => {
-            if (data.user.id !== $profile.id) {
-                room.players = room.players.filter((player) => player.user.id !== data.user.id);
-                showToast(`${data.user.username} ${$t('toast.notification.play.room.left')}`, 'warning');
+            if (data.player.bot || (data.player && data.player.user.id !== $profile.id)) {
+                room.players = room.players.filter((player) => player.id !== data.player.id);
             }
         });
     }
 
     async function cleanupTransmits() {
         await roomClosedNotification?.delete();
-        await kickedNotification?.delete();
         await userJoinedNotification?.delete();
         await userLeftNotification?.delete();
     }

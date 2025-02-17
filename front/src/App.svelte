@@ -27,6 +27,7 @@
     import NotificationsSetup from './lib/notifications/NotificationsSetup.svelte';
     import Play from './lib/pages/Play.svelte';
     import Room from './lib/pages/Room.svelte';
+    import Game from './lib/pages/Game.svelte';
 
     const supportedLanguages = ['en', 'fr'];
 
@@ -105,6 +106,7 @@
                     <Route path="/:language/play/room/:roomId" let:params>
                         <Room key={params.roomId} roomId={params.roomId} />
                     </Route>
+                    <Route path="/:language/play/game/:gameId"><Game /></Route>
 
                     <Route path="/:language/profile"><Profile /></Route>
                     <Route path="/:language/notifications"><Notifications /></Route>

@@ -59,7 +59,7 @@
                 await unloadCleanup();
                 navigate('/play');
             }
-        }, 500);
+        }, 2000);
     });
 
     onDestroy(async () => {

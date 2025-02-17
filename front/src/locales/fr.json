@@ -116,8 +116,6 @@
                 "invited": "vous a invité à rejoindre son salon",
                 "accepted": "Invitation acceptée",
                 "room": {
-                    "joined": "a rejoint le salon",
-                    "left": "a quitté le salon",
                     "closed": "Salon fermé"
                 }
             }
