@@ -16,7 +16,7 @@ export default class extends BaseSchema {
             table.boolean('enabled').defaultTo(false);
             table.boolean('accepted_terms_and_conditions').defaultTo(false);
             table.enum('role', Object.values(UserRoleEnum)).notNullable().defaultTo(UserRoleEnum.USER);
-            table.uuid('file_id').nullable().references('id').inTable('files');
+            table.uuid('profile_picture_id').nullable().references('id').inTable('files');
             table.timestamp('created_at', { useTz: true }).notNullable().defaultTo(this.now());
             table.timestamp('updated_at', { useTz: true }).notNullable().defaultTo(this.now());
         });

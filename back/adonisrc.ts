@@ -34,6 +34,7 @@ export default defineConfig({
         () => import('@adonisjs/auth/auth_provider'),
         () => import('#providers/http_context_provider'),
         () => import('@adonisjs/transmit/transmit_provider'),
+        () => import('#providers/room_provider'),
     ],
 
     /*

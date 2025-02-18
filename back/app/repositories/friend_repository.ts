@@ -16,7 +16,9 @@ export default class FriendRepository extends BaseRepository<typeof Friend> {
             .if(query, (queryBuilder): void => {
                 queryBuilder.leftJoin('users', 'friends.friend_id', 'users.id').where('users.username', 'ILIKE', `%${query}%`);
             })
-            .preload('friend')
+            .preload('friend', (friendQuery): void => {
+                friendQuery.preload('profilePicture');
+            })
             .paginate(page, perPage);
 
         return {
@@ -41,5 +43,16 @@ export default class FriendRepository extends BaseRepository<typeof Friend> {
             .orWhere((query): void => {
                 query.where('userId', user2.id).andWhere('friendId', user1.id);
             });
+    }
+
+    public async findOneFromUsers(user1: User, user2: User): Promise<Friend | null> {
+        return Friend.query()
+            .where((query): void => {
+                query.where('userId', user1.id).andWhere('friendId', user2.id);
+            })
+            .orWhere((query): void => {
+                query.where('userId', user2.id).andWhere('friendId', user1.id);
+            })
+            .first();
     }
 }

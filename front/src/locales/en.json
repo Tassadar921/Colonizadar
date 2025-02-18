@@ -11,6 +11,8 @@
         "name": "Name",
         "created-at": "Created at",
         "updated-at": "Updated at",
+        "public": "Public",
+        "private": "Private",
         "title": {
             "label": "Title",
             "placeholder": "Jesus' photo"
@@ -45,6 +47,9 @@
         }
     },
     "toast": {
+        "copy": {
+            "success": "Copied to clipboard"
+        },
         "login": {
             "success": "You are now logged in",
             "error": "Wrong credentials"
@@ -96,12 +101,34 @@
             "success": "User unblocked",
             "error": "An error occurred while unblocking user"
         },
+        "invite": {
+            "success": "has been invited to your room",
+            "error": "An error occurred while inviting user"
+        },
         "notification": {
             "friend-request": {
                 "ask": "You received a friend request from",
                 "accept": "has been added to your friends",
                 "accepted": "accepted your friend request",
                 "refuse": "You refused the friend request of"
+            },
+            "play": {
+                "invited": "invited you to join his room",
+                "accepted": "Request accepted",
+                "room": {
+                    "closed": "Room closed"
+                }
+            }
+        },
+        "room": {
+            "error": "An error occurred while pinging room",
+            "create": {
+                "success": "Room created",
+                "error": "An error occurred while creating the room"
+            },
+            "add-bot": {
+                "success": "Bot added",
+                "error": "An error occurred while adding the bot"
             }
         }
     },
@@ -201,6 +228,31 @@
     },
     "play": {
         "title": "Play",
-        "description": "Play alone or with your friends"
+        "description": "Play alone or with your friends",
+        "room": {
+            "title": "Room",
+            "create": {
+                "title": "Create a room",
+                "modal": {
+                    "name": {
+                        "label": "Name",
+                        "placeholder": "Room of John123"
+                    }
+                }
+            },
+            "join": {
+                "title": "Join",
+                "modal": {
+                    "token": {
+                        "label": "Token",
+                        "placeholder": "550e8400-e29b-41d4-a716-446655440000"
+                    }
+                }
+            },
+            "invite": {
+                "title": "Invite a friend"
+            },
+            "add-bot": "Add a bot"
+        }
     }
 }

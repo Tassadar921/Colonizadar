@@ -26,6 +26,8 @@
     import Blocked from './lib/pages/Blocked.svelte';
     import NotificationsSetup from './lib/notifications/NotificationsSetup.svelte';
     import Play from './lib/pages/Play.svelte';
+    import Room from './lib/pages/Room.svelte';
+    import Game from './lib/pages/Game.svelte';
 
     const supportedLanguages = ['en', 'fr'];
 
@@ -36,13 +38,13 @@
         const initialSetLanguage = (language) => {
             setLanguage(language);
             locale.set(language);
+            axios.defaults.headers.common['Accept-Language'] = `${language}-${language.toUpperCase()}`;
         };
 
         let language = langMatch ? langMatch[1] : null;
         if (!language || !supportedLanguages.includes(language)) {
             language = 'en';
             initialSetLanguage(language);
-            showToast('Invalid language. Defaulting to English.', 'error');
             navigate(`/${language}`);
         } else {
             initialSetLanguage(language);
@@ -89,7 +91,7 @@
         <Menu />
         {#if !$isLoading}
             <Router>
-                <Route path="/:language/reset-password" component={ResetPassword} />
+                <Route path="/:language/reset-password"><ResetPassword /></Route>
                 <Route path="/:language/reset-password/confirm/:token" let:params><ConfirmResetPassword {...params} /></Route>
 
                 {#if $profile}
@@ -101,6 +103,10 @@
                     <Route path="/:language/social/blocked"><Blocked /></Route>
 
                     <Route path="/:language/play"><Play /></Route>
+                    <Route path="/:language/play/room/:roomId" let:params>
+                        <Room key={params.roomId} roomId={params.roomId} />
+                    </Route>
+                    <Route path="/:language/play/game/:gameId"><Game /></Route>
 
                     <Route path="/:language/profile"><Profile /></Route>
                     <Route path="/:language/notifications"><Notifications /></Route>
@@ -121,7 +127,7 @@
                 <Route path="*"><NotFound /></Route>
             </Router>
         {:else}
-            <Loader loading={true} />
+            <Loader loading />
         {/if}
     </div>
     <Footer />

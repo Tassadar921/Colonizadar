@@ -7,10 +7,10 @@ export default class extends BaseSchema {
     public async up(): Promise<void> {
         this.schema.createTable(this.tableName, (table: Knex.CreateTableBuilder): void => {
             table.uuid('id').primary().defaultTo(this.raw('uuid_generate_v4()'));
-            table.string('name').notNullable();
-            table.string('path').notNullable();
-            table.string('extension').notNullable();
-            table.string('mime_type').notNullable();
+            table.string('name', 255).notNullable();
+            table.string('path', 255).notNullable();
+            table.string('extension', 255).notNullable();
+            table.string('mime_type', 255).notNullable();
             table.integer('size').notNullable();
             table.timestamp('created_at', { useTz: true });
             table.timestamp('updated_at', { useTz: true });

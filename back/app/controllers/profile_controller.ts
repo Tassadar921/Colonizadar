@@ -12,7 +12,8 @@ import app from '@adonisjs/core/services/app';
 import { cuid } from '@adonisjs/core/helpers';
 import FileService from '#services/file_service';
 import SlugifyService from '#services/slugify_service';
-import { resetPasswordValidator, sendResetPasswordEmailValidator, updateProfileValidator } from '#validators/profile';
+import { resetPasswordValidator, sendResetPasswordEmailValidator, updateProfileValidator, uploadProfilePictureValidator } from '#validators/profile';
+import path from 'node:path';
 
 @inject()
 export default class ProfileController {
@@ -93,30 +94,31 @@ export default class ProfileController {
     }
 
     public async updateProfile({ request, response, user }: HttpContext): Promise<void> {
-        const { username, profilePicture } = await updateProfileValidator.validate(request.all());
+        const { username } = await updateProfileValidator.validate(request.all());
+        const { profilePicture } = await request.validateUsing(uploadProfilePictureValidator);
 
         user.username = username;
         await user.load('profilePicture');
 
-        if (profilePicture && profilePicture.isValid && profilePicture.tmpPath) {
-            if (user.fileId) {
-                user.fileId = null;
+        if (profilePicture) {
+            if (user.profilePictureId) {
+                user.profilePictureId = null;
                 await user.save();
                 this.fileService.delete(user.profilePicture);
                 await user.profilePicture.delete();
             }
             profilePicture.clientName = `${cuid()}-${this.slugifyService.slugify(profilePicture.clientName)}`;
-            const path = `static/profile-picture`;
-            await profilePicture.move(app.makePath(path));
+            const profilePicturePath = `static/profile-picture`;
+            await profilePicture.move(app.makePath(profilePicturePath));
             const file: File = await File.create({
                 name: profilePicture.clientName,
-                path: `${path}/${profilePicture.clientName}`,
-                extension: profilePicture.extname,
+                path: `${profilePicturePath}/${profilePicture.clientName}`,
+                extension: path.extname(profilePicture.clientName),
                 mimeType: `${profilePicture.type}/${profilePicture.subtype}`,
                 size: profilePicture.size,
             });
             await file.refresh();
-            user.fileId = file.id;
+            user.profilePictureId = file.id;
         }
 
         await user.save();

@@ -15,7 +15,7 @@ export default class extends BaseSeeder {
                     username: email.split('@')[0],
                     email,
                     password: 'xxx',
-                    role: email === 'paul.lecuisinier@gmail.com' ? UserRoleEnum.ADMIN : UserRoleEnum.FRIEND,
+                    role: email === 'paul.lecuisinier@gmail.com' ? UserRoleEnum.ADMIN : UserRoleEnum.USER,
                     enabled: true,
                 });
                 console.log(`User ${email} created`);

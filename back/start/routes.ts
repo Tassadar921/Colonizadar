@@ -13,6 +13,7 @@ const FriendController = () => import('#controllers/friend_controller');
 const NotificationController = () => import('#controllers/notification_controller');
 const PendingFriendController = () => import('#controllers/pending_friend_controller');
 const UserController = () => import('#controllers/user_controller');
+const RoomController = () => import('#controllers/room_controller');
 
 // API requests
 router
@@ -79,10 +80,29 @@ router
                         router.get('/pending-friends', [NotificationController, 'getPendingFriends']);
                     })
                     .prefix('notifications');
+
+                router
+                    .group((): void => {
+                        router.post('/create', [RoomController, 'create']);
+                        router.get('/difficulties', [RoomController, 'getDifficulties']);
+                        router
+                            .group((): void => {
+                                router.post('/invite', [RoomController, 'invite']);
+                                router.get('/joined', [RoomController, 'joined']);
+                                router.delete('/leave', [RoomController, 'leave']);
+                                router.get('/heartbeat', [RoomController, 'heartbeat']);
+                                router.post('add-bot', [RoomController, 'addBot']);
+                                router.delete('kick/:playerId', [RoomController, 'kick']);
+                            })
+                            .prefix(':roomId')
+                            .use([middleware.room()]);
+                    })
+                    .prefix('room');
             })
             .use([middleware.auth({ guards: ['api'] })]);
 
         router.get('/static/profile-picture/:userId', [FileController, 'serveStaticProfilePictureFile']).use([middleware.queryStringAuth()]);
+        router.get('/static/bot-picture/:botId', [FileController, 'serveStaticBotPictureFile']).use([middleware.queryStringAuth()]);
     })
     .prefix('api')
     .use([middleware.language()]);

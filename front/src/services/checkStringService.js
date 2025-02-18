@@ -21,4 +21,9 @@ const isValidEmail = (email) => {
     return isValidEmailRegex.test(email);
 };
 
-export { checkPassword, isValidEmail };
+const isValidUuid = (uuid) => {
+    const isValidUuidRegex = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$/;
+    return isValidUuidRegex.test(uuid);
+};
+
+export { checkPassword, isValidEmail, isValidUuid };

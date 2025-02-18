@@ -17,7 +17,7 @@ const warningToastStyle = {
     borderRadius: '10px',
 };
 
-const showToast = (text, status = 'success', redirectPath = null) => {
+const showToast = (text, status = 'success', redirect = null) => {
     let style = successToastStyle;
     if (status === 'error') {
         style = errorToastStyle;
@@ -30,8 +30,10 @@ const showToast = (text, status = 'success', redirectPath = null) => {
         duration: 5000,
         style,
         onClick: () => {
-            if (redirectPath) {
-                navigate(redirectPath);
+            if (typeof redirect === 'string') {
+                navigate(redirect);
+            } else if (redirect) {
+                redirect();
             }
         },
     }).showToast();

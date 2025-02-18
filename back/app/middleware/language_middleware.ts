@@ -27,19 +27,9 @@ export default class LanguageMiddleware {
     }
 
     private async getLanguage(request: Request): Promise<Language> {
-        const languageCode: string = <RequestLanguagesEnum>Object.keys(RequestLanguagesEnum).find((key: string): boolean => key === request.qs().language?.toUpperCase());
-
-        let language: Language | null;
-
-        if (languageCode) {
-            language = await this.languageRepository.findOneBy({
-                code: languageCode.toLowerCase(),
-            });
-        } else {
-            language = await this.languageRepository.findOneBy({
-                code: this.getLanguageCode(request).toLowerCase(),
-            });
-        }
+        let language: Language | null = await this.languageRepository.findOneBy({
+            code: this.getLanguageCode(request).toLowerCase(),
+        });
 
         if (!language) {
             throw new Error('Language not found');
