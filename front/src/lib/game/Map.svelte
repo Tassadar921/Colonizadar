@@ -12,6 +12,7 @@
     let zoomLevel = 1;
     let isDragging = false;
     let startX, startY;
+    let hasDragged = false;
 
     const dragSensitivity = 2;
 
@@ -33,6 +34,7 @@
 
     const startDrag = (event) => {
         isDragging = true;
+        hasDragged = false;
         startX = event.clientX;
         startY = event.clientY;
     };
@@ -41,6 +43,8 @@
         if (!isDragging) {
             return;
         }
+
+        hasDragged = true;
 
         const dx = (event.clientX - startX) / (zoomLevel * dragSensitivity);
         const dy = (event.clientY - startY) / (zoomLevel * dragSensitivity);
@@ -64,15 +68,21 @@
         isDragging = false;
     };
 
+    const handleClick = (event) => {
+        if (!hasDragged) {
+            console.log('Valid click:', event.detail);
+        }
+    };
+
     $: if (svgElement) {
-        buttonElement.style.width = `${window.innerWidth - 100}px`;
-        buttonElement.style.maxHeight = `${window.innerHeight - 100}px`;
+        buttonElement.style.width = `${window.innerWidth}px`;
+        buttonElement.style.maxHeight = `${window.innerHeight - 50}px`;
     }
 </script>
 
 <button
     bind:this={buttonElement}
-    class="cursor-grab"
+    class={isDragging ? 'cursor-grabbing' : 'cursor-grab'}
     on:wheel={handleWheel}
     on:mousedown={startDrag}
     on:mousemove={onDrag}
@@ -80,5 +90,5 @@
     on:mouseleave={endDrag}
     aria-label="Interactive world map"
 >
-    <WorldMap bind:svgElement bind:viewBox />
+    <WorldMap bind:svgElement bind:viewBox on:click={handleClick} />
 </button>

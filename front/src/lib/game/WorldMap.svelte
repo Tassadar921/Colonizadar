@@ -1,6 +1,27 @@
 <script>
+    import { onDestroy, onMount } from 'svelte';
+    import { createEventDispatcher } from 'svelte';
+
+    const dispatch = createEventDispatcher();
+
     export let viewBox;
     export let svgElement;
+
+    const handleClick = (path) => {
+        dispatch('click', path.id ? path.id : path.parentElement.id);
+    };
+
+    onMount(() => {
+        document.querySelectorAll('path').forEach((path) => {
+            path.addEventListener('click', () => handleClick(path));
+        });
+    });
+
+    onDestroy(() => {
+        document.querySelectorAll('path').forEach((path) => {
+            path.removeEventListener('click', () => handleClick(path));
+        });
+    });
 </script>
 
 <svg bind:this={svgElement} {viewBox} xmlns="http://www.w3.org/2000/svg" class="border border-yellow-500 w-full h-full">
