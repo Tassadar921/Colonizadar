@@ -14,6 +14,7 @@ const NotificationController = () => import('#controllers/notification_controlle
 const PendingFriendController = () => import('#controllers/pending_friend_controller');
 const UserController = () => import('#controllers/user_controller');
 const RoomController = () => import('#controllers/room_controller');
+const PlayableCountryController = () => import('#controllers/playable_country_controller');
 
 // API requests
 router
@@ -85,6 +86,7 @@ router
                     .group((): void => {
                         router.post('/create', [RoomController, 'create']);
                         router.get('/difficulties', [RoomController, 'getDifficulties']);
+                        router.get('/playable-countries', [PlayableCountryController, 'getAll']);
                         router
                             .group((): void => {
                                 router.post('/invite', [RoomController, 'invite']);

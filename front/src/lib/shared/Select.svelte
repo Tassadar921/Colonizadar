@@ -17,7 +17,7 @@
     };
 </script>
 
-<div class="relative w-full mt-8 mb-5">
+<div class="w-full">
     {#if label}
         <label for={name} class="block font-medium dark:text-primary-500 absolute bottom-11 left-1 mb-1">
             {label}
@@ -27,7 +27,7 @@
         </label>
     {/if}
 
-    <select {name} class="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-800 shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" on:change={handleSelect}>
+    <select {name} class="w-full px-3 py-2 border border-gray-300 text-gray-800 dark:text-gray-300 dark:border-gray-800 dark:bg-gray-700 rounded-lg shadow-sm focus:outline-none hover:cursor-pointer" on:change={handleSelect}>
         {#each options as option}
             <option class="capitalize" value={option.value} selected={selectedOption?.value === option.value}>
                 {option.label}

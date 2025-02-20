@@ -15,24 +15,24 @@
     import AddBot from '../room/AddBot.svelte';
     import KickPlayer from '../room/KickPlayer.svelte';
     import RoomNotifications from '../room/RoomNotifications.svelte';
+    import Select from "../shared/Select.svelte";
 
     export let roomId;
 
     let room = { name: '', players: [], owner: { id: -1 } };
+    let playableCountries = [];
     let showInviteFriendModal = false;
     let heartbeat;
 
     async function fetchRoomData() {
         try {
-            const response = await axios.get(`/api/room/${roomId}/joined`);
-            if (response.status === 200) {
-                room = response.data.room;
-            } else {
-                showToast($t('toast.room.error'), 'error');
-                await unloadCleanup();
-                navigate('/play');
-            }
+            const { data: roomData } = await axios.get(`/api/room/${roomId}/joined`);
+            room = roomData.room;
+
+            const { data: playableCountriesData } = await axios.get('/api/room/playable-countries');
+            playableCountries = playableCountriesData.map((playableCountry) => ({ value: playableCountry.id, label: playableCountry.name }));
         } catch (e) {
+            console.error(e);
             showToast($t('toast.room.error'), 'error');
             await unloadCleanup();
             navigate('/play');
@@ -113,7 +113,7 @@
                             <img
                                 alt={player.user.username}
                                 src={`${process.env.VITE_API_BASE_URL}/api/static/profile-picture/${player.user.id}?token=${localStorage.getItem('apiToken')}`}
-                                class="w-10 rounded-full"
+                                class="size-10 rounded-full"
                             />
                         {:else}
                             <img alt={player.user.username} src={process.env.VITE_DEFAULT_IMAGE} class="max-h-10 rounded-full" />
@@ -122,6 +122,11 @@
                         {#if room.owner.id === player.user.id}
                             <div class="text-yellow-500">
                                 <Icon name="crown" />
+                            </div>
+                        {/if}
+                        {#if player.user.id === $profile.id}
+                            <div>
+                                <Select bind:options={playableCountries} />
                             </div>
                         {/if}
                     </div>
@@ -142,7 +147,9 @@
             </div>
         {/each}
         {#if room.players.length < 6 && $profile.id === room.owner.id}
-            <AddBot bind:room />
+            <div class="w-full flex mt-5 px-5">
+                <AddBot bind:room />
+            </div>
         {/if}
     </div>
 </div>
