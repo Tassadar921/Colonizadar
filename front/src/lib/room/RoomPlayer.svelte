@@ -1,0 +1,69 @@
+<script>
+    import Select from '../shared/Select.svelte';
+    import Icon from '../shared/Icon.svelte';
+    import KickPlayer from './KickPlayer.svelte';
+    import { profile } from '../../stores/profileStore.js';
+    import axios from 'axios';
+    import { showToast } from '../../services/toastService.js';
+
+    export let playableCountries = [];
+    export let room;
+    export let player;
+
+    let selectedCountry = null;
+
+    const handleSelectCountry = async (event) => {
+        try {
+            const { data } = await axios.patch(`/api/room/${room.id}/player/${player.id}/select-country`, {
+                countryId: event.detail.value,
+            });
+            showToast(`${data.message}`);
+        } catch (e) {
+            showToast(e.response.data.error, 'error');
+        }
+    };
+
+    $: selectedCountry = player.country ? { value: player.country.id, label: player.country.name } : null;
+
+    $: console.log(player, selectedCountry);
+</script>
+
+<div
+    class="flex justify-between items-center h-12 border {player.user && $profile.id === player.user.id
+        ? 'border-gray-400 dark:border-gray-700'
+        : 'border-gray-300 dark:border-gray-800'} rounded-xl hover:bg-gray-300 dark:hover:bg-gray-800 transition-colors duration-300 px-3"
+>
+    {#if player.user}
+        <div class="flex gap-5 flex-wrap items-center">
+            {#if player.user.profilePicture}
+                <img
+                    alt={player.user.username}
+                    src={`${process.env.VITE_API_BASE_URL}/api/static/profile-picture/${player.user.id}?token=${localStorage.getItem('apiToken')}`}
+                    class="size-10 rounded-full"
+                />
+            {:else}
+                <img alt={player.user.username} src={process.env.VITE_DEFAULT_IMAGE} class="max-h-10 rounded-full" />
+            {/if}
+            <p>{player.user.username}</p>
+            {#if room.owner.id === player.user.id}
+                <div class="text-yellow-500">
+                    <Icon name="crown" />
+                </div>
+            {/if}
+            {#if player.user.id === $profile.id}
+                <div>
+                    <Select bind:options={playableCountries} on:change={handleSelectCountry} bind:selectedOption={selectedCountry} />
+                </div>
+            {/if}
+        </div>
+    {:else if player.bot}
+        <div class="flex gap-5 flex-wrap items-center">
+            <img alt={player.bot.name} src={`${process.env.VITE_API_BASE_URL}/api/static/bot-picture/${player.bot.id}?token=${localStorage.getItem('apiToken')}`} class="w-10 rounded-full" />
+            <p>{player.bot.name}</p>
+        </div>
+    {/if}
+
+    {#if $profile.id === room.owner.id && $profile.id !== player.user?.id}
+        <KickPlayer bind:room bind:player />
+    {/if}
+</div>

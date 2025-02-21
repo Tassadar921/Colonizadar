@@ -1,8 +1,8 @@
 import { inject } from '@adonisjs/core';
 import { HttpContext } from '@adonisjs/core/http';
-import PlayableCountry from "#models/playable_country";
-import PlayableCountryRepository from "#repositories/playable_country_repository";
-import SerializedPlayableCountry from "#types/serialized/serialized_playable_country";
+import PlayableCountry from '#models/playable_country';
+import PlayableCountryRepository from '#repositories/playable_country_repository';
+import SerializedPlayableCountry from '#types/serialized/serialized_playable_country';
 
 @inject()
 export default class BlockedController {

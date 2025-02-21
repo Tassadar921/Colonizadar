@@ -95,6 +95,7 @@ router
                                 router.get('/heartbeat', [RoomController, 'heartbeat']);
                                 router.post('add-bot', [RoomController, 'addBot']);
                                 router.delete('kick/:playerId', [RoomController, 'kick']);
+                                router.patch('/player/:playerId/select-country', [RoomController, 'selectCountry']);
                             })
                             .prefix(':roomId')
                             .use([middleware.room()]);

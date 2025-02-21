@@ -7,7 +7,7 @@ import Room from '#models/room';
 import SerializedRoomPlayer from '#types/serialized/serialized_room_player';
 import Language from '#models/language';
 import Bot from '#models/bot';
-import PlayableCountry from "#models/playable_country";
+import PlayableCountry from '#models/playable_country';
 
 export default class RoomPlayer extends BaseModel {
     @column({ isPrimary: true })
@@ -63,6 +63,7 @@ export default class RoomPlayer extends BaseModel {
             id: this.frontId,
             user: this.user?.apiSerialize(),
             bot: this.bot?.apiSerialize(language),
+            country: this.country.apiSerialize(language),
             isUserConnected: this.isUserConnected,
             difficulty: this.difficulty,
             createdAt: this.createdAt?.toString(),

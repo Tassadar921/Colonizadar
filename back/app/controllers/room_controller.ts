@@ -15,8 +15,9 @@ import RoomPlayerDifficultyEnum from '#types/enum/room_player_difficulty_enum';
 import Bot from '#models/bot';
 import BotRepository from '#repositories/bot_repository';
 import Language from '#models/language';
-import PlayableCountryRepository from "#repositories/playable_country_repository";
-import PlayableCountry from "#models/playable_country";
+import PlayableCountryRepository from '#repositories/playable_country_repository';
+import PlayableCountry from '#models/playable_country';
+import { selectCountryParamValidator, selectCountryValidator } from '#validators/room_player';
 
 @inject()
 export default class RoomController {
@@ -25,7 +26,7 @@ export default class RoomController {
         private readonly userRepository: UserRepository,
         private readonly friendRepository: FriendRepository,
         private readonly botRepository: BotRepository,
-        private readonly playableCountryRepository: PlayableCountryRepository,
+        private readonly playableCountryRepository: PlayableCountryRepository
     ) {}
 
     public async create({ request, response, user }: HttpContext): Promise<void> {
@@ -48,11 +49,13 @@ export default class RoomController {
         });
         await room.refresh();
 
+        const country: PlayableCountry = await this.playableCountryRepository.getFirst();
         await RoomPlayer.create({
             userId: user.id,
             isUserConnected: true,
             roomId: room.id,
             difficulty: RoomPlayerDifficultyEnum.USER,
+            countryId: country.id,
         });
 
         return response.send({ roomId: room.frontId });
@@ -112,6 +115,7 @@ export default class RoomController {
     }
 
     public async leave({ response, user, room, language }: HttpContext): Promise<void> {
+        console.log('disconnect');
         await this.disconnect(user, room, language, response);
 
         return response.send({ message: 'Room left' });
@@ -147,6 +151,7 @@ export default class RoomController {
             await player.load('bot', (botQuery): void => {
                 botQuery.preload('picture');
             });
+            await player.load('country');
             await player.refresh();
 
             transmit.broadcast(`notification/play/room/${room.frontId}/joined`, { player: player.apiSerialize(language) });
@@ -182,6 +187,30 @@ export default class RoomController {
         transmit.broadcast(`notification/play/room/${room.frontId}/leave`, { player: player.apiSerialize(language) });
 
         return response.send({ message: 'Player kicked' });
+    }
+
+    public async selectCountry({ request, response, user, room }: HttpContext): Promise<void> {
+        const { playerId } = await selectCountryParamValidator.validate(request.params());
+
+        const player: RoomPlayer | undefined = room.players.find((player: RoomPlayer): boolean => player.frontId === playerId);
+        if (!player) {
+            return response.notFound({ error: 'Player is not into this room' });
+        } else if (player.userId && player.userId !== user.id) {
+            return response.forbidden({ error: "You can't change the country of another player" });
+        } else if (player.botId && room.ownerId !== user.id) {
+            return response.forbidden({ error: "You can't change the country of a bot if you're not the owner" });
+        }
+
+        const { countryId } = await selectCountryValidator.validate(request.all());
+        const country: PlayableCountry | null = await this.playableCountryRepository.findOneBy({ frontId: countryId });
+        if (!country) {
+            return response.notFound({ error: 'Country not found' });
+        }
+
+        player.countryId = country.id;
+        await player.save();
+
+        return response.send({ message: 'Country selected' });
     }
 
     private async disconnect(user: User, room: Room, language: Language, response: Response): Promise<void> {

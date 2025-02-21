@@ -13,7 +13,7 @@
         selectedOption = options.find((option) => {
             return option.value === Number(e.target.value);
         });
-        dispatch('change', { selectedOption });
+        dispatch('change', { ...selectedOption });
     };
 </script>
 
@@ -27,7 +27,11 @@
         </label>
     {/if}
 
-    <select {name} class="w-full px-3 py-2 border border-gray-300 text-gray-800 dark:text-gray-300 dark:border-gray-800 dark:bg-gray-700 rounded-lg shadow-sm focus:outline-none hover:cursor-pointer" on:change={handleSelect}>
+    <select
+        {name}
+        class="w-full px-3 py-2 border border-gray-300 text-gray-800 dark:text-gray-300 dark:border-gray-800 dark:bg-gray-700 rounded-lg shadow-sm focus:outline-none hover:cursor-pointer"
+        on:change={handleSelect}
+    >
         {#each options as option}
             <option class="capitalize" value={option.value} selected={selectedOption?.value === option.value}>
                 {option.label}
