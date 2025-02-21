@@ -11,7 +11,7 @@ export default class BotRepository extends BaseRepository<typeof Bot> {
     public async getOneForRoom(room: Room): Promise<Bot> {
         let bot: Bot | null = null;
         while (!bot) {
-            bot = await Bot.query()
+            bot = await this.Model.query()
                 .whereNotIn(
                     'id',
                     room.players.map((player: RoomPlayer): string => player.botId).filter((botId: string): string => botId)

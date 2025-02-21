@@ -5,4 +5,12 @@ export default class PlayableCountryRepository extends BaseRepository<typeof Pla
     constructor() {
         super(PlayableCountry);
     }
+
+    public async getFirst(): Promise<PlayableCountry> {
+        const country: PlayableCountry | null = await this.Model.query().first();
+        if (!country) {
+            throw new Error('No playable country found');
+        }
+        return country;
+    }
 }

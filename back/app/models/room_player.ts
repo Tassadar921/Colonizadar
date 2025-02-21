@@ -7,6 +7,7 @@ import Room from '#models/room';
 import SerializedRoomPlayer from '#types/serialized/serialized_room_player';
 import Language from '#models/language';
 import Bot from '#models/bot';
+import PlayableCountry from "#models/playable_country";
 
 export default class RoomPlayer extends BaseModel {
     @column({ isPrimary: true })
@@ -33,6 +34,14 @@ export default class RoomPlayer extends BaseModel {
 
     @column()
     declare difficulty: RoomPlayerDifficultyEnum;
+
+    @column()
+    declare countryId: string;
+
+    @belongsTo((): typeof PlayableCountry => PlayableCountry, {
+        foreignKey: 'countryId',
+    })
+    declare country: BelongsTo<typeof PlayableCountry>;
 
     @column()
     declare roomId: string;

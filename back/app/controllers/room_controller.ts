@@ -15,6 +15,8 @@ import RoomPlayerDifficultyEnum from '#types/enum/room_player_difficulty_enum';
 import Bot from '#models/bot';
 import BotRepository from '#repositories/bot_repository';
 import Language from '#models/language';
+import PlayableCountryRepository from "#repositories/playable_country_repository";
+import PlayableCountry from "#models/playable_country";
 
 @inject()
 export default class RoomController {
@@ -22,7 +24,8 @@ export default class RoomController {
         private readonly roomRepository: RoomRepository,
         private readonly userRepository: UserRepository,
         private readonly friendRepository: FriendRepository,
-        private readonly botRepository: BotRepository
+        private readonly botRepository: BotRepository,
+        private readonly playableCountryRepository: PlayableCountryRepository,
     ) {}
 
     public async create({ request, response, user }: HttpContext): Promise<void> {
@@ -74,10 +77,12 @@ export default class RoomController {
     public async joined({ response, user, room, language }: HttpContext): Promise<void> {
         if (!room.players.some((player: RoomPlayer): boolean => player.userId === user.id)) {
             if (room.players.length < 6) {
+                const country: PlayableCountry = await this.playableCountryRepository.getFirst();
                 await RoomPlayer.create({
                     userId: user.id,
                     roomId: room.id,
                     difficulty: RoomPlayerDifficultyEnum.USER,
+                    countryId: country.id,
                 });
             } else {
                 return response.badRequest({ error: 'Too many players' });
@@ -92,6 +97,7 @@ export default class RoomController {
                 .preload('bot', (botQuery): void => {
                     botQuery.preload('picture');
                 })
+                .preload('country')
                 .orderBy('frontId');
         });
         const player: RoomPlayer = <RoomPlayer>room.players.find((player: RoomPlayer): boolean => player.userId === user.id);
@@ -130,10 +136,12 @@ export default class RoomController {
 
         if (room.players.length < 6) {
             let bot: Bot = await this.botRepository.getOneForRoom(room);
+            const country: PlayableCountry = await this.playableCountryRepository.getFirst();
             const player: RoomPlayer = await RoomPlayer.create({
                 roomId: room.id,
                 difficulty: RoomPlayerDifficultyEnum.MEDIUM,
                 botId: bot?.id,
+                countryId: country.id,
             });
 
             await player.load('bot', (botQuery): void => {
