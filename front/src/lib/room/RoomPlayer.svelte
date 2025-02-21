@@ -24,8 +24,6 @@
     };
 
     $: selectedCountry = player.country ? { value: player.country.id, label: player.country.name } : null;
-
-    $: console.log(player, selectedCountry);
 </script>
 
 <div
@@ -33,8 +31,8 @@
         ? 'border-gray-400 dark:border-gray-700'
         : 'border-gray-300 dark:border-gray-800'} rounded-xl hover:bg-gray-300 dark:hover:bg-gray-800 transition-colors duration-300 px-3"
 >
-    {#if player.user}
-        <div class="flex gap-5 flex-wrap items-center">
+    <div class="flex gap-5 flex-wrap items-center">
+        {#if player.user}
             {#if player.user.profilePicture}
                 <img
                     alt={player.user.username}
@@ -44,24 +42,22 @@
             {:else}
                 <img alt={player.user.username} src={process.env.VITE_DEFAULT_IMAGE} class="max-h-10 rounded-full" />
             {/if}
-            <p>{player.user.username}</p>
+            <p class={player.user.id === $profile.id ? 'font-bold' : ''}>{player.user.username}</p>
             {#if room.owner.id === player.user.id}
-                <div class="text-yellow-500">
+                <div class="text-orange-500">
                     <Icon name="crown" />
                 </div>
             {/if}
-            {#if player.user.id === $profile.id}
-                <div>
-                    <Select bind:options={playableCountries} on:change={handleSelectCountry} bind:selectedOption={selectedCountry} />
-                </div>
-            {/if}
-        </div>
-    {:else if player.bot}
-        <div class="flex gap-5 flex-wrap items-center">
+        {:else if player.bot}
             <img alt={player.bot.name} src={`${process.env.VITE_API_BASE_URL}/api/static/bot-picture/${player.bot.id}?token=${localStorage.getItem('apiToken')}`} class="w-10 rounded-full" />
             <p>{player.bot.name}</p>
-        </div>
-    {/if}
+        {/if}
+        {#if (player.user && player.user.id === $profile.id) || (player.bot && room.owner.id === $profile.id)}
+            <div>
+                <Select bind:options={playableCountries} on:change={handleSelectCountry} bind:selectedOption={selectedCountry} />
+            </div>
+        {/if}
+    </div>
 
     {#if $profile.id === room.owner.id && $profile.id !== player.user?.id}
         <KickPlayer bind:room bind:player />
