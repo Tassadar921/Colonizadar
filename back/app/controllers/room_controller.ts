@@ -109,7 +109,7 @@ export default class RoomController {
 
         await user.load('profilePicture');
 
-        transmit.broadcast(`notification/play/room/${room.frontId}/joined`, { player: player.apiSerialize(language) });
+        transmit.broadcast(`notification/play/room/${room.frontId}/player/joined`, { player: player.apiSerialize(language) });
 
         return response.send({ room: room.apiSerialize(language) });
     }
@@ -154,7 +154,7 @@ export default class RoomController {
             await player.load('country');
             await player.refresh();
 
-            transmit.broadcast(`notification/play/room/${room.frontId}/joined`, { player: player.apiSerialize(language) });
+            transmit.broadcast(`notification/play/room/${room.frontId}/player/joined`, { player: player.apiSerialize(language) });
 
             return response.send({ player: player.apiSerialize(language) });
         } else {
@@ -180,11 +180,7 @@ export default class RoomController {
 
         await player.delete();
 
-        if (player.userId) {
-            transmit.broadcast(`notification/play/room/${room.frontId}/${playerId}/kicked`);
-        }
-
-        transmit.broadcast(`notification/play/room/${room.frontId}/leave`, { player: player.apiSerialize(language) });
+        transmit.broadcast(`notification/play/room/${room.frontId}/player/leave`, { player: player.apiSerialize(language) });
 
         return response.send({ message: 'Player kicked' });
     }
@@ -227,7 +223,7 @@ export default class RoomController {
 
             await player.delete();
 
-            transmit.broadcast(`notification/play/room/${room.frontId}/leave`, { player: player.apiSerialize(language) });
+            transmit.broadcast(`notification/play/room/${room.frontId}/player/leave`, { player: player.apiSerialize(language) });
         }
     }
 }

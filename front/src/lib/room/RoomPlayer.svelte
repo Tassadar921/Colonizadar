@@ -42,12 +42,14 @@
             {:else}
                 <img alt={player.user.username} src={process.env.VITE_DEFAULT_IMAGE} class="max-h-10 rounded-full" />
             {/if}
-            <p class={player.user.id === $profile.id ? 'font-bold' : ''}>{player.user.username}</p>
-            {#if room.owner.id === player.user.id}
-                <div class="text-orange-500">
-                    <Icon name="crown" />
-                </div>
-            {/if}
+            <p class="flex gap-0.5 {player.user.id === $profile.id ? 'font-bold' : ''}">
+                {#if room.owner.id === player.user.id}
+                    <span class="text-orange-500">
+                        <Icon name="crown" />
+                    </span>
+                {/if}
+                {player.user.username}
+            </p>
         {:else if player.bot}
             <img alt={player.bot.name} src={`${process.env.VITE_API_BASE_URL}/api/static/bot-picture/${player.bot.id}?token=${localStorage.getItem('apiToken')}`} class="w-10 rounded-full" />
             <p>{player.bot.name}</p>
@@ -56,6 +58,8 @@
             <div>
                 <Select bind:options={playableCountries} on:change={handleSelectCountry} bind:selectedOption={selectedCountry} />
             </div>
+        {:else}
+            <p>{player.country.name}</p>
         {/if}
     </div>
 

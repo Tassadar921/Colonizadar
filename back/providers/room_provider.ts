@@ -64,7 +64,7 @@ export default class RoomProvider {
                 if (player.lastHeartbeat && now.diff(player.lastHeartbeat, 'seconds').seconds > 15) {
                     await player.delete();
 
-                    transmit.broadcast(`notification/play/room/${room.frontId}/${player.user.frontId}/leave`);
+                    transmit.broadcast(`notification/play/room/${room.frontId}/${player.user.frontId}/player/leave`);
 
                     if (room.ownerId === player.userId) {
                         room.status = RoomStatusEnum.CLOSED;

@@ -11,17 +11,17 @@
     export let resetTransmits;
 
     let roomClosedNotification;
-    let userJoinedNotification;
-    let userLeftNotification;
+    let playerJoinedNotification;
+    let playerLeftNotification;
+    let playerChangedCountryNotification;
 
-    async function setupTransmits() {
-        if (!room.id) return;
-
+    const setupTransmits = async () => {
         await cleanupTransmits();
 
         roomClosedNotification = $transmit.subscription(`notification/play/room/${room.id}/closed`);
-        userJoinedNotification = $transmit.subscription(`notification/play/room/${room.id}/joined`);
-        userLeftNotification = $transmit.subscription(`notification/play/room/${room.id}/leave`);
+        playerJoinedNotification = $transmit.subscription(`notification/play/room/${room.id}/player/joined`);
+        playerLeftNotification = $transmit.subscription(`notification/play/room/${room.id}/player/leave`);
+        playerChangedCountryNotification = $transmit.subscription(`notification/play/room/${room.id}/player/country`);
 
         await roomClosedNotification.create();
         roomClosedNotification.onMessage(async () => {
@@ -32,26 +32,31 @@
             }
         });
 
-        await userJoinedNotification.create();
-        userJoinedNotification.onMessage((data) => {
+        await playerJoinedNotification.create();
+        playerJoinedNotification.onMessage((data) => {
             if (!room.players.some((player) => player.id === data.player.id)) {
                 room.players = [...room.players, data.player];
             }
         });
 
-        await userLeftNotification.create();
-        userLeftNotification.onMessage((data) => {
+        await playerLeftNotification.create();
+        playerLeftNotification.onMessage((data) => {
             if (data.player.bot || (data.player && data.player.user.id !== $profile.id)) {
                 room.players = room.players.filter((player) => player.id !== data.player.id);
             }
         });
-    }
 
-    async function cleanupTransmits() {
+        await playerChangedCountryNotification.create();
+        playerChangedCountryNotification.onMessage((data) => {
+            console.log(data);
+        });
+    };
+
+    const cleanupTransmits = async () => {
         await roomClosedNotification?.delete();
-        await userJoinedNotification?.delete();
-        await userLeftNotification?.delete();
-    }
+        await playerJoinedNotification?.delete();
+        await playerLeftNotification?.delete();
+    };
 
     $: if (room.id) {
         setupTransmits();
