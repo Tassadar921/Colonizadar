@@ -1,6 +1,6 @@
 import { inject } from '@adonisjs/core';
 import { HttpContext, Response } from '@adonisjs/core/http';
-import {createRoomValidator, inviteRoomValidator, kickValidator} from '#validators/room';
+import { createRoomValidator, inviteRoomValidator, kickValidator } from '#validators/room';
 import Room from '#models/room';
 import RoomRepository from '#repositories/room_repository';
 import RoomStatusEnum from '#types/enum/room_status_enum';

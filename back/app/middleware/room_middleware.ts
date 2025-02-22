@@ -12,8 +12,6 @@ export default class RoomMiddleware {
         const { roomId: paramRoomId } = await roomMiddlewareValidator.validate(ctx.request.params());
         const { token, roomId: bodyRoomId } = await roomMiddlewareValidator.validate(ctx.request.all());
 
-        console.log(ctx.user.username);
-
         let room: Room | null = null;
         if (!paramRoomId && !token && !bodyRoomId) {
             return ctx.response.badRequest({ error: 'Either roomId or token are required' });

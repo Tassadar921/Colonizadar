@@ -105,14 +105,14 @@ router
             })
             .use([middleware.auth({ guards: ['api'] })]);
 
-        router.group((): void => {
-            router.get('/profile-picture/:userId', [FileController, 'serveStaticProfilePictureFile']);
-            router.get('/bot-picture/:botId', [FileController, 'serveStaticBotPictureFile']);
-            router.get('/country-flag/:countryId', [FileController, 'serveStaticCountryFlagFile']);
-        })
+        router
+            .group((): void => {
+                router.get('/profile-picture/:userId', [FileController, 'serveStaticProfilePictureFile']);
+                router.get('/bot-picture/:botId', [FileController, 'serveStaticBotPictureFile']);
+                router.get('/country-flag/:countryId', [FileController, 'serveStaticCountryFlagFile']);
+            })
             .prefix('static')
             .use([middleware.queryStringAuth()]);
-
     })
     .prefix('api')
     .use([middleware.language()]);

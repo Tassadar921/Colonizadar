@@ -32,7 +32,7 @@
             playableCountries = playableCountriesData.map((playableCountry) => ({
                 value: playableCountry.id,
                 label: playableCountry.name,
-                uri: `${process.env.VITE_API_BASE_URL}/api/static/country-flag/${playableCountry.id}?token=${localStorage.getItem('apiToken')}`
+                uri: `${process.env.VITE_API_BASE_URL}/api/static/country-flag/${playableCountry.id}?token=${localStorage.getItem('apiToken')}`,
             }));
         } catch (e) {
             showToast($t('toast.room.error'), 'error');

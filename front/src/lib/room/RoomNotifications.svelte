@@ -53,7 +53,7 @@
                     return player;
                 }
                 return p;
-            })
+            });
         });
     };
 

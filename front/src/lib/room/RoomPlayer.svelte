@@ -28,11 +28,12 @@
         selectedCountry = {
             value: player.country.id,
             label: player.country.name,
-            uri: `${process.env.VITE_API_BASE_URL}/api/static/country-flag/${player.country.id}?token=${localStorage.getItem('apiToken')}`
+            uri: `${process.env.VITE_API_BASE_URL}/api/static/country-flag/${player.country.id}?token=${localStorage.getItem('apiToken')}`,
         };
-        invalidCountry = room.players.reduce((acc, player) => {
-            return acc + !!(player.country.id === selectedCountry.value);
-        }, 0) > 1;
+        invalidCountry =
+            room.players.reduce((acc, player) => {
+                return acc + !!(player.country.id === selectedCountry.value);
+            }, 0) > 1;
     }
 </script>
 
@@ -70,10 +71,7 @@
             </div>
         {:else}
             <div class="flex gap-1.5 items-center">
-                <img
-                    alt={player.country.name}
-                    src={`${process.env.VITE_API_BASE_URL}/api/static/country-flag/${player.country.id}?token=${localStorage.getItem('apiToken')}`}
-                    class="max-h-10" />
+                <img alt={player.country.name} src={`${process.env.VITE_API_BASE_URL}/api/static/country-flag/${player.country.id}?token=${localStorage.getItem('apiToken')}`} class="max-h-10" />
                 <p>{player.country.name}</p>
             </div>
         {/if}

@@ -1,9 +1,9 @@
 import { BaseSeeder } from '@adonisjs/lucid/seeders';
 import PlayableCountryRepository from '#repositories/playable_country_repository';
 import PlayableCountry from '#models/playable_country';
-import app from "@adonisjs/core/services/app";
-import File from "#models/file";
-import FileService from "#services/file_service";
+import app from '@adonisjs/core/services/app';
+import File from '#models/file';
+import FileService from '#services/file_service';
 
 export default class extends BaseSeeder {
     async run(): Promise<void> {

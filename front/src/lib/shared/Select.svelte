@@ -1,6 +1,6 @@
 <script>
     import { createEventDispatcher, onMount, onDestroy } from 'svelte';
-    import Icon from "./Icon.svelte";
+    import Icon from './Icon.svelte';
 
     const dispatch = createEventDispatcher();
 
@@ -54,18 +54,21 @@
         </label>
     {/if}
 
-    <input type="hidden" name={name} value={selectedOption?.value} />
+    <input type="hidden" {name} value={selectedOption?.value} />
 
     <button
         bind:this={buttonRef}
         class="w-full px-3 py-2 border border-gray-300 dark:border-gray-800 dark:bg-gray-700 dark:text-gray-300 rounded-lg shadow-sm flex justify-between items-center flex-wrap gap-5"
-        on:click={() => { isOpen = !isOpen; setDropdownWidth(); }}
+        on:click={() => {
+            isOpen = !isOpen;
+            setDropdownWidth();
+        }}
     >
         <span class="flex items-center">
             {#if selectedOption?.uri}
-                <img src={selectedOption.uri} alt={selectedOption.label} class="mr-2">
+                <img src={selectedOption.uri} alt={selectedOption.label} class="mr-2" />
             {/if}
-            {selectedOption?.label || "Select an option"}
+            {selectedOption?.label || 'Select an option'}
         </span>
         <span class="dark:text-primary-500 transform transition-transform duration-300" class:rotate-180={isOpen}>
             <Icon bind:name={chevronIcon} />
@@ -78,12 +81,9 @@
             style="width: {dropdownWidth};"
         >
             {#each options as option}
-                <button
-                    class="flex items-center px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 w-full"
-                    on:click={() => handleSelect(option)}
-                >
+                <button class="flex items-center px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 w-full" on:click={() => handleSelect(option)}>
                     {#if option.uri}
-                        <img src={option.uri} alt={option.label} class="mr-2">
+                        <img src={option.uri} alt={option.label} class="mr-2" />
                     {/if}
                     <span class="dark:text-white">{option.label}</span>
                 </button>

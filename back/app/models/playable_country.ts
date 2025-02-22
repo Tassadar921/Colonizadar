@@ -1,9 +1,9 @@
 import { DateTime } from 'luxon';
-import {BaseModel, belongsTo, column} from '@adonisjs/lucid/orm';
+import { BaseModel, belongsTo, column } from '@adonisjs/lucid/orm';
 import Language from '#models/language';
 import SerializedPlayableCountry from '#types/serialized/serialized_playable_country';
-import File from "#models/file";
-import type {BelongsTo} from "@adonisjs/lucid/types/relations";
+import File from '#models/file';
+import type { BelongsTo } from '@adonisjs/lucid/types/relations';
 
 export default class PlayableCountry extends BaseModel {
     @column({ isPrimary: true })

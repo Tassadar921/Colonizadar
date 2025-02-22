@@ -3,7 +3,7 @@ import Bot from '#models/bot';
 import BotRepository from '#repositories/bot_repository';
 import File from '#models/file';
 import app from '@adonisjs/core/services/app';
-import FileService from "#services/file_service";
+import FileService from '#services/file_service';
 
 export default class extends BaseSeeder {
     async run(): Promise<void> {

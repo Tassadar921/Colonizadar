@@ -5,13 +5,9 @@ import UserRepository from '#repositories/user_repository';
 import User from '#models/user';
 import BotRepository from '#repositories/bot_repository';
 import Bot from '#models/bot';
-import PlayableCountry from "#models/playable_country";
-import PlayableCountryRepository from "#repositories/playable_country_repository";
-import {
-    serveStaticBotPictureFileValidator,
-    serveStaticCountryFlagFileValidator,
-    serveStaticProfilePictureFileValidator
-} from "#validators/file";
+import PlayableCountry from '#models/playable_country';
+import PlayableCountryRepository from '#repositories/playable_country_repository';
+import { serveStaticBotPictureFileValidator, serveStaticCountryFlagFileValidator, serveStaticProfilePictureFileValidator } from '#validators/file';
 
 @inject()
 export default class FileController {
@@ -62,7 +58,7 @@ export default class FileController {
         }
 
         if (!country.flagId) {
-            return response.notFound({ error: "Country flag not found" });
+            return response.notFound({ error: 'Country flag not found' });
         }
 
         await country.load('flag');
