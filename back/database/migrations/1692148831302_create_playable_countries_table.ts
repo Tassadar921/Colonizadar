@@ -10,6 +10,7 @@ export default class extends BaseSchema {
             table.specificType('front_id', 'serial').notNullable();
             table.string('english_name', 255).notNullable();
             table.string('french_name', 255).notNullable();
+            table.uuid('flag_id').nullable().references('id').inTable('files');
             table.timestamp('created_at', { useTz: true });
             table.timestamp('updated_at', { useTz: true });
         });

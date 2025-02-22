@@ -1,6 +1,6 @@
 import { inject } from '@adonisjs/core';
 import { HttpContext, Response } from '@adonisjs/core/http';
-import { createRoomValidator, inviteRoomValidator, kickValidator } from '#validators/room';
+import {createRoomValidator, inviteRoomValidator, kickValidator} from '#validators/room';
 import Room from '#models/room';
 import RoomRepository from '#repositories/room_repository';
 import RoomStatusEnum from '#types/enum/room_status_enum';
@@ -77,6 +77,19 @@ export default class RoomController {
         return response.send({ message: 'Invitation sent' });
     }
 
+    public async join({ response, user, room }: HttpContext): Promise<void> {
+        if (!room.players.some((player: RoomPlayer): boolean => player.userId === user.id)) {
+            if (room.players.length < 6) {
+                return response.send({ message: 'Room joined', roomId: room.frontId });
+            }
+
+            return response.badRequest({ error: 'Too many players' });
+        }
+
+        // if user is already in room
+        return response.send({ message: 'Room joined', roomId: room.frontId });
+    }
+
     public async joined({ response, user, room, language }: HttpContext): Promise<void> {
         if (!room.players.some((player: RoomPlayer): boolean => player.userId === user.id)) {
             if (room.players.length < 6) {
@@ -100,7 +113,9 @@ export default class RoomController {
                 .preload('bot', (botQuery): void => {
                     botQuery.preload('picture');
                 })
-                .preload('country')
+                .preload('country', (countryQuery): void => {
+                    countryQuery.preload('flag');
+                })
                 .orderBy('frontId');
         });
         const player: RoomPlayer = <RoomPlayer>room.players.find((player: RoomPlayer): boolean => player.userId === user.id);
@@ -151,7 +166,9 @@ export default class RoomController {
             await player.load('bot', (botQuery): void => {
                 botQuery.preload('picture');
             });
-            await player.load('country');
+            await player.load('country', (countryQuery): void => {
+                countryQuery.preload('flag');
+            });
             await player.refresh();
 
             transmit.broadcast(`notification/play/room/${room.frontId}/player/joined`, { player: player.apiSerialize(language) });
@@ -185,7 +202,7 @@ export default class RoomController {
         return response.send({ message: 'Player kicked' });
     }
 
-    public async selectCountry({ request, response, user, room }: HttpContext): Promise<void> {
+    public async selectCountry({ request, response, user, room, language }: HttpContext): Promise<void> {
         const { playerId } = await selectCountryParamValidator.validate(request.params());
 
         const player: RoomPlayer | undefined = room.players.find((player: RoomPlayer): boolean => player.frontId === playerId);
@@ -205,6 +222,12 @@ export default class RoomController {
 
         player.countryId = country.id;
         await player.save();
+
+        await player.load('country', (countryQuery): void => {
+            countryQuery.preload('flag');
+        });
+
+        transmit.broadcast(`notification/play/room/${room.frontId}/player/country`, { player: player.apiSerialize(language) });
 
         return response.send({ message: 'Country selected' });
     }

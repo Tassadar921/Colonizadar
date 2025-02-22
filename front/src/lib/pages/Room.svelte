@@ -25,11 +25,15 @@
 
     async function fetchRoomData() {
         try {
-            const { data: roomData } = await axios.get(`/api/room/${roomId}/joined`);
+            const { data: roomData } = await axios.put(`/api/room/${roomId}/joined`);
             room = roomData.room;
 
             const { data: playableCountriesData } = await axios.get('/api/room/playable-countries');
-            playableCountries = playableCountriesData.map((playableCountry) => ({ value: playableCountry.id, label: playableCountry.name }));
+            playableCountries = playableCountriesData.map((playableCountry) => ({
+                value: playableCountry.id,
+                label: playableCountry.name,
+                uri: `${process.env.VITE_API_BASE_URL}/api/static/country-flag/${playableCountry.id}?token=${localStorage.getItem('apiToken')}`
+            }));
         } catch (e) {
             showToast($t('toast.room.error'), 'error');
             await unloadCleanup();
@@ -52,7 +56,7 @@
     onMount(() => {
         heartbeat = setInterval(async () => {
             try {
-                await axios.get(`/api/room/${roomId}/heartbeat`);
+                await axios.patch(`/api/room/${roomId}/heartbeat`);
             } catch (e) {
                 await unloadCleanup();
                 navigate('/play');

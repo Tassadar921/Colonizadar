@@ -1,7 +1,9 @@
 import { DateTime } from 'luxon';
-import { BaseModel, column } from '@adonisjs/lucid/orm';
+import {BaseModel, belongsTo, column} from '@adonisjs/lucid/orm';
 import Language from '#models/language';
 import SerializedPlayableCountry from '#types/serialized/serialized_playable_country';
+import File from "#models/file";
+import type {BelongsTo} from "@adonisjs/lucid/types/relations";
 
 export default class PlayableCountry extends BaseModel {
     @column({ isPrimary: true })
@@ -15,6 +17,14 @@ export default class PlayableCountry extends BaseModel {
 
     @column()
     declare englishName: string;
+
+    @column()
+    declare flagId: string | null;
+
+    @belongsTo((): typeof File => File, {
+        foreignKey: 'flagId',
+    })
+    declare flag: BelongsTo<typeof File>;
 
     @column.dateTime({ autoCreate: true })
     declare createdAt: DateTime;
@@ -37,6 +47,7 @@ export default class PlayableCountry extends BaseModel {
         return {
             id: this.frontId,
             name: this.translate(language),
+            flag: this.flag.apiSerialize(),
             createdAt: this.createdAt?.toString(),
             updatedAt: this.updatedAt?.toString(),
         };

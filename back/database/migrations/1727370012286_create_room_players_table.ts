@@ -9,12 +9,12 @@ export default class extends BaseSchema {
         this.schema.createTable(this.tableName, (table: Knex.CreateTableBuilder): void => {
             table.uuid('id').primary().defaultTo(this.raw('uuid_generate_v4()'));
             table.specificType('front_id', 'serial').notNullable();
+            table.boolean('is_user_connected').defaultTo(false);
+            table.enum('difficulty', Object.values(RoomPlayerDifficultyEnum)).notNullable().defaultTo(RoomPlayerDifficultyEnum.MEDIUM);
             table.uuid('user_id').nullable().references('id').inTable('users').onDelete('CASCADE');
             table.uuid('bot_id').nullable().references('id').inTable('bots').onDelete('CASCADE');
             table.uuid('room_id').notNullable().references('id').inTable('rooms').onDelete('CASCADE');
             table.uuid('country_id').notNullable().references('id').inTable('playable_countries').onDelete('CASCADE');
-            table.boolean('is_user_connected').defaultTo(false);
-            table.enum('difficulty', Object.values(RoomPlayerDifficultyEnum)).notNullable().defaultTo(RoomPlayerDifficultyEnum.MEDIUM);
             table.timestamp('last_heartbeat', { useTz: true });
             table.timestamp('created_at', { useTz: true });
             table.timestamp('updated_at', { useTz: true });

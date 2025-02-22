@@ -47,8 +47,13 @@
         });
 
         await playerChangedCountryNotification.create();
-        playerChangedCountryNotification.onMessage((data) => {
-            console.log(data);
+        playerChangedCountryNotification.onMessage(({ player }) => {
+            room.players = room.players.map((p) => {
+                if (p.id === player.id) {
+                    return player;
+                }
+                return p;
+            })
         });
     };
 

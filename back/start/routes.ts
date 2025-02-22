@@ -87,12 +87,13 @@ router
                         router.post('/create', [RoomController, 'create']);
                         router.get('/difficulties', [RoomController, 'getDifficulties']);
                         router.get('/playable-countries', [PlayableCountryController, 'getAll']);
+                        router.post('/join', [RoomController, 'join']).use([middleware.room()]);
                         router
                             .group((): void => {
                                 router.post('/invite', [RoomController, 'invite']);
-                                router.get('/joined', [RoomController, 'joined']);
+                                router.put('/joined', [RoomController, 'joined']);
                                 router.delete('/leave', [RoomController, 'leave']);
-                                router.get('/heartbeat', [RoomController, 'heartbeat']);
+                                router.patch('/heartbeat', [RoomController, 'heartbeat']);
                                 router.post('add-bot', [RoomController, 'addBot']);
                                 router.delete('kick/:playerId', [RoomController, 'kick']);
                                 router.patch('/player/:playerId/select-country', [RoomController, 'selectCountry']);
@@ -104,8 +105,14 @@ router
             })
             .use([middleware.auth({ guards: ['api'] })]);
 
-        router.get('/static/profile-picture/:userId', [FileController, 'serveStaticProfilePictureFile']).use([middleware.queryStringAuth()]);
-        router.get('/static/bot-picture/:botId', [FileController, 'serveStaticBotPictureFile']).use([middleware.queryStringAuth()]);
+        router.group((): void => {
+            router.get('/profile-picture/:userId', [FileController, 'serveStaticProfilePictureFile']);
+            router.get('/bot-picture/:botId', [FileController, 'serveStaticBotPictureFile']);
+            router.get('/country-flag/:countryId', [FileController, 'serveStaticCountryFlagFile']);
+        })
+            .prefix('static')
+            .use([middleware.queryStringAuth()]);
+
     })
     .prefix('api')
     .use([middleware.language()]);

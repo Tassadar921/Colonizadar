@@ -21,7 +21,7 @@
     <Button
         ariaLabel="Add a bot"
         customStyle
-        className="flex items-center gap-3 rounded-full hover:scale-105 bg-green-500 hover:bg-green-600 dark:bg-green-700 dark:hover:bg-green-600 transition-all duration-300 p-2 px-4 text-xl"
+        className="flex items-center gap-3 rounded-full hover:scale-105 bg-green-600 dark:bg-green-600 transition-all duration-300 p-2 px-4 text-xl"
         on:click={handleAddBot}
     >
         <Icon name="plus" />

@@ -10,6 +10,7 @@
     export let room;
     export let player;
 
+    let invalidCountry = true;
     let selectedCountry = null;
 
     const handleSelectCountry = async (event) => {
@@ -23,11 +24,20 @@
         }
     };
 
-    $: selectedCountry = player.country ? { value: player.country.id, label: player.country.name } : null;
+    $: if (player.country) {
+        selectedCountry = {
+            value: player.country.id,
+            label: player.country.name,
+            uri: `${process.env.VITE_API_BASE_URL}/api/static/country-flag/${player.country.id}?token=${localStorage.getItem('apiToken')}`
+        };
+        invalidCountry = room.players.reduce((acc, player) => {
+            return acc + !!(player.country.id === selectedCountry.value);
+        }, 0) > 1;
+    }
 </script>
 
 <div
-    class="flex justify-between items-center h-12 border {player.user && $profile.id === player.user.id
+    class="flex justify-between items-center border {invalidCountry ? 'shadow-md shadow-red-500' : ''} {player.user && $profile.id === player.user.id
         ? 'border-gray-400 dark:border-gray-700'
         : 'border-gray-300 dark:border-gray-800'} rounded-xl hover:bg-gray-300 dark:hover:bg-gray-800 transition-colors duration-300 px-3"
 >
@@ -59,7 +69,13 @@
                 <Select bind:options={playableCountries} on:change={handleSelectCountry} bind:selectedOption={selectedCountry} />
             </div>
         {:else}
-            <p>{player.country.name}</p>
+            <div class="flex gap-1.5 items-center">
+                <img
+                    alt={player.country.name}
+                    src={`${process.env.VITE_API_BASE_URL}/api/static/country-flag/${player.country.id}?token=${localStorage.getItem('apiToken')}`}
+                    class="max-h-10" />
+                <p>{player.country.name}</p>
+            </div>
         {/if}
     </div>
 
