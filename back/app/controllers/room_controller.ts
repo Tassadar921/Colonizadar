@@ -242,7 +242,9 @@ export default class RoomController {
 
         const player: RoomPlayer | undefined = room.players.find((player: RoomPlayer): boolean => player.frontId === playerId);
         if (!player) {
-            return response.notFound({ error: 'Player is not into this room' });
+            return response.notFound({error: 'Player is not into this room'});
+        } else if (room.ownerId !== user.id) {
+            return response.forbidden({ error: 'You are not the owner of this room' });
         } else if (player.userId) {
             return response.forbidden({ error: 'Players have no difficulty' });
         } else if (player.botId && room.ownerId !== user.id) {
