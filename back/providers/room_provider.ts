@@ -5,8 +5,8 @@ import transmit from '@adonisjs/transmit/services/main';
 import RoomRepository from '#repositories/room_repository';
 import path from 'node:path';
 import RoomStatusEnum from '#types/enum/room_status_enum';
-import Language from "#models/language";
-import LanguageRepository from "#repositories/language_repository";
+import Language from '#models/language';
+import LanguageRepository from '#repositories/language_repository';
 
 export default class RoomProvider {
     private readonly roomRepository: RoomRepository = new RoomRepository();
