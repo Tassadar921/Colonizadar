@@ -11,13 +11,15 @@ import UserRepository from '#repositories/user_repository';
 import transmit from '@adonisjs/transmit/services/main';
 import Friend from '#models/friend';
 import { DateTime } from 'luxon';
-import RoomPlayerDifficultyEnum from '#types/enum/room_player_difficulty_enum';
 import Bot from '#models/bot';
 import BotRepository from '#repositories/bot_repository';
 import Language from '#models/language';
 import PlayableCountryRepository from '#repositories/playable_country_repository';
 import PlayableCountry from '#models/playable_country';
-import { selectCountryParamValidator, selectCountryValidator } from '#validators/room_player';
+import { selectBotDifficultyParamValidator, selectBotDifficultyValidator, selectCountryParamValidator, selectCountryValidator } from '#validators/room_player';
+import BotDifficultyRepository from '#repositories/bot_difficulty_repository';
+import BotDifficulty from '#models/bot_difficulty';
+import SerializedBotDifficulty from '#types/serialized/serialized_bot_difficulty';
 
 @inject()
 export default class RoomController {
@@ -26,7 +28,8 @@ export default class RoomController {
         private readonly userRepository: UserRepository,
         private readonly friendRepository: FriendRepository,
         private readonly botRepository: BotRepository,
-        private readonly playableCountryRepository: PlayableCountryRepository
+        private readonly playableCountryRepository: PlayableCountryRepository,
+        private readonly botDifficultyRepository: BotDifficultyRepository
     ) {}
 
     public async create({ request, response, user }: HttpContext): Promise<void> {
@@ -54,7 +57,6 @@ export default class RoomController {
             userId: user.id,
             isUserConnected: true,
             roomId: room.id,
-            difficulty: RoomPlayerDifficultyEnum.USER,
             countryId: country.id,
         });
 
@@ -97,7 +99,6 @@ export default class RoomController {
                 await RoomPlayer.create({
                     userId: user.id,
                     roomId: room.id,
-                    difficulty: RoomPlayerDifficultyEnum.USER,
                     countryId: country.id,
                 });
             } else {
@@ -116,6 +117,7 @@ export default class RoomController {
                 .preload('country', (countryQuery): void => {
                     countryQuery.preload('flag');
                 })
+                .preload('difficulty')
                 .orderBy('frontId');
         });
         const player: RoomPlayer = <RoomPlayer>room.players.find((player: RoomPlayer): boolean => player.userId === user.id);
@@ -156,9 +158,10 @@ export default class RoomController {
         if (room.players.length < 6) {
             let bot: Bot = await this.botRepository.getOneForRoom(room);
             const country: PlayableCountry = await this.playableCountryRepository.getFirst();
+            const difficulty: BotDifficulty = await this.botDifficultyRepository.getDefaultDifficulty();
             const player: RoomPlayer = await RoomPlayer.create({
                 roomId: room.id,
-                difficulty: RoomPlayerDifficultyEnum.MEDIUM,
+                difficultyId: difficulty.id,
                 botId: bot?.id,
                 countryId: country.id,
             });
@@ -169,6 +172,7 @@ export default class RoomController {
             await player.load('country', (countryQuery): void => {
                 countryQuery.preload('flag');
             });
+            await player.load('difficulty');
             await player.refresh();
 
             transmit.broadcast(`notification/play/room/${room.frontId}/player/joined`, { player: player.apiSerialize(language) });
@@ -179,8 +183,9 @@ export default class RoomController {
         }
     }
 
-    public async getDifficulties({ response }: HttpContext): Promise<void> {
-        return response.send({ difficulties: Object.values(RoomPlayerDifficultyEnum) });
+    public async getBotDifficulties({ response, language }: HttpContext): Promise<void> {
+        const difficulties: BotDifficulty[] = await this.botDifficultyRepository.all();
+        return response.send({ difficulties: difficulties.map((difficulty: BotDifficulty): SerializedBotDifficulty => difficulty.apiSerialize(language)) });
     }
 
     public async kick({ request, response, user, room, language }: HttpContext): Promise<void> {
@@ -230,6 +235,34 @@ export default class RoomController {
         transmit.broadcast(`notification/play/room/${room.frontId}/player/country`, { player: player.apiSerialize(language) });
 
         return response.send({ message: 'Country selected' });
+    }
+
+    public async selectBotDifficulty({ request, response, user, room, language }: HttpContext): Promise<void> {
+        const { playerId } = await selectBotDifficultyParamValidator.validate(request.params());
+
+        const player: RoomPlayer | undefined = room.players.find((player: RoomPlayer): boolean => player.frontId === playerId);
+        if (!player) {
+            return response.notFound({ error: 'Player is not into this room' });
+        } else if (player.userId) {
+            return response.forbidden({ error: 'Players have no difficulty' });
+        } else if (player.botId && room.ownerId !== user.id) {
+            return response.forbidden({ error: "You can't change the country of a bot if you're not the owner" });
+        }
+
+        const { difficultyId } = await selectBotDifficultyValidator.validate(request.all());
+        const difficulty: BotDifficulty | null = await this.botDifficultyRepository.findOneBy({ frontId: difficultyId });
+        if (!difficulty) {
+            return response.notFound({ error: 'Difficulty not found' });
+        }
+
+        player.difficultyId = difficulty.id;
+        await player.save();
+
+        await player.load('difficulty');
+
+        transmit.broadcast(`notification/play/room/${room.frontId}/player/difficulty`, { player: player.apiSerialize(language) });
+
+        return response.send({ message: 'Difficulty selected' });
     }
 
     private async disconnect(user: User, room: Room, language: Language, response: Response): Promise<void> {

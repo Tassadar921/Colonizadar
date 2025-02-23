@@ -61,7 +61,7 @@ export default class RoomProvider {
         const now: DateTime = DateTime.now();
         for (const room of rooms) {
             for (const player of room.players) {
-                if (player.lastHeartbeat && now.diff(player.lastHeartbeat, 'seconds').seconds > 15) {
+                if (player.userId && now.diff(player.lastHeartbeat, 'seconds').seconds > 30) {
                     await player.delete();
 
                     transmit.broadcast(`notification/play/room/${room.frontId}/${player.user.frontId}/player/leave`);

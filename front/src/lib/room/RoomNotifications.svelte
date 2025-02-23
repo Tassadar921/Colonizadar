@@ -14,6 +14,7 @@
     let playerJoinedNotification;
     let playerLeftNotification;
     let playerChangedCountryNotification;
+    let playerChangedDifficultyNotification;
 
     const setupTransmits = async () => {
         await cleanupTransmits();
@@ -22,6 +23,7 @@
         playerJoinedNotification = $transmit.subscription(`notification/play/room/${room.id}/player/joined`);
         playerLeftNotification = $transmit.subscription(`notification/play/room/${room.id}/player/leave`);
         playerChangedCountryNotification = $transmit.subscription(`notification/play/room/${room.id}/player/country`);
+        playerChangedDifficultyNotification = $transmit.subscription(`notification/play/room/${room.id}/player/difficulty`);
 
         await roomClosedNotification.create();
         roomClosedNotification.onMessage(async () => {
@@ -48,6 +50,16 @@
 
         await playerChangedCountryNotification.create();
         playerChangedCountryNotification.onMessage(({ player }) => {
+            room.players = room.players.map((p) => {
+                if (p.id === player.id) {
+                    return player;
+                }
+                return p;
+            });
+        });
+
+        await playerChangedDifficultyNotification.create();
+        playerChangedDifficultyNotification.onMessage(({ player }) => {
             room.players = room.players.map((p) => {
                 if (p.id === player.id) {
                     return player;

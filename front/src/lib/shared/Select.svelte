@@ -58,7 +58,7 @@
 
     <button
         bind:this={buttonRef}
-        class="w-full px-3 py-2 border border-gray-300 dark:border-gray-800 dark:bg-gray-700 dark:text-gray-300 rounded-lg shadow-sm flex justify-between items-center flex-wrap gap-5"
+        class="w-full px-3 py-2 border border-gray-300 dark:border-gray-800 dark:bg-gray-700 dark:text-gray-300 rounded-xl shadow-sm flex justify-between items-center flex-wrap gap-5"
         on:click={() => {
             isOpen = !isOpen;
             setDropdownWidth();
@@ -85,7 +85,7 @@
                     {#if option.uri}
                         <img src={option.uri} alt={option.label} class="mr-2" />
                     {/if}
-                    <span class="dark:text-white">{option.label}</span>
+                    <span class="capitalize dark:text-white">{option.label}</span>
                 </button>
             {/each}
         </ul>

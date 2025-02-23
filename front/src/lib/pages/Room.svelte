@@ -21,6 +21,7 @@
     let room = { name: '', players: [], owner: { id: -1 } };
     let showInviteFriendModal = false;
     let playableCountries = [];
+    let botDifficulties = [];
     let heartbeat;
 
     async function fetchRoomData() {
@@ -104,11 +105,11 @@
 <div class="flex flex-row flex-wrap gap-5 justify-center my-5">
     <div class="flex flex-col gap-1 w-full">
         {#each room.players as player}
-            <RoomPlayer bind:room {player} bind:playableCountries />
+            <RoomPlayer bind:room {player} bind:playableCountries bind:botDifficulties />
         {/each}
         {#if room.players.length < 6 && $profile.id === room.owner.id}
             <div class="w-full flex mt-5 px-5">
-                <AddBot bind:room />
+                <AddBot bind:room bind:difficulties={botDifficulties} />
             </div>
         {/if}
     </div>

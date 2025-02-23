@@ -23,6 +23,7 @@ export default class RoomRepository extends BaseRepository<typeof Room> {
                     .preload('country', (countryQuery): void => {
                         countryQuery.preload('flag');
                     })
+                    .preload('difficulty')
                     .orderBy('frontId');
             })
             .first();
@@ -45,6 +46,7 @@ export default class RoomRepository extends BaseRepository<typeof Room> {
                     .preload('country', (countryQuery): void => {
                         countryQuery.preload('flag');
                     })
+                    .preload('difficulty')
                     .orderBy('frontId');
             })
             .first();

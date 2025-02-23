@@ -4,13 +4,24 @@
     import axios from 'axios';
     import { showToast } from '../../services/toastService.js';
     import { t } from 'svelte-i18n';
+    import { onMount } from 'svelte';
 
     export let room;
+    export let difficulties = [];
+
+    onMount(async () => {
+        try {
+            const { data } = await axios.get('/api/room/bot-difficulties');
+            difficulties = data.difficulties.map((difficulty) => ({ value: difficulty.id, label: difficulty.name }));
+        } catch (e) {
+            showToast(e.response.data.error, 'error');
+        }
+    });
 
     const handleAddBot = async () => {
         try {
-            const response = await axios.post(`/api/room/${room.id}/add-bot`);
-            showToast(`${$t('toast.room.add-bot.success')} : ${response.data.player.bot.name}`);
+            const { data } = await axios.post(`/api/room/${room.id}/add-bot`);
+            showToast(`${$t('toast.room.add-bot.success')} : ${data.player.bot.name}`);
         } catch (e) {
             showToast(e.response.data.error, 'error');
         }

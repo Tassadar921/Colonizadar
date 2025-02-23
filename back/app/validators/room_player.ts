@@ -11,3 +11,15 @@ export const selectCountryValidator = vine.compile(
         countryId: vine.number().positive(),
     })
 );
+
+export const selectBotDifficultyParamValidator = vine.compile(
+    vine.object({
+        playerId: vine.number().positive(),
+    })
+);
+
+export const selectBotDifficultyValidator = vine.compile(
+    vine.object({
+        difficultyId: vine.number().positive(),
+    })
+);

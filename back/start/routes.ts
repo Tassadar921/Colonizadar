@@ -85,7 +85,7 @@ router
                 router
                     .group((): void => {
                         router.post('/create', [RoomController, 'create']);
-                        router.get('/difficulties', [RoomController, 'getDifficulties']);
+                        router.get('/bot-difficulties', [RoomController, 'getBotDifficulties']);
                         router.get('/playable-countries', [PlayableCountryController, 'getAll']);
                         router.post('/join', [RoomController, 'join']).use([middleware.room()]);
                         router
@@ -97,6 +97,7 @@ router
                                 router.post('add-bot', [RoomController, 'addBot']);
                                 router.delete('kick/:playerId', [RoomController, 'kick']);
                                 router.patch('/player/:playerId/select-country', [RoomController, 'selectCountry']);
+                                router.patch('/player/:playerId/select-difficulty', [RoomController, 'selectBotDifficulty']);
                             })
                             .prefix(':roomId')
                             .use([middleware.room()]);
