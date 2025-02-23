@@ -94,7 +94,7 @@
     </div>
 
     <!--    Player country    -->
-    <div class="flex justify-center items-center w-2/3">
+    <div class="flex justify-center items-center">
         {#if (player.user && player.user.id === $profile.id) || (player.bot && room.owner.id === $profile.id)}
             <div>
                 <Select name="country" bind:options={playableCountries} on:change={handleSelectCountry} bind:selectedOption={selectedCountry} />
@@ -108,7 +108,7 @@
     </div>
 
     <!--    Bot Difficulty    -->
-    <div class="flex justify-center items-center w-1/2">
+    <div class="flex justify-center items-center">
         {#if room.owner.id === $profile.id && player.bot}
             <Select name="difficulty" bind:options={botDifficulties} on:change={handleSelectBotDifficulty} bind:selectedOption={selectedDifficulty} />
         {:else if player.bot}
