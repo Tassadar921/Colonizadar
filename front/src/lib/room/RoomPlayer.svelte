@@ -110,7 +110,9 @@
     <!--    Bot Difficulty    -->
     <div class="flex justify-center items-center">
         {#if room.owner.id === $profile.id && player.bot}
-            <Select name="difficulty" bind:options={botDifficulties} on:change={handleSelectBotDifficulty} bind:selectedOption={selectedDifficulty} />
+            <div>
+                <Select name="difficulty" bind:options={botDifficulties} on:change={handleSelectBotDifficulty} bind:selectedOption={selectedDifficulty} />
+            </div>
         {:else if player.bot}
             <p>{player.difficulty.name}</p>
         {:else}
