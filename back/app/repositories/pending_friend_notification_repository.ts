@@ -11,12 +11,12 @@ export default class PendingFriendNotificationRepository extends BaseRepository<
     }
 
     public async getCount(user: User): Promise<number> {
-        const countResult: PendingFriendNotification[] = await PendingFriendNotification.query().where('for_id', user.id).count('* as total');
+        const countResult: PendingFriendNotification[] = await this.Model.query().where('for_id', user.id).count('* as total');
         return countResult[0].$extras.total;
     }
 
     public async getPagination(page: number, perPage: number, user: User, seen: boolean | undefined = undefined): Promise<PaginatedNotifications> {
-        const notifications: ModelPaginatorContract<PendingFriendNotification> = await PendingFriendNotification.query()
+        const notifications: ModelPaginatorContract<PendingFriendNotification> = await this.Model.query()
             .if(seen !== undefined, (queryBuilder): void => {
                 queryBuilder.where('seen', <boolean>seen);
             })

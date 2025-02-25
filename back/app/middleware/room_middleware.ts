@@ -16,7 +16,7 @@ export default class RoomMiddleware {
         if (!paramRoomId && !token && !bodyRoomId) {
             return ctx.response.badRequest({ error: 'Either roomId or token are required' });
         } else if (token) {
-            room = await this.roomRepository.getFromUserAndToken(ctx.user, token);
+            room = await this.roomRepository.getFromUserAndToken(token);
         } else if (paramRoomId || bodyRoomId) {
             room = await this.roomRepository.getFromFrontId(<number>(paramRoomId || bodyRoomId));
         }

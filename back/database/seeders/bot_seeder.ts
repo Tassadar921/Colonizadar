@@ -1,15 +1,14 @@
 import { BaseSeeder } from '@adonisjs/lucid/seeders';
 import Bot from '#models/bot';
 import BotRepository from '#repositories/bot_repository';
-import fs from 'fs/promises';
-import path from 'path';
-import mime from 'mime-types';
 import File from '#models/file';
 import app from '@adonisjs/core/services/app';
+import FileService from '#services/file_service';
 
 export default class extends BaseSeeder {
     async run(): Promise<void> {
         const botRepository: BotRepository = new BotRepository();
+        const fileService: FileService = new FileService();
 
         const bots: { french: string; english: string; image: string }[] = [
             { french: 'Alexandre le Grand', english: 'Alexander the Great', image: 'alexandre-the-great.webp' },
@@ -74,7 +73,7 @@ export default class extends BaseSeeder {
 
         for (const bot of bots) {
             if (!(await botRepository.findOneBy({ englishName: bot.english }))) {
-                const { size, mimeType, extension, name } = await this.getFileInfo(app.makePath(`static/bot-picture/${bot.image}`));
+                const { size, mimeType, extension, name } = await fileService.getFileInfo(app.makePath(`static/bot-picture/${bot.image}`));
                 const file: File | null = await File.create({
                     name,
                     path: `static/bot-picture/${bot.image}`,
@@ -89,19 +88,8 @@ export default class extends BaseSeeder {
                     englishName: bot.english,
                     pictureId: file.id,
                 });
-                console.log(`Bot name ${bot.english} created`);
+                console.log(`Bot ${bot.english} created`);
             }
         }
-    }
-
-    private async getFileInfo(filePath: string): Promise<{ size: number; mimeType: string; extension: string; name: string }> {
-        const stats = await fs.stat(filePath);
-
-        const size: number = stats.size;
-        const extension: string = path.extname(filePath);
-        const name: string = path.basename(filePath);
-        const mimeType: string = mime.lookup(filePath) || 'unknown';
-
-        return { size, mimeType, extension, name };
     }
 }

@@ -1,5 +1,4 @@
 import vine from '@vinejs/vine';
-import RoomPlayerDifficultyEnum from '#types/enum/room_player_difficulty_enum';
 
 export const roomMiddlewareValidator = vine.compile(
     vine.object({
@@ -18,12 +17,6 @@ export const createRoomValidator = vine.compile(
 export const inviteRoomValidator = vine.compile(
     vine.object({
         userId: vine.number().positive(),
-    })
-);
-
-export const addBotValidator = vine.compile(
-    vine.object({
-        difficulty: vine.number().positive().max(Object.values(RoomPlayerDifficultyEnum).length),
     })
 );
 

@@ -2,11 +2,12 @@ import { DateTime } from 'luxon';
 import { BaseModel, belongsTo, column } from '@adonisjs/lucid/orm';
 import User from '#models/user';
 import type { BelongsTo } from '@adonisjs/lucid/types/relations';
-import RoomPlayerDifficultyEnum from '#types/enum/room_player_difficulty_enum';
 import Room from '#models/room';
 import SerializedRoomPlayer from '#types/serialized/serialized_room_player';
 import Language from '#models/language';
 import Bot from '#models/bot';
+import PlayableCountry from '#models/playable_country';
+import BotDifficulty from '#models/bot_difficulty';
 
 export default class RoomPlayer extends BaseModel {
     @column({ isPrimary: true })
@@ -32,7 +33,23 @@ export default class RoomPlayer extends BaseModel {
     declare isUserConnected: boolean;
 
     @column()
-    declare difficulty: RoomPlayerDifficultyEnum;
+    declare isReady: boolean;
+
+    @column()
+    declare difficultyId: string;
+
+    @belongsTo((): typeof BotDifficulty => BotDifficulty, {
+        foreignKey: 'difficultyId',
+    })
+    declare difficulty: BelongsTo<typeof BotDifficulty>;
+
+    @column()
+    declare countryId: string;
+
+    @belongsTo((): typeof PlayableCountry => PlayableCountry, {
+        foreignKey: 'countryId',
+    })
+    declare country: BelongsTo<typeof PlayableCountry>;
 
     @column()
     declare roomId: string;
@@ -54,8 +71,10 @@ export default class RoomPlayer extends BaseModel {
             id: this.frontId,
             user: this.user?.apiSerialize(),
             bot: this.bot?.apiSerialize(language),
+            country: this.country.apiSerialize(language),
             isUserConnected: this.isUserConnected,
-            difficulty: this.difficulty,
+            isReady: this.isReady,
+            difficulty: this.difficulty?.apiSerialize(language),
             createdAt: this.createdAt?.toString(),
             updatedAt: this.updatedAt?.toString(),
         };

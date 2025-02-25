@@ -11,7 +11,7 @@ export default class BlockedUserRepository extends BaseRepository<typeof Blocked
     }
 
     public async search(query: string, page: number, perPage: number, user: User): Promise<PaginatedBlockedUsers> {
-        const blockedUsers: ModelPaginatorContract<BlockedUser> = await BlockedUser.query()
+        const blockedUsers: ModelPaginatorContract<BlockedUser> = await this.Model.query()
             .where('blocker_id', user.id)
             .if(query, (queryBuilder): void => {
                 queryBuilder.leftJoin('users', 'blocked_users.blocked_id', 'users.id').andWhere('users.username', 'ILIKE', `%${query}%`);
@@ -36,7 +36,7 @@ export default class BlockedUserRepository extends BaseRepository<typeof Blocked
     }
 
     public async findFromUsers(user: User, otherUser: User): Promise<BlockedUser[]> {
-        return BlockedUser.query()
+        return this.Model.query()
             .where((query): void => {
                 query.where('blockerId', user.id).andWhere('blockedId', otherUser.id);
             })

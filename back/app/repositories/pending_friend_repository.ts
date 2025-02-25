@@ -11,7 +11,7 @@ export default class PendingFriendRepository extends BaseRepository<typeof Pendi
     }
 
     public async search(query: string, page: number, perPage: number, user: User): Promise<PaginatedPendingFriends> {
-        const pendingFriends: ModelPaginatorContract<PendingFriend> = await PendingFriend.query()
+        const pendingFriends: ModelPaginatorContract<PendingFriend> = await this.Model.query()
             .where('user_id', user.id)
             .if(query, (queryBuilder): void => {
                 queryBuilder.leftJoin('users', 'pending_friends.friend_id', 'users.id').where('users.username', 'ILIKE', `%${query}%`);
@@ -39,7 +39,7 @@ export default class PendingFriendRepository extends BaseRepository<typeof Pendi
     }
 
     public async findOneFromUsers(from: User, askingTo: User): Promise<PendingFriend | null> {
-        return PendingFriend.query()
+        return this.Model.query()
             .where((query): void => {
                 query.where('userId', askingTo.id).andWhere('friendId', from.id);
             })
@@ -55,7 +55,7 @@ export default class PendingFriendRepository extends BaseRepository<typeof Pendi
     }
 
     public async findFromUsers(from: User, askingTo: User): Promise<PendingFriend[]> {
-        return PendingFriend.query()
+        return this.Model.query()
             .where((query): void => {
                 query.where('userId', askingTo.id).andWhere('friendId', from.id);
             })
