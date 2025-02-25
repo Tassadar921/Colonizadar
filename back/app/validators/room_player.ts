@@ -23,3 +23,9 @@ export const selectBotDifficultyValidator = vine.compile(
         difficultyId: vine.number().positive(),
     })
 );
+
+export const setReadyValidator = vine.compile(
+    vine.object({
+        isReady: vine.boolean(),
+    })
+);

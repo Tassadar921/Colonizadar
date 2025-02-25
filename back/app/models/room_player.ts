@@ -33,6 +33,9 @@ export default class RoomPlayer extends BaseModel {
     declare isUserConnected: boolean;
 
     @column()
+    declare isReady: boolean;
+
+    @column()
     declare difficultyId: string;
 
     @belongsTo((): typeof BotDifficulty => BotDifficulty, {
@@ -70,6 +73,7 @@ export default class RoomPlayer extends BaseModel {
             bot: this.bot?.apiSerialize(language),
             country: this.country.apiSerialize(language),
             isUserConnected: this.isUserConnected,
+            isReady: this.isReady,
             difficulty: this.difficulty?.apiSerialize(language),
             createdAt: this.createdAt?.toString(),
             updatedAt: this.updatedAt?.toString(),

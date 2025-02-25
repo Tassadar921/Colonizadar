@@ -98,6 +98,7 @@ router
                                 router.delete('kick/:playerId', [RoomController, 'kick']);
                                 router.patch('/player/:playerId/select-country', [RoomController, 'selectCountry']);
                                 router.patch('/player/:playerId/select-difficulty', [RoomController, 'selectBotDifficulty']);
+                                router.patch('/player/:playerId/ready', [RoomController, 'ready']);
                             })
                             .prefix(':roomId')
                             .use([middleware.room()]);

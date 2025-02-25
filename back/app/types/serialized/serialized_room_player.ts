@@ -9,6 +9,7 @@ type SerializedRoomPlayer = {
     bot?: SerializedBot;
     country: SerializedPlayableCountry;
     isUserConnected: boolean;
+    isReady: boolean;
     difficulty: SerializedBotDifficulty;
     createdAt?: string;
     updatedAt?: string;

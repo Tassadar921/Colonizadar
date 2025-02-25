@@ -5,6 +5,7 @@
     import { profile } from '../../stores/profileStore.js';
     import axios from 'axios';
     import { showToast } from '../../services/toastService.js';
+    import Button from '../shared/Button.svelte';
 
     export let playableCountries = [];
     export let botDifficulties = [];
@@ -30,6 +31,18 @@
         try {
             const { data } = await axios.patch(`/api/room/${room.id}/player/${player.id}/select-difficulty`, {
                 difficultyId: event.detail.value,
+            });
+            showToast(`${data.message}`);
+        } catch (e) {
+            showToast(e.response.data.error, 'error');
+        }
+    };
+
+    const handleReady = async (player, isReady) => {
+        try {
+            console.log(player.isReady, isReady);
+            const { data } = await axios.patch(`/api/room/${room.id}/player/${player.id}/ready`, {
+                isReady,
             });
             showToast(`${data.message}`);
         } catch (e) {
@@ -123,7 +136,17 @@
     <!--    TODO: add player ready once room filled    -->
 
     <!--    Player actions for room owner    -->
-    <div class="flex justify-end">
+    <div class="flex gap-3 justify-end">
+        {#if player.user}
+            <Button
+                disabled={player.user.id !== $profile.id}
+                customStyle
+                className="{player.user.id === $profile.id ? 'transition-transform duration-300 hover:scale-125 transform' : ''} {player.isReady ? 'text-green-500' : 'text-red-500'}"
+                on:click={() => handleReady(player, !player.isReady)}
+            >
+                <Icon name="check" />
+            </Button>
+        {/if}
         {#if $profile.id === room.owner.id && $profile.id !== player.user?.id}
             <KickPlayer bind:room bind:player />
         {/if}

@@ -16,7 +16,7 @@ import BotRepository from '#repositories/bot_repository';
 import Language from '#models/language';
 import PlayableCountryRepository from '#repositories/playable_country_repository';
 import PlayableCountry from '#models/playable_country';
-import { selectBotDifficultyParamValidator, selectBotDifficultyValidator, selectCountryParamValidator, selectCountryValidator } from '#validators/room_player';
+import { selectBotDifficultyParamValidator, selectBotDifficultyValidator, selectCountryParamValidator, selectCountryValidator, setReadyValidator } from '#validators/room_player';
 import BotDifficultyRepository from '#repositories/bot_difficulty_repository';
 import BotDifficulty from '#models/bot_difficulty';
 import SerializedBotDifficulty from '#types/serialized/serialized_bot_difficulty';
@@ -232,7 +232,7 @@ export default class RoomController {
             countryQuery.preload('flag');
         });
 
-        transmit.broadcast(`notification/play/room/${room.frontId}/player/country`, { player: player.apiSerialize(language) });
+        transmit.broadcast(`notification/play/room/${room.frontId}/player/update`, { player: player.apiSerialize(language) });
 
         return response.send({ message: 'Country selected' });
     }
@@ -262,9 +262,31 @@ export default class RoomController {
 
         await player.load('difficulty');
 
-        transmit.broadcast(`notification/play/room/${room.frontId}/player/difficulty`, { player: player.apiSerialize(language) });
+        transmit.broadcast(`notification/play/room/${room.frontId}/player/update`, { player: player.apiSerialize(language) });
 
         return response.send({ message: 'Difficulty selected' });
+    }
+
+    public async ready({ request, response, user, room, language }: HttpContext): Promise<void> {
+        const player: RoomPlayer | undefined = room.players.find((player: RoomPlayer): boolean => player.userId === user.id);
+        if (!player) {
+            return response.notFound({ error: 'Player is not into this room' });
+        }
+
+        const { isReady } = await setReadyValidator.validate(request.all());
+
+        player.isReady = isReady;
+        await player.save();
+
+        transmit.broadcast(`notification/play/room/${room.frontId}/player/update`, { player: player.apiSerialize(language) });
+
+        if (room.players.length === 6) {
+            if (room.players.every((player: RoomPlayer): boolean => (player.botId ? true : player.isReady))) {
+                // TODO: start game
+            }
+        }
+
+        return response.send({ message: `Set to ${isReady ? 'ready' : 'not ready'}` });
     }
 
     private async disconnect(user: User, room: Room, language: Language, response: Response): Promise<void> {
