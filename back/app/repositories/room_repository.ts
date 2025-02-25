@@ -10,6 +10,7 @@ export default class RoomRepository extends BaseRepository<typeof Room> {
     public async getFromFrontId(roomId: number): Promise<Room | null> {
         return this.Model.query()
             .where('status', RoomStatusEnum.ACTIVE)
+            .orWhere('rooms.status', RoomStatusEnum.STARTING)
             .andWhere('front_id', roomId)
             .preload('owner')
             .preload('players', (playersQuery): void => {
@@ -33,6 +34,7 @@ export default class RoomRepository extends BaseRepository<typeof Room> {
         return this.Model.query()
             .select('rooms.*')
             .where('rooms.status', RoomStatusEnum.ACTIVE)
+            .orWhere('rooms.status', RoomStatusEnum.STARTING)
             .andWhere('rooms.token', token)
             .preload('owner')
             .preload('players', (playersQuery): void => {

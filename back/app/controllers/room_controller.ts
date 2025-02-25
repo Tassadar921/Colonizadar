@@ -20,6 +20,7 @@ import { selectBotDifficultyParamValidator, selectBotDifficultyValidator, select
 import BotDifficultyRepository from '#repositories/bot_difficulty_repository';
 import BotDifficulty from '#models/bot_difficulty';
 import SerializedBotDifficulty from '#types/serialized/serialized_bot_difficulty';
+import sleep from '../utils/sleep.js';
 
 @inject()
 export default class RoomController {
@@ -280,13 +281,33 @@ export default class RoomController {
 
         transmit.broadcast(`notification/play/room/${room.frontId}/player/update`, { player: player.apiSerialize(language) });
 
+        response.send({ message: `Set to ${isReady ? 'ready' : 'not ready'}` });
+
         if (room.players.length === 6) {
             if (room.players.every((player: RoomPlayer): boolean => (player.botId ? true : player.isReady))) {
-                // TODO: start game
+                this.startCountdown(room);
             }
         }
+    }
 
-        return response.send({ message: `Set to ${isReady ? 'ready' : 'not ready'}` });
+    private async startCountdown(room: Room): Promise<void> {
+        for (let countdown = 5; countdown > 0; countdown--) {
+            const updatedRoom: Room = await Room.findOrFail(room.id);
+
+            if (updatedRoom.status !== RoomStatusEnum.STARTING) {
+                return;
+            }
+
+            console.log(countdown);
+
+            transmit.broadcast(`notification/play/room/${room.frontId}/starting`, { countdown });
+
+            await sleep(1000);
+        }
+
+        transmit.broadcast(`notification/play/room/${room.frontId}/game/start`, { message: 'Game is starting' });
+
+        // TODO: Implement actual game start logic
     }
 
     private async disconnect(user: User, room: Room, language: Language, response: Response): Promise<void> {

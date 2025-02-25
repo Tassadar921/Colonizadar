@@ -14,6 +14,8 @@
     let playerJoinedNotification;
     let playerLeftNotification;
     let playerUpdateNotification;
+    let roomStartingNotification;
+    let roomStartNotification;
 
     const setupTransmits = async () => {
         await cleanupTransmits();
@@ -22,6 +24,8 @@
         playerJoinedNotification = $transmit.subscription(`notification/play/room/${room.id}/player/joined`);
         playerLeftNotification = $transmit.subscription(`notification/play/room/${room.id}/player/leave`);
         playerUpdateNotification = $transmit.subscription(`notification/play/room/${room.id}/player/update`);
+        roomStartingNotification = $transmit.subscription(`notification/play/room/${room.id}/starting`);
+        roomStartNotification = $transmit.subscription(`notification/play/room/${room.id}/game/start`);
 
         await roomClosedNotification.create();
         roomClosedNotification.onMessage(async () => {
@@ -55,12 +59,25 @@
                 return p;
             });
         });
+
+        await roomStartingNotification.create();
+        roomStartingNotification.onMessage(({ countdown }) => {
+            console.log(countdown);
+        });
+
+        await roomStartNotification.create();
+        roomStartNotification.onMessage(() => {
+            console.log('START');
+        });
     };
 
     const cleanupTransmits = async () => {
         await roomClosedNotification?.delete();
         await playerJoinedNotification?.delete();
         await playerLeftNotification?.delete();
+        await playerUpdateNotification?.delete();
+        await roomStartingNotification?.delete();
+        await roomStartNotification?.delete();
     };
 
     $: if (room.id) {
