@@ -274,13 +274,17 @@ export default class RoomController {
             return response.notFound({ error: 'Player is not into this room' });
         }
 
+        if (room.status === RoomStatusEnum.STARTING) {
+            room.status = RoomStatusEnum.ACTIVE;
+            await room.save();
+        }
+
         const { isReady } = await setReadyValidator.validate(request.all());
 
         player.isReady = isReady;
         await player.save();
 
         transmit.broadcast(`notification/play/room/${room.frontId}/player/update`, { player: player.apiSerialize(language) });
-
         response.send({ message: `Set to ${isReady ? 'ready' : 'not ready'}` });
 
         if (room.players.length === 6) {
@@ -291,14 +295,14 @@ export default class RoomController {
     }
 
     private async startCountdown(room: Room): Promise<void> {
+        room.status = RoomStatusEnum.STARTING;
+        await room.save();
         for (let countdown = 5; countdown > 0; countdown--) {
             const updatedRoom: Room = await Room.findOrFail(room.id);
 
             if (updatedRoom.status !== RoomStatusEnum.STARTING) {
                 return;
             }
-
-            console.log(countdown);
 
             transmit.broadcast(`notification/play/room/${room.frontId}/starting`, { countdown });
 

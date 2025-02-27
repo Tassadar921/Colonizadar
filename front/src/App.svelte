@@ -20,7 +20,6 @@
     import { setLanguage } from './stores/languageStore.js';
     import { location, navigate } from './stores/locationStore.js';
     import { locale } from 'svelte-i18n';
-    import { showToast } from './services/toastService.js';
     import Social from './lib/pages/Social.svelte';
     import Friends from './lib/pages/Friends.svelte';
     import Blocked from './lib/pages/Blocked.svelte';

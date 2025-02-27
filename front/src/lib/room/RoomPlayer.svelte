@@ -6,6 +6,7 @@
     import axios from 'axios';
     import { showToast } from '../../services/toastService.js';
     import Button from '../shared/Button.svelte';
+    import Loader from '../shared/Loader.svelte';
 
     export let playableCountries = [];
     export let botDifficulties = [];
@@ -15,6 +16,7 @@
     let invalidCountry = true;
     let selectedCountry = null;
     let selectedDifficulty = null;
+    let loading = false;
 
     const handleSelectCountry = async (event) => {
         try {
@@ -39,8 +41,8 @@
     };
 
     const handleReady = async (player, isReady) => {
+        loading = true;
         try {
-            console.log(player.isReady, isReady);
             const { data } = await axios.patch(`/api/room/${room.id}/player/${player.id}/ready`, {
                 isReady,
             });
@@ -48,6 +50,7 @@
         } catch (e) {
             showToast(e.response.data.error, 'error');
         }
+        loading = false;
     };
 
     $: if (player.country) {
@@ -69,6 +72,8 @@
         };
     }
 </script>
+
+<Loader bind:loading />
 
 <div
     class="grid grid-cols-4 border {invalidCountry ? 'shadow-md shadow-red-500' : ''} {player.user && $profile.id === player.user.id
