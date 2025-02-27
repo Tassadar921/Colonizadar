@@ -3,13 +3,19 @@
     import { showToast } from '../../services/toastService.js';
     import { profile } from '../../stores/profileStore.js';
     import { location, navigate } from '../../stores/locationStore.js';
-    import { onDestroy } from 'svelte';
+    import { onDestroy, onMount } from 'svelte';
     import { t } from 'svelte-i18n';
     import { createEventDispatcher } from 'svelte';
     import { get } from 'svelte/store';
 
+    onMount(() => {
+        console.log('==> RoomNotifications mounted');
+    });
+
     const dispatch = createEventDispatcher();
     export let room;
+
+    let isInitialized = false;
 
     let roomClosedNotification;
     let playerJoinedNotification;
@@ -21,6 +27,11 @@
     let isSettingUp = false;
 
     const setup = async () => {
+       if (isInitialized) {
+            console.log('Already initialized, skipping...');
+            return;
+        }
+
         if (isSettingUp) {
             return;
         }
@@ -32,6 +43,7 @@
         setupHandlers();
 
         isSettingUp = false;
+        isInitialized = true;
     };
 
     const setupTransmits = async () => {
@@ -57,7 +69,9 @@
     };
 
     const setupHandlers = () => {
-        console.log('Setting up handlers');
+        
+
+        console.log('Setting up handlers for room:', room.id);
 
         roomClosedNotification.onMessage(async () => {
             showToast(t('toast.notification.play.room.closed'), 'warning');
@@ -116,6 +130,7 @@
     }
 
     onDestroy(() => {
+        console.log("<== RoomNotifications destroyed");
         cleanupTransmits();
     });
 </script>

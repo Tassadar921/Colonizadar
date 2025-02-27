@@ -78,7 +78,9 @@
 
 <Breadcrumbs items={[{ label: $t('home.title'), path: '/' }, { label: $t('play.title'), path: '/play' }, { label: $t('play.room.title') }]} />
 
-<RoomNotifications bind:room on:close={unloadCleanup} />
+{#key room?.id}
+    <RoomNotifications bind:room on:close={unloadCleanup} />
+{/key}
 
 <div class="grid grid-cols-1 sm:grid-cols-2">
     <div class="flex justify-center h-10 text-white mt-3 text-sm px-3">
