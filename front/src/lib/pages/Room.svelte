@@ -109,11 +109,9 @@
         {#each room.players as player}
             <RoomPlayer bind:room {player} bind:playableCountries bind:botDifficulties />
         {/each}
-        {#if room.players.length < 6 && $profile.id === room.owner.id}
-            <div class="w-full flex mt-5 px-5">
-                <AddBot bind:room bind:difficulties={botDifficulties} />
-            </div>
-        {/if}
+        <div class="w-full flex mt-5 px-5">
+            <AddBot bind:room bind:difficulties={botDifficulties} />
+        </div>
     </div>
 </div>
 

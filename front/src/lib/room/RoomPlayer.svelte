@@ -46,7 +46,6 @@
             const { data } = await axios.patch(`/api/room/${room.id}/player/${player.id}/ready`, {
                 isReady,
             });
-            showToast(`${data.message}`);
         } catch (e) {
             showToast(e.response.data.error, 'error');
         }
