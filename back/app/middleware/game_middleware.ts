@@ -15,7 +15,7 @@ export default class GameMiddleware {
             return ctx.response.badRequest({ error: 'Game id is required' });
         }
 
-        const game: Game | null = await this.gameRepository.findOneBy({ frontId: gameId });
+        const game: Game | null = await this.gameRepository.getFromFrontId(gameId);
         if (!game) {
             return ctx.response.notFound({ error: 'Game not found' });
         }
