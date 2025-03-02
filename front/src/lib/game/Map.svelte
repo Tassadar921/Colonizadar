@@ -1,29 +1,48 @@
 <script>
     import WorldMap from './WorldMap.svelte';
+    import { onDestroy, onMount } from 'svelte';
 
-    const mapWidth = 550;
-    const mapHeight = 350;
+    let width;
+    let height;
+    let offsetX;
+    let offsetY;
 
-    let offsetX = 0;
-    let offsetY = 0;
-    let viewBox = `${offsetX} ${offsetY} ${mapWidth} ${mapHeight}`;
+    let viewBox;
     let svgElement;
     let buttonElement;
-    let zoomLevel = 1;
+    let minZoomLevel = 2;
+    let maxZoomLevel = 10;
+    let zoomLevel = minZoomLevel;
     let isDragging = false;
     let startX, startY;
     let hasDragged = false;
 
-    const dragSensitivity = 2;
+    const dragSensitivity = 1.3;
+
+    onMount(() => {
+        resizeButton();
+        zoom(1);
+        window.addEventListener('resize', resizeButton);
+    });
+
+    onDestroy(() => {
+        window.removeEventListener('resize', resizeButton);
+    });
+
+    const resizeButton = () => {
+        width = buttonElement.clientWidth;
+        height = buttonElement.clientHeight;
+        viewBox = `${offsetX} ${offsetY} ${width} ${height}`;
+    };
 
     const zoom = (delta) => {
         zoomLevel *= delta;
-        zoomLevel = Math.max(1, Math.min(20, zoomLevel));
+        zoomLevel = Math.max(minZoomLevel, Math.min(maxZoomLevel, zoomLevel));
 
-        const width = mapWidth / zoomLevel;
-        const height = mapHeight / zoomLevel;
+        const viewboxWidth = width / zoomLevel;
+        const viewboxHeight = height / zoomLevel;
 
-        viewBox = `${offsetX} ${offsetY} ${width} ${height}`;
+        viewBox = `${offsetX} ${offsetY} ${viewboxWidth} ${viewboxHeight}`;
     };
 
     const handleWheel = (event) => {
@@ -52,16 +71,16 @@
         offsetX -= dx;
         offsetY -= dy;
 
-        const width = mapWidth / zoomLevel;
-        const height = mapHeight / zoomLevel;
+        const viewboxWidth = width / zoomLevel;
+        const viewboxHeight = height / zoomLevel;
 
-        offsetX = Math.max(0, Math.min(mapWidth - width, offsetX));
-        offsetY = Math.max(0, Math.min(mapHeight - height, offsetY));
+        offsetX = Math.max(0, Math.min(width - viewboxWidth, offsetX));
+        offsetY = Math.max(0, Math.min(height - viewboxHeight, offsetY));
 
         startX = event.clientX;
         startY = event.clientY;
 
-        viewBox = `${offsetX} ${offsetY} ${width} ${height}`;
+        viewBox = `${offsetX} ${offsetY} ${viewboxWidth} ${viewboxHeight}`;
     };
 
     const endDrag = () => {
@@ -73,16 +92,11 @@
             console.log('Valid click:', event.detail);
         }
     };
-
-    $: if (svgElement) {
-        buttonElement.style.width = `${window.innerWidth}px`;
-        buttonElement.style.maxHeight = `${window.innerHeight - 50}px`;
-    }
 </script>
 
 <button
     bind:this={buttonElement}
-    class={isDragging ? 'cursor-grabbing' : 'cursor-grab'}
+    class="max-h-full w-11/12 {isDragging ? 'cursor-grabbing' : 'cursor-pointer'}"
     on:wheel={handleWheel}
     on:mousedown={startDrag}
     on:mousemove={onDrag}
@@ -90,5 +104,5 @@
     on:mouseleave={endDrag}
     aria-label="Interactive world map"
 >
-    <WorldMap bind:svgElement bind:viewBox on:click={handleClick} />
+    <WorldMap bind:svgElement bind:viewBox bind:width bind:height bind:offsetX bind:offsetY on:click={handleClick} />
 </button>
