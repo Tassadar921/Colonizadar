@@ -16,6 +16,9 @@ export default class Territory extends BaseModel {
     @column()
     declare englishName: string;
 
+    @column()
+    declare isCoastal: boolean;
+
     @column.dateTime({ autoCreate: true })
     declare createdAt: DateTime;
 
@@ -37,6 +40,7 @@ export default class Territory extends BaseModel {
         return {
             code: this.code,
             name: this.translate(language),
+            isCoastal: this.isCoastal,
             createdAt: this.createdAt?.toString(),
             updatedAt: this.updatedAt?.toString(),
         };

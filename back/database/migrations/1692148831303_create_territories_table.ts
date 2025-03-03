@@ -10,6 +10,7 @@ export default class extends BaseSchema {
             table.string('code', 3).notNullable().unique();
             table.string('english_name', 255).notNullable();
             table.string('french_name', 255).notNullable();
+            table.boolean('is_coastal').notNullable().defaultTo(false);
             table.timestamp('created_at', { useTz: true });
             table.timestamp('updated_at', { useTz: true });
         });

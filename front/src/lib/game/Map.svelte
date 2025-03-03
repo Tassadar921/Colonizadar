@@ -4,8 +4,8 @@
 
     let width;
     let height;
-    let offsetX;
-    let offsetY;
+    let offsetX = 0;
+    let offsetY = 0;
 
     let viewBox;
     let svgElement;
@@ -20,8 +20,8 @@
     const dragSensitivity = 1.3;
 
     onMount(() => {
-        resizeButton();
         zoom(1);
+        resizeButton();
         window.addEventListener('resize', resizeButton);
     });
 
@@ -104,5 +104,5 @@
     on:mouseleave={endDrag}
     aria-label="Interactive world map"
 >
-    <WorldMap bind:svgElement bind:viewBox bind:width bind:height bind:offsetX bind:offsetY on:click={handleClick} />
+    <WorldMap bind:svgElement bind:viewBox bind:width bind:height on:click={handleClick} />
 </button>
