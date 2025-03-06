@@ -1,6 +1,6 @@
 <script>
     import Map from '../game/Map.svelte';
-    import {onMount} from "svelte";
+    import { onMount } from 'svelte';
 
     let containerElement;
 
