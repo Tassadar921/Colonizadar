@@ -4,6 +4,7 @@ import Language from '#models/language';
 import SerializedTerritory from '#types/serialized/serialized_territory';
 import type { BelongsTo } from '@adonisjs/lucid/types/relations';
 import Map from '#models/map';
+import PlayableCountry from "#models/playable_country";
 
 export default class Territory extends BaseModel {
     @column({ isPrimary: true })
@@ -26,6 +27,12 @@ export default class Territory extends BaseModel {
 
     @belongsTo((): typeof Map => Map)
     declare map: BelongsTo<typeof Map>;
+
+    @column()
+    declare defaultBelongsToId: string;
+
+    @belongsTo((): typeof PlayableCountry => PlayableCountry)
+    declare defaultBelongsTo: BelongsTo<typeof PlayableCountry>;
 
     @column.dateTime({ autoCreate: true })
     declare createdAt: DateTime;

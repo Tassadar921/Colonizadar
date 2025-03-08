@@ -1,5 +1,6 @@
 import BaseRepository from '#repositories/base/base_repository';
 import PlayableCountry from '#models/playable_country';
+import Map from '#models/map';
 
 export default class PlayableCountryRepository extends BaseRepository<typeof PlayableCountry> {
     constructor() {
@@ -12,5 +13,19 @@ export default class PlayableCountryRepository extends BaseRepository<typeof Pla
             throw new Error('No playable country found');
         }
         return country;
+    }
+
+    public async getAllFromMap(map: Map) {
+        switch (map.name) {
+            case 'World Map':
+                return {
+                    us: await this.Model.query().where('map_id', map.id).where('english', 'United States').firstOrFail(),
+                    gb: await this.Model.query().where('map_id', map.id).where('english', 'United Kingdom').firstOrFail(),
+                    fr: await this.Model.query().where('map_id', map.id).where('english', 'France').firstOrFail(),
+                    de: await this.Model.query().where('map_id', map.id).where('english', 'German Empire').firstOrFail(),
+                    ru: await this.Model.query().where('map_id', map.id).where('english', 'Russia').firstOrFail(),
+                    jp: await this.Model.query().where('map_id', map.id).where('english', 'Japan').firstOrFail(),
+                }
+        }
     }
 }

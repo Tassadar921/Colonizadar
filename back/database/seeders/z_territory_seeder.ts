@@ -3,11 +3,14 @@ import TerritoryRepository from '#repositories/territory_repository';
 import Territory from '#models/territory';
 import MapRepository from '#repositories/map_repository';
 import Map from '#models/map';
+import PlayableCountry from "#models/playable_country";
+import PlayableCountryRepository from "#repositories/playable_country_repository";
 
 export default class extends BaseSeeder {
     async run(): Promise<void> {
         const territoryRepository: TerritoryRepository = new TerritoryRepository();
         const mapRepository: MapRepository = new MapRepository();
+        const playableCountryRepository: PlayableCountryRepository = new PlayableCountryRepository();
 
         const worldMap: Map | null = await mapRepository.findOneBy({ name: 'World Map' });
         if (!worldMap) {
@@ -15,7 +18,13 @@ export default class extends BaseSeeder {
             return;
         }
 
-        const territories: { code: string; french: string; english: string; isCoastal: boolean; map: Map }[] = [
+        const worldMapPlayableCountries = await playableCountryRepository.getAllFromMap(worldMap);
+        if (!worldMapPlayableCountries) {
+            console.error('World map playable countries not found');
+            return;
+        }
+
+        const territories: { code: string; french: string; english: string; isCoastal: boolean; map: Map; defaultBelongsTo?: PlayableCountry, isFactory?: boolean }[] = [
             // ********** North America **********
             { code: 'AL', french: 'Alaska', english: 'Alaska', isCoastal: true, map: worldMap },
             { code: 'BC', french: 'Colombie-Britannique', english: 'British Columbia', isCoastal: true, map: worldMap },
@@ -24,10 +33,10 @@ export default class extends BaseSeeder {
             { code: 'NX', french: 'Ontario du nord', english: 'Northern Ontario', isCoastal: true, map: worldMap },
             { code: 'ON', french: 'Ontario du sud', english: 'Southern Ontario', isCoastal: false, map: worldMap },
             { code: 'QC', french: 'Québec', english: 'Quebec', isCoastal: true, map: worldMap },
-            { code: 'FL', french: 'Floride', english: 'Florida', isCoastal: true, map: worldMap },
-            { code: 'TX', french: 'Texas', english: 'Texas', isCoastal: true, map: worldMap },
-            { code: 'CA', french: 'Californie', english: 'California', isCoastal: true, map: worldMap },
-            { code: 'DA', french: 'Dakota', english: 'Dakota', isCoastal: false, map: worldMap },
+            { code: 'FL', french: 'Floride', english: 'Florida', isCoastal: true, map: worldMap, defaultBelongsTo: worldMapPlayableCountries.us, isFactory: true },
+            { code: 'TX', french: 'Texas', english: 'Texas', isCoastal: true, map: worldMap, defaultBelongsTo: worldMapPlayableCountries.us, isFactory: true },
+            { code: 'CA', french: 'Californie', english: 'California', isCoastal: true, map: worldMap, defaultBelongsTo: worldMapPlayableCountries.us },
+            { code: 'DA', french: 'Dakota', english: 'Dakota', isCoastal: false, map: worldMap, defaultBelongsTo: worldMapPlayableCountries.us },
             { code: 'MX', french: 'Mexique', english: 'Mexico', isCoastal: true, map: worldMap },
             // ********** South America **********
             { code: 'GT', french: 'Guatemala', english: 'Guatemala', isCoastal: true, map: worldMap },
@@ -57,12 +66,12 @@ export default class extends BaseSeeder {
             // ********** Europe **********
             { code: 'AC', french: 'Açores', english: 'Azores', isCoastal: true, map: worldMap },
             { code: 'IS', french: 'Islande', english: 'Iceland', isCoastal: true, map: worldMap },
-            { code: 'SN', french: 'Écosse', english: 'Scotland', isCoastal: true, map: worldMap },
-            { code: 'IL', french: 'Irlande', english: 'Ireland', isCoastal: true, map: worldMap },
-            { code: 'GB', french: 'Grande-Bretagne', english: 'Great Britain', isCoastal: true, map: worldMap },
-            { code: 'NF', french: 'Nord de la France', english: 'Northern France', isCoastal: true, map: worldMap },
-            { code: 'MF', french: 'France centrale', english: 'Middle France', isCoastal: true, map: worldMap },
-            { code: 'SF', french: 'Sud de la France', english: 'Southern France', isCoastal: true, map: worldMap },
+            { code: 'SN', french: 'Écosse', english: 'Scotland', isCoastal: true, map: worldMap, defaultBelongsTo: worldMapPlayableCountries.gb, isFactory: true },
+            { code: 'IL', french: 'Irlande', english: 'Ireland', isCoastal: true, map: worldMap, defaultBelongsTo: worldMapPlayableCountries.gb, isFactory: true },
+            { code: 'GB', french: 'Grande-Bretagne', english: 'Great Britain', isCoastal: true, map: worldMap, defaultBelongsTo: worldMapPlayableCountries.gb },
+            { code: 'NF', french: 'Nord de la France', english: 'Northern France', isCoastal: true, map: worldMap, defaultBelongsTo: worldMapPlayableCountries.fr },
+            { code: 'MF', french: 'France centrale', english: 'Middle France', isCoastal: true, map: worldMap, defaultBelongsTo: worldMapPlayableCountries.fr, isFactory: true },
+            { code: 'SF', french: 'Sud de la France', english: 'Southern France', isCoastal: true, map: worldMap, defaultBelongsTo: worldMapPlayableCountries.fr, isFactory: true },
             { code: 'ES', french: 'Espagne', english: 'Spain', isCoastal: true, map: worldMap },
             { code: 'PT', french: 'Portugal', english: 'Portugal', isCoastal: true, map: worldMap },
             { code: 'BA', french: 'Baléares', english: 'Balearic', isCoastal: true, map: worldMap },
@@ -70,9 +79,9 @@ export default class extends BaseSeeder {
             { code: 'IT', french: 'Italie', english: 'Italia', isCoastal: true, map: worldMap },
             { code: 'SL', french: 'Sicile', english: 'Sicily', isCoastal: true, map: worldMap },
             { code: 'NL', french: 'Pays-Bas', english: 'Netherlands', isCoastal: true, map: worldMap },
-            { code: 'RH', french: 'Rhénanie', english: 'Rhine', isCoastal: false, map: worldMap },
-            { code: 'SX', french: 'Saxe', english: 'Saxony', isCoastal: true, map: worldMap },
-            { code: 'PS', french: 'Prusse', english: 'Prussia', isCoastal: true, map: worldMap },
+            { code: 'RH', french: 'Rhénanie', english: 'Rhine', isCoastal: false, map: worldMap, defaultBelongsTo: worldMapPlayableCountries.de, isFactory: true },
+            { code: 'SX', french: 'Saxe', english: 'Saxony', isCoastal: true, map: worldMap, defaultBelongsTo: worldMapPlayableCountries.de, isFactory: true },
+            { code: 'PS', french: 'Prusse', english: 'Prussia', isCoastal: true, map: worldMap, defaultBelongsTo: worldMapPlayableCountries.de },
             { code: 'AT', french: 'Autriche', english: 'Austria', isCoastal: true, map: worldMap },
             { code: 'RO', french: 'Roumanie', english: 'Romania', isCoastal: true, map: worldMap },
             { code: 'BG', french: 'Bulgarie', english: 'Bulgaria', isCoastal: true, map: worldMap },
@@ -81,7 +90,7 @@ export default class extends BaseSeeder {
             { code: 'NO', french: 'Norvège', english: 'Norway', isCoastal: true, map: worldMap },
             { code: 'SE', french: 'Suède', english: 'Sweden', isCoastal: true, map: worldMap },
             { code: 'FI', french: 'Finlande', english: 'Finland', isCoastal: true, map: worldMap },
-            { code: 'UR', french: 'Oural', english: 'Ural', isCoastal: true, map: worldMap },
+            { code: 'UR', french: 'Oural', english: 'Ural', isCoastal: true, map: worldMap, defaultBelongsTo: worldMapPlayableCountries.ru },
             // ********** Africa **********
             { code: 'CN', french: 'Canaries', english: 'Canaries', isCoastal: true, map: worldMap },
             { code: 'CV', french: 'Cap Vert', english: 'Cape Verde', isCoastal: true, map: worldMap },
@@ -126,9 +135,9 @@ export default class extends BaseSeeder {
             { code: 'YE', french: 'Yemen', english: 'Yemen', isCoastal: true, map: worldMap },
             { code: 'OM', french: 'Oman', english: 'Oman', isCoastal: true, map: worldMap },
             // ********** Asia **********
-            { code: 'SW', french: 'Sibérie occidentale', english: 'Western Siberia', isCoastal: false, map: worldMap },
-            { code: 'CS', french: 'Sibérie centrale', english: 'Central Siberia', isCoastal: false, map: worldMap },
-            { code: 'SI', french: 'Sibérie orientale', english: 'Eastern Siberia', isCoastal: true, map: worldMap },
+            { code: 'SW', french: 'Sibérie occidentale', english: 'Western Siberia', isCoastal: true, map: worldMap, defaultBelongsTo: worldMapPlayableCountries.ru, isFactory: true },
+            { code: 'CS', french: 'Sibérie centrale', english: 'Central Siberia', isCoastal: false, map: worldMap, defaultBelongsTo: worldMapPlayableCountries.ru },
+            { code: 'SI', french: 'Sibérie orientale', english: 'Eastern Siberia', isCoastal: true, map: worldMap, defaultBelongsTo: worldMapPlayableCountries.ru },
             { code: 'IR', french: 'Perse', english: 'Persia', isCoastal: true, map: worldMap },
             { code: 'AF', french: 'Afghanistan', english: 'Afghanistan', isCoastal: false, map: worldMap },
             { code: 'WP', french: 'Pakistan occidental', english: 'Western Pakistan', isCoastal: true, map: worldMap },
@@ -156,9 +165,9 @@ export default class extends BaseSeeder {
             { code: 'SZ', french: 'Shandong', english: 'Shandong', isCoastal: true, map: worldMap },
             { code: 'TW', french: 'Taiwan', english: 'Taiwan', isCoastal: true, map: worldMap },
             { code: 'KI', french: 'Îles Komandorski', english: 'Komandorski Islands', isCoastal: true, map: worldMap },
-            { code: 'HK', french: 'Hokkaido', english: 'Hokkaido', isCoastal: true, map: worldMap },
-            { code: 'HS', french: 'Honshu', english: 'Honshu', isCoastal: true, map: worldMap },
-            { code: 'KU', french: 'Kyushu', english: 'Kyushu', isCoastal: true, map: worldMap },
+            { code: 'HK', french: 'Hokkaido', english: 'Hokkaido', isCoastal: true, map: worldMap, defaultBelongsTo: worldMapPlayableCountries.jp },
+            { code: 'HS', french: 'Honshu', english: 'Honshu', isCoastal: true, map: worldMap, defaultBelongsTo: worldMapPlayableCountries.jp, isFactory: true },
+            { code: 'KU', french: 'Kyushu', english: 'Kyushu', isCoastal: true, map: worldMap, defaultBelongsTo: worldMapPlayableCountries.jp, isFactory: true },
             // ********** Oceania **********
             { code: 'PH', french: 'Philippines', english: 'Philippines', isCoastal: true, map: worldMap },
             { code: 'SM', french: 'Sumatra', english: 'Sumatra', isCoastal: true, map: worldMap },
