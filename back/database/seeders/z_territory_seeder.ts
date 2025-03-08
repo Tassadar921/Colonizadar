@@ -1,7 +1,7 @@
 import { BaseSeeder } from '@adonisjs/lucid/seeders';
 import TerritoryRepository from '#repositories/territory_repository';
 import Territory from '#models/territory';
-import MapRepository from "#repositories/map_repository";
+import MapRepository from '#repositories/map_repository';
 import Map from '#models/map';
 
 export default class extends BaseSeeder {

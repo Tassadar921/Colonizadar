@@ -3,7 +3,7 @@ import User from '#models/user';
 import { ModelPaginatorContract } from '@adonisjs/lucid/types/model';
 import PaginatedUsers from '#types/paginated/paginated_users';
 import SerializedUser from '#types/serialized/serialized_user';
-import UserRoleEnum from "#types/enum/user_role_enum";
+import UserRoleEnum from '#types/enum/user_role_enum';
 
 export default class UserRepository extends BaseRepository<typeof User> {
     constructor() {

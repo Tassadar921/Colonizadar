@@ -2,8 +2,8 @@ import BaseRepository from '#repositories/base/base_repository';
 import Game from '#models/game';
 import Room from '#models/room';
 import Map from '#models/map';
-import Territory from "#models/territory";
-import GameTerritory from "#models/game_territory";
+import Territory from '#models/territory';
+import GameTerritory from '#models/game_territory';
 
 export default class GameRepository extends BaseRepository<typeof Game> {
     constructor() {
@@ -39,8 +39,13 @@ export default class GameRepository extends BaseRepository<typeof Game> {
         });
         await game.refresh();
 
-        await Promise.all(map.territories.map((territory: Territory): Promise<GameTerritory> => GameTerritory.create({
-            territoryId: territory.id,
-        })))
+        await Promise.all(
+            map.territories.map(
+                (territory: Territory): Promise<GameTerritory> =>
+                    GameTerritory.create({
+                        territoryId: territory.id,
+                    })
+            )
+        );
     }
 }

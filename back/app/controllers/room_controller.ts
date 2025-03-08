@@ -32,7 +32,7 @@ export default class RoomController {
         private readonly botRepository: BotRepository,
         private readonly playableCountryRepository: PlayableCountryRepository,
         private readonly botDifficultyRepository: BotDifficultyRepository,
-        private readonly gameRepository: GameRepository,
+        private readonly gameRepository: GameRepository
     ) {}
 
     public async create({ request, response, user }: HttpContext): Promise<void> {

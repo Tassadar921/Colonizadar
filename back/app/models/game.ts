@@ -8,7 +8,7 @@ import SerializedRoomPlayer from '#types/serialized/serialized_room_player';
 import Language from '#models/language';
 import GameTerritory from '#models/game_territory';
 import SerializedGameTerritory from '#types/serialized/serialized_game_territory';
-import Map from "#models/map";
+import Map from '#models/map';
 
 export default class Game extends BaseModel {
     @column({ isPrimary: true })
