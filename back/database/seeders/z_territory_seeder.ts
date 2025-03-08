@@ -176,16 +176,17 @@ export default class extends BaseSeeder {
         ];
 
         for (const territory of territories) {
-            if (!(await territoryRepository.findOneBy({ code: territory.code }))) {
+            if (!(await territoryRepository.findOneBy({ code: territory.code, mapId: territory.map.id }))) {
                 await Territory.create({
                     frenchName: territory.french,
                     englishName: territory.english,
                     code: territory.code,
                     isCoastal: territory.isCoastal,
+                    mapId: territory.map.id,
                 });
-                console.log(`Territory ${territory.code} created`);
+                console.log(`Territory ${territory.code} created for map ${territory.map.name}`);
             } else {
-                console.log(`Territory ${territory.code} already exists`);
+                console.log(`Territory ${territory.code} already exists for map ${territory.map.name}`);
             }
         }
     }

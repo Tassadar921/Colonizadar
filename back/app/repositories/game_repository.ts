@@ -47,5 +47,7 @@ export default class GameRepository extends BaseRepository<typeof Game> {
                     })
             )
         );
+
+        return game;
     }
 }
