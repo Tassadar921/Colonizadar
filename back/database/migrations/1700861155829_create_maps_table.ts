@@ -2,20 +2,20 @@ import { BaseSchema } from '@adonisjs/lucid/schema';
 import { Knex } from 'knex';
 
 export default class extends BaseSchema {
-    protected tableName: string = 'games';
+    protected tableName: string = 'maps';
 
-    public async up(): Promise<void> {
+    async up(): Promise<void> {
         this.schema.createTable(this.tableName, (table: Knex.CreateTableBuilder): void => {
             table.uuid('id').primary().defaultTo(this.raw('uuid_generate_v4()'));
             table.specificType('front_id', 'serial').notNullable();
-            table.uuid('room_id').notNullable().references('id').inTable('rooms').onDelete('CASCADE');
-            table.uuid('map_id').notNullable().references('id').inTable('maps');
-            table.timestamp('created_at', { useTz: true });
-            table.timestamp('updated_at', { useTz: true });
+            table.string('name', 255).nullable();
+            table.uuid('created_by_id').notNullable().references('id').inTable('users');
+            table.timestamp('created_at');
+            table.timestamp('updated_at');
         });
     }
 
-    public async down(): Promise<void> {
+    async down(): Promise<void> {
         this.schema.dropTable(this.tableName);
     }
 }

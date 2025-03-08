@@ -21,6 +21,7 @@ import BotDifficultyRepository from '#repositories/bot_difficulty_repository';
 import BotDifficulty from '#models/bot_difficulty';
 import SerializedBotDifficulty from '#types/serialized/serialized_bot_difficulty';
 import sleep from '../utils/sleep.js';
+import GameRepository from '#repositories/game_repository';
 
 @inject()
 export default class RoomController {
@@ -30,7 +31,8 @@ export default class RoomController {
         private readonly friendRepository: FriendRepository,
         private readonly botRepository: BotRepository,
         private readonly playableCountryRepository: PlayableCountryRepository,
-        private readonly botDifficultyRepository: BotDifficultyRepository
+        private readonly botDifficultyRepository: BotDifficultyRepository,
+        private readonly gameRepository: GameRepository,
     ) {}
 
     public async create({ request, response, user }: HttpContext): Promise<void> {
@@ -310,8 +312,6 @@ export default class RoomController {
         }
 
         transmit.broadcast(`notification/play/room/${room.frontId}/game/start`, { message: 'Game is starting' });
-
-        // TODO: Implement actual game start logic
     }
 
     private async disconnect(user: User, room: Room, language: Language, response: Response): Promise<void> {

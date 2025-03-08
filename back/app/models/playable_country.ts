@@ -4,6 +4,7 @@ import Language from '#models/language';
 import SerializedPlayableCountry from '#types/serialized/serialized_playable_country';
 import File from '#models/file';
 import type { BelongsTo } from '@adonisjs/lucid/types/relations';
+import Map from '#models/map';
 
 export default class PlayableCountry extends BaseModel {
     @column({ isPrimary: true })
@@ -25,6 +26,12 @@ export default class PlayableCountry extends BaseModel {
         foreignKey: 'flagId',
     })
     declare flag: BelongsTo<typeof File>;
+
+    @column()
+    declare mapId: string;
+
+    @belongsTo((): typeof Map => Map)
+    declare map: BelongsTo<typeof Map>;
 
     @column.dateTime({ autoCreate: true })
     declare createdAt: DateTime;

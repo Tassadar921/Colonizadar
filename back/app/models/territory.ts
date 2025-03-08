@@ -1,7 +1,9 @@
 import { DateTime } from 'luxon';
-import { BaseModel, column } from '@adonisjs/lucid/orm';
+import { BaseModel, belongsTo, column } from '@adonisjs/lucid/orm';
 import Language from '#models/language';
 import SerializedTerritory from '#types/serialized/serialized_territory';
+import type { BelongsTo } from '@adonisjs/lucid/types/relations';
+import Map from '#models/map';
 
 export default class Territory extends BaseModel {
     @column({ isPrimary: true })
@@ -18,6 +20,12 @@ export default class Territory extends BaseModel {
 
     @column()
     declare isCoastal: boolean;
+
+    @column()
+    declare mapId: string;
+
+    @belongsTo((): typeof Map => Map)
+    declare map: BelongsTo<typeof Map>;
 
     @column.dateTime({ autoCreate: true })
     declare createdAt: DateTime;
