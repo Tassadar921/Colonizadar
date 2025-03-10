@@ -3,8 +3,8 @@ import TerritoryRepository from '#repositories/territory_repository';
 import Territory from '#models/territory';
 import MapRepository from '#repositories/map_repository';
 import Map from '#models/map';
-import PlayableCountry from "#models/playable_country";
-import PlayableCountryRepository from "#repositories/playable_country_repository";
+import PlayableCountry from '#models/playable_country';
+import PlayableCountryRepository from '#repositories/playable_country_repository';
 
 export default class extends BaseSeeder {
     async run(): Promise<void> {
@@ -24,7 +24,7 @@ export default class extends BaseSeeder {
             return;
         }
 
-        const territories: { code: string; french: string; english: string; isCoastal: boolean; map: Map; defaultBelongsTo?: PlayableCountry, isFactory?: boolean }[] = [
+        const territories: { code: string; french: string; english: string; isCoastal: boolean; map: Map; defaultBelongsTo?: PlayableCountry; isFactory?: boolean }[] = [
             // ********** North America **********
             { code: 'AL', french: 'Alaska', english: 'Alaska', isCoastal: true, map: worldMap },
             { code: 'BC', french: 'Colombie-Britannique', english: 'British Columbia', isCoastal: true, map: worldMap },
@@ -191,7 +191,9 @@ export default class extends BaseSeeder {
                     englishName: territory.english,
                     code: territory.code,
                     isCoastal: territory.isCoastal,
+                    isFactory: territory.isFactory,
                     mapId: territory.map.id,
+                    defaultBelongsToId: territory.defaultBelongsTo?.id,
                 });
                 console.log(`Territory ${territory.code} created for map ${territory.map.name}`);
             } else {

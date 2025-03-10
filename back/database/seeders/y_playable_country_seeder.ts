@@ -22,7 +22,7 @@ export default class extends BaseSeeder {
         const playableCountries: { french: string; english: string; flagFileName: string; map: Map }[] = [
             { french: 'États-Unis', english: 'United States', flagFileName: 'us.svg', map: worldMap },
             { french: 'Royaume-Uni', english: 'United Kingdom', flagFileName: 'uk.svg', map: worldMap },
-            { french: 'Empire Allemand', english: 'German empire', flagFileName: 'de.svg', map: worldMap },
+            { french: 'Empire Allemand', english: 'German Empire', flagFileName: 'de.svg', map: worldMap },
             { french: 'France', english: 'France', flagFileName: 'fr.svg', map: worldMap },
             { french: 'Russie', english: 'Russia', flagFileName: 'ru.svg', map: worldMap },
             { french: 'Japon', english: 'Japan', flagFileName: 'jp.svg', map: worldMap },

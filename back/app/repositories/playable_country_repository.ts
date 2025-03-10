@@ -19,13 +19,13 @@ export default class PlayableCountryRepository extends BaseRepository<typeof Pla
         switch (map.name) {
             case 'World Map':
                 return {
-                    us: await this.Model.query().where('map_id', map.id).where('english', 'United States').firstOrFail(),
-                    gb: await this.Model.query().where('map_id', map.id).where('english', 'United Kingdom').firstOrFail(),
-                    fr: await this.Model.query().where('map_id', map.id).where('english', 'France').firstOrFail(),
-                    de: await this.Model.query().where('map_id', map.id).where('english', 'German Empire').firstOrFail(),
-                    ru: await this.Model.query().where('map_id', map.id).where('english', 'Russia').firstOrFail(),
-                    jp: await this.Model.query().where('map_id', map.id).where('english', 'Japan').firstOrFail(),
-                }
+                    us: await this.Model.query().where('map_id', map.id).where('english_name', 'United States').firstOrFail(),
+                    gb: await this.Model.query().where('map_id', map.id).where('english_name', 'United Kingdom').firstOrFail(),
+                    fr: await this.Model.query().where('map_id', map.id).where('english_name', 'France').firstOrFail(),
+                    de: await this.Model.query().where('map_id', map.id).where('english_name', 'German Empire').firstOrFail(),
+                    ru: await this.Model.query().where('map_id', map.id).where('english_name', 'Russia').firstOrFail(),
+                    jp: await this.Model.query().where('map_id', map.id).where('english_name', 'Japan').firstOrFail(),
+                };
         }
     }
 }

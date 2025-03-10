@@ -11,6 +11,7 @@ export default class extends BaseSchema {
             table.string('english_name', 255).notNullable();
             table.string('french_name', 255).notNullable();
             table.boolean('is_coastal').notNullable().defaultTo(false);
+            table.boolean('is_factory').notNullable().defaultTo(false);
             table.uuid('map_id').notNullable().references('id').inTable('maps');
             table.timestamp('created_at', { useTz: true });
             table.timestamp('updated_at', { useTz: true });
