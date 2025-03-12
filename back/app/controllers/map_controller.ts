@@ -1,8 +1,8 @@
 import { inject } from '@adonisjs/core';
 import { HttpContext } from '@adonisjs/core/http';
 import Map from '#models/map';
-import MapRepository from "#repositories/map_repository";
-import SerializedMap from "#types/serialized/serialized_map";
+import MapRepository from '#repositories/map_repository';
+import SerializedMap from '#types/serialized/serialized_map';
 
 @inject()
 export default class MapController {

@@ -31,7 +31,5 @@
 </script>
 
 {#if $profile.id === room.owner.id}
-    <div class="flex flex-grow justify-end">
-
-    </div>
+    <div class="flex flex-grow justify-end"></div>
 {/if}

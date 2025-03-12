@@ -23,7 +23,8 @@ import SerializedBotDifficulty from '#types/serialized/serialized_bot_difficulty
 import sleep from '../utils/sleep.js';
 import GameRepository from '#repositories/game_repository';
 import Map from '#models/map';
-import MapRepository from "#repositories/map_repository";
+import MapRepository from '#repositories/map_repository';
+import Game from '#models/game';
 
 @inject()
 export default class RoomController {
@@ -41,7 +42,7 @@ export default class RoomController {
     public async create({ request, response, user }: HttpContext): Promise<void> {
         const activeRoom: Room | null = await this.roomRepository.findOneBy({
             ownerId: user.id,
-            status: RoomStatusEnum.ACTIVE,
+            status: RoomStatusEnum.OPENED,
         });
         if (activeRoom) {
             activeRoom.status = RoomStatusEnum.CLOSED;
@@ -137,11 +138,10 @@ export default class RoomController {
 
         transmit.broadcast(`notification/play/room/${room.frontId}/player/joined`, { player: player.apiSerialize(language) });
 
-        return response.send({ room: room.apiSerialize(language) });
+        return response.send({ room: await room.apiSerialize(language) });
     }
 
     public async leave({ response, user, room, language }: HttpContext): Promise<void> {
-        console.log('disconnect');
         await this.disconnect(user, room, language, response);
 
         return response.send({ message: 'Room left' });
@@ -241,6 +241,15 @@ export default class RoomController {
             countryQuery.preload('flag');
         });
 
+        if (room.status === RoomStatusEnum.STARTING) {
+            room.status = RoomStatusEnum.OPENED;
+            await room.save();
+        }
+        await Promise.all(room.players.map(async (player: RoomPlayer): Promise<void> => {
+            player.isReady = false;
+            await player.save();
+        }));
+
         transmit.broadcast(`notification/play/room/${room.frontId}/player/update`, { player: player.apiSerialize(language) });
 
         return response.send({ message: 'Country selected' });
@@ -271,6 +280,15 @@ export default class RoomController {
 
         await player.load('difficulty');
 
+        if (room.status === RoomStatusEnum.STARTING) {
+            room.status = RoomStatusEnum.OPENED;
+            await room.save();
+        }
+        await Promise.all(room.players.map(async (player: RoomPlayer): Promise<void> => {
+            player.isReady = false;
+            await player.save();
+        }));
+
         transmit.broadcast(`notification/play/room/${room.frontId}/player/update`, { player: player.apiSerialize(language) });
 
         return response.send({ message: 'Difficulty selected' });
@@ -283,11 +301,35 @@ export default class RoomController {
         }
 
         if (room.status === RoomStatusEnum.STARTING) {
-            room.status = RoomStatusEnum.ACTIVE;
+            room.status = RoomStatusEnum.OPENED;
             await room.save();
         }
 
         const { isReady } = await setReadyValidator.validate(request.all());
+
+        if (isReady) {
+            const isValidReady: boolean = room.players.every((loopPlayer: RoomPlayer): boolean => {
+                if (loopPlayer.userId) {
+                    if (loopPlayer.id === player.id) {
+                        return true;
+                    }
+                    return loopPlayer.countryId !== player.countryId;
+                }
+
+                const botPlayers: RoomPlayer[] = room.players.filter((p: RoomPlayer): boolean => !p.userId);
+
+                const isUniqueAmongPlayers: boolean = !room.players.some((p: RoomPlayer): boolean => !!p.userId && p.countryId === loopPlayer.countryId);
+
+                const uniqueBotCountries = new Set(botPlayers.map((bot: RoomPlayer): string => bot.countryId));
+                const areBotsUnique: boolean = uniqueBotCountries.size === botPlayers.length;
+
+                return isUniqueAmongPlayers && areBotsUnique;
+            });
+
+            if (!isValidReady) {
+                return response.forbidden({ error: 'Every player must have a different country' });
+            }
+        }
 
         player.isReady = isReady;
         await player.save();
@@ -317,7 +359,12 @@ export default class RoomController {
             await sleep(1000);
         }
 
-        transmit.broadcast(`notification/play/room/${room.frontId}/game/start`, { message: 'Game is starting' });
+        room.status = RoomStatusEnum.PLAYING;
+        await room.save();
+
+        const game: Game = await this.gameRepository.create(room);
+
+        transmit.broadcast(`notification/play/room/${room.frontId}/game/start`, { message: 'Game is starting', gameId: game.frontId });
     }
 
     private async disconnect(user: User, room: Room, language: Language, response: Response): Promise<void> {

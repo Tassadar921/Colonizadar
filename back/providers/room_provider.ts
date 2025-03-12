@@ -69,7 +69,6 @@ export default class RoomProvider {
         const now: DateTime = DateTime.now();
         for (const room of rooms) {
             for (const player of room.players) {
-                console.log(player.user.username, now.diff(player.lastHeartbeat, 'seconds').seconds);
                 if (player.userId && now.diff(player.lastHeartbeat, 'seconds').seconds > 30) {
                     await player.load('country', (countryQuery): void => {
                         countryQuery.preload('flag');

@@ -3,9 +3,9 @@ import { HttpContext } from '@adonisjs/core/http';
 import PlayableCountry from '#models/playable_country';
 import PlayableCountryRepository from '#repositories/playable_country_repository';
 import SerializedPlayableCountry from '#types/serialized/serialized_playable_country';
-import {getAllPlayableCountriesValidator} from "#validators/playable_country";
-import MapRepository from "#repositories/map_repository";
-import Map from "#models/map";
+import { getAllPlayableCountriesValidator } from '#validators/playable_country';
+import MapRepository from '#repositories/map_repository';
+import Map from '#models/map';
 
 @inject()
 export default class MapController {

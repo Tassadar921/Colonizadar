@@ -73,14 +73,18 @@
 
         playerUpdateNotification.onMessage(({ player }) => {
             room.players = room.players.map((p) => (p.id === player.id ? player : p));
+            room.players = room.players.map((player) => player = { ...player, isReady: false });
+
+            console.log(room.players.map((player) => player.isReady));
         });
 
         roomStartingNotification.onMessage(({ countdown }) => {
             showToast(countdown);
         });
 
-        roomStartNotification.onMessage(() => {
-            showToast('start');
+        roomStartNotification.onMessage((data) => {
+            showToast(data.message);
+            navigate(`/play/game/${data.gameId}`);
         });
     };
 

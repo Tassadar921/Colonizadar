@@ -9,7 +9,7 @@ export default class RoomRepository extends BaseRepository<typeof Room> {
 
     public async getFromFrontId(roomId: number): Promise<Room | null> {
         return this.Model.query()
-            .where('status', RoomStatusEnum.ACTIVE)
+            .where('status', RoomStatusEnum.OPENED)
             .orWhere('rooms.status', RoomStatusEnum.STARTING)
             .andWhere('front_id', roomId)
             .preload('owner')
@@ -28,9 +28,7 @@ export default class RoomRepository extends BaseRepository<typeof Room> {
                     .orderBy('frontId');
             })
             .preload('map', (mapQuery): void => {
-                mapQuery
-                    .preload('territories')
-                    .preload('createdBy');
+                mapQuery.preload('territories').preload('createdBy');
             })
             .first();
     }
@@ -38,7 +36,7 @@ export default class RoomRepository extends BaseRepository<typeof Room> {
     public async getFromUserAndToken(token: string): Promise<Room | null> {
         return this.Model.query()
             .select('rooms.*')
-            .where('rooms.status', RoomStatusEnum.ACTIVE)
+            .where('rooms.status', RoomStatusEnum.OPENED)
             .orWhere('rooms.status', RoomStatusEnum.STARTING)
             .andWhere('rooms.token', token)
             .preload('owner')
@@ -57,16 +55,14 @@ export default class RoomRepository extends BaseRepository<typeof Room> {
                     .orderBy('frontId');
             })
             .preload('map', (mapQuery): void => {
-                mapQuery
-                    .preload('territories')
-                    .preload('createdBy');
+                mapQuery.preload('territories').preload('createdBy');
             })
             .first();
     }
 
     public async getPaginatedForHeartbeatChecks(page: number) {
         return this.Model.query()
-            .where('rooms.status', RoomStatusEnum.ACTIVE)
+            .where('rooms.status', RoomStatusEnum.OPENED)
             .preload('players', (playersQuery): void => {
                 playersQuery.andWhereNotNull('user_id').preload('user');
             })

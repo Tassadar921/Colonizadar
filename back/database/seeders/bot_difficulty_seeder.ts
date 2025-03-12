@@ -7,6 +7,7 @@ export default class extends BaseSeeder {
         const botDifficultyRepository: BotDifficultyRepository = new BotDifficultyRepository();
 
         const difficulties: { french: string; english: string }[] = [
+            { french: 'Passif', english: 'Passive' },
             { french: 'Facile', english: 'Easy' },
             { french: 'Moyen', english: 'Medium' },
             { french: 'Difficile', english: 'Hard' },

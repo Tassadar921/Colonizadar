@@ -15,7 +15,7 @@
     import AddBot from '../room/AddBot.svelte';
     import RoomNotifications from '../room/RoomNotifications.svelte';
     import RoomPlayer from '../room/RoomPlayer.svelte';
-    import SelectMap from "../room/SelectMap.svelte";
+    import SelectMap from '../room/SelectMap.svelte';
 
     export let roomId;
 
@@ -31,7 +31,7 @@
             const { data: roomData } = await axios.put(`/api/room/${roomId}/joined`);
             room = roomData.room;
 
-            const { data: playableCountriesData } = await axios.get('/api/room/playable-countries');
+            const { data: playableCountriesData } = await axios.get(`/api/room/${room.map.id}/playable-countries`);
             playableCountries = playableCountriesData.map((playableCountry) => ({
                 value: playableCountry.id,
                 label: playableCountry.name,
@@ -117,7 +117,8 @@
     </div>
 </div>
 
-<SelectMap bind:room bind:maps />
+<!-- TODO: finish map selector maybe with map thumbnail, description, ... -->
+<!--<SelectMap bind:room bind:maps />-->
 
 <Modal bind:showModal={showInviteFriendModal} fullWidth>
     <Subtitle slot="header">{$t('play.room.invite.title')}</Subtitle>

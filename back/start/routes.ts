@@ -87,7 +87,7 @@ router
                     .group((): void => {
                         router.post('/create', [RoomController, 'create']);
                         router.get('/bot-difficulties', [RoomController, 'getBotDifficulties']);
-                        router.get('/playable-countries', [PlayableCountryController, 'getAll']);
+                        router.get('/:mapId/playable-countries', [PlayableCountryController, 'getAll']);
                         router.get('/maps', [MapController, 'getAll']);
                         router.post('/join', [RoomController, 'join']).use([middleware.room()]);
                         router
