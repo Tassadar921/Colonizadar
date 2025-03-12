@@ -34,11 +34,11 @@ export default class Map extends BaseModel {
     @column.dateTime({ autoCreate: true, autoUpdate: true })
     declare updatedAt: DateTime;
 
-    public apiSerialize(language: Language): SerializedMap {
+    public async apiSerialize(language: Language): Promise<SerializedMap> {
         return {
             id: this.frontId,
             name: this.name,
-            territories: this.territories.map((territory: Territory): SerializedTerritory => territory.apiSerialize(language)),
+            territories: await Promise.all(this.territories.map(async (territory: Territory): Promise<SerializedTerritory> => territory.apiSerialize(language))),
             createdBy: this.createdBy.apiSerialize(),
             createdAt: this.createdAt?.toString(),
             updatedAt: this.updatedAt?.toString(),

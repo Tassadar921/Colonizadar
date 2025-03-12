@@ -9,7 +9,7 @@ export default class extends BaseSchema {
             table.uuid('id').primary().defaultTo(this.raw('uuid_generate_v4()'));
             table.specificType('front_id', 'serial').notNullable();
             table.uuid('room_id').notNullable().references('id').inTable('rooms').onDelete('CASCADE');
-            table.uuid('map_id').notNullable().references('id').inTable('maps');
+            table.uuid('map_id').notNullable().references('id').inTable('maps').onDelete('CASCADE');
             table.timestamp('created_at', { useTz: true });
             table.timestamp('updated_at', { useTz: true });
         });

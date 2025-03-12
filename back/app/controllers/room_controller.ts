@@ -22,6 +22,8 @@ import BotDifficulty from '#models/bot_difficulty';
 import SerializedBotDifficulty from '#types/serialized/serialized_bot_difficulty';
 import sleep from '../utils/sleep.js';
 import GameRepository from '#repositories/game_repository';
+import Map from '#models/map';
+import MapRepository from "#repositories/map_repository";
 
 @inject()
 export default class RoomController {
@@ -32,6 +34,7 @@ export default class RoomController {
         private readonly botRepository: BotRepository,
         private readonly playableCountryRepository: PlayableCountryRepository,
         private readonly botDifficultyRepository: BotDifficultyRepository,
+        private readonly mapRepository: MapRepository,
         private readonly gameRepository: GameRepository
     ) {}
 
@@ -47,11 +50,14 @@ export default class RoomController {
 
         const { name, password } = await createRoomValidator.validate(request.all());
 
+        const map: Map = await this.mapRepository.firstOrFail();
+
         const room: Room = await Room.create({
             name,
             public: !password,
             password: password ?? null,
             ownerId: user.id,
+            mapId: map.id,
         });
         await room.refresh();
 

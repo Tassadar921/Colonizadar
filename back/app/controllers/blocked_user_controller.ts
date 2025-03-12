@@ -12,7 +12,7 @@ import BlockedUser from '#models/blocked_user';
 import transmit from '@adonisjs/transmit/services/main';
 
 @inject()
-export default class BlockedController {
+export default class BlockedUserController {
     constructor(
         private readonly blockedUserRepository: BlockedUserRepository,
         private readonly userRepository: UserRepository,

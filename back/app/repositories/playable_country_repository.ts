@@ -15,7 +15,11 @@ export default class PlayableCountryRepository extends BaseRepository<typeof Pla
         return country;
     }
 
-    public async getAllFromMap(map: Map) {
+    public async getAllFromMapForRoom(map: Map): Promise<PlayableCountry[]> {
+        return this.Model.query().where('map_id', map.id).preload('flag');
+    }
+
+    public async getAllFromMapForSeeder(map: Map) {
         switch (map.name) {
             case 'World Map':
                 return {

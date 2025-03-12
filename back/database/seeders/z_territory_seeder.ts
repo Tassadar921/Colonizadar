@@ -18,7 +18,7 @@ export default class extends BaseSeeder {
             return;
         }
 
-        const worldMapPlayableCountries = await playableCountryRepository.getAllFromMap(worldMap);
+        const worldMapPlayableCountries = await playableCountryRepository.getAllFromMapForSeeder(worldMap);
         if (!worldMapPlayableCountries) {
             console.error('World map playable countries not found');
             return;

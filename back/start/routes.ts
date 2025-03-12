@@ -15,6 +15,7 @@ const PendingFriendController = () => import('#controllers/pending_friend_contro
 const UserController = () => import('#controllers/user_controller');
 const RoomController = () => import('#controllers/room_controller');
 const PlayableCountryController = () => import('#controllers/playable_country_controller');
+const MapController = () => import('#controllers/map_controller');
 
 // API requests
 router
@@ -87,6 +88,7 @@ router
                         router.post('/create', [RoomController, 'create']);
                         router.get('/bot-difficulties', [RoomController, 'getBotDifficulties']);
                         router.get('/playable-countries', [PlayableCountryController, 'getAll']);
+                        router.get('/maps', [MapController, 'getAll']);
                         router.post('/join', [RoomController, 'join']).use([middleware.room()]);
                         router
                             .group((): void => {

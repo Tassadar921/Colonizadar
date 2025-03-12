@@ -69,6 +69,10 @@ export default class BaseRepository<T extends LucidModel> {
             : await this.Model.firstOrNew(searchPayload, savePayload);
     }
 
+    public async firstOrFail(): Promise<InstanceType<T>> {
+        return this.Model.query().firstOrFail();
+    }
+
     private isStrictValue(value: any): value is StrictValues {
         return typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean' || (Array.isArray(value) && value.every(this.isStrictValue));
     }

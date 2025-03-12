@@ -15,6 +15,7 @@
     import AddBot from '../room/AddBot.svelte';
     import RoomNotifications from '../room/RoomNotifications.svelte';
     import RoomPlayer from '../room/RoomPlayer.svelte';
+    import SelectMap from "../room/SelectMap.svelte";
 
     export let roomId;
 
@@ -22,6 +23,7 @@
     let showInviteFriendModal = false;
     let playableCountries = [];
     let botDifficulties = [];
+    let maps = [];
     let heartbeat;
 
     async function fetchRoomData() {
@@ -114,6 +116,8 @@
         </div>
     </div>
 </div>
+
+<SelectMap bind:room bind:maps />
 
 <Modal bind:showModal={showInviteFriendModal} fullWidth>
     <Subtitle slot="header">{$t('play.room.invite.title')}</Subtitle>

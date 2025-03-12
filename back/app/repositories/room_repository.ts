@@ -27,6 +27,11 @@ export default class RoomRepository extends BaseRepository<typeof Room> {
                     .preload('difficulty')
                     .orderBy('frontId');
             })
+            .preload('map', (mapQuery): void => {
+                mapQuery
+                    .preload('territories')
+                    .preload('createdBy');
+            })
             .first();
     }
 
@@ -50,6 +55,11 @@ export default class RoomRepository extends BaseRepository<typeof Room> {
                     })
                     .preload('difficulty')
                     .orderBy('frontId');
+            })
+            .preload('map', (mapQuery): void => {
+                mapQuery
+                    .preload('territories')
+                    .preload('createdBy');
             })
             .first();
     }

@@ -9,6 +9,7 @@ import RoomStatusEnum from '#types/enum/room_status_enum';
 import SerializedRoom from '#types/serialized/serialized_room';
 import SerializedRoomPlayer from '#types/serialized/serialized_room_player';
 import Language from '#models/language';
+import Map from "#models/map";
 
 export default class Room extends BaseModel {
     @column({ isPrimary: true })
@@ -45,6 +46,12 @@ export default class Room extends BaseModel {
 
     @belongsTo((): typeof Game => Game)
     declare game: BelongsTo<typeof Game>;
+
+    @column()
+    declare mapId: string;
+
+    @belongsTo((): typeof Map => Map)
+    declare map: BelongsTo<typeof Map>;
 
     @hasMany((): typeof RoomPlayer => RoomPlayer)
     declare players: HasMany<typeof RoomPlayer>;
