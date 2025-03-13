@@ -241,14 +241,7 @@ export default class RoomController {
             countryQuery.preload('flag');
         });
 
-        if (room.status === RoomStatusEnum.STARTING) {
-            room.status = RoomStatusEnum.OPENED;
-            await room.save();
-        }
-        await Promise.all(room.players.map(async (player: RoomPlayer): Promise<void> => {
-            player.isReady = false;
-            await player.save();
-        }));
+        await this.setRoomNotReady(room);
 
         transmit.broadcast(`notification/play/room/${room.frontId}/player/update`, { player: player.apiSerialize(language) });
 
@@ -280,14 +273,7 @@ export default class RoomController {
 
         await player.load('difficulty');
 
-        if (room.status === RoomStatusEnum.STARTING) {
-            room.status = RoomStatusEnum.OPENED;
-            await room.save();
-        }
-        await Promise.all(room.players.map(async (player: RoomPlayer): Promise<void> => {
-            player.isReady = false;
-            await player.save();
-        }));
+        await this.setRoomNotReady(room);
 
         transmit.broadcast(`notification/play/room/${room.frontId}/player/update`, { player: player.apiSerialize(language) });
 
@@ -298,11 +284,6 @@ export default class RoomController {
         const player: RoomPlayer | undefined = room.players.find((player: RoomPlayer): boolean => player.userId === user.id);
         if (!player) {
             return response.notFound({ error: 'Player is not into this room' });
-        }
-
-        if (room.status === RoomStatusEnum.STARTING) {
-            room.status = RoomStatusEnum.OPENED;
-            await room.save();
         }
 
         const { isReady } = await setReadyValidator.validate(request.all());
@@ -329,6 +310,11 @@ export default class RoomController {
             if (!isValidReady) {
                 return response.forbidden({ error: 'Every player must have a different country' });
             }
+        }
+
+        if (room.status === RoomStatusEnum.STARTING) {
+            room.status = RoomStatusEnum.OPENED;
+            await room.save();
         }
 
         player.isReady = isReady;
@@ -383,5 +369,18 @@ export default class RoomController {
 
             transmit.broadcast(`notification/play/room/${room.frontId}/player/leave`, { player: player.apiSerialize(language) });
         }
+    }
+
+    private async setRoomNotReady(room: Room): Promise<void> {
+        if (room.status === RoomStatusEnum.STARTING) {
+            room.status = RoomStatusEnum.OPENED;
+            await room.save();
+        }
+        await Promise.all(
+            room.players.map(async (player: RoomPlayer): Promise<void> => {
+                player.isReady = false;
+                await player.save();
+            })
+        );
     }
 }
