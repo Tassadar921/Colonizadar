@@ -17,6 +17,7 @@ export default class GameMiddleware {
 
         const game: Game | null = await this.gameRepository.getFromFrontId(gameId);
         if (!game) {
+            console.log('not found');
             return ctx.response.notFound({ error: 'Game not found' });
         }
 

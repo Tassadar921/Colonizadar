@@ -28,7 +28,7 @@
 
     async function fetchRoomData() {
         try {
-            const { data: roomData } = await axios.put(`/api/room/${roomId}/joined`);
+            const { data: roomData } = await axios.put(`/api/room/${roomId}/join`);
             room = roomData.room;
 
             const { data: playableCountriesData } = await axios.get(`/api/room/${room.map.id}/playable-countries`);

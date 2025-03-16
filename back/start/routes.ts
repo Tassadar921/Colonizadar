@@ -16,6 +16,7 @@ const UserController = () => import('#controllers/user_controller');
 const RoomController = () => import('#controllers/room_controller');
 const PlayableCountryController = () => import('#controllers/playable_country_controller');
 const MapController = () => import('#controllers/map_controller');
+const GameController = () => import('#controllers/game_controller');
 
 // API requests
 router
@@ -89,11 +90,11 @@ router
                         router.get('/bot-difficulties', [RoomController, 'getBotDifficulties']);
                         router.get('/:mapId/playable-countries', [PlayableCountryController, 'getAll']);
                         router.get('/maps', [MapController, 'getAll']);
-                        router.post('/join', [RoomController, 'join']).use([middleware.room()]);
+                        router.post('/join', [RoomController, 'checkWithToken']).use([middleware.room()]);
                         router
                             .group((): void => {
                                 router.post('/invite', [RoomController, 'invite']);
-                                router.put('/joined', [RoomController, 'joined']);
+                                router.put('/join', [RoomController, 'join']);
                                 router.delete('/leave', [RoomController, 'leave']);
                                 router.patch('/heartbeat', [RoomController, 'heartbeat']);
                                 router.post('add-bot', [RoomController, 'addBot']);
@@ -106,6 +107,13 @@ router
                             .use([middleware.room()]);
                     })
                     .prefix('room');
+
+                router
+                    .group((): void => {
+                        router.get('/', [GameController, 'get']);
+                    })
+                    .prefix('game/:gameId')
+                    .use([middleware.game()]);
             })
             .use([middleware.auth({ guards: ['api'] })]);
 

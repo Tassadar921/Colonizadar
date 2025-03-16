@@ -89,7 +89,7 @@ export default class RoomController {
         return response.send({ message: 'Invitation sent' });
     }
 
-    public async join({ response, user, room }: HttpContext): Promise<void> {
+    public async checkWithToken({ response, user, room }: HttpContext): Promise<void> {
         if (!room.players.some((player: RoomPlayer): boolean => player.userId === user.id)) {
             if (room.players.length < 6) {
                 return response.send({ message: 'Room joined', roomId: room.frontId });
@@ -102,7 +102,7 @@ export default class RoomController {
         return response.send({ message: 'Room joined', roomId: room.frontId });
     }
 
-    public async joined({ response, user, room, language }: HttpContext): Promise<void> {
+    public async join({ response, user, room, language }: HttpContext): Promise<void> {
         if (!room.players.some((player: RoomPlayer): boolean => player.userId === user.id)) {
             if (room.players.length < 6) {
                 const country: PlayableCountry = await this.playableCountryRepository.getFirst();

@@ -105,7 +105,9 @@
                     <Route path="/:language/play/room/:roomId" let:params>
                         <Room key={params.roomId} roomId={params.roomId} />
                     </Route>
-                    <Route path="/:language/play/game/:gameId"><Game /></Route>
+                    <Route path="/:language/play/game/:gameId" let:params>
+                        <Game key={params.gameId} gameId={params.gameId} />
+                    </Route>
 
                     <Route path="/:language/profile"><Profile /></Route>
                     <Route path="/:language/notifications"><Notifications /></Route>
