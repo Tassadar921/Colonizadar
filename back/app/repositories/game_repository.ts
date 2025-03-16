@@ -12,10 +12,9 @@ export default class GameRepository extends BaseRepository<typeof Game> {
     }
 
     public async getFromFrontId(gameId: number): Promise<Game | null> {
-        console.log(gameId);
         return this.Model.query()
             .select('games.*')
-            .leftJoin('rooms', 'games.id', 'rooms.game_id')
+            .leftJoin('rooms', 'rooms.id', 'games.room_id')
             .where('rooms.status', RoomStatusEnum.PLAYING)
             .andWhere('games.front_id', gameId)
             .preload('room', (roomQuery): void => {
