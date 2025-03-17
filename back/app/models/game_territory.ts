@@ -43,7 +43,7 @@ export default class GameTerritory extends BaseModel {
     public apiSerialize(language: Language): SerializedGameTerritory {
         return {
             id: this.frontId,
-            owner: this.owner.apiSerialize(language),
+            owner: this.owner?.apiSerialize(language),
             territory: this.territory.apiSerialize(language),
             createdAt: this.createdAt?.toString(),
             updatedAt: this.updatedAt?.toString(),

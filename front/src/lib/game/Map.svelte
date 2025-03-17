@@ -11,7 +11,7 @@
     let svgElement;
     let buttonElement;
     let minZoomLevel = 2;
-    let maxZoomLevel = 10;
+    let maxZoomLevel = 15;
     let zoomLevel = minZoomLevel;
     let isDragging = false;
     let startX, startY;
@@ -20,19 +20,20 @@
     const dragSensitivity = 1.3;
 
     onMount(() => {
-        zoom(1);
-        resizeButton();
-        window.addEventListener('resize', resizeButton);
+        handleResize();
+        window.addEventListener('resize', handleResize);
     });
 
     onDestroy(() => {
-        window.removeEventListener('resize', resizeButton);
+        window.removeEventListener('resize', handleResize);
     });
 
-    const resizeButton = () => {
+    const handleResize = () => {
+        console.log('resize');
         width = buttonElement.clientWidth;
         height = buttonElement.clientHeight;
         viewBox = `${offsetX} ${offsetY} ${width} ${height}`;
+        console.log(viewBox);
     };
 
     const zoom = (delta) => {
@@ -65,11 +66,8 @@
 
         hasDragged = true;
 
-        const dx = (event.clientX - startX) / (zoomLevel * dragSensitivity);
-        const dy = (event.clientY - startY) / (zoomLevel * dragSensitivity);
-
-        offsetX -= dx;
-        offsetY -= dy;
+        offsetX -= (event.clientX - startX) / (zoomLevel * dragSensitivity);
+        offsetY -= (event.clientY - startY) / (zoomLevel * dragSensitivity);
 
         const viewboxWidth = width / zoomLevel;
         const viewboxHeight = height / zoomLevel;
@@ -88,7 +86,7 @@
     };
 
     const handleClick = (event) => {
-        if (!hasDragged) {
+        if (!hasDragged && event.detail) {
             console.log('Valid click:', event.detail);
         }
     };
@@ -96,7 +94,7 @@
 
 <button
     bind:this={buttonElement}
-    class="max-h-full w-11/12 {isDragging ? 'cursor-grabbing' : 'cursor-pointer'}"
+    class="h-full w-11/12 {isDragging ? 'cursor-grabbing' : 'cursor-pointer'}"
     on:wheel={handleWheel}
     on:mousedown={startDrag}
     on:mousemove={onDrag}
@@ -104,5 +102,5 @@
     on:mouseleave={endDrag}
     aria-label="Interactive world map"
 >
-    <WorldMap bind:svgElement bind:viewBox bind:width bind:height on:click={handleClick} />
+    <WorldMap bind:svgElement bind:viewBox on:click={handleClick} />
 </button>

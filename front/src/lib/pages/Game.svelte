@@ -12,9 +12,9 @@
 
     onMount(async () => {
         try {
-            console.log(gameId);
             const { data: gameData } = await axios.get(`/api/game/${gameId}`);
             game = gameData.game;
+            console.log(game);
         } catch (e) {
             showToast(e.response.data.error, 'error');
             // navigate('/play');
@@ -22,6 +22,6 @@
     });
 </script>
 
-<div bind:this={containerElement} class="bg-red-500 flex justify-center align-middle">
+<div class="h-5/6 flex justify-center align-middle">
     <Map />
 </div>

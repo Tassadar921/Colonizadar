@@ -33,6 +33,11 @@ export default class GameRepository extends BaseRepository<typeof Game> {
                         .orderBy('frontId');
                 });
             })
+            .preload('territories', (territoriesQuery): void => {
+                territoriesQuery
+                    .preload('owner')
+                    .preload('territory');
+            })
             .first();
     }
 

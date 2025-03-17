@@ -85,7 +85,7 @@
 
 <NotificationsSetup />
 
-<main class="flex flex-col bg-gray-200 dark:bg-gray-900 min-h-screen min-w-screen">
+<main class="flex flex-col bg-gray-200 dark:bg-gray-900 h-screen w-screen">
     <div class="px-3.5 min-h-screen">
         <Menu />
         {#if !$isLoading}
