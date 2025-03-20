@@ -48,7 +48,6 @@ export default class UserRepository extends BaseRepository<typeof User> {
             .whereNull('blocked.blocker_id')
             .whereNull('friends.user_id')
             .whereNot('users.id', user.id)
-            .preload('profilePicture')
             .paginate(page, perPage);
 
         return {

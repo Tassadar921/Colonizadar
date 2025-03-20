@@ -15,15 +15,9 @@ export default class RoomRepository extends BaseRepository<typeof Room> {
             .preload('owner')
             .preload('players', (playersQuery): void => {
                 playersQuery
-                    .preload('user', (userQuery): void => {
-                        userQuery.preload('profilePicture');
-                    })
-                    .preload('bot', (botQuery): void => {
-                        botQuery.preload('picture');
-                    })
-                    .preload('country', (countryQuery): void => {
-                        countryQuery.preload('flag');
-                    })
+                    .preload('user')
+                    .preload('bot')
+                    .preload('country')
                     .preload('difficulty')
                     .orderBy('frontId');
             })
@@ -42,15 +36,9 @@ export default class RoomRepository extends BaseRepository<typeof Room> {
             .preload('owner')
             .preload('players', (playersQuery): void => {
                 playersQuery
-                    .preload('user', (userQuery): void => {
-                        userQuery.preload('profilePicture');
-                    })
-                    .preload('bot', (botQuery): void => {
-                        botQuery.preload('picture');
-                    })
-                    .preload('country', (countryQuery): void => {
-                        countryQuery.preload('flag');
-                    })
+                    .preload('user')
+                    .preload('bot')
+                    .preload('country')
                     .preload('difficulty')
                     .orderBy('frontId');
             })

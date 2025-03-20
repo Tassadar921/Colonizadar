@@ -22,9 +22,7 @@ export default class PendingFriendNotificationRepository extends BaseRepository<
             })
             .where('for_id', user.id)
             .orderBy('created_at', 'desc')
-            .preload('from', (fromQuery): void => {
-                fromQuery.preload('profilePicture');
-            })
+            .preload('from')
             .paginate(page, perPage);
 
         return {

@@ -54,7 +54,6 @@ export default class PlayableCountry extends BaseModel {
         return {
             id: this.frontId,
             name: this.translate(language),
-            flag: this.flag.apiSerialize(),
             createdAt: this.createdAt?.toString(),
             updatedAt: this.updatedAt?.toString(),
         };

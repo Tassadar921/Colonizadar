@@ -70,9 +70,7 @@ export default class RoomProvider {
         for (const room of rooms) {
             for (const player of room.players) {
                 if (player.userId && now.diff(player.lastHeartbeat, 'seconds').seconds > 30) {
-                    await player.load('country', (countryQuery): void => {
-                        countryQuery.preload('flag');
-                    });
+                    await player.load('country');
                     await player.delete();
 
                     transmit.broadcast(`notification/play/room/${room.frontId}/player/leave`, { player: player.apiSerialize(english) });

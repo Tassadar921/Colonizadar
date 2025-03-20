@@ -16,9 +16,7 @@ export default class BlockedUserRepository extends BaseRepository<typeof Blocked
             .if(query, (queryBuilder): void => {
                 queryBuilder.leftJoin('users', 'blocked_users.blocked_id', 'users.id').andWhere('users.username', 'ILIKE', `%${query}%`);
             })
-            .preload('blocked', (blockedQuery): void => {
-                blockedQuery.preload('profilePicture');
-            })
+            .preload('blocked')
             .paginate(page, perPage);
 
         return {

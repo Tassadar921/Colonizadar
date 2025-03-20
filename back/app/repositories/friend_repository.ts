@@ -16,9 +16,7 @@ export default class FriendRepository extends BaseRepository<typeof Friend> {
             .if(query, (queryBuilder): void => {
                 queryBuilder.leftJoin('users', 'friends.friend_id', 'users.id').where('users.username', 'ILIKE', `%${query}%`);
             })
-            .preload('friend', (friendQuery): void => {
-                friendQuery.preload('profilePicture');
-            })
+            .preload('friend')
             .paginate(page, perPage);
 
         return {

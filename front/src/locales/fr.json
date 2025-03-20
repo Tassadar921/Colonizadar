@@ -253,6 +253,13 @@
                 "title": "Inviter un ami"
             },
             "add-bot": "Ajouter un bot"
+        },
+        "game": {
+            "country-modal": {
+                "owner": "Propriétaire",
+                "troops": "Troupes",
+                "ships": "Navires"
+            }
         }
     }
 }

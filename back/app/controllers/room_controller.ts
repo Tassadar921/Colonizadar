@@ -118,23 +118,15 @@ export default class RoomController {
 
         await room.load('players', (playersQuery): void => {
             playersQuery
-                .preload('user', (userQuery): void => {
-                    userQuery.preload('profilePicture');
-                })
-                .preload('bot', (botQuery): void => {
-                    botQuery.preload('picture');
-                })
-                .preload('country', (countryQuery): void => {
-                    countryQuery.preload('flag');
-                })
+                .preload('user')
+                .preload('bot')
+                .preload('country')
                 .preload('difficulty')
                 .orderBy('frontId');
         });
         const player: RoomPlayer = <RoomPlayer>room.players.find((player: RoomPlayer): boolean => player.userId === user.id);
         player.isUserConnected = true;
         await player.save();
-
-        await user.load('profilePicture');
 
         transmit.broadcast(`notification/play/room/${room.frontId}/player/joined`, { player: player.apiSerialize(language) });
 
@@ -175,12 +167,8 @@ export default class RoomController {
                 countryId: country.id,
             });
 
-            await player.load('bot', (botQuery): void => {
-                botQuery.preload('picture');
-            });
-            await player.load('country', (countryQuery): void => {
-                countryQuery.preload('flag');
-            });
+            await player.load('bot');
+            await player.load('country');
             await player.load('difficulty');
             await player.refresh();
 
@@ -237,9 +225,7 @@ export default class RoomController {
         player.countryId = country.id;
         await player.save();
 
-        await player.load('country', (countryQuery): void => {
-            countryQuery.preload('flag');
-        });
+        await player.load('country');
 
         await this.setRoomNotReady(room);
 

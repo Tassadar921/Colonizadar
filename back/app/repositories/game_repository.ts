@@ -20,21 +20,20 @@ export default class GameRepository extends BaseRepository<typeof Game> {
             .preload('room', (roomQuery): void => {
                 roomQuery.preload('players', (playersQuery): void => {
                     playersQuery
-                        .preload('user', (userQuery): void => {
-                            userQuery.preload('profilePicture');
-                        })
-                        .preload('bot', (botQuery): void => {
-                            botQuery.preload('picture');
-                        })
-                        .preload('country', (countryQuery): void => {
-                            countryQuery.preload('flag');
-                        })
+                        .preload('user')
+                        .preload('bot')
+                        .preload('country')
                         .preload('difficulty')
                         .orderBy('frontId');
                 });
             })
             .preload('territories', (territoriesQuery): void => {
-                territoriesQuery.preload('owner').preload('territory');
+                territoriesQuery.preload('owner', (ownerQuery): void => {
+                    ownerQuery
+                        .preload('bot')
+                        .preload('user');
+                })
+                    .preload('territory');
             })
             .first();
     }
@@ -51,13 +50,11 @@ export default class GameRepository extends BaseRepository<typeof Game> {
                 let owner: RoomPlayer | undefined = undefined;
                 if (territory.defaultBelongsToId) {
                     owner = room.players.find((player: RoomPlayer): boolean => player.countryId === territory.defaultBelongsToId);
-                    if (!owner) {
-                        throw new Error(`Room player ${territory.defaultBelongsToId} not found`);
-                    }
                 }
                 return await GameTerritory.create({
                     territoryId: territory.id,
                     gameId: game.id,
+                    ownerId: owner?.id,
                 });
             })
         );

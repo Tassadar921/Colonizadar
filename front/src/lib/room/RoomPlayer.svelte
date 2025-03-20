@@ -137,8 +137,6 @@
         {/if}
     </div>
 
-    <!--    TODO: add player ready once room filled    -->
-
     <!--    Player actions for room owner    -->
     <div class="flex gap-3 justify-end">
         {#if player.user}

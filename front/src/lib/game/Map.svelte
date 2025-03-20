@@ -3,6 +3,8 @@
     import { onDestroy, onMount } from 'svelte';
     import Modal from '../shared/Modal.svelte';
     import Subtitle from '../shared/Subtitle.svelte';
+    import { t } from 'svelte-i18n';
+    import GamePlayer from "./GamePlayer.svelte";
 
     export let game;
 
@@ -23,6 +25,7 @@
 
     const dragSensitivity = 1.3;
 
+    let selectedTerritoryOwner = null;
     let selectedTerritory = null;
 
     let showCountryModal = false;
@@ -98,6 +101,8 @@
             });
             if (filteredTerritories.length > 0) {
                 selectedTerritory = filteredTerritories[0];
+                console.log(selectedTerritory);
+                selectedTerritoryOwner = selectedTerritory.owner;
                 showCountryModal = true;
             }
         }
@@ -119,5 +124,7 @@
 
 <Modal bind:showModal={showCountryModal}>
     <Subtitle slot="header">{selectedTerritory?.territory.name}</Subtitle>
-    <p>test</p>
+    <div><p>{$t('play.game.country-modal.owner')} : </p><GamePlayer bind:player={selectedTerritoryOwner} /></div>
+    <p>{$t('play.game.country-modal.troops')} : { selectedTerritory?.troops ?? '???' }</p>
+    <p>{$t('play.game.country-modal.ships')} : { selectedTerritory?.ships ?? '???' }</p>
 </Modal>

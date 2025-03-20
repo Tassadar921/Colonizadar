@@ -47,7 +47,6 @@ export default class Bot extends BaseModel {
         return {
             id: this.frontId,
             name: this.translate(language),
-            picture: this.picture.apiSerialize(),
             createdAt: this.createdAt?.toString(),
             updatedAt: this.updatedAt?.toString(),
         };
