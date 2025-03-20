@@ -34,9 +34,7 @@ export default class GameRepository extends BaseRepository<typeof Game> {
                 });
             })
             .preload('territories', (territoriesQuery): void => {
-                territoriesQuery
-                    .preload('owner')
-                    .preload('territory');
+                territoriesQuery.preload('owner').preload('territory');
             })
             .first();
     }

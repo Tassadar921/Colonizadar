@@ -24,20 +24,6 @@
     });
 </script>
 
-<style>
-    .mountain {
-        fill: #653a06;
-    }
-
-    path {
-        transition: fill 0.3s ease;
-    }
-
-    g g:hover path, g path:hover:not(.mountain) {
-        fill: #918b8b;
-    }
-</style>
-
 <svg bind:this={svgElement} {viewBox} xmlns="http://www.w3.org/2000/svg" class="rounded-lg bg-blue-800 border border-black dark:border-white box-content">
     <g transform="matrix(0.610507, 0, 0, 0.589732, -10.537287, -117.516518)">
         <path
@@ -822,3 +808,18 @@
         />
     </g>
 </svg>
+
+<style>
+    .mountain {
+        fill: #653a06;
+    }
+
+    path {
+        transition: fill 0.3s ease;
+    }
+
+    g g:hover path,
+    g path:hover:not(.mountain) {
+        fill: #918b8b;
+    }
+</style>

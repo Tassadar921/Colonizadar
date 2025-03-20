@@ -1,6 +1,10 @@
 <script>
     import WorldMap from './WorldMap.svelte';
     import { onDestroy, onMount } from 'svelte';
+    import Modal from '../shared/Modal.svelte';
+    import Subtitle from '../shared/Subtitle.svelte';
+
+    export let game;
 
     let width;
     let height;
@@ -19,6 +23,10 @@
 
     const dragSensitivity = 1.3;
 
+    let selectedTerritory = null;
+
+    let showCountryModal = false;
+
     onMount(() => {
         handleResize();
         window.addEventListener('resize', handleResize);
@@ -29,11 +37,9 @@
     });
 
     const handleResize = () => {
-        console.log('resize');
         width = buttonElement.clientWidth;
         height = buttonElement.clientHeight;
         viewBox = `${offsetX} ${offsetY} ${width} ${height}`;
-        console.log(viewBox);
     };
 
     const zoom = (delta) => {
@@ -87,7 +93,13 @@
 
     const handleClick = (event) => {
         if (!hasDragged && event.detail) {
-            console.log('Valid click:', event.detail);
+            const filteredTerritories = game.territories.filter((territoryObject) => {
+                return territoryObject.territory.code.toLowerCase() === event.detail;
+            });
+            if (filteredTerritories.length > 0) {
+                selectedTerritory = filteredTerritories[0];
+                showCountryModal = true;
+            }
         }
     };
 </script>
@@ -104,3 +116,8 @@
 >
     <WorldMap bind:svgElement bind:viewBox on:click={handleClick} />
 </button>
+
+<Modal bind:showModal={showCountryModal}>
+    <Subtitle slot="header">{selectedTerritory?.territory.name}</Subtitle>
+    <p>test</p>
+</Modal>

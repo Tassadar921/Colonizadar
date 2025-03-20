@@ -30,7 +30,7 @@ export default class extends BaseSeeder {
 
         for (const country of playableCountries) {
             if (!(await playableCountryRepository.findOneBy({ englishName: country.english, mapId: country.map.id }))) {
-                const path: string = `static/country-flag/${country.flagFileName}`;
+                const path: string = `static/world-map/country-flag/${country.flagFileName}`;
                 const { size, mimeType, extension, name } = await fileService.getFileInfo(app.makePath(path));
                 const flag: File | null = await File.create({
                     name,
