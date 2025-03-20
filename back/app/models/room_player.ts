@@ -17,6 +17,9 @@ export default class RoomPlayer extends BaseModel {
     declare frontId: number;
 
     @column()
+    declare score: number;
+
+    @column()
     declare userId: string;
 
     @belongsTo((): typeof User => User)
@@ -69,6 +72,7 @@ export default class RoomPlayer extends BaseModel {
     public apiSerialize(language: Language): SerializedRoomPlayer {
         return {
             id: this.frontId,
+            score: this.score,
             user: this.user?.apiSerialize(),
             bot: this.bot?.apiSerialize(language),
             country: this.country.apiSerialize(language),

@@ -5,6 +5,7 @@ import SerializedBotDifficulty from '#types/serialized/serialized_bot_difficulty
 
 type SerializedRoomPlayer = {
     id: number;
+    score: number;
     user?: SerializedUser;
     bot?: SerializedBot;
     country: SerializedPlayableCountry;

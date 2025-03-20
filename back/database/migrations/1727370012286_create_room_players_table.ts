@@ -8,6 +8,7 @@ export default class extends BaseSchema {
         this.schema.createTable(this.tableName, (table: Knex.CreateTableBuilder): void => {
             table.uuid('id').primary().defaultTo(this.raw('uuid_generate_v4()'));
             table.specificType('front_id', 'serial').notNullable();
+            table.integer('score').notNullable().defaultTo(0);
             table.boolean('is_user_connected').defaultTo(false);
             table.boolean('is_ready').defaultTo(false);
             table.uuid('user_id').nullable().references('id').inTable('users').onDelete('CASCADE');

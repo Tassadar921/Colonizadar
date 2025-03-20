@@ -15,6 +15,12 @@ export default class GameTerritory extends BaseModel {
     declare frontId: number;
 
     @column()
+    declare power: number;
+
+    @column()
+    declare ships: number;
+
+    @column()
     declare ownerId: string;
 
     @belongsTo((): typeof RoomPlayer => RoomPlayer, {
