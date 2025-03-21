@@ -3,6 +3,7 @@ import SerializedGameTerritory from '#types/serialized/serialized_game_territory
 
 type SerializedGame = {
     id: number;
+    name: string;
     players: SerializedRoomPlayer[];
     territories: SerializedGameTerritory[];
     createdAt?: string;

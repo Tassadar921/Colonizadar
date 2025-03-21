@@ -41,6 +41,7 @@ export default class Game extends BaseModel {
     public apiSerialize(language: Language): SerializedGame {
         return {
             id: this.frontId,
+            name: this.room.name,
             players: this.room.players.map((player: RoomPlayer): SerializedRoomPlayer => player.apiSerialize(language)),
             territories: this.territories.map((territory: GameTerritory): SerializedGameTerritory => territory.apiSerialize(language)),
             createdAt: this.createdAt.toString(),

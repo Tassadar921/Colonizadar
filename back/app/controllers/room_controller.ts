@@ -117,12 +117,7 @@ export default class RoomController {
         }
 
         await room.load('players', (playersQuery): void => {
-            playersQuery
-                .preload('user')
-                .preload('bot')
-                .preload('country')
-                .preload('difficulty')
-                .orderBy('frontId');
+            playersQuery.preload('user').preload('bot').preload('country').preload('difficulty').orderBy('frontId');
         });
         const player: RoomPlayer = <RoomPlayer>room.players.find((player: RoomPlayer): boolean => player.userId === user.id);
         player.isUserConnected = true;

@@ -1,5 +1,5 @@
 <script>
-    import Icon from "../shared/Icon.svelte";
+    import Icon from '../shared/Icon.svelte';
     import { profile } from '../../stores/profileStore.js';
 
     export let player;
@@ -23,18 +23,18 @@
                 {/if}
                 <p class="flex gap-1 {player.user.id === $profile.id ? 'font-bold' : ''}">
                     {#if room.owner.id === player.user.id}
-                    <span class="text-orange-500">
-                        <Icon name="crown" />
-                    </span>
+                        <span class="text-orange-500">
+                            <Icon name="crown" />
+                        </span>
                     {/if}
                     {player.user.username}
                 </p>
             {:else if player.bot}
                 <img alt={player.bot.name} src={`${process.env.VITE_API_BASE_URL}/api/static/bot-picture/${player.bot.id}?token=${localStorage.getItem('apiToken')}`} class="w-10 rounded-full" />
                 <p class="flex gap-1">
-                <span class="text-green-500">
-                    <Icon name="bot" />
-                </span>
+                    <span class="text-green-500">
+                        <Icon name="bot" />
+                    </span>
                     {player.bot.name} ({player.difficulty.name})
                 </p>
             {/if}

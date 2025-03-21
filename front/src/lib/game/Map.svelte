@@ -4,7 +4,7 @@
     import Modal from '../shared/Modal.svelte';
     import Subtitle from '../shared/Subtitle.svelte';
     import { t } from 'svelte-i18n';
-    import GamePlayer from "./GamePlayer.svelte";
+    import GamePlayer from './GamePlayer.svelte';
 
     export let game;
 
@@ -34,6 +34,8 @@
         handleResize();
         window.addEventListener('resize', handleResize);
     });
+
+    $: console.log(game?.territories);
 
     onDestroy(() => {
         window.removeEventListener('resize', handleResize);
@@ -96,9 +98,12 @@
 
     const handleClick = (event) => {
         if (!hasDragged && event.detail) {
+            console.log(game.territories);
             const filteredTerritories = game.territories.filter((territoryObject) => {
+                console.log(event.detail, territoryObject.territory.code.toLowerCase());
                 return territoryObject.territory.code.toLowerCase() === event.detail;
             });
+            console.log(event.detail, filteredTerritories);
             if (filteredTerritories.length > 0) {
                 selectedTerritory = filteredTerritories[0];
                 console.log(selectedTerritory);
@@ -124,7 +129,10 @@
 
 <Modal bind:showModal={showCountryModal}>
     <Subtitle slot="header">{selectedTerritory?.territory.name}</Subtitle>
-    <div><p>{$t('play.game.country-modal.owner')} : </p><GamePlayer bind:player={selectedTerritoryOwner} /></div>
-    <p>{$t('play.game.country-modal.troops')} : { selectedTerritory?.troops ?? '???' }</p>
-    <p>{$t('play.game.country-modal.ships')} : { selectedTerritory?.ships ?? '???' }</p>
+    <div>
+        <p>{$t('play.game.country-modal.owner')} :</p>
+        <GamePlayer bind:player={selectedTerritoryOwner} />
+    </div>
+    <p>{$t('play.game.country-modal.troops')} : {selectedTerritory?.troops ?? '???'}</p>
+    <p>{$t('play.game.country-modal.ships')} : {selectedTerritory?.ships ?? '???'}</p>
 </Modal>
