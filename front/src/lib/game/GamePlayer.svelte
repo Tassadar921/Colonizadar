@@ -1,14 +1,19 @@
 <script>
     import Icon from '../shared/Icon.svelte';
     import { profile } from '../../stores/profileStore.js';
+    import { t } from 'svelte-i18n';
 
+    export let game;
     export let player;
-
-    $: console.log(player);
 </script>
 
 {#if player}
-    <div>
+    <div class="flex gap-5">
+        <!--    Player country    -->
+        <div class="flex justify-center items-center">
+            <img alt={player.country.name} src={`${process.env.VITE_API_BASE_URL}/api/static/country-flag/${player.country.id}?token=${localStorage.getItem('apiToken')}`} class="max-h-10" />
+        </div>
+
         <!--    Player name & profile picture    -->
         <div class="flex gap-5 flex-wrap items-center">
             {#if player.user}
@@ -22,7 +27,7 @@
                     <img alt={player.user.username} src={process.env.VITE_DEFAULT_IMAGE} class="max-h-10 rounded-full" />
                 {/if}
                 <p class="flex gap-1 {player.user.id === $profile.id ? 'font-bold' : ''}">
-                    {#if room.owner.id === player.user.id}
+                    {#if game.owner.id === player.user.id}
                         <span class="text-orange-500">
                             <Icon name="crown" />
                         </span>
@@ -39,13 +44,7 @@
                 </p>
             {/if}
         </div>
-
-        <!--    Player country    -->
-        <div class="flex justify-center items-center">
-            <div class="flex gap-1.5 items-center">
-                <img alt={player.country.name} src={`${process.env.VITE_API_BASE_URL}/api/static/country-flag/${player.country.id}?token=${localStorage.getItem('apiToken')}`} class="max-h-10" />
-                <p>{player.country.name}</p>
-            </div>
-        </div>
     </div>
+{:else}
+    <p>{$t('play.game.country-modal.indigenous')}</p>
 {/if}

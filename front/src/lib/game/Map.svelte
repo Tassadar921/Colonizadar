@@ -30,15 +30,33 @@
 
     let showCountryModal = false;
 
+    let hoverColor = '#918b8b';
+    let mountainColor = '#653a06';
+
     onMount(() => {
         handleResize();
         window.addEventListener('resize', handleResize);
-    });
 
-    $: console.log(game?.territories);
+        document.querySelectorAll('path').forEach((path) => {
+            if (path.classList.contains('mountain')) {
+                path.setAttribute('fill', mountainColor);
+                return;
+            }
+
+            path.addEventListener('click', () => handleClick(path.id ? path.id : path.parentElement.id));
+            path.addEventListener('mouseover', () => handleHover(path));
+            path.addEventListener('mouseout', () => handleBlur(path));
+        });
+    });
 
     onDestroy(() => {
         window.removeEventListener('resize', handleResize);
+
+        document.querySelectorAll('path').forEach((path) => {
+            path.removeEventListener('click', () => handleClick(path.id ? path.id : path.parentElement.id));
+            path.removeEventListener('mouseover', () => handleHover(path));
+            path.removeEventListener('mouseout', () => handleBlur(path));
+        });
     });
 
     const handleResize = () => {
@@ -96,22 +114,50 @@
         isDragging = false;
     };
 
-    const handleClick = (event) => {
-        if (!hasDragged && event.detail) {
-            console.log(game.territories);
+    const handleClick = (territoryId) => {
+        console.log(territoryId);
+        if (!hasDragged && territoryId) {
             const filteredTerritories = game.territories.filter((territoryObject) => {
-                console.log(event.detail, territoryObject.territory.code.toLowerCase());
-                return territoryObject.territory.code.toLowerCase() === event.detail;
+                return territoryObject.territory.code.toLowerCase() === territoryId;
             });
-            console.log(event.detail, filteredTerritories);
             if (filteredTerritories.length > 0) {
                 selectedTerritory = filteredTerritories[0];
-                console.log(selectedTerritory);
                 selectedTerritoryOwner = selectedTerritory.owner;
                 showCountryModal = true;
             }
         }
     };
+
+    const handleHover = (path) => {
+        if (path.id) {
+            path.setAttribute('fill', hoverColor);
+        } else {
+            path.parentElement.setAttribute('fill', hoverColor);
+        }
+    };
+
+    const handleBlur = (path) => {
+        if (showCountryModal) {
+            return;
+        }
+
+        if (path.id) {
+            path.removeAttribute('fill');
+        } else {
+            path.parentElement.removeAttribute('fill');
+        }
+    };
+
+    $: if (selectedTerritory) {
+        const territory = document.getElementById(selectedTerritory.territory.code.toLowerCase());
+        if (territory) {
+            if (showCountryModal) {
+                territory.setAttribute('fill', hoverColor);
+            } else {
+                territory.removeAttribute('fill');
+            }
+        }
+    }
 </script>
 
 <button
@@ -124,14 +170,14 @@
     on:mouseleave={endDrag}
     aria-label="Interactive world map"
 >
-    <WorldMap bind:svgElement bind:viewBox on:click={handleClick} />
+    <WorldMap bind:svgElement bind:viewBox />
 </button>
 
 <Modal bind:showModal={showCountryModal}>
     <Subtitle slot="header">{selectedTerritory?.territory.name}</Subtitle>
-    <div>
+    <div class="flex gap-5 items-center">
         <p>{$t('play.game.country-modal.owner')} :</p>
-        <GamePlayer bind:player={selectedTerritoryOwner} />
+        <GamePlayer bind:game bind:player={selectedTerritoryOwner} />
     </div>
     <p>{$t('play.game.country-modal.troops')} : {selectedTerritory?.troops ?? '???'}</p>
     <p>{$t('play.game.country-modal.ships')} : {selectedTerritory?.ships ?? '???'}</p>

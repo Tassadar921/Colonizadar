@@ -257,6 +257,7 @@
         "game": {
             "country-modal": {
                 "owner": "Propriétaire",
+                "indigenous": "Indigènes",
                 "troops": "Troupes",
                 "ships": "Navires"
             }

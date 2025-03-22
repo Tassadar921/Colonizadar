@@ -18,7 +18,7 @@ export default class GameRepository extends BaseRepository<typeof Game> {
             .where('rooms.status', RoomStatusEnum.PLAYING)
             .andWhere('games.front_id', gameId)
             .preload('room', (roomQuery): void => {
-                roomQuery.preload('players', (playersQuery): void => {
+                roomQuery.preload('owner').preload('players', (playersQuery): void => {
                     playersQuery.preload('user').preload('bot').preload('country').preload('difficulty').orderBy('frontId');
                 });
             })
