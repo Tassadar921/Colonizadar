@@ -3,7 +3,7 @@
     export let svgElement;
 </script>
 
-<svg bind:this={svgElement} {viewBox} xmlns="http://www.w3.org/2000/svg" class="rounded-lg bg-blue-800 border border-black dark:border-white box-content">
+<svg bind:this={svgElement} {viewBox} xmlns="http://www.w3.org/2000/svg">
     <g transform="matrix(0.610507, 0, 0, 0.589732, -11.845947, -111.800987)">
         <path
             d="M 648.359 511.796 L 650.095 515.694 L 650.486 520.758 L 652.81 524.362 L 657.906 527.445 L 659.736 527.685 L 660.37 526.366 L 660.158 524.456 L 658.317 519.978 L 655.62 514.247 L 655.393 515.25 L 652.143 515.104 L 649.809 511.75 L 648.359 511.796 Z"

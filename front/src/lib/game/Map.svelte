@@ -34,9 +34,10 @@
     let mountainColor = '#653a06';
 
     onMount(() => {
+        svgElement.classList = 'rounded-lg bg-blue-800 border border-black dark:border-white box-content';
+
         handleResize();
         window.addEventListener('resize', handleResize);
-
         document.querySelectorAll('path').forEach((path) => {
             if (path.classList.contains('mountain')) {
                 path.setAttribute('fill', mountainColor);
@@ -115,7 +116,6 @@
     };
 
     const handleClick = (territoryId) => {
-        console.log(territoryId);
         if (!hasDragged && territoryId) {
             const filteredTerritories = game.territories.filter((territoryObject) => {
                 return territoryObject.territory.code.toLowerCase() === territoryId;
