@@ -9,6 +9,7 @@ import Language from '#models/language';
 import GameTerritory from '#models/game_territory';
 import SerializedGameTerritory from '#types/serialized/serialized_game_territory';
 import Map from '#models/map';
+import User from "#models/user";
 
 export default class Game extends BaseModel {
     @column({ isPrimary: true })
@@ -38,13 +39,13 @@ export default class Game extends BaseModel {
     @column.dateTime({ autoCreate: true, autoUpdate: true })
     declare updatedAt: DateTime;
 
-    public apiSerialize(language: Language): SerializedGame {
+    public apiSerialize(language: Language, user: User): SerializedGame {
         return {
             id: this.frontId,
             name: this.room.name,
             owner: this.room.owner.apiSerialize(),
             players: this.room.players.map((player: RoomPlayer): SerializedRoomPlayer => player.apiSerialize(language)),
-            territories: this.territories.map((territory: GameTerritory): SerializedGameTerritory => territory.apiSerialize(language)),
+            territories: this.territories.map((territory: GameTerritory): SerializedGameTerritory => territory.apiSerialize(language, user)),
             createdAt: this.createdAt.toString(),
             updatedAt: this.updatedAt.toString(),
         };

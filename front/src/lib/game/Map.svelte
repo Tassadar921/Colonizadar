@@ -5,6 +5,7 @@
     import Subtitle from '../shared/Subtitle.svelte';
     import { t } from 'svelte-i18n';
     import GamePlayer from './GamePlayer.svelte';
+    import { formatGameTerritoryPowerAndShips } from '../../services/stringService.js';
 
     export let game;
 
@@ -34,7 +35,7 @@
     let mountainColor = '#653a06';
 
     onMount(() => {
-        svgElement.classList = 'rounded-lg bg-blue-800 border border-black dark:border-white box-content';
+        svgElement.classList = 'rounded-lg bg-blue-950 border border-black dark:border-white box-content';
 
         handleResize();
         window.addEventListener('resize', handleResize);
@@ -141,10 +142,19 @@
             return;
         }
 
-        if (path.id) {
-            path.removeAttribute('fill');
-        } else {
-            path.parentElement.removeAttribute('fill');
+        resetTerritoryColor(path.id ? path : path.parentElement);
+    };
+
+    const resetTerritoryColor = (graphicalTerritory) => {
+        const filteredTerritories = game.territories.filter((territoryObject) => {
+            return territoryObject.territory.code.toLowerCase() === graphicalTerritory.id ? graphicalTerritory.id : graphicalTerritory.parentElement.id;
+        });
+        if (filteredTerritories.length > 0) {
+            if (filteredTerritories[0].owner) {
+                graphicalTerritory.setAttribute('fill', filteredTerritories[0].owner.country.color);
+            } else {
+                graphicalTerritory.removeAttribute('fill');
+            }
         }
     };
 
@@ -154,7 +164,7 @@
             if (showCountryModal) {
                 territory.setAttribute('fill', hoverColor);
             } else {
-                territory.removeAttribute('fill');
+                resetTerritoryColor(territory);
             }
         }
     }
@@ -179,6 +189,6 @@
         <p>{$t('play.game.country-modal.owner')} :</p>
         <GamePlayer bind:game bind:player={selectedTerritoryOwner} />
     </div>
-    <p>{$t('play.game.country-modal.troops')} : {selectedTerritory?.troops ?? '???'}</p>
+    <p>{$t('play.game.country-modal.infantry')} : {selectedTerritory?.power ? formatGameTerritoryPowerAndShips(selectedTerritory.power * 1000) : '???'}</p>
     <p>{$t('play.game.country-modal.ships')} : {selectedTerritory?.ships ?? '???'}</p>
 </Modal>

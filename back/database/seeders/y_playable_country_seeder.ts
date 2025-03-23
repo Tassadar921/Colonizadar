@@ -19,13 +19,13 @@ export default class extends BaseSeeder {
             return;
         }
 
-        const playableCountries: { french: string; english: string; flagFileName: string; map: Map }[] = [
-            { french: 'États-Unis', english: 'United States', flagFileName: 'us.svg', map: worldMap },
-            { french: 'Royaume-Uni', english: 'United Kingdom', flagFileName: 'uk.svg', map: worldMap },
-            { french: 'Empire Allemand', english: 'German Empire', flagFileName: 'de.svg', map: worldMap },
-            { french: 'France', english: 'France', flagFileName: 'fr.svg', map: worldMap },
-            { french: 'Russie', english: 'Russia', flagFileName: 'ru.svg', map: worldMap },
-            { french: 'Japon', english: 'Japan', flagFileName: 'jp.svg', map: worldMap },
+        const playableCountries: { french: string; english: string; color: string; flagFileName: string; map: Map }[] = [
+            { french: 'États-Unis', english: 'United States', color: '#0dcfff', flagFileName: 'us.svg', map: worldMap },
+            { french: 'Royaume-Uni', english: 'United Kingdom', color: '#ff0d0d', flagFileName: 'uk.svg', map: worldMap },
+            { french: 'Empire Allemand', english: 'German Empire', color: '#818181', flagFileName: 'de.svg', map: worldMap },
+            { french: 'France', english: 'France', color: '#001fd6', flagFileName: 'fr.svg', map: worldMap },
+            { french: 'Russie', english: 'Russia', color: '#0a7510', flagFileName: 'ru.svg', map: worldMap },
+            { french: 'Japon', english: 'Japan', color: '#fdbb47', flagFileName: 'jp.svg', map: worldMap },
         ];
 
         for (const country of playableCountries) {
@@ -44,6 +44,7 @@ export default class extends BaseSeeder {
                 await PlayableCountry.create({
                     frenchName: country.french,
                     englishName: country.english,
+                    color: country.color,
                     flagId: flag.id,
                     mapId: country.map.id,
                 });

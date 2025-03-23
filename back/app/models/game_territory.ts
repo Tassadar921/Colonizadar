@@ -6,6 +6,7 @@ import Game from '#models/game';
 import Territory from '#models/territory';
 import SerializedGameTerritory from '#types/serialized/serialized_game_territory';
 import RoomPlayer from '#models/room_player';
+import User from "#models/user";
 
 export default class GameTerritory extends BaseModel {
     @column({ isPrimary: true })
@@ -46,9 +47,11 @@ export default class GameTerritory extends BaseModel {
     @column.dateTime({ autoCreate: true, autoUpdate: true })
     declare updatedAt: DateTime;
 
-    public apiSerialize(language: Language): SerializedGameTerritory {
+    public apiSerialize(language: Language, user: User): SerializedGameTerritory {
         return {
             id: this.frontId,
+            power: this.owner?.userId === user.id ? this.power: undefined,
+            ships: this.owner?.userId === user.id ? this.ships: undefined,
             owner: this.owner?.apiSerialize(language),
             territory: this.territory.apiSerialize(language),
             createdAt: this.createdAt?.toString(),

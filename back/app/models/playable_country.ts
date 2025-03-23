@@ -20,6 +20,9 @@ export default class PlayableCountry extends BaseModel {
     declare englishName: string;
 
     @column()
+    declare color: string;
+
+    @column()
     declare flagId: string | null;
 
     @belongsTo((): typeof File => File, {
@@ -54,6 +57,7 @@ export default class PlayableCountry extends BaseModel {
         return {
             id: this.frontId,
             name: this.translate(language),
+            color: this.color,
             createdAt: this.createdAt?.toString(),
             updatedAt: this.updatedAt?.toString(),
         };
