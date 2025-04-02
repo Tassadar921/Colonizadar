@@ -14,26 +14,15 @@
         try {
             const { data: gameData } = await axios.get(`/api/game/${gameId}`);
             game = gameData.game;
-
-            for (const territoryObject of game.territories) {
-                if (!territoryObject.owner) {
-                    continue;
-                }
-
-                const graphicalTerritory = document.getElementById(territoryObject.territory.code.toLowerCase());
-                if (graphicalTerritory) {
-                    graphicalTerritory.setAttribute('fill', territoryObject.owner.country.color);
-                }
-            }
         } catch (e) {
             showToast(e.response.data.error, 'error');
-            // navigate('/play');
+            navigate('/play');
         }
     });
 </script>
 
 <Title title={game?.name} />
 
-<div class="h-5/6 flex justify-center align-middle">
+<div class="flex justify-center align-middle">
     <Map bind:game />
 </div>

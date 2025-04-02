@@ -9,8 +9,8 @@
 
     export let game;
 
-    let width;
-    let height;
+    let width = 500;
+    let height = 300;
     let offsetX = 0;
     let offsetY = 0;
 
@@ -31,7 +31,7 @@
 
     let showCountryModal = false;
 
-    let hoverColor = '#918b8b';
+    let hoverColor = '#ffffac';
     let mountainColor = '#653a06';
 
     onMount(() => {
@@ -62,8 +62,6 @@
     });
 
     const handleResize = () => {
-        width = buttonElement.clientWidth;
-        height = buttonElement.clientHeight;
         viewBox = `${offsetX} ${offsetY} ${width} ${height}`;
     };
 
@@ -151,6 +149,7 @@
         });
         if (filteredTerritories.length > 0) {
             if (filteredTerritories[0].owner) {
+                // console.log(filteredTerritories[0].owner.country.color);
                 graphicalTerritory.setAttribute('fill', filteredTerritories[0].owner.country.color);
             } else {
                 graphicalTerritory.removeAttribute('fill');
@@ -168,11 +167,41 @@
             }
         }
     }
+
+    $: if (game) {
+        for (const territoryObject of game.territories) {
+            if (!territoryObject.owner) continue;
+
+            const graphicalTerritory = document.getElementById(territoryObject.territory.code.toLowerCase());
+            if (!graphicalTerritory) continue;
+
+            graphicalTerritory.setAttribute('fill', territoryObject.owner.country.color);
+
+            // Sélectionner le bon chemin : path ou .mainland dans un <g>
+            let path = graphicalTerritory.tagName === 'path' ? graphicalTerritory : graphicalTerritory.querySelector('.mainland');
+
+            const bbox = path.getBBox();
+            const x = bbox.x + bbox.width / 2;
+            const y = bbox.y + bbox.height / 2;
+
+            // Créer une icône et la placer
+            const icon = document.createElementNS("http://www.w3.org/2000/svg", "image");
+            icon.setAttribute("href", `${process.env.VITE_API_BASE_URL}/api/static/country-flag/${territoryObject.owner.country.id}?token=${localStorage.getItem('apiToken')}`);
+            icon.setAttribute("width", "15");
+            icon.setAttribute("height", "15");
+            icon.setAttribute("x", x - 7.5);
+            icon.setAttribute("y", y - 7.5);
+
+            svgElement.appendChild(icon);
+        }
+    }
+
+    $: console.log(viewBox);
 </script>
 
 <button
     bind:this={buttonElement}
-    class="h-full w-11/12 {isDragging ? 'cursor-grabbing' : 'cursor-pointer'}"
+    class="w-11/12 max-h-[75%] overflow-hidden {isDragging ? 'cursor-grabbing' : 'cursor-pointer'}"
     on:wheel={handleWheel}
     on:mousedown={startDrag}
     on:mousemove={onDrag}
@@ -190,5 +219,7 @@
         <GamePlayer bind:game bind:player={selectedTerritoryOwner} />
     </div>
     <p>{$t('play.game.country-modal.infantry')} : {selectedTerritory?.power ? formatGameTerritoryPowerAndShips(selectedTerritory.power * 1000) : '???'}</p>
-    <p>{$t('play.game.country-modal.ships')} : {selectedTerritory?.ships ?? '???'}</p>
+    {#if selectedTerritory && selectedTerritoryOwner}
+        <p>{$t('play.game.country-modal.ships')} : {selectedTerritory?.ships ?? '???'}</p>
+    {/if}
 </Modal>
