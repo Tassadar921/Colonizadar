@@ -201,7 +201,7 @@
 
 <button
     bind:this={buttonElement}
-    class="w-11/12 max-h-[75%] overflow-hidden {isDragging ? 'cursor-grabbing' : 'cursor-pointer'}"
+    class="width-map max-h-[75%] overflow-hidden {isDragging ? 'cursor-grabbing' : 'cursor-pointer'}"
     on:wheel={handleWheel}
     on:mousedown={startDrag}
     on:mousemove={onDrag}
