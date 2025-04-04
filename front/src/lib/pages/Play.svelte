@@ -27,13 +27,14 @@
 
     let loading = false;
 
-    const handleJoinSuccess = () => {
+    const handleJoinSuccess = (event) => {
         showJoinModal = false;
-        console.log('join success');
+        showToast(event.detail.message);
+        navigate(`/play/room/${event.detail.roomId}`);
     };
 
-    const handleJoinFailure = () => {
-        console.log('join failure');
+    const handleJoinFailure = (event) => {
+        showToast(event.detail, 'error');
     };
 
     const handleCreateSuccess = (event) => {
@@ -67,14 +68,14 @@
     </div>
 </Form>
 
-<Modal bind:showModal={showJoinModal}>
+<Modal bind:showModal={showJoinModal} fullWidth>
     <Subtitle slot="header">{$t('play.room.join.title')}</Subtitle>
-    <Form showBackground={false} bind:isValid={isJoinSubmittable} on:success={handleJoinSuccess} on:error={handleJoinFailure}>
+    <Form action="/api/room/join" method="POST" showBackground={false} bind:isValid={isJoinSubmittable} on:success={handleJoinSuccess} on:error={handleJoinFailure}>
         <Input name="token" label={$t('play.room.join.modal.token.label')} placeholder={$t('play.room.join.modal.token.placeholder')} bind:value={token} required />
     </Form>
 </Modal>
 
-<Modal bind:showModal={showCreateModal}>
+<Modal bind:showModal={showCreateModal} fullWidth>
     <Subtitle slot="header">{$t('play.room.create.title')}</Subtitle>
     <Form action="/api/room/create" method="POST" showBackground={false} bind:isValid={isCreateSubmittable} on:success={handleCreateSuccess} on:error={handleCreateFailure}>
         <Input name="name" label={$t('play.room.create.modal.name.label')} placeholder={$t('play.room.create.modal.name.placeholder')} bind:value={name} required />

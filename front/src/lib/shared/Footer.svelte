@@ -4,7 +4,7 @@
     import { t } from 'svelte-i18n';
 </script>
 
-<footer class="w-full dark:bg-gray-950 p-5 pb-10">
+<footer class="w-full bg-gray-300 dark:bg-gray-950 p-5 pb-10">
     <div class="grid grid-cols-1 lg:grid-cols-3">
         <div class="px-1">
             <ul class="p-4">

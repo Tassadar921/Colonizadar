@@ -13,25 +13,30 @@
     import InviteFriends from '../room/InviteFriends.svelte';
     import { onMount, onDestroy } from 'svelte';
     import AddBot from '../room/AddBot.svelte';
-    import KickPlayer from '../room/KickPlayer.svelte';
     import RoomNotifications from '../room/RoomNotifications.svelte';
+    import RoomPlayer from '../room/RoomPlayer.svelte';
+    import SelectMap from '../room/SelectMap.svelte';
 
     export let roomId;
 
     let room = { name: '', players: [], owner: { id: -1 } };
     let showInviteFriendModal = false;
+    let playableCountries = [];
+    let botDifficulties = [];
+    let maps = [];
     let heartbeat;
 
     async function fetchRoomData() {
         try {
-            const response = await axios.get(`/api/room/${roomId}/joined`);
-            if (response.status === 200) {
-                room = response.data.room;
-            } else {
-                showToast($t('toast.room.error'), 'error');
-                await unloadCleanup();
-                navigate('/play');
-            }
+            const { data: roomData } = await axios.put(`/api/room/${roomId}/join`);
+            room = roomData.room;
+
+            const { data: playableCountriesData } = await axios.get(`/api/room/${room.map.id}/playable-countries`);
+            playableCountries = playableCountriesData.map((playableCountry) => ({
+                value: playableCountry.id,
+                label: playableCountry.name,
+                uri: `${process.env.VITE_API_BASE_URL}/api/static/country-flag/${playableCountry.id}?token=${localStorage.getItem('apiToken')}`,
+            }));
         } catch (e) {
             showToast($t('toast.room.error'), 'error');
             await unloadCleanup();
@@ -54,7 +59,7 @@
     onMount(() => {
         heartbeat = setInterval(async () => {
             try {
-                await axios.get(`/api/room/${roomId}/heartbeat`);
+                await axios.patch(`/api/room/${roomId}/heartbeat`);
             } catch (e) {
                 await unloadCleanup();
                 navigate('/play');
@@ -75,7 +80,9 @@
 
 <Breadcrumbs items={[{ label: $t('home.title'), path: '/' }, { label: $t('play.title'), path: '/play' }, { label: $t('play.room.title') }]} />
 
-<RoomNotifications bind:room resetTransmits={unloadCleanup} />
+{#key room?.id}
+    <RoomNotifications bind:room on:close={unloadCleanup} />
+{/key}
 
 <div class="grid grid-cols-1 sm:grid-cols-2">
     <div class="flex justify-center h-10 text-white mt-3 text-sm px-3">
@@ -102,50 +109,16 @@
 <div class="flex flex-row flex-wrap gap-5 justify-center my-5">
     <div class="flex flex-col gap-1 w-full">
         {#each room.players as player}
-            <div
-                class="flex justify-between items-center h-12 border {player.user && $profile.id === player.user.id
-                    ? 'border-gray-400 dark:border-gray-700'
-                    : 'border-gray-300 dark:border-gray-800'} rounded-xl hover:bg-gray-300 dark:hover:bg-gray-800 transition-colors duration-300 px-3"
-            >
-                {#if player.user}
-                    <div class="flex gap-5 flex-wrap items-center">
-                        {#if player.user.profilePicture}
-                            <img
-                                alt={player.user.username}
-                                src={`${process.env.VITE_API_BASE_URL}/api/static/profile-picture/${player.user.id}?token=${localStorage.getItem('apiToken')}`}
-                                class="w-10 rounded-full"
-                            />
-                        {:else}
-                            <img alt={player.user.username} src={process.env.VITE_DEFAULT_IMAGE} class="max-h-10 rounded-full" />
-                        {/if}
-                        <p>{player.user.username}</p>
-                        {#if room.owner.id === player.user.id}
-                            <div class="text-yellow-500">
-                                <Icon name="crown" />
-                            </div>
-                        {/if}
-                    </div>
-                {:else if player.bot}
-                    <div class="flex gap-5 flex-wrap items-center">
-                        <img
-                            alt={player.bot.name}
-                            src={`${process.env.VITE_API_BASE_URL}/api/static/bot-picture/${player.bot.id}?token=${localStorage.getItem('apiToken')}`}
-                            class="w-10 rounded-full"
-                        />
-                        <p>{player.bot.name}</p>
-                    </div>
-                {/if}
-
-                {#if $profile.id === room.owner.id && $profile.id !== player.user?.id}
-                    <KickPlayer bind:room bind:player />
-                {/if}
-            </div>
+            <RoomPlayer bind:room {player} bind:playableCountries bind:botDifficulties />
         {/each}
-        {#if room.players.length < 6 && $profile.id === room.owner.id}
-            <AddBot bind:room />
-        {/if}
+        <div class="w-full flex mt-5 px-5">
+            <AddBot bind:room bind:difficulties={botDifficulties} />
+        </div>
     </div>
 </div>
+
+<!-- TODO: finish map selector maybe with map thumbnail, description, ... -->
+<!--<SelectMap bind:room bind:maps />-->
 
 <Modal bind:showModal={showInviteFriendModal} fullWidth>
     <Subtitle slot="header">{$t('play.room.invite.title')}</Subtitle>

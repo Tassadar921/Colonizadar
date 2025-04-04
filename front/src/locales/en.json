@@ -253,6 +253,14 @@
                 "title": "Invite a friend"
             },
             "add-bot": "Add a bot"
+        },
+        "game": {
+            "country-modal": {
+                "owner": "Owner",
+                "indigenous": "Indigenous",
+                "infantry": "Infantry",
+                "ships": "Ships"
+            }
         }
     }
 }

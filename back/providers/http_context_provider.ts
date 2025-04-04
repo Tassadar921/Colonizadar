@@ -3,12 +3,14 @@ import Language from '#models/language';
 import User from '#models/user';
 import Room from '#models/room';
 import { inject } from '@adonisjs/core';
+import Game from '#models/game';
 
 declare module '@adonisjs/core/http' {
     export interface HttpContext {
         language: Language;
         user: User;
         room: Room;
+        game: Game;
     }
 }
 

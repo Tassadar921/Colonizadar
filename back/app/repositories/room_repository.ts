@@ -1,6 +1,5 @@
 import BaseRepository from '#repositories/base/base_repository';
 import Room from '#models/room';
-import User from '#models/user';
 import RoomStatusEnum from '#types/enum/room_status_enum';
 
 export default class RoomRepository extends BaseRepository<typeof Room> {
@@ -9,64 +8,42 @@ export default class RoomRepository extends BaseRepository<typeof Room> {
     }
 
     public async getFromFrontId(roomId: number): Promise<Room | null> {
-        return Room.query()
-            .where('status', RoomStatusEnum.ACTIVE)
+        return this.Model.query()
+            .where('status', RoomStatusEnum.OPENED)
+            .orWhere('rooms.status', RoomStatusEnum.STARTING)
             .andWhere('front_id', roomId)
             .preload('owner')
             .preload('players', (playersQuery): void => {
-                playersQuery
-                    .preload('user', (userQuery): void => {
-                        userQuery.preload('profilePicture');
-                    })
-                    .preload('bot', (botQuery): void => {
-                        botQuery.preload('picture');
-                    })
-                    .orderBy('frontId');
+                playersQuery.preload('user').preload('bot').preload('country').preload('difficulty').orderBy('frontId');
+            })
+            .preload('map', (mapQuery): void => {
+                mapQuery.preload('territories').preload('createdBy');
             })
             .first();
     }
 
-    public async getFromUserAndToken(user: User, token: string): Promise<Room | null> {
-        return Room.query()
+    public async getFromUserAndToken(token: string): Promise<Room | null> {
+        return this.Model.query()
             .select('rooms.*')
-            .leftJoin('room_players', 'rooms.id', 'room_players.room_id')
-            .where('rooms.status', RoomStatusEnum.ACTIVE)
+            .where('rooms.status', RoomStatusEnum.OPENED)
+            .orWhere('rooms.status', RoomStatusEnum.STARTING)
             .andWhere('rooms.token', token)
-            .andWhere((query): void => {
-                query.where('room_players.user_id', user.id);
-            })
             .preload('owner')
             .preload('players', (playersQuery): void => {
-                playersQuery
-                    .preload('user', (userQuery): void => {
-                        userQuery.preload('profilePicture');
-                    })
-                    .preload('bot', (botQuery): void => {
-                        botQuery.preload('picture');
-                    })
-                    .orderBy('frontId');
+                playersQuery.preload('user').preload('bot').preload('country').preload('difficulty').orderBy('frontId');
+            })
+            .preload('map', (mapQuery): void => {
+                mapQuery.preload('territories').preload('createdBy');
             })
             .first();
     }
 
     public async getPaginatedForHeartbeatChecks(page: number) {
-        return Room.query()
-            .where('rooms.status', RoomStatusEnum.ACTIVE)
+        return this.Model.query()
+            .where('rooms.status', RoomStatusEnum.OPENED)
             .preload('players', (playersQuery): void => {
                 playersQuery.andWhereNotNull('user_id').preload('user');
             })
             .paginate(page, 50);
-    }
-
-    public async getDistinctBotNamesFromRoom(room: Room): Promise<string[]> {
-        const rooms: Room[] = await Room.query()
-            .select('room_players.bot_name_id')
-            .where('rooms.id', room.id)
-            .leftJoin('room_players', 'rooms.id', 'room_players.room_id')
-            .distinct('room_players.bot_name_id')
-            .andWhereNull('room_players.user_id')
-            .andWhereNotNull('room_players.bot_name_id');
-
-        return <string[]>rooms[0]?.$extras.bot_name_ids ?? [];
     }
 }

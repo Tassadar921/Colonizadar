@@ -14,6 +14,9 @@ const NotificationController = () => import('#controllers/notification_controlle
 const PendingFriendController = () => import('#controllers/pending_friend_controller');
 const UserController = () => import('#controllers/user_controller');
 const RoomController = () => import('#controllers/room_controller');
+const PlayableCountryController = () => import('#controllers/playable_country_controller');
+const MapController = () => import('#controllers/map_controller');
+const GameController = () => import('#controllers/game_controller');
 
 // API requests
 router
@@ -84,25 +87,44 @@ router
                 router
                     .group((): void => {
                         router.post('/create', [RoomController, 'create']);
-                        router.get('/difficulties', [RoomController, 'getDifficulties']);
+                        router.get('/bot-difficulties', [RoomController, 'getBotDifficulties']);
+                        router.get('/:mapId/playable-countries', [PlayableCountryController, 'getAll']);
+                        router.get('/maps', [MapController, 'getAll']);
+                        router.post('/join', [RoomController, 'checkWithToken']).use([middleware.room()]);
                         router
                             .group((): void => {
                                 router.post('/invite', [RoomController, 'invite']);
-                                router.get('/joined', [RoomController, 'joined']);
+                                router.put('/join', [RoomController, 'join']);
                                 router.delete('/leave', [RoomController, 'leave']);
-                                router.get('/heartbeat', [RoomController, 'heartbeat']);
+                                router.patch('/heartbeat', [RoomController, 'heartbeat']);
                                 router.post('add-bot', [RoomController, 'addBot']);
                                 router.delete('kick/:playerId', [RoomController, 'kick']);
+                                router.patch('/player/:playerId/select-country', [RoomController, 'selectCountry']);
+                                router.patch('/player/:playerId/select-difficulty', [RoomController, 'selectBotDifficulty']);
+                                router.patch('/player/:playerId/ready', [RoomController, 'ready']);
                             })
                             .prefix(':roomId')
                             .use([middleware.room()]);
                     })
                     .prefix('room');
+
+                router
+                    .group((): void => {
+                        router.get('/', [GameController, 'get']);
+                    })
+                    .prefix('game/:gameId')
+                    .use([middleware.game()]);
             })
             .use([middleware.auth({ guards: ['api'] })]);
 
-        router.get('/static/profile-picture/:userId', [FileController, 'serveStaticProfilePictureFile']).use([middleware.queryStringAuth()]);
-        router.get('/static/bot-picture/:botId', [FileController, 'serveStaticBotPictureFile']).use([middleware.queryStringAuth()]);
+        router
+            .group((): void => {
+                router.get('/profile-picture/:userId', [FileController, 'serveStaticProfilePictureFile']);
+                router.get('/bot-picture/:botId', [FileController, 'serveStaticBotPictureFile']);
+                router.get('/country-flag/:countryId', [FileController, 'serveStaticCountryFlagFile']);
+            })
+            .prefix('static')
+            .use([middleware.queryStringAuth()]);
     })
     .prefix('api')
     .use([middleware.language()]);

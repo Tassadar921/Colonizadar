@@ -4,7 +4,7 @@ import UserRepository from '#repositories/user_repository';
 import { getUsersValidator } from '#validators/user';
 
 @inject()
-export default class BlockedController {
+export default class UserController {
     constructor(private readonly userRepository: UserRepository) {}
 
     public async searchNotFriends({ request, response, user }: HttpContext): Promise<void> {

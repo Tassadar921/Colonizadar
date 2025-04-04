@@ -20,7 +20,6 @@
     import { setLanguage } from './stores/languageStore.js';
     import { location, navigate } from './stores/locationStore.js';
     import { locale } from 'svelte-i18n';
-    import { showToast } from './services/toastService.js';
     import Social from './lib/pages/Social.svelte';
     import Friends from './lib/pages/Friends.svelte';
     import Blocked from './lib/pages/Blocked.svelte';
@@ -86,7 +85,7 @@
 
 <NotificationsSetup />
 
-<main class="flex flex-col bg-gray-200 dark:bg-gray-900 min-h-screen min-w-screen">
+<main class="flex flex-col bg-gray-200 dark:bg-gray-900 h-screen w-screen">
     <div class="px-3.5 min-h-screen">
         <Menu />
         {#if !$isLoading}
@@ -106,7 +105,9 @@
                     <Route path="/:language/play/room/:roomId" let:params>
                         <Room key={params.roomId} roomId={params.roomId} />
                     </Route>
-                    <Route path="/:language/play/game/:gameId"><Game /></Route>
+                    <Route path="/:language/play/game/:gameId" let:params>
+                        <Game key={params.gameId} gameId={params.gameId} />
+                    </Route>
 
                     <Route path="/:language/profile"><Profile /></Route>
                     <Route path="/:language/notifications"><Notifications /></Route>

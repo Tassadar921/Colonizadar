@@ -11,14 +11,12 @@ export default class FriendRepository extends BaseRepository<typeof Friend> {
     }
 
     public async search(query: string, page: number, perPage: number, user: User): Promise<PaginatedFriends> {
-        const friends: ModelPaginatorContract<Friend> = await Friend.query()
+        const friends: ModelPaginatorContract<Friend> = await this.Model.query()
             .where('user_id', user.id)
             .if(query, (queryBuilder): void => {
                 queryBuilder.leftJoin('users', 'friends.friend_id', 'users.id').where('users.username', 'ILIKE', `%${query}%`);
             })
-            .preload('friend', (friendQuery): void => {
-                friendQuery.preload('profilePicture');
-            })
+            .preload('friend')
             .paginate(page, perPage);
 
         return {
@@ -36,7 +34,7 @@ export default class FriendRepository extends BaseRepository<typeof Friend> {
     }
 
     public async findFromUsers(user1: User, user2: User): Promise<Friend[]> {
-        return Friend.query()
+        return this.Model.query()
             .where((query): void => {
                 query.where('userId', user1.id).andWhere('friendId', user2.id);
             })
@@ -46,7 +44,7 @@ export default class FriendRepository extends BaseRepository<typeof Friend> {
     }
 
     public async findOneFromUsers(user1: User, user2: User): Promise<Friend | null> {
-        return Friend.query()
+        return this.Model.query()
             .where((query): void => {
                 query.where('userId', user1.id).andWhere('friendId', user2.id);
             })

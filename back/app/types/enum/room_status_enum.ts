@@ -1,7 +1,8 @@
 enum RoomStatusEnum {
-    ACTIVE = 'active',
+    OPENED = 'opened',
     CLOSED = 'closed',
-    FULL = 'full',
+    STARTING = 'starting',
+    PLAYING = 'playing',
 }
 
 export default RoomStatusEnum;

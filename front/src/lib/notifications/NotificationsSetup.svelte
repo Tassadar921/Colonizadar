@@ -1,17 +1,10 @@
 <script>
     import { transmit } from '../../stores/transmitStore.js';
-    import { Transmit } from '@adonisjs/transmit-client';
-    import { addNotification, removeNotification, setPendingFriendRequests, notifications } from '../../stores/notificationStore.js';
+    import { addNotification, removeNotification, setPendingFriendRequests } from '../../stores/notificationStore.js';
     import { showToast } from '../../services/toastService.js';
-    import { onMount } from 'svelte';
     import { t } from 'svelte-i18n';
     import { profile } from '../../stores/profileStore.js';
-    import axios from 'axios';
     import { navigate } from '../../stores/locationStore.js';
-
-    onMount(() => {
-        transmit.set(new Transmit({ baseUrl: process.env.VITE_API_BASE_URL }));
-    });
 
     const setupPendingFriendRequests = async () => {
         const addFriendNotification = $transmit.subscription(`notification/add-friend/${$profile.id}`);

@@ -57,6 +57,7 @@
         'Crown',
         'Invite',
         'Copy',
+        'Bot',
     ];
 
     const toCamelCase = (str) => {

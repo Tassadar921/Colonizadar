@@ -10,10 +10,9 @@
     import ConfirmModal from '../shared/ConfirmModal.svelte';
     import Subtitle from '../shared/Subtitle.svelte';
     import { transmit } from '../../stores/transmitStore.js';
-    import { Transmit } from '@adonisjs/transmit-client';
     import { profile } from '../../stores/profileStore.js';
     import { createEventDispatcher } from 'svelte';
-    import { addNotification, removeNotification, setPendingFriendRequests } from '../../stores/notificationStore.js';
+    import { setPendingFriendRequests } from '../../stores/notificationStore.js';
 
     const dispatch = createEventDispatcher();
 
@@ -24,7 +23,6 @@
     let blockingUser = { username: '' };
 
     onMount(async () => {
-        transmit.set(new Transmit({ baseUrl: process.env.VITE_API_BASE_URL }));
         await updateAddFriends();
     });
 

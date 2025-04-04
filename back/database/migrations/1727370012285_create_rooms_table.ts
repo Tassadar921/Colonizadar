@@ -13,8 +13,9 @@ export default class extends BaseSchema {
             table.boolean('public').defaultTo(true);
             table.string('password', 255).nullable();
             table.uuid('token').defaultTo(this.raw('uuid_generate_v4()'));
-            table.enum('status', Object.values(RoomStatusEnum)).notNullable().defaultTo(RoomStatusEnum.ACTIVE);
+            table.enum('status', Object.values(RoomStatusEnum)).notNullable().defaultTo(RoomStatusEnum.OPENED);
             table.uuid('owner_id').notNullable().references('id').inTable('users').onDelete('CASCADE');
+            table.uuid('map_id').notNullable().references('id').inTable('maps').onDelete('CASCADE');
             table.timestamp('created_at', { useTz: true });
             table.timestamp('updated_at', { useTz: true });
         });

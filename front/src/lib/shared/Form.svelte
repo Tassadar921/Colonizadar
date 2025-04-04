@@ -25,9 +25,7 @@
         const form = event.target;
         const formData = new FormData(form);
 
-        const formDataObj = {
-            language: $language,
-        };
+        const formDataObj = {};
 
         formData.forEach((value, key) => {
             formDataObj[key] = value;
@@ -39,7 +37,7 @@
                 url: `${axios.defaults.baseURL}${action}`,
                 data: method === 'GET' ? null : formData,
                 params: method === 'GET' ? formDataObj : null,
-                headers: method !== 'GET' ? { 'Content-Type': 'multipart/form-data' } : {},
+                headers: method !== 'GET' ? { 'Content-Type': 'multipart/form-data', 'Accept-Language': `${$language}-${$language.toUpperCase()}` || 'en-US' } : {},
             });
             loading = false;
             dispatch('success', response.data);

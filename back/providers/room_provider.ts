@@ -5,9 +5,12 @@ import transmit from '@adonisjs/transmit/services/main';
 import RoomRepository from '#repositories/room_repository';
 import path from 'node:path';
 import RoomStatusEnum from '#types/enum/room_status_enum';
+import Language from '#models/language';
+import LanguageRepository from '#repositories/language_repository';
 
 export default class RoomProvider {
-    protected roomRepository: RoomRepository = new RoomRepository();
+    private readonly roomRepository: RoomRepository = new RoomRepository();
+    private readonly languageRepository: LanguageRepository = new LanguageRepository();
 
     constructor(protected app: ApplicationService) {}
 
@@ -35,9 +38,14 @@ export default class RoomProvider {
             return;
         }
 
+        const english: Language | null = await this.languageRepository.findOneBy({ code: Language.LANGUAGE_ENGLISH.code });
+        if (!english) {
+            throw new Error('English language not found');
+        }
+
         setInterval(async (): Promise<void> => {
             const rooms = await this.roomRepository.getPaginatedForHeartbeatChecks(1);
-            await this.processRoomPage(rooms.all());
+            await this.processRoomPage(rooms.all(), english);
             const now: DateTime = DateTime.now();
 
             if (rooms.lastPage === 1) {
@@ -46,7 +54,7 @@ export default class RoomProvider {
 
             for (let i = 2; i < rooms.lastPage; i++) {
                 const rooms = await this.roomRepository.getPaginatedForHeartbeatChecks(i + 1);
-                await this.processRoomPage(rooms.all());
+                await this.processRoomPage(rooms.all(), english);
                 console.log(`Page ${i + 1} processed in ${now.diff(DateTime.now(), 'seconds').seconds} seconds`);
             }
         }, 5000);
@@ -57,14 +65,15 @@ export default class RoomProvider {
      */
     async shutdown(): Promise<void> {}
 
-    private async processRoomPage(rooms: Room[]): Promise<void> {
+    private async processRoomPage(rooms: Room[], english: Language): Promise<void> {
         const now: DateTime = DateTime.now();
         for (const room of rooms) {
             for (const player of room.players) {
-                if (player.lastHeartbeat && now.diff(player.lastHeartbeat, 'seconds').seconds > 15) {
+                if (player.userId && now.diff(player.lastHeartbeat, 'seconds').seconds > 30) {
+                    await player.load('country');
                     await player.delete();
 
-                    transmit.broadcast(`notification/play/room/${room.frontId}/${player.user.frontId}/leave`);
+                    transmit.broadcast(`notification/play/room/${room.frontId}/player/leave`, { player: player.apiSerialize(english) });
 
                     if (room.ownerId === player.userId) {
                         room.status = RoomStatusEnum.CLOSED;

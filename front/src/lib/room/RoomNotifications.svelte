@@ -2,59 +2,107 @@
     import { transmit } from '../../stores/transmitStore.js';
     import { showToast } from '../../services/toastService.js';
     import { profile } from '../../stores/profileStore.js';
-    import { location } from '../../stores/locationStore.js';
-    import { navigate } from '../../stores/locationStore.js';
+    import { location, navigate } from '../../stores/locationStore.js';
     import { onDestroy } from 'svelte';
     import { t } from 'svelte-i18n';
+    import { createEventDispatcher } from 'svelte';
+    import { get } from 'svelte/store';
 
+    const dispatch = createEventDispatcher();
     export let room;
-    export let resetTransmits;
+
+    let isInitialized = false;
 
     let roomClosedNotification;
-    let userJoinedNotification;
-    let userLeftNotification;
+    let playerJoinedNotification;
+    let playerLeftNotification;
+    let playerUpdateNotification;
+    let roomStartingNotification;
+    let roomStartNotification;
 
-    async function setupTransmits() {
-        if (!room.id) return;
+    const setup = async () => {
+        if (isInitialized) {
+            return;
+        }
 
         await cleanupTransmits();
+        await setupTransmits();
+        setupHandlers();
 
+        isInitialized = true;
+    };
+
+    const setupTransmits = async () => {
         roomClosedNotification = $transmit.subscription(`notification/play/room/${room.id}/closed`);
-        userJoinedNotification = $transmit.subscription(`notification/play/room/${room.id}/joined`);
-        userLeftNotification = $transmit.subscription(`notification/play/room/${room.id}/leave`);
+        playerJoinedNotification = $transmit.subscription(`notification/play/room/${room.id}/player/joined`);
+        playerLeftNotification = $transmit.subscription(`notification/play/room/${room.id}/player/leave`);
+        playerUpdateNotification = $transmit.subscription(`notification/play/room/${room.id}/player/update`);
+        roomStartingNotification = $transmit.subscription(`notification/play/room/${room.id}/starting`);
+        roomStartNotification = $transmit.subscription(`notification/play/room/${room.id}/game/start`);
 
-        await roomClosedNotification.create();
+        await Promise.all([
+            roomClosedNotification.create(),
+            playerJoinedNotification.create(),
+            playerLeftNotification.create(),
+            playerUpdateNotification.create(),
+            roomStartingNotification.create(),
+            roomStartNotification.create(),
+        ]);
+    };
+
+    const setupHandlers = () => {
         roomClosedNotification.onMessage(async () => {
             showToast($t('toast.notification.play.room.closed'), 'warning');
-            await resetTransmits();
-            if ($location.includes('/play/room')) {
+            dispatch('close');
+            if (get(location).includes('/play/room')) {
                 navigate('/play');
             }
         });
 
-        await userJoinedNotification.create();
-        userJoinedNotification.onMessage((data) => {
+        playerJoinedNotification.onMessage((data) => {
             if (!room.players.some((player) => player.id === data.player.id)) {
                 room.players = [...room.players, data.player];
             }
         });
 
-        await userLeftNotification.create();
-        userLeftNotification.onMessage((data) => {
-            if (data.player.bot || (data.player && data.player.user.id !== $profile.id)) {
+        playerLeftNotification.onMessage((data) => {
+            if (data.player.bot || (data.player && data.player.user.id !== get(profile).id)) {
                 room.players = room.players.filter((player) => player.id !== data.player.id);
             }
         });
-    }
 
-    async function cleanupTransmits() {
-        await roomClosedNotification?.delete();
-        await userJoinedNotification?.delete();
-        await userLeftNotification?.delete();
-    }
+        playerUpdateNotification.onMessage(({ player }) => {
+            room.players = room.players.map((p) => (p.id === player.id ? player : p));
+            room.players = room.players.map((player) => (player = { ...player, isReady: false }));
+        });
 
-    $: if (room.id) {
-        setupTransmits();
+        roomStartingNotification.onMessage(({ countdown }) => {
+            showToast(countdown);
+        });
+
+        roomStartNotification.onMessage((data) => {
+            showToast(data.message);
+            navigate(`/play/game/${data.gameId}`);
+        });
+    };
+
+    const cleanupTransmits = async () => {
+        try {
+            await Promise.all([
+                roomClosedNotification?.delete().then(() => console.log('roomClosedNotification deleted')),
+                playerJoinedNotification?.delete().then(() => console.log('playerJoinedNotification deleted')),
+                playerLeftNotification?.delete().then(() => console.log('playerLeftNotification deleted')),
+                playerUpdateNotification?.delete().then(() => console.log('playerUpdateNotification deleted')),
+                roomStartingNotification?.delete().then(() => console.log('roomStartingNotification deleted')),
+                roomStartNotification?.delete().then(() => console.log('roomStartNotification deleted')),
+            ]);
+        } catch (error) {
+            console.error('Error during cleanup:', error);
+        }
+    };
+
+    $: if (room?.id) {
+        setup();
     }
 
     onDestroy(() => {

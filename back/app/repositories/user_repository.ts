@@ -3,6 +3,7 @@ import User from '#models/user';
 import { ModelPaginatorContract } from '@adonisjs/lucid/types/model';
 import PaginatedUsers from '#types/paginated/paginated_users';
 import SerializedUser from '#types/serialized/serialized_user';
+import UserRoleEnum from '#types/enum/user_role_enum';
 
 export default class UserRepository extends BaseRepository<typeof User> {
     constructor() {
@@ -10,7 +11,7 @@ export default class UserRepository extends BaseRepository<typeof User> {
     }
 
     public async searchNotFriends(query: string, page: number, perPage: number, user: User): Promise<PaginatedUsers> {
-        const users: ModelPaginatorContract<User> = await User.query()
+        const users: ModelPaginatorContract<User> = await this.Model.query()
             .select('users.*', 'received_pending_friends.id AS receivedPendingFriendId', 'sent_pending_friends.id AS sentPendingFriendId')
             .joinRaw(
                 `
@@ -47,7 +48,6 @@ export default class UserRepository extends BaseRepository<typeof User> {
             .whereNull('blocked.blocker_id')
             .whereNull('friends.user_id')
             .whereNot('users.id', user.id)
-            .preload('profilePicture')
             .paginate(page, perPage);
 
         return {
@@ -62,5 +62,9 @@ export default class UserRepository extends BaseRepository<typeof User> {
             total: users.total,
             currentPage: page,
         };
+    }
+
+    public async getAdmin() {
+        return this.Model.query().where('role', UserRoleEnum.ADMIN).firstOrFail;
     }
 }

@@ -10,7 +10,7 @@ import PendingFriendRepository from '#repositories/pending_friend_repository';
 import Friend from '#models/friend';
 
 @inject()
-export default class FriendsController {
+export default class FriendController {
     constructor(
         private readonly friendRepository: FriendRepository,
         private readonly userRepository: UserRepository,
