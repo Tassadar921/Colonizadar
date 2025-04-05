@@ -3,7 +3,7 @@ services:
         build:
             context: .
             dockerfile: Dockerfile
-        container_name: colonizadar_back
+        container_name: colonizadar_backend
         restart: always
         env_file: back/.env
         working_dir: /app/back
@@ -15,7 +15,7 @@ services:
         depends_on:
             - db
         networks:
-            - colonizadar_back
+            - colonizadar_backend
 
     db:
         image: postgres:15
@@ -30,7 +30,7 @@ services:
         volumes:
             - postgres_data:/var/lib/postgresql/data
         networks:
-            colonizadar_back:
+            colonizadar_backend:
                 aliases:
                     - db
 
@@ -38,12 +38,12 @@ services:
         image: ghcr.io/shyim/adminerevo:latest
         container_name: colonizadar_adminer
         restart: always
-        networks:
-            - colonizadar_back
-        depends_on:
-            - db
         environment:
             VIRTUAL_HOST: db.colonizadar.fr
+        depends_on:
+            - db
+        networks:
+            - colonizadar_backend
 
     nginx:
         image: nginx:latest
@@ -62,11 +62,11 @@ services:
             - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
             - ./nginx/init.sh:/etc/nginx/init.sh:ro
         networks:
-            - colonizadar_back
+            - colonizadar_backend
 
 volumes:
     postgres_data:
 
 networks:
-    colonizadar_back:
+    colonizadar_backend:
         driver: bridge

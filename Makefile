@@ -18,10 +18,13 @@ remove:
 list-routes:
 	cd back && node ace list:routes
 
-db-migrate:
+db-fresh:
 	docker compose exec -T backend node ace migration:fresh
+
+db-migrate:
+	docker compose exec -T backend node ace migration:run
 
 db-seed:
 	docker compose exec -T backend node ace db:seed
 
-db: db-migrate db-seed
+db: db-fresh db-seed
