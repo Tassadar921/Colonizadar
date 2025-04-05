@@ -23,4 +23,4 @@ EXPOSE 3333
 USER node
 
 # Run AdonisJS application
-CMD ["node", "ace", "serve", "--host", "0.0.0.0"]
+CMD ["npm", "run", "dev"]
