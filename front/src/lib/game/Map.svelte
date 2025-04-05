@@ -185,12 +185,12 @@
             const y = bbox.y + bbox.height / 2;
 
             // Créer une icône et la placer
-            const icon = document.createElementNS("http://www.w3.org/2000/svg", "image");
-            icon.setAttribute("href", `${process.env.VITE_API_BASE_URL}/api/static/country-flag/${territoryObject.owner.country.id}?token=${localStorage.getItem('apiToken')}`);
-            icon.setAttribute("width", "15");
-            icon.setAttribute("height", "15");
-            icon.setAttribute("x", x - 7.5);
-            icon.setAttribute("y", y - 7.5);
+            const icon = document.createElementNS('http://www.w3.org/2000/svg', 'image');
+            icon.setAttribute('href', `${process.env.VITE_API_BASE_URL}/api/static/country-flag/${territoryObject.owner.country.id}?token=${localStorage.getItem('apiToken')}`);
+            icon.setAttribute('width', '15');
+            icon.setAttribute('height', '15');
+            icon.setAttribute('x', x - 7.5);
+            icon.setAttribute('y', y - 7.5);
 
             svgElement.appendChild(icon);
         }
