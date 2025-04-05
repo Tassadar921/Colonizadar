@@ -9,7 +9,7 @@ import Language from '#models/language';
 import GameTerritory from '#models/game_territory';
 import SerializedGameTerritory from '#types/serialized/serialized_game_territory';
 import Map from '#models/map';
-import User from "#models/user";
+import User from '#models/user';
 
 export default class Game extends BaseModel {
     @column({ isPrimary: true })

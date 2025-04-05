@@ -1,0 +1,72 @@
+services:
+    backend:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        container_name: colonizadar_backend
+        restart: always
+        env_file: back/.env
+        working_dir: /app/back
+        volumes:
+            - ./back:/app/back
+            - /app/back/node_modules
+        environment:
+            VIRTUAL_HOST: api.colonizadar.fr
+        depends_on:
+            - db
+        networks:
+            - colonizadar_backend
+
+    db:
+        image: postgres:15
+        container_name: colonizadar_db
+        restart: always
+        environment:
+            POSTGRES_DB: colonizadar
+            POSTGRES_USER: superadmin
+            POSTGRES_PASSWORD: xxx
+        ports:
+            - "5432:5432"
+        volumes:
+            - postgres_data:/var/lib/postgresql/data
+        networks:
+            colonizadar_backend:
+                aliases:
+                    - db
+
+    adminer:
+        image: ghcr.io/shyim/adminerevo:latest
+        container_name: colonizadar_adminer
+        restart: always
+        environment:
+            VIRTUAL_HOST: db.colonizadar.fr
+        depends_on:
+            - db
+        networks:
+            - colonizadar_backend
+
+    nginx:
+        image: nginx:latest
+        container_name: colonizadar_nginx
+        restart: always
+        ports:
+            - "80:80"
+            - "443:443"
+        environment:
+            VIRTUAL_HOST: api.colonizadar.fr, db.colonizadar.fr
+        entrypoint: [ "/etc/nginx/init.sh" ]
+        volumes:
+            - /var/run/docker.sock:/tmp/docker.sock:ro
+            - ./certs:/etc/nginx/certs:rw
+            - ./vhost.d:/etc/nginx/vhost.d
+            - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+            - ./nginx/init.sh:/etc/nginx/init.sh:ro
+        networks:
+            - colonizadar_backend
+
+volumes:
+    postgres_data:
+
+networks:
+    colonizadar_backend:
+        driver: bridge
