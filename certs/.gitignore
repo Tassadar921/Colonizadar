@@ -1,0 +1,3 @@
+*.crt
+*.fullchain.pem
+*.key

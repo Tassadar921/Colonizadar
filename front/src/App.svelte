@@ -68,6 +68,7 @@
 
     onMount(async () => {
         axios.defaults.baseURL = process.env.VITE_API_BASE_URL;
+        console.log(axios.defaults.baseURL);
         initializeLanguage();
 
         const theme = localStorage.getItem('theme');

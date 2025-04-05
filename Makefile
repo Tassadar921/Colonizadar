@@ -6,17 +6,17 @@ format-front:
 format-back:
 	cd back && npm run format
 
+list-routes:
+	cd back && node ace list:routes
+
 stop:
 	docker compose down --remove-orphans
 
 up:
 	make stop && docker compose up -d --build
 
-remove:
+rm:
 	make stop && docker system prune -f
-
-list-routes:
-	cd back && node ace list:routes
 
 db-fresh:
 	docker compose exec -T backend node ace migration:fresh

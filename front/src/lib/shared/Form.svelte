@@ -32,6 +32,8 @@
         });
 
         try {
+            console.log(axios.defaults.baseURL);
+            console.log('ici');
             const response = await axios({
                 method,
                 url: `${axios.defaults.baseURL}${action}`,
