@@ -6,12 +6,25 @@ format-front:
 format-back:
 	cd back && npm run format
 
-start:
-	gnome-terminal --tab --title="front" -- zsh -c "cd front && npm run dev; exec zsh" & \
-    exec gnome-terminal --tab --title="back" -- zsh -c "cd back && npm run dev; exec zsh"
-
 list-routes:
 	cd back && node ace list:routes
 
-db:
-	cd back && node ace migration:fresh && node ace db:seed
+stop:
+	docker compose down --remove-orphans
+
+up:
+	make stop && docker compose up -d --build
+
+rm:
+	make stop && docker system prune -f
+
+db-fresh:
+	docker compose exec -T backend node ace migration:fresh
+
+db-migrate:
+	docker compose exec -T backend node ace migration:run
+
+db-seed:
+	docker compose exec -T backend node ace db:seed
+
+db: db-fresh db-seed

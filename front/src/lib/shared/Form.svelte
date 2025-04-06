@@ -42,6 +42,7 @@
             loading = false;
             dispatch('success', response.data);
         } catch (error) {
+            console.log(error.message);
             loading = false;
             dispatch('error', error.message);
         }
