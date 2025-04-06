@@ -32,8 +32,6 @@
         });
 
         try {
-            console.log(axios.defaults.baseURL);
-            console.log('ici');
             const response = await axios({
                 method,
                 url: `${axios.defaults.baseURL}${action}`,
@@ -44,6 +42,7 @@
             loading = false;
             dispatch('success', response.data);
         } catch (error) {
+            console.log(error.message);
             loading = false;
             dispatch('error', error.message);
         }
