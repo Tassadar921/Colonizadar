@@ -1,3 +1,5 @@
+version: '3.8'
+
 services:
     db:
         image: postgres:15
@@ -11,10 +13,6 @@ services:
             - "5432:5432"
         volumes:
             - postgres_data:/var/lib/postgresql/data
-        networks:
-            colonizadar_backend:
-                aliases:
-                    - db
 
     backend:
         build:
@@ -26,13 +24,10 @@ services:
         volumes:
             - ./back:/app
             - /app/node_modules
-        environment:
-            VIRTUAL_HOST: api.colonizadar.fr
+        ports:
+            - "3333:3333"
         depends_on:
             - db
-        networks:
-            - colonizadar_backend
-            - colonizadar_app
 
     frontend:
         build:
@@ -42,52 +37,19 @@ services:
         env_file: ./front/.env
         volumes:
             - ./front:/app
-        environment:
-            VIRTUAL_HOST: app.colonizadar.fr
+        ports:
+            - "5173:5173"
         depends_on:
             - backend
-        networks:
-            - colonizadar_app
 
     adminer:
         image: ghcr.io/shyim/adminerevo:latest
         container_name: colonizadar_adminer
         restart: always
-        environment:
-            VIRTUAL_HOST: db.colonizadar.fr
+        ports:
+            - "8080:8080"
         depends_on:
             - db
-        networks:
-            - colonizadar_backend
-
-    nginx:
-        image: nginx:latest
-        container_name: colonizadar_nginx
-        restart: always
-        ports:
-            - "80:80"
-            - "443:443"
-        environment:
-            VIRTUAL_HOST: app.colonizadar.fr, api.colonizadar.fr, db.colonizadar.fr
-        entrypoint: [ "/etc/nginx/init.sh" ]
-        volumes:
-            - /var/run/docker.sock:/tmp/docker.sock:ro
-            - ./certs:/etc/nginx/certs:rw
-            - ./vhost.d:/etc/nginx/vhost.d
-            - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
-            - ./nginx/init.sh:/etc/nginx/init.sh:ro
-        depends_on:
-            - backend
-            - frontend
-        networks:
-            - colonizadar_backend
-            - colonizadar_app
 
 volumes:
     postgres_data:
-
-networks:
-    colonizadar_backend:
-        driver: bridge
-    colonizadar_app:
-        driver: bridge

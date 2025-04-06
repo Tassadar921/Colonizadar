@@ -8,12 +8,11 @@ import env from '#start/env';
  *
  * https://docs.adonisjs.com/guides/security/cors
  */
-console.log(env.get('FRONT_URI'));
 const corsConfig: CorsConfig = defineConfig({
     enabled: true,
     origin: env.get('FRONT_URI'),
     methods: ['OPTIONS', 'GET', 'HEAD', 'POST', 'PUT', 'PATCH', 'DELETE'],
-    headers: ['Content-Type', 'Authorization', 'Origin', 'Accept'],
+    headers: true,
     exposeHeaders: [],
     credentials: true,
     maxAge: 90,
