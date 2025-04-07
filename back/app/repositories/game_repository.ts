@@ -27,7 +27,11 @@ export default class GameRepository extends BaseRepository<typeof Game> {
                     .preload('owner', (ownerQuery): void => {
                         ownerQuery.preload('bot').preload('user').preload('country').preload('difficulty');
                     })
-                    .preload('territory');
+                    .preload('territory', (territoryQuery): void => {
+                        territoryQuery.preload('neighbours', (neighboursQuery): void => {
+                            neighboursQuery.preload('neighbour');
+                        })
+                    });
             })
             .first();
     }

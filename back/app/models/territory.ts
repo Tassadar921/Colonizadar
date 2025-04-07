@@ -1,10 +1,11 @@
 import { DateTime } from 'luxon';
-import { BaseModel, belongsTo, column } from '@adonisjs/lucid/orm';
+import {BaseModel, belongsTo, column, hasMany} from '@adonisjs/lucid/orm';
 import Language from '#models/language';
 import SerializedTerritory from '#types/serialized/serialized_territory';
-import type { BelongsTo } from '@adonisjs/lucid/types/relations';
+import type {BelongsTo, HasMany} from '@adonisjs/lucid/types/relations';
 import Map from '#models/map';
 import PlayableCountry from '#models/playable_country';
+import TerritoryNeighbour from "#models/territory_neighbour";
 
 export default class Territory extends BaseModel {
     @column({ isPrimary: true })
@@ -37,6 +38,11 @@ export default class Territory extends BaseModel {
     @belongsTo((): typeof PlayableCountry => PlayableCountry)
     declare defaultBelongsTo: BelongsTo<typeof PlayableCountry>;
 
+    @hasMany((): typeof TerritoryNeighbour => TerritoryNeighbour, {
+        foreignKey: 'territoryId',
+    })
+    declare neighbours: HasMany<typeof TerritoryNeighbour>;
+
     @column.dateTime({ autoCreate: true })
     declare createdAt: DateTime;
 
@@ -54,12 +60,13 @@ export default class Territory extends BaseModel {
         }
     }
 
-    public apiSerialize(language: Language): SerializedTerritory {
+    public apiSerialize(language: Language, isMain: boolean = true): SerializedTerritory {
         return {
             code: this.code,
             name: this.translate(language),
             isCoastal: this.isCoastal,
             isFactory: this.isFactory,
+            neighbours: isMain ? this.neighbours.map((territoryNeighbour: TerritoryNeighbour): SerializedTerritory => territoryNeighbour.neighbour.apiSerialize(language, false)) : undefined,
             createdAt: this.createdAt?.toString(),
             updatedAt: this.updatedAt?.toString(),
         };
