@@ -5,6 +5,7 @@ type SerializedGameTerritory = {
     id: number;
     power?: number;
     ships?: number;
+    value: number;
     owner?: SerializedRoomPlayer;
     territory: SerializedTerritory;
     createdAt?: string;

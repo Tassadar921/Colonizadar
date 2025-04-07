@@ -24,7 +24,7 @@ export default class extends BaseSeeder {
             return;
         }
 
-        const territories: { code: string; french: string; english: string; isCoastal: boolean; map: Map; defaultBelongsTo?: PlayableCountry; isFactory?: boolean }[] = [
+        const territories: { code: string; french: string; english: string; isCoastal: boolean; map: Map; defaultBelongsTo?: PlayableCountry; isFactory?: boolean; }[] = [
             // ********** North America **********
             { code: 'AL', french: 'Alaska', english: 'Alaska', isCoastal: true, map: worldMap },
             { code: 'BC', french: 'Colombie-Britannique', english: 'British Columbia', isCoastal: true, map: worldMap },
