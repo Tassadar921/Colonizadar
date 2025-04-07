@@ -122,6 +122,7 @@
             if (filteredTerritories.length > 0) {
                 selectedTerritory = filteredTerritories[0];
                 selectedTerritoryOwner = selectedTerritory.owner;
+                console.log(selectedTerritory.territory);
                 showCountryModal = true;
             }
         }
@@ -149,7 +150,6 @@
         });
         if (filteredTerritories.length > 0) {
             if (filteredTerritories[0].owner) {
-                // console.log(filteredTerritories[0].owner.country.color);
                 graphicalTerritory.setAttribute('fill', filteredTerritories[0].owner.country.color);
             } else {
                 graphicalTerritory.removeAttribute('fill');
@@ -195,8 +195,6 @@
             svgElement.appendChild(icon);
         }
     }
-
-    $: console.log(viewBox);
 </script>
 
 <button

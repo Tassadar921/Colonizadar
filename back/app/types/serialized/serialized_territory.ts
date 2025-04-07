@@ -3,6 +3,7 @@ type SerializedTerritory = {
     name: string;
     isCoastal: boolean;
     isFactory: boolean;
+    neighbours?: SerializedTerritory[];
     createdAt?: string;
     updatedAt?: string;
 };
