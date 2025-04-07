@@ -2,7 +2,7 @@ import { DateTime } from 'luxon';
 import { BaseModel, belongsTo, column } from '@adonisjs/lucid/orm';
 import type { BelongsTo } from '@adonisjs/lucid/types/relations';
 import Map from '#models/map';
-import Territory from "#models/territory";
+import Territory from '#models/territory';
 
 export default class TerritoryNeighbour extends BaseModel {
     @column({ isPrimary: true })

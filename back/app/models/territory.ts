@@ -1,11 +1,11 @@
 import { DateTime } from 'luxon';
-import {BaseModel, belongsTo, column, hasMany} from '@adonisjs/lucid/orm';
+import { BaseModel, belongsTo, column, hasMany } from '@adonisjs/lucid/orm';
 import Language from '#models/language';
 import SerializedTerritory from '#types/serialized/serialized_territory';
-import type {BelongsTo, HasMany} from '@adonisjs/lucid/types/relations';
+import type { BelongsTo, HasMany } from '@adonisjs/lucid/types/relations';
 import Map from '#models/map';
 import PlayableCountry from '#models/playable_country';
-import TerritoryNeighbour from "#models/territory_neighbour";
+import TerritoryNeighbour from '#models/territory_neighbour';
 
 export default class Territory extends BaseModel {
     @column({ isPrimary: true })
@@ -66,7 +66,7 @@ export default class Territory extends BaseModel {
             name: this.translate(language),
             isCoastal: this.isCoastal,
             isFactory: this.isFactory,
-            neighbours: isMain ? this.neighbours.map((territoryNeighbour: TerritoryNeighbour): SerializedTerritory => territoryNeighbour.neighbour.apiSerialize(language, false)) : undefined,
+            neighbours: isMain ? this.neighbours?.map((territoryNeighbour: TerritoryNeighbour): SerializedTerritory => territoryNeighbour.neighbour.apiSerialize(language, false)) : undefined,
             createdAt: this.createdAt?.toString(),
             updatedAt: this.updatedAt?.toString(),
         };

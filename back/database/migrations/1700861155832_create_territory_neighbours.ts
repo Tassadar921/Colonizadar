@@ -2,7 +2,7 @@ import { BaseSchema } from '@adonisjs/lucid/schema';
 import { Knex } from 'knex';
 
 export default class extends BaseSchema {
-    protected tableName: string = 'territories';
+    protected tableName: string = 'territory_neighbours';
 
     public async up(): Promise<void> {
         this.schema.createTable(this.tableName, (table: Knex.CreateTableBuilder): void => {
