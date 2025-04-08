@@ -5,6 +5,8 @@ import SerializedUser from '#types/serialized/serialized_user';
 type SerializedGame = {
     id: number;
     name: string;
+    season: number;
+    year: number;
     owner: SerializedUser;
     players: SerializedRoomPlayer[];
     territories: SerializedGameTerritory[];

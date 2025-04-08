@@ -22,6 +22,9 @@ export default class GameTerritory extends BaseModel {
     declare ships: number;
 
     @column()
+    declare value: number;
+
+    @column()
     declare ownerId: string;
 
     @belongsTo((): typeof RoomPlayer => RoomPlayer, {
@@ -52,6 +55,7 @@ export default class GameTerritory extends BaseModel {
             id: this.frontId,
             power: this.owner?.userId === user.id ? this.power : undefined,
             ships: this.owner?.userId === user.id ? this.ships : undefined,
+            value: this.value,
             owner: this.owner?.apiSerialize(language),
             territory: this.territory.apiSerialize(language),
             createdAt: this.createdAt?.toString(),

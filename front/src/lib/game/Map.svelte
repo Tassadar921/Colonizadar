@@ -122,7 +122,6 @@
             if (filteredTerritories.length > 0) {
                 selectedTerritory = filteredTerritories[0];
                 selectedTerritoryOwner = selectedTerritory.owner;
-                console.log(selectedTerritory.territory);
                 showCountryModal = true;
             }
         }
@@ -217,7 +216,7 @@
         <GamePlayer bind:game bind:player={selectedTerritoryOwner} />
     </div>
     <p>{$t('play.game.country-modal.infantry')} : {selectedTerritory?.power ? formatGameTerritoryPowerAndShips(selectedTerritory.power * 1000) : '???'}</p>
-    {#if selectedTerritory && selectedTerritoryOwner}
+    {#if selectedTerritory && selectedTerritoryOwner && selectedTerritory.territory.isCoastal}
         <p>{$t('play.game.country-modal.ships')} : {selectedTerritory?.ships ?? '???'}</p>
     {/if}
 </Modal>

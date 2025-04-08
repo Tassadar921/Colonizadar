@@ -19,6 +19,12 @@ export default class Game extends BaseModel {
     declare frontId: number;
 
     @column()
+    declare season: number;
+
+    @column()
+    declare year: number;
+
+    @column()
     declare roomId: string;
 
     @belongsTo((): typeof Room => Room)
@@ -43,6 +49,8 @@ export default class Game extends BaseModel {
         return {
             id: this.frontId,
             name: this.room.name,
+            season: this.season,
+            year: this.year,
             owner: this.room.owner.apiSerialize(),
             players: this.room.players.map((player: RoomPlayer): SerializedRoomPlayer => player.apiSerialize(language)),
             territories: this.territories.map((territory: GameTerritory): SerializedGameTerritory => territory.apiSerialize(language, user)),

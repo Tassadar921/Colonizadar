@@ -11,6 +11,7 @@ export default class extends BaseSchema {
             table.integer('score').notNullable().defaultTo(0);
             table.boolean('is_user_connected').defaultTo(false);
             table.boolean('is_ready').defaultTo(false);
+            table.bigInteger('gold').notNullable().defaultTo(2000);
             table.uuid('user_id').nullable().references('id').inTable('users').onDelete('CASCADE');
             table.uuid('bot_id').nullable().references('id').inTable('bots').onDelete('CASCADE');
             table.uuid('difficulty_id').nullable().references('id').inTable('bot_difficulties').onDelete('CASCADE');
