@@ -122,7 +122,6 @@
             if (filteredTerritories.length > 0) {
                 selectedTerritory = filteredTerritories[0];
                 selectedTerritoryOwner = selectedTerritory.owner;
-                console.log(selectedTerritory.territory);
                 showCountryModal = true;
             }
         }

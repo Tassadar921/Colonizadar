@@ -5,6 +5,7 @@ import Territory from '#models/territory';
 import GameTerritory from '#models/game_territory';
 import RoomStatusEnum from '#types/enum/room_status_enum';
 import RoomPlayer from '#models/room_player';
+import rollTerritoryValue from '#services/normal_distribution_service';
 
 export default class GameRepository extends BaseRepository<typeof Game> {
     constructor() {
@@ -53,6 +54,8 @@ export default class GameRepository extends BaseRepository<typeof Game> {
                     territoryId: territory.id,
                     gameId: game.id,
                     ownerId: owner?.id,
+                    power: territory.defaultPower ?? 1,
+                    value: rollTerritoryValue(territory),
                 });
             })
         );

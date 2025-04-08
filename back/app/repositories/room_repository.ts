@@ -17,7 +17,13 @@ export default class RoomRepository extends BaseRepository<typeof Room> {
                 playersQuery.preload('user').preload('bot').preload('country').preload('difficulty').orderBy('frontId');
             })
             .preload('map', (mapQuery): void => {
-                mapQuery.preload('territories').preload('createdBy');
+                mapQuery
+                    .preload('territories', (territoriesQuery): void => {
+                        territoriesQuery.preload('neighbours', (neighboursQuery): void => {
+                            neighboursQuery.preload('neighbour');
+                        });
+                    })
+                    .preload('createdBy');
             })
             .first();
     }
@@ -33,7 +39,13 @@ export default class RoomRepository extends BaseRepository<typeof Room> {
                 playersQuery.preload('user').preload('bot').preload('country').preload('difficulty').orderBy('frontId');
             })
             .preload('map', (mapQuery): void => {
-                mapQuery.preload('territories').preload('createdBy');
+                mapQuery
+                    .preload('territories', (territoriesQuery): void => {
+                        territoriesQuery.preload('neighbours', (neighboursQuery): void => {
+                            neighboursQuery.preload('neighbour');
+                        });
+                    })
+                    .preload('createdBy');
             })
             .first();
     }
