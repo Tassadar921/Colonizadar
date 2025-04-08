@@ -29,6 +29,12 @@ export default class Territory extends BaseModel {
     @column()
     declare mapId: string;
 
+    @column()
+    declare defaultPower: number;
+
+    @column()
+    declare defaultShips: number;
+
     @belongsTo((): typeof Map => Map)
     declare map: BelongsTo<typeof Map>;
 
