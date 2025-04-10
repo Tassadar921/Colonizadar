@@ -13,6 +13,7 @@
     import { profile } from '../../stores/profileStore';
     import { createEventDispatcher } from 'svelte';
     import { setPendingFriendRequests } from '../../stores/notificationStore';
+    import SerializedUser from "colonizadar-backend/app/types/serialized/serialized_user";
 
     const dispatch = createEventDispatcher();
 
@@ -41,7 +42,7 @@
         }
     };
 
-    const handleAddFriend = async (user) => {
+    const handleAddFriend = async (user: SerializedUser) => {
         const response = await axios.post('/api/friends/ask', {
             userId: user.id,
         });
