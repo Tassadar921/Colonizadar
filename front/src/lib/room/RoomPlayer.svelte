@@ -2,7 +2,7 @@
     import Select from '../shared/Select.svelte';
     import Icon from '../shared/Icon.svelte';
     import KickPlayer from './KickPlayer.svelte';
-    import { profile } from '../../stores/profileStore.js';
+    import { profile } from '../../stores/profileStore.ts';
     import axios from 'axios';
     import { showToast } from '../../services/toastService.js';
     import Button from '../shared/Button.svelte';

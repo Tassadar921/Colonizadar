@@ -56,7 +56,7 @@ export default class GameTerritory extends BaseModel {
             power: this.owner?.userId === user.id ? this.power : undefined,
             ships: this.owner?.userId === user.id ? this.ships : undefined,
             value: this.value,
-            owner: this.owner?.apiSerialize(language),
+            owner: this.owner?.apiSerialize(language, user),
             territory: this.territory.apiSerialize(language),
             createdAt: this.createdAt?.toString(),
             updatedAt: this.updatedAt?.toString(),

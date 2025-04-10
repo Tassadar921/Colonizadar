@@ -69,7 +69,7 @@ export default class Room extends BaseModel {
         }
     }
 
-    public async apiSerialize(language: Language): Promise<SerializedRoom> {
+    public async apiSerialize(language: Language, user: User): Promise<SerializedRoom> {
         return {
             id: this.frontId,
             name: this.name,
@@ -78,7 +78,7 @@ export default class Room extends BaseModel {
             status: this.status,
             map: await this.map.apiSerialize(language),
             owner: this.owner.apiSerialize(),
-            players: this.players.map((player: RoomPlayer): SerializedRoomPlayer => player.apiSerialize(language)),
+            players: this.players.map((player: RoomPlayer): SerializedRoomPlayer => player.apiSerialize(language, user)),
             createdAt: this.createdAt?.toString(),
             updatedAt: this.updatedAt?.toString(),
         };

@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import { onMount } from 'svelte';
     import { Router, Route } from 'svelte-routing';
     import Homepage from './lib/pages/Home.svelte';
@@ -7,7 +7,7 @@
     import ResetPassword from './lib/pages/ResetPassword.svelte';
     import ConfirmResetPassword from './lib/pages/ConfirmResetPassword.svelte';
     import Forbidden from './lib/pages/Forbidden.svelte';
-    import { updateProfile, profile } from './stores/profileStore.js';
+    import { updateProfile, profile } from './stores/profileStore.ts';
     import NotFound from './lib/pages/NotFound.svelte';
     import axios from 'axios';
     import Profile from './lib/pages/Profile.svelte';
@@ -17,8 +17,8 @@
     import AlreadyConnected from './lib/pages/AlreadyConnected.svelte';
     import Notifications from './lib/pages/Notifications.svelte';
     import Menu from './lib/menu/Menu.svelte';
-    import { setLanguage } from './stores/languageStore.js';
-    import { location, navigate } from './stores/locationStore.js';
+    import { setLanguage } from './stores/languageStore.ts';
+    import { location, navigate } from './stores/locationStore.ts';
     import { locale } from 'svelte-i18n';
     import Social from './lib/pages/Social.svelte';
     import Friends from './lib/pages/Friends.svelte';
@@ -34,7 +34,7 @@
         const langRegex = new RegExp(`^\/(${supportedLanguages.join('|')})(\/|$)`);
         const langMatch = langRegex.exec($location);
 
-        const initialSetLanguage = (language) => {
+        const initialSetLanguage = (language: string) => {
             setLanguage(language);
             locale.set(language);
             axios.defaults.headers.common['Accept-Language'] = `${language}-${language.toUpperCase()}`;
@@ -50,7 +50,7 @@
         }
     };
 
-    const logInformations = async (token) => {
+    const logInformations = async (token: string) => {
         const tokenExpiresAt = localStorage.getItem('apiTokenExpiration');
         if (tokenExpiresAt && new Date(tokenExpiresAt) < new Date()) {
             localStorage.removeItem('apiToken');

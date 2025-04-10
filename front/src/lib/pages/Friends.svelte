@@ -13,8 +13,8 @@
     import Icon from '../shared/Icon.svelte';
     import ConfirmModal from '../shared/ConfirmModal.svelte';
     import { showToast } from '../../services/toastService.js';
-    import { profile } from '../../stores/profileStore.js';
-    import { transmit } from '../../stores/transmitStore.js';
+    import { profile } from '../../stores/profileStore.ts';
+    import { transmit } from '../../stores/transmitStore.ts';
 
     let paginatedFriends = { friends: [] };
     let searchBaseUrl = '/api/friends';

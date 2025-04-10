@@ -1,10 +1,10 @@
 <script>
-    import { transmit } from '../../stores/transmitStore.js';
-    import { addNotification, removeNotification, setPendingFriendRequests } from '../../stores/notificationStore.js';
+    import { transmit } from '../../stores/transmitStore.ts';
+    import { addNotification, removeNotification, setPendingFriendRequests } from '../../stores/notificationStore.ts';
     import { showToast } from '../../services/toastService.js';
     import { t } from 'svelte-i18n';
-    import { profile } from '../../stores/profileStore.js';
-    import { navigate } from '../../stores/locationStore.js';
+    import { profile } from '../../stores/profileStore.ts';
+    import { navigate } from '../../stores/locationStore.ts';
 
     const setupPendingFriendRequests = async () => {
         const addFriendNotification = $transmit.subscription(`notification/add-friend/${$profile.id}`);

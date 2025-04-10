@@ -52,7 +52,7 @@ export default class Game extends BaseModel {
             season: this.season,
             year: this.year,
             owner: this.room.owner.apiSerialize(),
-            players: this.room.players.map((player: RoomPlayer): SerializedRoomPlayer => player.apiSerialize(language)),
+            players: this.room.players.map((player: RoomPlayer): SerializedRoomPlayer => player.apiSerialize(language, user)),
             territories: this.territories.map((territory: GameTerritory): SerializedGameTerritory => territory.apiSerialize(language, user)),
             createdAt: this.createdAt.toString(),
             updatedAt: this.updatedAt.toString(),

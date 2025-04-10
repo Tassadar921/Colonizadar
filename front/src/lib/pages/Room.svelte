@@ -3,8 +3,8 @@
     import Title from '../shared/Title.svelte';
     import Breadcrumbs from '../shared/Breadcrumbs.svelte';
     import { showToast } from '../../services/toastService.js';
-    import { navigate } from '../../stores/locationStore.js';
-    import { profile } from '../../stores/profileStore.js';
+    import { navigate } from '../../stores/locationStore.ts';
+    import { profile } from '../../stores/profileStore.ts';
     import axios from 'axios';
     import Button from '../shared/Button.svelte';
     import Icon from '../shared/Icon.svelte';

@@ -1,11 +1,11 @@
-<script>
+<script lang="ts">
     import WorldMap from './WorldMap.svelte';
     import { onDestroy, onMount } from 'svelte';
     import Modal from '../shared/Modal.svelte';
     import Subtitle from '../shared/Subtitle.svelte';
     import { t } from 'svelte-i18n';
     import GamePlayer from './GamePlayer.svelte';
-    import { formatGameTerritoryPowerAndShips } from '../../services/stringService.js';
+    import { formatGameNumbers } from '../../services/stringService.js';
 
     export let game;
 
@@ -198,7 +198,7 @@
 
 <button
     bind:this={buttonElement}
-    class="width-map max-h-[75%] overflow-hidden {isDragging ? 'cursor-grabbing' : 'cursor-pointer'}"
+    class="width-map overflow-hidden {isDragging ? 'cursor-grabbing' : 'cursor-pointer'}"
     on:wheel={handleWheel}
     on:mousedown={startDrag}
     on:mousemove={onDrag}
@@ -211,12 +211,19 @@
 
 <Modal bind:showModal={showCountryModal}>
     <Subtitle slot="header">{selectedTerritory?.territory.name}</Subtitle>
-    <div class="flex gap-5 items-center">
+    <div class="flex gap-1 items-center">
         <p>{$t('play.game.country-modal.owner')} :</p>
         <GamePlayer bind:game bind:player={selectedTerritoryOwner} />
     </div>
-    <p>{$t('play.game.country-modal.infantry')} : {selectedTerritory?.power ? formatGameTerritoryPowerAndShips(selectedTerritory.power * 1000) : '???'}</p>
+    <p>{$t('play.game.country-modal.value')} : {formatGameNumbers(selectedTerritory?.value * 100000)}</p>
+    <p>{$t('play.game.country-modal.infantry')} : {selectedTerritory?.power ? formatGameNumbers(selectedTerritory.power * 1000) : '???'}</p>
     {#if selectedTerritory && selectedTerritoryOwner && selectedTerritory.territory.isCoastal}
         <p>{$t('play.game.country-modal.ships')} : {selectedTerritory?.ships ?? '???'}</p>
     {/if}
 </Modal>
+
+<style>
+    .width-map {
+        width: 79%;
+    }
+</style>

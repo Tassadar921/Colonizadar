@@ -1,7 +1,7 @@
 <script>
-    import { navigate } from '../../stores/locationStore.js';
+    import { navigate } from '../../stores/locationStore.ts';
     import { createEventDispatcher } from 'svelte';
-    import { language } from '../../stores/languageStore.js';
+    import { language } from '../../stores/languageStore.ts';
 
     const dispatch = createEventDispatcher();
 

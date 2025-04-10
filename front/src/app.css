@@ -11,7 +11,3 @@ h4,
 h5 {
     @apply text-gray-700 dark:text-white;
 }
-
-.width-map {
-    width: 79%;
-}

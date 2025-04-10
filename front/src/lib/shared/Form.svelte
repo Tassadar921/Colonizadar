@@ -6,7 +6,7 @@
     import { t } from 'svelte-i18n';
     import { createEventDispatcher } from 'svelte';
     import FormBackground from './background/FormBackground.svelte';
-    import { language } from '../../stores/languageStore.js';
+    import { language } from '../../stores/languageStore.ts';
 
     const dispatch = createEventDispatcher();
 
