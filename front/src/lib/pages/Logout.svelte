@@ -1,7 +1,7 @@
 <script>
     import { showToast } from '../../services/toastService.js';
-    import { navigate } from '../../stores/locationStore.js';
-    import { clearProfile } from '../../stores/profileStore.js';
+    import { navigate } from '../../stores/locationStore.ts';
+    import { clearProfile } from '../../stores/profileStore.ts';
     import Subtitle from '../shared/Subtitle.svelte';
     import { t } from 'svelte-i18n';
     import Title from '../shared/Title.svelte';

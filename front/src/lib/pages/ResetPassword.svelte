@@ -5,7 +5,7 @@
     import { onMount } from 'svelte';
     import { showToast } from '../../services/toastService.js';
     import { t } from 'svelte-i18n';
-    import { profile } from '../../stores/profileStore.js';
+    import { profile } from '../../stores/profileStore.ts';
     import { isValidEmail } from '../../services/checkStringService.js';
     import Breadcrumbs from '../shared/Breadcrumbs.svelte';
 

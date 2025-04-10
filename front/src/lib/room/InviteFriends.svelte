@@ -6,8 +6,8 @@
     import Pagination from '../shared/Pagination.svelte';
     import Button from '../shared/Button.svelte';
     import Icon from '../shared/Icon.svelte';
-    import { profile } from '../../stores/profileStore.js';
-    import { transmit } from '../../stores/transmitStore.js';
+    import { profile } from '../../stores/profileStore.ts';
+    import { transmit } from '../../stores/transmitStore.ts';
     import { showToast } from '../../services/toastService.js';
 
     export let room;

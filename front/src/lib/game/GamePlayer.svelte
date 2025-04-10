@@ -1,6 +1,6 @@
 <script>
     import Icon from '../shared/Icon.svelte';
-    import { profile } from '../../stores/profileStore.js';
+    import { profile } from '../../stores/profileStore.ts';
     import { t } from 'svelte-i18n';
 
     export let game;
@@ -8,7 +8,7 @@
 </script>
 
 {#if player}
-    <div class="flex gap-5">
+    <div class="ml-3 flex gap-5">
         <!--    Player country    -->
         <div class="flex justify-center items-center">
             <img alt={player.country.name} src={`${process.env.VITE_API_BASE_URL}/api/static/country-flag/${player.country.id}?token=${localStorage.getItem('apiToken')}`} class="max-h-10" />

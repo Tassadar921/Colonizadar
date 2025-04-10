@@ -1,5 +1,5 @@
 {
-    "name": "tassalexandria",
+    "name": "colonizadar-backend",
     "version": "1.0.0",
     "private": false,
     "type": "module",
@@ -40,6 +40,7 @@
         "@japa/plugin-adonisjs": "^4.0.0",
         "@japa/runner": "^4.2.0",
         "@swc/core": "1.10.18",
+        "@tuyau/utils": "^0.0.7",
         "@types/luxon": "^3.4.2",
         "@types/mime-types": "^2.1.4",
         "@types/node": "^22.13.4",
@@ -55,12 +56,16 @@
         "@adonisjs/cors": "^2.2.1",
         "@adonisjs/lucid": "^21.6.0",
         "@adonisjs/transmit": "^2.0.2",
+        "@tuyau/core": "^0.4.0",
         "@vinejs/vine": "^3.0.0",
         "axios": "^1.7.9",
         "luxon": "^3.5.0",
         "mime-types": "^2.1.35",
         "pg": "^8.13.3",
         "reflect-metadata": "^0.2.2"
+    },
+    "exports": {
+        "./api": "./.adonisjs/index.ts"
     },
     "hotHook": {
         "boundaries": [

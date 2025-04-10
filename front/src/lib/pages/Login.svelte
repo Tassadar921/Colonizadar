@@ -6,8 +6,8 @@
     import axios from 'axios';
     import Title from '../shared/Title.svelte';
     import Link from '../shared/Link.svelte';
-    import { navigate } from '../../stores/locationStore.js';
-    import { updateProfile } from '../../stores/profileStore.js';
+    import { navigate } from '../../stores/locationStore.ts';
+    import { updateProfile } from '../../stores/profileStore.ts';
     import { t } from 'svelte-i18n';
     import Breadcrumbs from '../shared/Breadcrumbs.svelte';
 

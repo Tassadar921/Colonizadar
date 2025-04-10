@@ -3,8 +3,8 @@
     import Button from '../shared/Button.svelte';
     import Icon from '../shared/Icon.svelte';
     import { locale } from 'svelte-i18n';
-    import { setLanguage, language } from '../../stores/languageStore.js';
-    import { location, navigate } from '../../stores/locationStore.js';
+    import { setLanguage, language } from '../../stores/languageStore.ts';
+    import { location, navigate } from '../../stores/locationStore.ts';
     import axios from 'axios';
 
     let flags = [

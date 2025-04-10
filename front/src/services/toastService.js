@@ -1,6 +1,6 @@
 import 'toastify-js/src/toastify.css';
 import Toastify from 'toastify-js';
-import { navigate } from '../stores/locationStore.js';
+import { navigate } from '../stores/locationStore.ts';
 
 const successToastStyle = {
     background: 'linear-gradient(to right, #00b09b, #96c93d)',

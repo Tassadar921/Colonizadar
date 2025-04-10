@@ -3,7 +3,7 @@
     import { onMount } from 'svelte';
     import axios from 'axios';
     import { showToast } from '../../services/toastService.js';
-    import { navigate } from '../../stores/locationStore.js';
+    import { navigate } from '../../stores/locationStore.ts';
     import Title from '../shared/Title.svelte';
 
     export let gameId;

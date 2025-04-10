@@ -1,5 +1,5 @@
 <script>
-    import { location } from '../../stores/locationStore.js';
+    import { location } from '../../stores/locationStore.ts';
     import Link from '../shared/Link.svelte';
     import Icon from '../shared/Icon.svelte';
 

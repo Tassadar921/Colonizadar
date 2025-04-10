@@ -2,7 +2,7 @@
     import Title from '../shared/Title.svelte';
     import { t } from 'svelte-i18n';
     import Breadcrumbs from '../shared/Breadcrumbs.svelte';
-    import { notifications, removeNotification, setPendingFriendRequests } from '../../stores/notificationStore.js';
+    import { notifications, removeNotification, setPendingFriendRequests } from '../../stores/notificationStore.ts';
     import NotificationModule from '../notifications/NotificationModule.svelte';
     import Loader from '../shared/Loader.svelte';
     import axios from 'axios';

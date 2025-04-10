@@ -5,7 +5,7 @@
     import { showToast } from '../../services/toastService.js';
     import { t } from 'svelte-i18n';
     import { onMount } from 'svelte';
-    import { profile } from '../../stores/profileStore.js';
+    import { profile } from '../../stores/profileStore.ts';
 
     export let room;
     export let difficulties = [];

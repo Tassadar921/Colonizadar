@@ -12,7 +12,7 @@
     import Switch from '../shared/Switch.svelte';
     import PasswordInput from '../shared/PasswordInput.svelte';
     import { showToast } from '../../services/toastService.js';
-    import { navigate } from '../../stores/locationStore.js';
+    import { navigate } from '../../stores/locationStore.ts';
 
     let showJoinModal = false;
     let showCreateModal = false;

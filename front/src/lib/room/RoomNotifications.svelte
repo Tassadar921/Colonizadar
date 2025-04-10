@@ -1,8 +1,8 @@
 <script>
-    import { transmit } from '../../stores/transmitStore.js';
+    import { transmit } from '../../stores/transmitStore.ts';
     import { showToast } from '../../services/toastService.js';
-    import { profile } from '../../stores/profileStore.js';
-    import { location, navigate } from '../../stores/locationStore.js';
+    import { profile } from '../../stores/profileStore.ts';
+    import { location, navigate } from '../../stores/locationStore.ts';
     import { onDestroy } from 'svelte';
     import { t } from 'svelte-i18n';
     import { createEventDispatcher } from 'svelte';

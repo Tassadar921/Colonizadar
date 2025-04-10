@@ -3,7 +3,7 @@
     import Input from '../shared/Input.svelte';
     import Title from '../shared/Title.svelte';
     import Link from '../shared/Link.svelte';
-    import { profile, setProfile } from '../../stores/profileStore.js';
+    import { profile, setProfile } from '../../stores/profileStore.ts';
     import { showToast } from '../../services/toastService.js';
     import { t } from 'svelte-i18n';
     import { onMount } from 'svelte';

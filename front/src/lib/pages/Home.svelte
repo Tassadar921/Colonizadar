@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import Card from '../shared/Card.svelte';
     import { t } from 'svelte-i18n';
     import Title from '../shared/Title.svelte';

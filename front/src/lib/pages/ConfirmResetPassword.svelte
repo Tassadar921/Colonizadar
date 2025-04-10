@@ -3,10 +3,10 @@
     import PasswordInput from '../shared/PasswordInput.svelte';
     import Title from '../shared/Title.svelte';
     import { showToast } from '../../services/toastService.js';
-    import { navigate } from '../../stores/locationStore.js';
+    import { navigate } from '../../stores/locationStore.ts';
     import { t } from 'svelte-i18n';
     import { checkPassword } from '../../services/checkStringService.js';
-    import { profile } from '../../stores/profileStore.js';
+    import { profile } from '../../stores/profileStore.ts';
     import Breadcrumbs from '../shared/Breadcrumbs.svelte';
 
     export let token = '';

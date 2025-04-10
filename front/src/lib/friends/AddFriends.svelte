@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import { t } from 'svelte-i18n';
     import { onMount } from 'svelte';
     import axios from 'axios';
@@ -9,10 +9,10 @@
     import Button from '../shared/Button.svelte';
     import ConfirmModal from '../shared/ConfirmModal.svelte';
     import Subtitle from '../shared/Subtitle.svelte';
-    import { transmit } from '../../stores/transmitStore.js';
-    import { profile } from '../../stores/profileStore.js';
+    import { transmit } from '../../stores/transmitStore';
+    import { profile } from '../../stores/profileStore';
     import { createEventDispatcher } from 'svelte';
-    import { setPendingFriendRequests } from '../../stores/notificationStore.js';
+    import { setPendingFriendRequests } from '../../stores/notificationStore';
 
     const dispatch = createEventDispatcher();
 
