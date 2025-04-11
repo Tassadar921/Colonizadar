@@ -12,7 +12,7 @@
     import Button from '../shared/Button.svelte';
     import Icon from '../shared/Icon.svelte';
     import ConfirmModal from '../shared/ConfirmModal.svelte';
-    import { showToast } from '../../services/toastService.js';
+    import { showToast } from '../../services/toastService';
     import { profile } from '../../stores/profileStore';
     import { transmit } from '../../stores/transmitStore';
     import type PaginatedFriends from "colonizadar-backend/app/types/paginated/paginated_friends";
@@ -128,11 +128,11 @@
                         {#if friendObject.friend.profilePicture}
                             <img
                                 alt={friendObject.friend.username}
-                                src={`${process.env.VITE_API_BASE_URL}/api/static/profile-picture/${friendObject.friend.id}?token=${localStorage.getItem('apiToken')}`}
+                                src={`${import.meta.env.VITE_API_BASE_URL}/api/static/profile-picture/${friendObject.friend.id}?token=${localStorage.getItem('apiToken')}`}
                                 class="w-10 rounded-full"
                             />
                         {:else}
-                            <img alt={friendObject.friend.username} src={process.env.VITE_DEFAULT_IMAGE} class="max-h-10 rounded-full" />
+                            <img alt={friendObject.friend.username} src={import.meta.env.VITE_DEFAULT_IMAGE} class="max-h-10 rounded-full" />
                         {/if}
                         <p>{friendObject.friend.username}</p>
                     </div>

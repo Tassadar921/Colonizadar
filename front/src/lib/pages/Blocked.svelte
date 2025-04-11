@@ -8,7 +8,7 @@
     import Breadcrumbs from '../shared/Breadcrumbs.svelte';
     import Icon from '../shared/Icon.svelte';
     import Button from '../shared/Button.svelte';
-    import { showToast } from '../../services/toastService.js';
+    import { showToast } from '../../services/toastService';
     import Subtitle from '../shared/Subtitle.svelte';
     import ConfirmModal from '../shared/ConfirmModal.svelte';
     import type PaginatedBlockedUsers from "colonizadar-backend/app/types/paginated/paginated_blocked_users";
@@ -78,11 +78,11 @@
                         {#if blocked.user.profilePicture}
                             <img
                                 alt={blocked.user.username}
-                                src={`${process.env.VITE_API_BASE_URL}/api/static/profile-picture/${blocked.user.id}?token=${localStorage.getItem('apiToken')}`}
+                                src={`${import.meta.env.VITE_API_BASE_URL}/api/static/profile-picture/${blocked.user.id}?token=${localStorage.getItem('apiToken')}`}
                                 class="w-10 rounded-full"
                             />
                         {:else}
-                            <img alt={blocked.user.username} src={process.env.VITE_DEFAULT_IMAGE} class="max-h-10 rounded-full" />
+                            <img alt={blocked.user.username} src={import.meta.env.VITE_DEFAULT_IMAGE} class="max-h-10 rounded-full" />
                         {/if}
                         <p>{blocked.user.username}</p>
                     </div>

@@ -9,9 +9,10 @@
     export let closeText: string | null = null;
     export let successText: string = '';
     export let fullWidth: boolean = false;
-    export let dialog: HTMLDialogElement;
     export let confirm: boolean = false;
     export let closable: boolean = true;
+
+    let dialog: HTMLDialogElement;
 
     const handleSuccess = (): void => {
         dispatch('success');

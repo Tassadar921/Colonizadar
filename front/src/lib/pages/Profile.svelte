@@ -4,7 +4,7 @@
     import Title from '../shared/Title.svelte';
     import Link from '../shared/Link.svelte';
     import { profile, setProfile } from '../../stores/profileStore';
-    import { showToast } from '../../services/toastService.js';
+    import { showToast } from '../../services/toastService';
     import { t } from 'svelte-i18n';
     import { onMount } from 'svelte';
     import FileUpload from '../shared/FileUpload.svelte';
@@ -27,7 +27,7 @@
         };
 
         if ($profile!.profilePicture) {
-            path = `${process.env.VITE_API_BASE_URL}/api/static/profile-picture/${$profile!.id}?token=${localStorage.getItem('apiToken')}`;
+            path = `${import.meta.env.VITE_API_BASE_URL}/api/static/profile-picture/${$profile!.id}?token=${localStorage.getItem('apiToken')}`;
         }
     });
 

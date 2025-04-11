@@ -1,26 +1,30 @@
-<script>
-    import { transmit } from '../../stores/transmitStore.ts';
-    import { showToast } from '../../services/toastService.js';
-    import { profile } from '../../stores/profileStore.ts';
-    import { location, navigate } from '../../stores/locationStore.ts';
+<script lang="ts">
+    import { transmit } from '../../stores/transmitStore';
+    import { showToast } from '../../services/toastService';
+    import { profile } from '../../stores/profileStore';
+    import { location, navigate } from '../../stores/locationStore';
     import { onDestroy } from 'svelte';
     import { t } from 'svelte-i18n';
     import { createEventDispatcher } from 'svelte';
     import { get } from 'svelte/store';
+    import type {Subscription} from "@adonisjs/transmit-client";
+    import type SerializedRoomPlayer from "colonizadar-backend/app/types/serialized/serialized_room_player";
+    import type SerializedRoom from "colonizadar-backend/app/types/serialized/serialized_room";
 
     const dispatch = createEventDispatcher();
-    export let room;
+
+    export let room: SerializedRoom;
 
     let isInitialized = false;
 
-    let roomClosedNotification;
-    let playerJoinedNotification;
-    let playerLeftNotification;
-    let playerUpdateNotification;
-    let roomStartingNotification;
-    let roomStartNotification;
+    let roomClosedNotification: Subscription;
+    let playerJoinedNotification: Subscription;
+    let playerLeftNotification: Subscription;
+    let playerUpdateNotification: Subscription;
+    let roomStartingNotification: Subscription;
+    let roomStartNotification: Subscription;
 
-    const setup = async () => {
+    const setup = async (): Promise<void> => {
         if (isInitialized) {
             return;
         }
@@ -50,8 +54,8 @@
         ]);
     };
 
-    const setupHandlers = () => {
-        roomClosedNotification.onMessage(async () => {
+    const setupHandlers = (): void => {
+        roomClosedNotification.onMessage(async (): Promise<void> => {
             showToast($t('toast.notification.play.room.closed'), 'warning');
             dispatch('close');
             if (get(location).includes('/play/room')) {
@@ -59,34 +63,34 @@
             }
         });
 
-        playerJoinedNotification.onMessage((data) => {
-            if (!room.players.some((player) => player.id === data.player.id)) {
-                room.players = [...room.players, data.player];
+        playerJoinedNotification.onMessage(({ player }: { player: SerializedRoomPlayer }): void => {
+            if (!room.players.some((player: SerializedRoomPlayer) => player.id === player.id)) {
+                room.players = [...room.players, player];
             }
         });
 
-        playerLeftNotification.onMessage((data) => {
-            if (data.player.bot || (data.player && data.player.user.id !== get(profile).id)) {
-                room.players = room.players.filter((player) => player.id !== data.player.id);
+        playerLeftNotification.onMessage(({ player }: { player: SerializedRoomPlayer }): void => {
+            if (player.bot || (player && player.user.id !== $profile!.id)) {
+                room.players = room.players.filter((player: SerializedRoomPlayer) => player.id !== player.id);
             }
         });
 
-        playerUpdateNotification.onMessage(({ player }) => {
-            room.players = room.players.map((p) => (p.id === player.id ? player : p));
-            room.players = room.players.map((player) => (player = { ...player, isReady: false }));
+        playerUpdateNotification.onMessage(({ player }: { player: SerializedRoomPlayer }): void => {
+            room.players = room.players.map((p: SerializedRoomPlayer) => (p.id === player.id ? player : p));
+            room.players = room.players.map((player: SerializedRoomPlayer) => (player = { ...player, isReady: false }));
         });
 
-        roomStartingNotification.onMessage(({ countdown }) => {
-            showToast(countdown);
+        roomStartingNotification.onMessage(({ countdown }: { countdown: number }): void => {
+            showToast(`${countdown}`);
         });
 
-        roomStartNotification.onMessage((data) => {
-            showToast(data.message);
-            navigate(`/play/game/${data.gameId}`);
+        roomStartNotification.onMessage(({ message, gameId }: { message: string; gameId: number }): void => {
+            showToast(message);
+            navigate(`/play/game/${gameId}`);
         });
     };
 
-    const cleanupTransmits = async () => {
+    const cleanupTransmits = async (): Promise<void> => {
         try {
             await Promise.all([
                 roomClosedNotification?.delete().then(() => console.log('roomClosedNotification deleted')),
@@ -96,12 +100,12 @@
                 roomStartingNotification?.delete().then(() => console.log('roomStartingNotification deleted')),
                 roomStartNotification?.delete().then(() => console.log('roomStartNotification deleted')),
             ]);
-        } catch (error) {
+        } catch (error: any) {
             console.error('Error during cleanup:', error);
         }
     };
 
-    $: if (room?.id) {
+    $: if (room.id) {
         setup();
     }
 

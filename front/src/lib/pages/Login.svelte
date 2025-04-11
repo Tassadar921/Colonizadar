@@ -2,7 +2,7 @@
     import Form from '../shared/Form.svelte';
     import Input from '../shared/Input.svelte';
     import PasswordInput from '../shared/PasswordInput.svelte';
-    import { showToast } from '../../services/toastService.js';
+    import { showToast } from '../../services/toastService';
     import axios from 'axios';
     import Title from '../shared/Title.svelte';
     import Link from '../shared/Link.svelte';

@@ -3,7 +3,7 @@
     import { onMount } from 'svelte';
     import axios from 'axios';
     import Pagination from '../shared/Pagination.svelte';
-    import { showToast } from '../../services/toastService.js';
+    import { showToast } from '../../services/toastService';
     import Search from '../shared/Search.svelte';
     import Icon from '../shared/Icon.svelte';
     import Button from '../shared/Button.svelte';
@@ -188,11 +188,11 @@
                         {#if user.profilePicture}
                             <img
                                 alt={user.username}
-                                src={`${process.env.VITE_API_BASE_URL}/api/static/profile-picture/${user.id}?token=${localStorage.getItem('apiToken')}`}
+                                src={`${import.meta.env.VITE_API_BASE_URL}/api/static/profile-picture/${user.id}?token=${localStorage.getItem('apiToken')}`}
                                 class="w-10 rounded-full"
                             />
                         {:else}
-                            <img alt={user.username} src={process.env.VITE_DEFAULT_IMAGE} class="max-h-10 rounded-full" />
+                            <img alt={user.username} src={import.meta.env.VITE_DEFAULT_IMAGE} class="max-h-10 rounded-full" />
                         {/if}
                         <p>{user.username}</p>
                     </div>

@@ -23,11 +23,11 @@
                         {#if notificationObject.from.profilePicture}
                             <img
                                 alt={notificationObject.from.username}
-                                src={`${process.env.VITE_API_BASE_URL}/api/static/profile-picture/${notificationObject.from.id}?token=${localStorage.getItem('apiToken')}`}
+                                src={`${import.meta.env.VITE_API_BASE_URL}/api/static/profile-picture/${notificationObject.from.id}?token=${localStorage.getItem('apiToken')}`}
                                 class="w-10 rounded-full"
                             />
                         {:else}
-                            <img alt={notificationObject.from.username} src={process.env.VITE_DEFAULT_IMAGE} class="max-h-10 rounded-full" />
+                            <img alt={notificationObject.from.username} src={import.meta.env.VITE_DEFAULT_IMAGE} class="max-h-10 rounded-full" />
                         {/if}
                         <p>{notificationObject.from.username}</p>
                     </div>

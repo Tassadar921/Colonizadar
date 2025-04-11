@@ -6,7 +6,7 @@
     import NotificationModule from '../notifications/NotificationModule.svelte';
     import Loader from '../shared/Loader.svelte';
     import axios from 'axios';
-    import { showToast } from '../../services/toastService.js';
+    import { showToast } from '../../services/toastService';
 
     let loading = false;
 

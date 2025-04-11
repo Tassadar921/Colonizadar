@@ -1,7 +1,7 @@
 <script lang="ts">
     import { transmit } from '../../stores/transmitStore';
     import { addNotification, removeNotification, setPendingFriendRequests } from '../../stores/notificationStore';
-    import { showToast } from '../../services/toastService.js';
+    import { showToast } from '../../services/toastService';
     import { t } from 'svelte-i18n';
     import { profile } from '../../stores/profileStore';
     import { navigate } from '../../stores/locationStore';

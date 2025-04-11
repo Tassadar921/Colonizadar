@@ -2,7 +2,7 @@
     import Icon from './Icon.svelte';
     import { t } from 'svelte-i18n';
     import { onMount } from 'svelte';
-    import { raw } from '../../services/stringService.js';
+    import { raw } from '../../services/stringService';
     import Loader from './Loader.svelte';
 
     // Props passed to the component
@@ -19,7 +19,7 @@
 
     let acceptedFormats: string = '';
     let isDragging: boolean = false;
-    let previewSrc: string = `${process.env.VITE_API_BASE_URL}/api/static/${pathPrefix}/${id}?token=${localStorage.getItem('apiToken')}`;
+    let previewSrc: string = `${import.meta.env.VITE_API_BASE_URL}/api/static/${pathPrefix}/${id}?token=${localStorage.getItem('apiToken')}`;
     let inputRef: HTMLInputElement;
     let loading: boolean = false;
 

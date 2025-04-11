@@ -7,11 +7,11 @@
     import Modal from '../shared/Modal.svelte';
     import Subtitle from '../shared/Subtitle.svelte';
     import Input from '../shared/Input.svelte';
-    import { isValidUuid } from '../../services/checkStringService.js';
+    import { isValidUuid } from '../../services/checkStringService';
     import Loader from '../shared/Loader.svelte';
     import Switch from '../shared/Switch.svelte';
     import PasswordInput from '../shared/PasswordInput.svelte';
-    import { showToast } from '../../services/toastService.js';
+    import { showToast } from '../../services/toastService';
     import { navigate } from '../../stores/locationStore';
 
     let showJoinModal: boolean = false;

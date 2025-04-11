@@ -8,7 +8,7 @@
     <div class="grid grid-cols-1 lg:grid-cols-3">
         <div class="px-1">
             <ul class="p-4">
-                <MenuItem target="_blank" footer iconLeft="openSource" href={process.env.VITE_GITHUB_REPOSITORY}>{$t('menu.source-code')}</MenuItem>
+                <MenuItem target="_blank" footer iconLeft="openSource" href={import.meta.env.VITE_GITHUB_REPOSITORY}>{$t('menu.source-code')}</MenuItem>
             </ul>
         </div>
         <div class="px-1">

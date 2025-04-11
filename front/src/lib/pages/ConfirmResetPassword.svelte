@@ -2,10 +2,10 @@
     import Form from '../shared/Form.svelte';
     import PasswordInput from '../shared/PasswordInput.svelte';
     import Title from '../shared/Title.svelte';
-    import { showToast } from '../../services/toastService.js';
+    import { showToast } from '../../services/toastService';
     import { navigate } from '../../stores/locationStore';
     import { t } from 'svelte-i18n';
-    import { checkPassword } from '../../services/checkStringService.js';
+    import { checkPassword } from '../../services/checkStringService';
     import { profile } from '../../stores/profileStore';
     import Breadcrumbs from '../shared/Breadcrumbs.svelte';
 

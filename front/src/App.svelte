@@ -7,7 +7,7 @@
     import ResetPassword from './lib/pages/ResetPassword.svelte';
     import ConfirmResetPassword from './lib/pages/ConfirmResetPassword.svelte';
     import Forbidden from './lib/pages/Forbidden.svelte';
-    import { updateProfile, profile } from './stores/profileStore.ts';
+    import { updateProfile, profile } from './stores/profileStore';
     import NotFound from './lib/pages/NotFound.svelte';
     import axios from 'axios';
     import Profile from './lib/pages/Profile.svelte';
@@ -17,8 +17,8 @@
     import AlreadyConnected from './lib/pages/AlreadyConnected.svelte';
     import Notifications from './lib/pages/Notifications.svelte';
     import Menu from './lib/menu/Menu.svelte';
-    import { setLanguage } from './stores/languageStore.ts';
-    import { location, navigate } from './stores/locationStore.ts';
+    import { setLanguage } from './stores/languageStore';
+    import { location, navigate } from './stores/locationStore';
     import { locale } from 'svelte-i18n';
     import Social from './lib/pages/Social.svelte';
     import Friends from './lib/pages/Friends.svelte';
@@ -67,7 +67,7 @@
     };
 
     onMount(async () => {
-        axios.defaults.baseURL = process.env.VITE_API_BASE_URL;
+        axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL;
         initializeLanguage();
 
         const theme = localStorage.getItem('theme');

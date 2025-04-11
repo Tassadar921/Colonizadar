@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { showToast } from '../../services/toastService.js';
+    import { showToast } from '../../services/toastService';
     import { navigate } from '../../stores/locationStore';
     import { clearProfile } from '../../stores/profileStore';
     import Subtitle from '../shared/Subtitle.svelte';

@@ -8,14 +8,14 @@ export function setProfile(user: SerializedUser | null): void {
     profile.set(user);
 }
 
-export async function updateProfile(profile = null): Promise<void> {
+export async function updateProfile(profile: SerializedUser | null = null): Promise<void> {
     try {
         if (!profile) {
             const { data: fetchedProfile } = await axios.get('/api/profile');
             profile = fetchedProfile.user;
         }
         setProfile(profile);
-    } catch (e) {
+    } catch (error: any) {
         throw new Error();
     }
 }

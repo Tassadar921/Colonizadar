@@ -2,7 +2,7 @@
     import Map from '../game/Map.svelte';
     import { onMount } from 'svelte';
     import axios from 'axios';
-    import { showToast } from '../../services/toastService.js';
+    import { showToast } from '../../services/toastService';
     import { navigate } from '../../stores/locationStore';
     import Title from '../shared/Title.svelte';
     import type SerializedGame from "colonizadar-backend/app/types/serialized/serialized_game";

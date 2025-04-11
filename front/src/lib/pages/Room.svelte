@@ -2,14 +2,14 @@
     import { t } from 'svelte-i18n';
     import Title from '../shared/Title.svelte';
     import Breadcrumbs from '../shared/Breadcrumbs.svelte';
-    import { showToast } from '../../services/toastService.js';
+    import { showToast } from '../../services/toastService';
     import { navigate } from '../../stores/locationStore';
     import axios from 'axios';
     import Button from '../shared/Button.svelte';
     import Icon from '../shared/Icon.svelte';
     import Modal from '../shared/Modal.svelte';
     import Subtitle from '../shared/Subtitle.svelte';
-    import InviteFriends from '../room/InviteFriends.svelte';
+    import InviteFriends from "../room/InviteFriends.svelte";
     import { onMount, onDestroy } from 'svelte';
     import AddBot from '../room/AddBot.svelte';
     import RoomNotifications from '../room/RoomNotifications.svelte';
@@ -20,7 +20,7 @@
     import type SerializedBotDifficulty from "colonizadar-backend/app/types/serialized/serialized_bot_difficulty";
     import type SerializedMap from "colonizadar-backend/app/types/serialized/serialized_map";
 
-    export let roomId: number;
+    export let roomId: string;
 
     let room: SerializedRoom;
     let showInviteFriendModal: boolean = false;
@@ -38,7 +38,7 @@
             playableCountries = playableCountriesData.map((playableCountry: SerializedPlayableCountry) => ({
                 value: playableCountry.id,
                 label: playableCountry.name,
-                uri: `${process.env.VITE_API_BASE_URL}/api/static/country-flag/${playableCountry.id}?token=${localStorage.getItem('apiToken')}`,
+                uri: `${import.meta.env.VITE_API_BASE_URL}/api/static/country-flag/${playableCountry.id}?token=${localStorage.getItem('apiToken')}`,
             }));
         } catch (e: any) {
             showToast($t('toast.room.error'), 'error');

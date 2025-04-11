@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import { t } from 'svelte-i18n';
     import { onMount } from 'svelte';
     import axios from 'axios';
@@ -6,32 +6,35 @@
     import Pagination from '../shared/Pagination.svelte';
     import Button from '../shared/Button.svelte';
     import Icon from '../shared/Icon.svelte';
-    import { profile } from '../../stores/profileStore.ts';
-    import { transmit } from '../../stores/transmitStore.ts';
-    import { showToast } from '../../services/toastService.js';
+    import { profile } from '../../stores/profileStore';
+    import { transmit } from '../../stores/transmitStore';
+    import { showToast } from '../../services/toastService';
+    import type SerializedRoom from "colonizadar-backend/app/types/serialized/serialized_room";
+    import type PaginatedFriends from "colonizadar-backend/app/types/paginated/paginated_friends";
+    import type SerializedUser from "colonizadar-backend/app/types/serialized/serialized_user";
 
-    export let room;
+    export let room: SerializedRoom;
 
-    let paginatedFriends = { friends: [] };
-    let searchBaseUrl = '/api/friends';
-    let query = '';
+    let paginatedFriends: PaginatedFriends;
+    let searchBaseUrl: string = '/api/friends';
+    let query: string = '';
 
-    onMount(async () => {
+    onMount(async (): Promise<void> => {
         await updateFriends();
     });
 
-    const handleSearch = async () => {
+    const handleSearch = async (): Promise<void> => {
         searchBaseUrl = `/api/friends?${query ? `query=${query}` : ''}`;
         const { data } = await axios.get(searchBaseUrl);
         paginatedFriends = data.friends;
     };
 
-    const updateFriends = async () => {
+    const updateFriends = async (): Promise<void> => {
         const { data } = await axios.get(searchBaseUrl);
         paginatedFriends = data.friends;
     };
 
-    const handleInviteFriend = async (user) => {
+    const handleInviteFriend = async (user: SerializedUser): Promise<void> => {
         try {
             const response = await axios.post(`/api/room/${room.id}/invite`, {
                 userId: user.id,
@@ -46,18 +49,18 @@
         }
     };
 
-    const setupEvents = async () => {
+    const setupEvents = async (): Promise<void> => {
         // update when a friend removes us from its friends
-        const removeFriend = $transmit.subscription(`notification/friend/remove/${$profile.id}`);
+        const removeFriend = $transmit.subscription(`notification/friend/remove/${$profile!.id}`);
         await removeFriend.create();
-        removeFriend.onMessage(async (user) => {
+        removeFriend.onMessage(async (user: SerializedUser): Promise<void> => {
             paginatedFriends.friends = paginatedFriends.friends.filter((friendObject) => friendObject.friend.id !== user.id);
         });
 
         // update when a friend blocks user
-        const blockFriend = $transmit.subscription(`notification/blocked/${$profile.id}`);
+        const blockFriend = $transmit.subscription(`notification/blocked/${$profile!.id}`);
         await blockFriend.create();
-        blockFriend.onMessage(async (user) => {
+        blockFriend.onMessage(async (user: SerializedUser): Promise<void> => {
             paginatedFriends.friends = paginatedFriends.friends.filter((friendObject) => friendObject.friend.id !== user.id);
         });
     };
@@ -88,11 +91,11 @@
                         {#if friendObject.friend.profilePicture}
                             <img
                                 alt={friendObject.friend.username}
-                                src={`${process.env.VITE_API_BASE_URL}/api/static/profile-picture/${friendObject.friend.id}?token=${localStorage.getItem('apiToken')}`}
+                                src={`${import.meta.env.VITE_API_BASE_URL}/api/static/profile-picture/${friendObject.friend.id}?token=${localStorage.getItem('apiToken')}`}
                                 class="w-10 rounded-full"
                             />
                         {:else}
-                            <img alt={friendObject.friend.username} src={process.env.VITE_DEFAULT_IMAGE} class="max-h-10 rounded-full" />
+                            <img alt={friendObject.friend.username} src={import.meta.env.VITE_DEFAULT_IMAGE} class="max-h-10 rounded-full" />
                         {/if}
                         <p>{friendObject.friend.username}</p>
                     </div>

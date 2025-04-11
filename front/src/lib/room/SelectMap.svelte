@@ -1,35 +1,34 @@
-<script>
-    import Button from '../shared/Button.svelte';
-    import Icon from '../shared/Icon.svelte';
+<script lang="ts">
     import axios from 'axios';
-    import { showToast } from '../../services/toastService.js';
-    import { t } from 'svelte-i18n';
+    import { showToast } from '../../services/toastService';
     import { onMount } from 'svelte';
-    import { profile } from '../../stores/profileStore.ts';
+    import { profile } from '../../stores/profileStore';
+    import type SerializedMap from "colonizadar-backend/app/types/serialized/serialized_map";
+    import type SerializedRoom from "colonizadar-backend/app/types/serialized/serialized_room";
 
-    export let room;
-    export let maps = [];
+    export let room: SerializedRoom;
+    export let maps: SerializedMap[] = [];
+
+    const checkedProfile = $profile!;
 
     onMount(async () => {
         try {
             const { data } = await axios.get('/api/room/maps');
             maps = data;
-            console.log(maps);
-        } catch (e) {
-            showToast(e.response.data.error, 'error');
+        } catch (error: any) {
+            showToast(error.response.data.error, 'error');
         }
     });
 
-    const handleSelectMap = async () => {
+    const handleSelectMap = async (): Promise<void> => {
         try {
-            const { data } = await axios.post(`/api/room/${room.id}/add-bot`);
-            showToast(`${$t('toast.room.add-bot.success')} : ${data.player.bot.name}`);
-        } catch (e) {
-            showToast(e.response.data.error, 'error');
+
+        } catch (error: any) {
+            showToast(error.response.data.error, 'error');
         }
     };
 </script>
 
-{#if $profile.id === room.owner.id}
+{#if checkedProfile.id === room.owner.id}
     <div class="flex flex-grow justify-end"></div>
 {/if}

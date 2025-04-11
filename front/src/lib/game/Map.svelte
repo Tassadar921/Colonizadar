@@ -5,7 +5,7 @@
     import Subtitle from '../shared/Subtitle.svelte';
     import { t } from 'svelte-i18n';
     import GamePlayer from './GamePlayer.svelte';
-    import { formatGameNumbers } from '../../services/stringService.js';
+    import { formatGameNumbers } from '../../services/stringService';
     import type SerializedGame from "colonizadar-backend/app/types/serialized/serialized_game";
     import type SerializedGameTerritory from "colonizadar-backend/app/types/serialized/serialized_game_territory";
     import type SerializedRoomPlayer from "colonizadar-backend/app/types/serialized/serialized_room_player";
@@ -189,7 +189,7 @@
             // Create an icon and place it
             // TODO: debug flag placement
             const icon = document.createElementNS('http://www.w3.org/2000/svg', 'image');
-            icon.setAttribute('href', `${process.env.VITE_API_BASE_URL}/api/static/country-flag/${territoryObject.owner.country.id}?token=${localStorage.getItem('apiToken')}`);
+            icon.setAttribute('href', `${import.meta.env.VITE_API_BASE_URL}/api/static/country-flag/${territoryObject.owner.country.id}?token=${localStorage.getItem('apiToken')}`);
             icon.setAttribute('width', '15');
             icon.setAttribute('height', '15');
             icon.setAttribute('x', String(x - 7.5));

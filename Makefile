@@ -10,7 +10,7 @@ list-routes:
 	cd back && node ace list:routes
 
 stop:
-	docker compose down --remove-orphans
+	docker compose down --volumes --remove-orphans
 
 up:
 	make stop && docker compose up -d --build

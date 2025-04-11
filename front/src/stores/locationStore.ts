@@ -1,15 +1,15 @@
-import { writable } from 'svelte/store';
+import {type Writable, writable} from 'svelte/store';
 import { navigate as svelteNavigate } from 'svelte-routing';
 
-export const location = writable(window.location.pathname);
+export const location: Writable<string> = writable(window.location.pathname);
 
-export function navigate(path, options = {}) {
-    const currentLanguage = localStorage.getItem('language');
-    const normalizedPath = path.startsWith(`/${currentLanguage}`) ? path : `/${currentLanguage}${path}`;
+export function navigate(path: string, options = {}): void {
+    const currentLanguage: string | null = localStorage.getItem('language');
+    const normalizedPath: string = path.startsWith(`/${currentLanguage}`) ? path : `/${currentLanguage}${path}`;
     location.set(normalizedPath);
     svelteNavigate(normalizedPath, options);
 }
 
-window.addEventListener('popstate', () => {
+window.addEventListener('popstate', (): void => {
     location.set(window.location.pathname);
 });
