@@ -1,13 +1,14 @@
-import { writable } from 'svelte/store';
+import {type Writable, writable} from 'svelte/store';
 import axios from 'axios';
+import type SerializedUser from "colonizadar-backend/app/types/serialized/serialized_user";
 
-export const profile = writable(null);
+export const profile: Writable<SerializedUser | null> = writable(null);
 
-export function setProfile(user) {
+export function setProfile(user: SerializedUser | null): void {
     profile.set(user);
 }
 
-export async function updateProfile(profile = null) {
+export async function updateProfile(profile = null): Promise<void> {
     try {
         if (!profile) {
             const { data: fetchedProfile } = await axios.get('/api/profile');
@@ -19,6 +20,6 @@ export async function updateProfile(profile = null) {
     }
 }
 
-export function clearProfile() {
+export function clearProfile(): void {
     profile.set(null);
 }

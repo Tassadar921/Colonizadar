@@ -1,8 +1,13 @@
-<script>
+<script lang="ts">
     import Link from './Link.svelte';
 
-    export let items;
-    export let hasBackground = false;
+    interface Breadcrumb {
+        label: string;
+        path?: string;
+    }
+
+    export let items: Breadcrumb[];
+    export let hasBackground: boolean = false;
 </script>
 
 <div class="relative flex gap-3 z-10">

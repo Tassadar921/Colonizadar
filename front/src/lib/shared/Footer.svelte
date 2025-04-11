@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import FooterMenu from '../menu/FooterMenu.svelte';
     import MenuItem from '../menu/MenuItem.svelte';
     import { t } from 'svelte-i18n';

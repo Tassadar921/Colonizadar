@@ -1,10 +1,9 @@
-<script>
+<script lang="ts">
     import { t } from 'svelte-i18n';
     import Title from '../shared/Title.svelte';
     import Breadcrumbs from '../shared/Breadcrumbs.svelte';
     import { showToast } from '../../services/toastService.js';
-    import { navigate } from '../../stores/locationStore.ts';
-    import { profile } from '../../stores/profileStore.ts';
+    import { navigate } from '../../stores/locationStore';
     import axios from 'axios';
     import Button from '../shared/Button.svelte';
     import Icon from '../shared/Icon.svelte';
@@ -16,47 +15,51 @@
     import RoomNotifications from '../room/RoomNotifications.svelte';
     import RoomPlayer from '../room/RoomPlayer.svelte';
     import SelectMap from '../room/SelectMap.svelte';
+    import type SerializedRoom from "colonizadar-backend/app/types/serialized/serialized_room";
+    import type SerializedPlayableCountry from "colonizadar-backend/app/types/serialized/serialized_playable_country";
+    import type SerializedBotDifficulty from "colonizadar-backend/app/types/serialized/serialized_bot_difficulty";
+    import type SerializedMap from "colonizadar-backend/app/types/serialized/serialized_map";
 
-    export let roomId;
+    export let roomId: number;
 
-    let room = { name: '', players: [], owner: { id: -1 } };
-    let showInviteFriendModal = false;
-    let playableCountries = [];
-    let botDifficulties = [];
-    let maps = [];
-    let heartbeat;
+    let room: SerializedRoom;
+    let showInviteFriendModal: boolean = false;
+    let playableCountries: SerializedPlayableCountry[];
+    let botDifficulties: SerializedBotDifficulty;
+    let maps: SerializedMap[];
+    let heartbeat: NodeJS.Timeout;
 
-    async function fetchRoomData() {
+    async function fetchRoomData(): Promise<void> {
         try {
             const { data: roomData } = await axios.put(`/api/room/${roomId}/join`);
             room = roomData.room;
 
             const { data: playableCountriesData } = await axios.get(`/api/room/${room.map.id}/playable-countries`);
-            playableCountries = playableCountriesData.map((playableCountry) => ({
+            playableCountries = playableCountriesData.map((playableCountry: SerializedPlayableCountry) => ({
                 value: playableCountry.id,
                 label: playableCountry.name,
                 uri: `${process.env.VITE_API_BASE_URL}/api/static/country-flag/${playableCountry.id}?token=${localStorage.getItem('apiToken')}`,
             }));
-        } catch (e) {
+        } catch (e: any) {
             showToast($t('toast.room.error'), 'error');
             await unloadCleanup();
             navigate('/play');
         }
     }
 
-    const handleCopy = () => {
+    const handleCopy = (): void => {
         navigator.clipboard.writeText(room.token);
         showToast($t('toast.copy.success'));
     };
 
-    const unloadCleanup = async () => {
+    const unloadCleanup = async (): Promise<void> => {
         try {
             clearInterval(heartbeat);
             await axios.delete(`/api/room/${roomId}/leave`);
         } catch (e) {}
     };
 
-    onMount(() => {
+    onMount((): void => {
         heartbeat = setInterval(async () => {
             try {
                 await axios.patch(`/api/room/${roomId}/heartbeat`);
@@ -67,7 +70,7 @@
         }, 2000);
     });
 
-    onDestroy(async () => {
+    onDestroy(async (): Promise<void> => {
         await unloadCleanup();
     });
 

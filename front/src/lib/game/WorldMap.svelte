@@ -1,6 +1,6 @@
-<script>
-    export let viewBox;
-    export let svgElement;
+<script lang="ts">
+    export let viewBox: string;
+    export let svgElement: SVGSVGElement;
 </script>
 
 <svg bind:this={svgElement} {viewBox} xmlns="http://www.w3.org/2000/svg">

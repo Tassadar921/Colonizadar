@@ -1,22 +1,22 @@
-<script>
+<script lang="ts">
     import Form from '../shared/Form.svelte';
     import PasswordInput from '../shared/PasswordInput.svelte';
     import Title from '../shared/Title.svelte';
     import { showToast } from '../../services/toastService.js';
-    import { navigate } from '../../stores/locationStore.ts';
+    import { navigate } from '../../stores/locationStore';
     import { t } from 'svelte-i18n';
     import { checkPassword } from '../../services/checkStringService.js';
-    import { profile } from '../../stores/profileStore.ts';
+    import { profile } from '../../stores/profileStore';
     import Breadcrumbs from '../shared/Breadcrumbs.svelte';
 
     export let token = '';
 
-    let password = '';
-    let confirmPassword = '';
-    let canSubmit = false;
-    let message = '';
+    let password: string = '';
+    let confirmPassword: string = '';
+    let canSubmit: boolean = false;
+    let message: string = '';
 
-    const handleSuccess = () => {
+    const handleSuccess = (): void => {
         showToast($t('toast.reset-password.confirm.success'));
         if (!$profile) {
             navigate('/login');
@@ -25,8 +25,8 @@
         }
     };
 
-    const handleFailure = () => {
-        showToast($t('toast.reset-password.confirm.error', 'error'));
+    const handleFailure = (): void => {
+        showToast($t('toast.reset-password.confirm.error'), 'error');
     };
 
     $: {

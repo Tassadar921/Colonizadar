@@ -1,4 +1,5 @@
 import UserRoleEnum from '#types/enum/user_role_enum';
+import SerializedFile from "#types/serialized/serialized_file";
 
 type SerializedUser = {
     id: number;
@@ -9,6 +10,7 @@ type SerializedUser = {
     acceptedTermsAndConditions: boolean;
     receivedFriendRequest?: boolean;
     sentFriendRequest?: boolean;
+    profilePicture?: SerializedFile;
     updatedAt?: string;
     createdAt?: string;
 };

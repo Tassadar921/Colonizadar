@@ -1,7 +1,7 @@
-<script>
+<script lang="ts">
     import IconButton from './IconButton.svelte';
 
-    export let displayingMode = 'list';
+    export let displayingMode: string = 'list';
 </script>
 
 <div class="flex flex-row justify-end">

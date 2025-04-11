@@ -1,10 +1,10 @@
-<script>
+<script lang="ts">
     import Icon from './Icon.svelte';
     import Button from './Button.svelte';
     import Link from './Link.svelte';
 
-    export let href;
-    export let text;
+    export let href: string;
+    export let text: string;
 </script>
 
 <Button>

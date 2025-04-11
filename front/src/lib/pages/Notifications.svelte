@@ -1,8 +1,8 @@
-<script>
+<script lang="ts">
     import Title from '../shared/Title.svelte';
     import { t } from 'svelte-i18n';
     import Breadcrumbs from '../shared/Breadcrumbs.svelte';
-    import { notifications, removeNotification, setPendingFriendRequests } from '../../stores/notificationStore.ts';
+    import { notifications, removeNotification, setPendingFriendRequests } from '../../stores/notificationStore';
     import NotificationModule from '../notifications/NotificationModule.svelte';
     import Loader from '../shared/Loader.svelte';
     import axios from 'axios';
@@ -10,7 +10,7 @@
 
     let loading = false;
 
-    const handleAcceptPendingRequest = async (event) => {
+    const handleAcceptPendingRequest = async (event: CustomEvent): Promise<void> => {
         const response = await axios.post('/api/friends/accept', { userId: event.detail.from.id });
         if (response.status === 200) {
             removeNotification(event.detail, 'friendRequests');
@@ -21,7 +21,7 @@
         }
     };
 
-    const handleRefusePendingRequest = async (event) => {
+    const handleRefusePendingRequest = async (event: CustomEvent): Promise<void> => {
         const response = await axios.post('/api/friends/refuse', { userId: event.detail.from.id });
         if (response.status === 200) {
             removeNotification(event.detail, 'friendRequests');

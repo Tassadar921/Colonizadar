@@ -1,9 +1,9 @@
-<script>
+<script lang="ts">
     import MenuItem from './MenuItem.svelte';
     import { t } from 'svelte-i18n';
-    import { profile } from '../../stores/profileStore.ts';
+    import { profile } from '../../stores/profileStore';
 
-    export let footer = false;
+    export let footer: boolean = false;
 </script>
 
 <ul class={`${footer ? '' : 'space-y-4'} p-4`}>

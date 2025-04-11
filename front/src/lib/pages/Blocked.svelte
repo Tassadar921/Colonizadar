@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import { t } from 'svelte-i18n';
     import Title from '../shared/Title.svelte';
     import { onMount } from 'svelte';
@@ -11,19 +11,21 @@
     import { showToast } from '../../services/toastService.js';
     import Subtitle from '../shared/Subtitle.svelte';
     import ConfirmModal from '../shared/ConfirmModal.svelte';
+    import type PaginatedBlockedUsers from "colonizadar-backend/app/types/paginated/paginated_blocked_users";
+    import type SerializedUser from "colonizadar-backend/app/types/serialized/serialized_user";
 
-    let paginatedBlockedUsers = { blockedUsers: [] };
-    let searchBaseUrl = '/api/blocked';
-    let query = '';
-    let selectedBlockedUser = { username: '' };
-    let showModal = false;
+    let paginatedBlockedUsers: PaginatedBlockedUsers;
+    let searchBaseUrl: string = '/api/blocked';
+    let query: string = '';
+    let selectedBlockedUser: SerializedUser;
+    let showModal: boolean = false;
 
-    onMount(async () => {
+    onMount(async (): Promise<void> => {
         const { data } = await axios.get(searchBaseUrl);
         paginatedBlockedUsers = data.blockedUsers;
     });
 
-    const handleSearch = async () => {
+    const handleSearch = async (): Promise<void> => {
         searchBaseUrl = `/api/blocked?${query ? `query=${query}` : ''}`;
         const response = await axios.get(searchBaseUrl);
         if (response.status === 200) {
@@ -33,7 +35,7 @@
         }
     };
 
-    const handleUnblockUser = async () => {
+    const handleUnblockUser = async (): Promise<void> => {
         const response = await axios.delete(`/api/blocked/cancel/${selectedBlockedUser.id}`);
         if (response.status === 200) {
             paginatedBlockedUsers.blockedUsers = paginatedBlockedUsers.blockedUsers.filter((currentUser) => {
@@ -46,7 +48,7 @@
         showModal = false;
     };
 
-    const handleShowUnblockModal = (user) => {
+    const handleShowUnblockModal = (user: SerializedUser): void => {
         selectedBlockedUser = user;
         showModal = true;
     };

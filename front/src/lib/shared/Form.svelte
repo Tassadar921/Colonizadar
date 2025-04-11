@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import axios from 'axios';
     import Button from './Button.svelte';
     import Loader from './Loader.svelte';
@@ -6,28 +6,28 @@
     import { t } from 'svelte-i18n';
     import { createEventDispatcher } from 'svelte';
     import FormBackground from './background/FormBackground.svelte';
-    import { language } from '../../stores/languageStore.ts';
+    import { language } from '../../stores/languageStore';
 
     const dispatch = createEventDispatcher();
 
-    export let method = 'GET';
-    export let action = '';
-    export let isValid = false;
-    export let submittable = true;
-    export let showBackground = true;
+    export let method: "GET" | "POST" | undefined = 'GET';
+    export let action: string = '';
+    export let isValid: boolean = false;
+    export let submittable: boolean = true;
+    export let showBackground: boolean = true;
 
-    let loading = false;
-    let isSendButtonDisabled = false;
+    let loading: boolean = false;
+    let isSendButtonDisabled: boolean = false;
 
-    const handleSubmit = async (event) => {
+    const handleSubmit = async (event: SubmitEvent) => {
         event.preventDefault();
         loading = true;
-        const form = event.target;
-        const formData = new FormData(form);
+        const form: HTMLFormElement = <HTMLFormElement>event.target;
+        const formData: FormData = new FormData(form);
 
-        const formDataObj = {};
+        const formDataObj: { [key: string]: any } = {};
 
-        formData.forEach((value, key) => {
+        formData.forEach((value: any, key: string) => {
             formDataObj[key] = value;
         });
 
@@ -41,7 +41,7 @@
             });
             loading = false;
             dispatch('success', response.data);
-        } catch (error) {
+        } catch (error: any) {
             console.log(error.message);
             loading = false;
             dispatch('error', error.message);

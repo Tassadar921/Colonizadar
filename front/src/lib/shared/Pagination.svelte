@@ -1,23 +1,31 @@
-<script>
+<script lang="ts">
     import Icon from './Icon.svelte';
     import Button from './Button.svelte';
     import axios from 'axios';
     import Loader from './Loader.svelte';
 
-    let canGoBack = false;
-    let canGoForward = false;
-    let loading = false;
+    interface PaginatedObject {
+        currentPage: number;
+        firstPage: number;
+        lastPage: number;
+        perPage: number;
+        total: number;
+    }
 
     export let baseUrl;
-    export let paginatedObject;
+    export let paginatedObject: PaginatedObject;
     export let containerRef = window;
 
-    const handleClick = async (page, perPage) => {
+    let canGoBack: boolean = false;
+    let canGoForward: boolean = false;
+    let loading: boolean = false;
+
+    const handleClick = async (page: number, perPage: number) => {
         try {
             loading = true;
             const { data } = await axios.get(`${baseUrl}&page=${page}&perPage=${perPage}`);
             paginatedObject = data;
-        } catch (error) {
+        } catch (error: any) {
             console.error('Failed to fetch paginated data:', error);
         } finally {
             loading = false;

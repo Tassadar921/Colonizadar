@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import Form from '../shared/Form.svelte';
     import Input from '../shared/Input.svelte';
     import PasswordInput from '../shared/PasswordInput.svelte';
@@ -6,16 +6,16 @@
     import axios from 'axios';
     import Title from '../shared/Title.svelte';
     import Link from '../shared/Link.svelte';
-    import { navigate } from '../../stores/locationStore.ts';
-    import { updateProfile } from '../../stores/profileStore.ts';
+    import { navigate } from '../../stores/locationStore';
+    import { updateProfile } from '../../stores/profileStore';
     import { t } from 'svelte-i18n';
     import Breadcrumbs from '../shared/Breadcrumbs.svelte';
 
-    let email = '';
-    let password = '';
-    let isValid = false;
+    let email: string = '';
+    let password: string = '';
+    let isValid: boolean = false;
 
-    const handleSuccess = async (event) => {
+    const handleSuccess = async (event: CustomEvent): Promise<void> => {
         localStorage.setItem('apiToken', event.detail.token.token);
         localStorage.setItem('apiTokenExpiration', event.detail.token.expiresAt);
         axios.defaults.headers.common['Authorization'] = `Bearer ${event.detail.token.token}`;
@@ -26,11 +26,11 @@
         navigate('/');
     };
 
-    const handleFailure = () => {
+    const handleFailure = (): void => {
         showToast($t('toast.login.error'), 'error');
     };
 
-    $: isValid = email && password;
+    $: isValid = !!email && !!password;
 </script>
 
 <Title title={$t('login.title')} hasBackground />

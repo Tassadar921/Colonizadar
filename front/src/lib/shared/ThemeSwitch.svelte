@@ -1,13 +1,13 @@
-<script>
+<script lang="ts">
     import Switch from './Switch.svelte';
     import Icon from './Icon.svelte';
 
-    export let title = '';
+    export let title: string = '';
 
     let checked = localStorage.getItem('theme') === 'dark';
 
-    const iconSize = 20;
-    const switchSize = 4;
+    const iconSize: number = 20;
+    const switchSize: number = 4;
 
     $: localStorage.setItem('theme', checked ? 'dark' : 'light');
     $: document.body.classList.toggle('dark', checked);

@@ -1,10 +1,12 @@
-<script>
+<script lang="ts">
     import Icon from '../shared/Icon.svelte';
-    import { profile } from '../../stores/profileStore.ts';
+    import { profile } from '../../stores/profileStore';
     import { t } from 'svelte-i18n';
+    import type SerializedGame from "colonizadar-backend/app/types/serialized/serialized_game";
+    import type SerializedRoomPlayer from "colonizadar-backend/app/types/serialized/serialized_room_player";
 
-    export let game;
-    export let player;
+    export let game: SerializedGame;
+    export let player: SerializedRoomPlayer;
 </script>
 
 {#if player}
@@ -26,7 +28,7 @@
                 {:else}
                     <img alt={player.user.username} src={process.env.VITE_DEFAULT_IMAGE} class="max-h-10 rounded-full" />
                 {/if}
-                <p class="flex gap-1 {player.user.id === $profile.id ? 'font-bold' : ''}">
+                <p class="flex gap-1 {player.user.id === $profile?.id ? 'font-bold' : ''}">
                     {#if game.owner.id === player.user.id}
                         <span class="text-orange-500">
                             <Icon name="crown" />

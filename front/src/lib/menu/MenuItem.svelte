@@ -1,15 +1,15 @@
-<script>
+<script lang="ts">
     import { location } from '../../stores/locationStore.ts';
     import Link from '../shared/Link.svelte';
     import Icon from '../shared/Icon.svelte';
 
-    export let href = '';
-    export let iconLeft = '';
-    export let iconRight = 'chevronRight';
-    export let footer = false;
-    export let target = '';
+    export let href: string = '';
+    export let iconLeft: string = '';
+    export let iconRight: string = 'chevronRight';
+    export let footer: boolean = false;
+    export let target: string = '';
 
-    let notClickable = true;
+    let notClickable: boolean = true;
 
     $: notClickable = href === $location;
 </script>

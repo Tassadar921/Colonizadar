@@ -13,26 +13,28 @@
     import { profile } from '../../stores/profileStore';
     import { createEventDispatcher } from 'svelte';
     import { setPendingFriendRequests } from '../../stores/notificationStore';
-    import SerializedUser from "colonizadar-backend/app/types/serialized/serialized_user";
+    import type SerializedUser from "colonizadar-backend/app/types/serialized/serialized_user";
+    import type PaginatedUsers from "colonizadar-backend/app/types/paginated/paginated_users";
+    import type SerializedPendingFriend from "colonizadar-backend/app/types/serialized/serialized_pending_friend";
 
     const dispatch = createEventDispatcher();
 
-    let paginatedUsers = { users: [] };
-    let searchBaseUrl = '/api/friends/add?';
-    let query = '';
-    let showModal = false;
-    let blockingUser = { username: '' };
+    let paginatedUsers: PaginatedUsers;
+    let searchBaseUrl: string = '/api/friends/add?';
+    let query: string = '';
+    let showModal: boolean = false;
+    let blockingUser: SerializedUser;
 
-    onMount(async () => {
+    onMount(async (): Promise<void> => {
         await updateAddFriends();
     });
 
-    const updateAddFriends = async () => {
+    const updateAddFriends = async (): Promise<void> => {
         const { data } = await axios.get(searchBaseUrl);
         paginatedUsers = data.users;
     };
 
-    const handleSearch = async () => {
+    const handleSearch = async (): Promise<void> => {
         searchBaseUrl = `/api/friends/add?${query ? `query=${query}` : ''}`;
         const response = await axios.get(searchBaseUrl);
         if (response.status === 200) {
@@ -42,7 +44,7 @@
         }
     };
 
-    const handleAddFriend = async (user: SerializedUser) => {
+    const handleAddFriend = async (user: SerializedUser): Promise<void> => {
         const response = await axios.post('/api/friends/ask', {
             userId: user.id,
         });
@@ -54,7 +56,7 @@
         }
     };
 
-    const handleCancelFriendRequest = async (user) => {
+    const handleCancelFriendRequest = async (user: SerializedUser): Promise<void> => {
         const response = await axios.delete(`/api/friends/pending/cancel/${user.id}`);
 
         if (response.status === 200) {
@@ -65,7 +67,7 @@
         }
     };
 
-    const handleBlockUser = async () => {
+    const handleBlockUser = async (): Promise<void> => {
         const response = await axios.get(`/api/blocked/add/${blockingUser.id}`);
         if (response.status === 200) {
             paginatedUsers.users = paginatedUsers.users.filter((currentUser) => currentUser.id !== blockingUser.id);
@@ -76,71 +78,71 @@
         showModal = false;
     };
 
-    const updateUser = (userId, updates) => {
+    const updateUser = (userId: number, updates: Partial<SerializedUser>): void => {
         paginatedUsers = {
             ...paginatedUsers,
             users: paginatedUsers.users.map((user) => (user.id === userId ? { ...user, ...updates } : user)),
         };
     };
 
-    const handleShowBlockingModal = (user) => {
+    const handleShowBlockingModal = (user: SerializedUser): void => {
         blockingUser = user;
         showModal = true;
     };
 
-    const setupEvents = async () => {
+    const setupEvents = async (): Promise<void> => {
         // sender updated when receiver accepts friend request
-        const acceptedFriendRequest = $transmit.subscription(`notification/add-friend/accept/${$profile.id}`);
+        const acceptedFriendRequest = $transmit.subscription(`notification/add-friend/accept/${$profile!.id}`);
         await acceptedFriendRequest.create();
-        acceptedFriendRequest.onMessage((user) => {
+        acceptedFriendRequest.onMessage((user: SerializedUser) => {
             paginatedUsers.users = paginatedUsers.users.filter((currentUser) => currentUser.id !== user.id);
             dispatch('updateFriends');
         });
 
         // sender updated when friend request is refused by receiver
-        const refuseFriendRequest = $transmit.subscription(`notification/add-friend/refuse/${$profile.id}`);
+        const refuseFriendRequest = $transmit.subscription(`notification/add-friend/refuse/${$profile!.id}`);
         await refuseFriendRequest.create();
-        refuseFriendRequest.onMessage((user) => {
+        refuseFriendRequest.onMessage((user: SerializedUser) => {
             updateUser(user.id, { sentFriendRequest: false });
         });
 
         // receiver updated when request received
-        const receivedFriendRequest = $transmit.subscription(`notification/add-friend/${$profile.id}`);
+        const receivedFriendRequest = $transmit.subscription(`notification/add-friend/${$profile!.id}`);
         await receivedFriendRequest.create();
-        receivedFriendRequest.onMessage((data) => {
-            updateUser(data.notification.from.id, { receivedFriendRequest: true });
+        receivedFriendRequest.onMessage((pendingFriendRequest: SerializedPendingFriend) => {
+            updateUser(pendingFriendRequest.notification.from.id, { receivedFriendRequest: true });
         });
 
         // receiver updated when his request is canceled by sender
-        const cancelFriendRequest = $transmit.subscription(`notification/add-friend/cancel/${$profile.id}`);
+        const cancelFriendRequest = $transmit.subscription(`notification/add-friend/cancel/${$profile!.id}`);
         await cancelFriendRequest.create();
-        cancelFriendRequest.onMessage((data) => {
-            updateUser(data.notification.from.id, { receivedFriendRequest: false });
+        cancelFriendRequest.onMessage((pendingFriendRequest: SerializedPendingFriend) => {
+            updateUser(pendingFriendRequest.notification.from.id, { receivedFriendRequest: false });
         });
 
         // receiver updated when becomes blocked
-        const blockedUser = $transmit.subscription(`notification/blocked/${$profile.id}`);
+        const blockedUser = $transmit.subscription(`notification/blocked/${$profile!.id}`);
         await blockedUser.create();
-        blockedUser.onMessage((user) => {
-            paginatedUsers.users = paginatedUsers.users.filter((currentUser) => currentUser.id !== user.id);
+        blockedUser.onMessage((user: SerializedUser) => {
+            paginatedUsers.users = paginatedUsers.users.filter((currentUser: SerializedUser) => currentUser.id !== user.id);
         });
 
         // receiver updated when becomes unblocked
-        const unblockedUser = $transmit.subscription(`notification/unblocked/${$profile.id}`);
+        const unblockedUser = $transmit.subscription(`notification/unblocked/${$profile!.id}`);
         await unblockedUser.create();
         unblockedUser.onMessage(async () => {
             await updateAddFriends();
         });
 
         // update when a user removes us from its friends
-        const removeFriend = $transmit.subscription(`notification/friend/remove/${$profile.id}`);
+        const removeFriend = $transmit.subscription(`notification/friend/remove/${$profile!.id}`);
         await removeFriend.create();
         removeFriend.onMessage(async () => {
             await updateAddFriends();
         });
     };
 
-    const handleAcceptPendingRequest = async (user) => {
+    const handleAcceptPendingRequest = async (user: SerializedUser): Promise<void> => {
         const response = await axios.post('/api/friends/accept', { userId: user.id });
         if (response.status === 200) {
             showToast(`${user.username} ${$t('toast.notification.friend-request.accept')}`, 'success', '/friends');
@@ -150,7 +152,7 @@
         }
     };
 
-    const handleRefusePendingRequest = async (user) => {
+    const handleRefusePendingRequest = async (user: SerializedUser): Promise<void> => {
         const response = await axios.post('/api/friends/refuse', { userId: user.id });
         if (response.status === 200) {
             showToast(`${$t('toast.notification.friend-request.refuse')} ${user.username}`, 'success', '/friends');

@@ -1,34 +1,34 @@
-<script>
+<script lang="ts">
     import Title from '../shared/Title.svelte';
     import Form from '../shared/Form.svelte';
     import Input from '../shared/Input.svelte';
     import { onMount } from 'svelte';
     import { showToast } from '../../services/toastService.js';
     import { t } from 'svelte-i18n';
-    import { profile } from '../../stores/profileStore.ts';
+    import { profile } from '../../stores/profileStore';
     import { isValidEmail } from '../../services/checkStringService.js';
     import Breadcrumbs from '../shared/Breadcrumbs.svelte';
 
-    let email = '';
-    let readonly = false;
-    let isValid = false;
+    let email: string = '';
+    let readonly: boolean = false;
+    let isValid: boolean = false;
 
-    onMount(async () => {
+    onMount(async (): Promise<void> => {
         if ($profile && $profile.email) {
             email = $profile.email;
             readonly = true;
         }
     });
 
-    const handleSuccess = () => {
+    const handleSuccess = (): void => {
         showToast($t('toast.reset-password.mail.success'));
     };
 
-    const handleFailure = () => {
+    const handleFailure = (): void => {
         showToast($t('toast.reset-password.mail.error'), 'error');
     };
 
-    $: isValid = email && isValidEmail(email);
+    $: isValid = !!email && isValidEmail(email);
 </script>
 
 <Title title={$t('reset-password.title')} hasBackground />

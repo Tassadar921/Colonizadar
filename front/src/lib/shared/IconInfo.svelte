@@ -1,9 +1,9 @@
-<script>
+<script lang="ts">
     import Popover from './Popover.svelte';
     import Icon from './Icon.svelte';
 
-    let show = false;
-    let iconElement;
+    let show: boolean = false;
+    let iconElement: HTMLDivElement;
 </script>
 
 <div class="flex items-center justify-center">

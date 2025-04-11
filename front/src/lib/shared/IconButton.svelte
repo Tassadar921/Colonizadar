@@ -1,11 +1,11 @@
-<script>
+<script lang="ts">
     import Icon from './Icon.svelte';
 
-    export let disabled = false;
-    export let icon = '';
-    export let size = 24;
-    export let idName = '';
-    export let additionalClasses = '';
+    export let disabled: boolean = false;
+    export let icon: string = '';
+    export let size: number = 24;
+    export let idName: string = '';
+    export let additionalClasses: string = '';
 </script>
 
 <button

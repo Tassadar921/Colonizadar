@@ -1,17 +1,17 @@
-<script>
-    import { navigate } from '../../stores/locationStore.ts';
+<script lang="ts">
+    import { navigate } from '../../stores/locationStore';
     import { createEventDispatcher } from 'svelte';
-    import { language } from '../../stores/languageStore.ts';
+    import { language } from '../../stores/languageStore';
 
     const dispatch = createEventDispatcher();
 
-    export let href = '';
-    export let className = '';
-    export let target = '';
-    export let ariaLabel = '';
-    export let style = '';
+    export let href: string = '';
+    export let className: string = '';
+    export let target: string = '';
+    export let ariaLabel: string = '';
+    export let style: string = '';
 
-    const handleClick = (event) => {
+    const handleClick = (event: MouseEvent) => {
         if (target === '' || target === '_self') {
             event.preventDefault();
             if (href) {

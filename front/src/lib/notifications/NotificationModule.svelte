@@ -1,14 +1,16 @@
-<script>
+<script lang="ts">
     import Button from '../shared/Button.svelte';
     import Icon from '../shared/Icon.svelte';
     import { createEventDispatcher } from 'svelte';
     import Subtitle from '../shared/Subtitle.svelte';
+    import type SerializedPendingFriendNotification
+        from "colonizadar-backend/app/types/serialized/serialized_pending_friend_notification";
 
     const dispatch = createEventDispatcher();
 
     export let title;
-    export let notifications = [];
-    export let noneMessage;
+    export let notifications: SerializedPendingFriendNotification[] = [];
+    export let noneMessage: string;
 </script>
 
 <div class="flex flex-col gap-5 my-5 p-5 overflow-y-scroll scrollbar-hide max-h-[400px]">

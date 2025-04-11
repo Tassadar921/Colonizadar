@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import Title from '../shared/Title.svelte';
     import Subtitle from '../shared/Subtitle.svelte';
     import { t } from 'svelte-i18n';

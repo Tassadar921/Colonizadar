@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import { t } from 'svelte-i18n';
     import Title from '../shared/Title.svelte';
     import { onMount } from 'svelte';
@@ -13,40 +13,42 @@
     import Icon from '../shared/Icon.svelte';
     import ConfirmModal from '../shared/ConfirmModal.svelte';
     import { showToast } from '../../services/toastService.js';
-    import { profile } from '../../stores/profileStore.ts';
-    import { transmit } from '../../stores/transmitStore.ts';
+    import { profile } from '../../stores/profileStore';
+    import { transmit } from '../../stores/transmitStore';
+    import type PaginatedFriends from "colonizadar-backend/app/types/paginated/paginated_friends";
+    import type SerializedUser from "colonizadar-backend/app/types/serialized/serialized_user";
 
-    let paginatedFriends = { friends: [] };
-    let searchBaseUrl = '/api/friends';
-    let query = '';
+    let paginatedFriends: PaginatedFriends
+    let searchBaseUrl: string = '/api/friends';
+    let query: string = '';
 
-    let selectedFriend = { username: '' };
+    let selectedFriend: SerializedUser;
 
-    let showAddFriendsModal = false;
-    let showConfirmRemoveFriendModal = false;
-    let showBlockingModal = false;
+    let showAddFriendsModal: boolean = false;
+    let showConfirmRemoveFriendModal: boolean = false;
+    let showBlockingModal: boolean = false;
 
-    onMount(async () => {
+    onMount(async (): Promise<void> => {
         await updateFriends();
     });
 
-    const handleSearch = async () => {
+    const handleSearch = async (): Promise<void> => {
         searchBaseUrl = `/api/friends?${query ? `query=${query}` : ''}`;
         const { data } = await axios.get(searchBaseUrl);
         paginatedFriends = data.friends;
     };
 
-    const updateFriends = async () => {
+    const updateFriends = async (): Promise<void> => {
         const { data } = await axios.get(searchBaseUrl);
         paginatedFriends = data.friends;
     };
 
-    const handleShowRemoveFriendModal = (user) => {
+    const handleShowRemoveFriendModal = (user: SerializedUser): void => {
         selectedFriend = user;
         showConfirmRemoveFriendModal = true;
     };
 
-    const handleRemoveFriend = async () => {
+    const handleRemoveFriend = async (): Promise<void> => {
         const response = await axios.delete(`/api/friends/remove/${selectedFriend.id}`);
         if (response.status === 200) {
             paginatedFriends.friends = paginatedFriends.friends.filter((friendObject) => friendObject.friend.id !== selectedFriend.id);
@@ -55,12 +57,12 @@
         }
     };
 
-    const handleShowBlockingModal = (user) => {
+    const handleShowBlockingModal = (user: SerializedUser): void => {
         selectedFriend = user;
         showBlockingModal = true;
     };
 
-    const handleBlockUser = async () => {
+    const handleBlockUser = async (): Promise<void> => {
         const response = await axios.get(`/api/blocked/add/${selectedFriend.id}`);
         if (response.status === 200) {
             paginatedFriends.friends = paginatedFriends.friends.filter((friendObject) => friendObject.friend.id !== selectedFriend.id);
@@ -71,17 +73,17 @@
         }
     };
 
-    const setupEvents = async () => {
+    const setupEvents = async (): Promise<void> => {
         // update when a friend removes us from its friends
-        const removeFriend = $transmit.subscription(`notification/friend/remove/${$profile.id}`);
+        const removeFriend = $transmit.subscription(`notification/friend/remove/${$profile!.id}`);
         await removeFriend.create();
-        removeFriend.onMessage(async (user) => {
+        removeFriend.onMessage(async (user: SerializedUser) => {
             paginatedFriends.friends = paginatedFriends.friends.filter((friendObject) => friendObject.friend.id !== user.id);
         });
 
-        const blockFriend = $transmit.subscription(`notification/blocked/${$profile.id}`);
+        const blockFriend = $transmit.subscription(`notification/blocked/${$profile!.id}`);
         await blockFriend.create();
-        blockFriend.onMessage(async (user) => {
+        blockFriend.onMessage(async (user: SerializedUser) => {
             paginatedFriends.friends = paginatedFriends.friends.filter((friendObject) => friendObject.friend.id !== user.id);
         });
     };

@@ -1,24 +1,24 @@
-<script>
+<script lang="ts">
     import { t } from 'svelte-i18n';
     import { createEventDispatcher } from 'svelte';
 
     const dispatch = createEventDispatcher();
 
-    export let search = '';
-    export let placeholder = null;
-    export let debounce = 300;
-    export let minChars = null;
-    export let name = '';
-    export let disabled = false;
-    export let label = '';
-    export let selected = false;
-    export let results = [];
-    export let selectedObserver = false;
+    export let search: string = '';
+    export let placeholder: string | null = null;
+    export let debounce: number = 300;
+    export let minChars: number | null = null;
+    export let name: string = '';
+    export let disabled: boolean = false;
+    export let label: string = '';
+    export let selected: boolean = false;
+    export let results: any[] = [];
+    export let selectedObserver: boolean = false;
 
-    let searchTimeout = null;
-    let focused = false;
+    let searchTimeout: NodeJS.Timeout | null = null;
+    let focused: boolean = false;
 
-    const searchFunction = async () => {
+    const searchFunction = async (): Promise<void> => {
         if (minChars && search.length < minChars) {
             results = [];
             return;
@@ -26,7 +26,7 @@
         dispatch('search');
     };
 
-    const searchDebounced = (event) => {
+    const searchDebounced = (event: KeyboardEvent): void => {
         clearTimeout(searchTimeout);
 
         if (event.key === 'Enter') {
@@ -37,12 +37,12 @@
         }
     };
 
-    const handleFocus = () => {
+    const handleFocus = (): void => {
         focused = true;
         dispatch('focus');
     };
 
-    const handleBlur = () => {
+    const handleBlur = (): void => {
         focused = false;
         dispatch('blur');
     };

@@ -1,12 +1,12 @@
-<script>
-    export let type = 'button';
-    export let disabled = false;
-    export let idName = '';
-    export let className = '';
-    export let additionalStyle = '';
-    export let customStyle = false;
-    export let ariaLabel = 'This is a button';
-    export let style = '';
+<script lang="ts">
+    export let type: "button" | "reset" | "submit" | null | undefined = 'button';
+    export let disabled: boolean = false;
+    export let idName: string = '';
+    export let className: string = '';
+    export let additionalStyle: string = '';
+    export let customStyle: boolean = false;
+    export let ariaLabel: string = 'This is a button';
+    export let style: string = '';
 </script>
 
 <button
