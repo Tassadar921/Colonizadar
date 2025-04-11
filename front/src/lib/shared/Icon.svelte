@@ -1,5 +1,5 @@
 <script lang="ts">
-    import type { SvelteComponent } from "svelte";
+    import type { SvelteComponent } from 'svelte';
 
     export let name: string = '';
     export let size: number = 24;
@@ -7,14 +7,60 @@
     let IconComponent: typeof SvelteComponent | null = null;
 
     const validIcons: string[] = [
-        'Book', 'Camera', 'Moon', 'Sun', 'Burger', 'Close', 'Settings',
-        'ChevronLeft', 'ChevronRight', 'DoubleArrowLeft', 'DoubleArrowRight', 'Home',
-        'User', 'UserRemove', 'Eye', 'EyeSlash', 'Trash', 'Undo', 'ArrowDown',
-        'ArrowUp', 'Euro', 'Dollar', 'Upload', 'Search', 'Pen', 'Plus',
-        'Minus', 'Save', 'Check', 'Exchange', 'PaperClip', 'Send', 'Download',
-        'Help', 'Clear', 'ArrowLeft', 'ArrowRight', 'OpenSource', 'ChevronDown',
-        'ChevronUp', 'EnglishFlag', 'FrenchFlag', 'People', 'Game', 'Stop', 'Bell',
-        'RemoveUser', 'AddUser', 'Unblock', 'Confirm', 'Crown', 'Invite', 'Copy', 'Bot'
+        'Book',
+        'Camera',
+        'Moon',
+        'Sun',
+        'Burger',
+        'Close',
+        'Settings',
+        'ChevronLeft',
+        'ChevronRight',
+        'DoubleArrowLeft',
+        'DoubleArrowRight',
+        'Home',
+        'User',
+        'UserRemove',
+        'Eye',
+        'EyeSlash',
+        'Trash',
+        'Undo',
+        'ArrowDown',
+        'ArrowUp',
+        'Euro',
+        'Dollar',
+        'Upload',
+        'Search',
+        'Pen',
+        'Plus',
+        'Minus',
+        'Save',
+        'Check',
+        'Exchange',
+        'PaperClip',
+        'Send',
+        'Download',
+        'Help',
+        'Clear',
+        'ArrowLeft',
+        'ArrowRight',
+        'OpenSource',
+        'ChevronDown',
+        'ChevronUp',
+        'EnglishFlag',
+        'FrenchFlag',
+        'People',
+        'Game',
+        'Stop',
+        'Bell',
+        'RemoveUser',
+        'AddUser',
+        'Unblock',
+        'Confirm',
+        'Crown',
+        'Invite',
+        'Copy',
+        'Bot',
     ];
 
     const toCamelCase = (str: string): string => {

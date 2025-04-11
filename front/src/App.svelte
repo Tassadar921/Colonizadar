@@ -87,8 +87,8 @@
 
 <main class="flex flex-col bg-gray-200 dark:bg-gray-900 h-screen w-screen">
     <div class="px-3.5 min-h-screen">
-        <Menu />
-        {#if !$isLoading}
+        {#if $isLoading}
+            <Menu />
             <Router>
                 <Route path="/:language/reset-password"><ResetPassword /></Route>
                 <Route path="/:language/reset-password/confirm/:token" let:params><ConfirmResetPassword {...params} /></Route>
@@ -106,7 +106,7 @@
                         <Room key={params.roomId} roomId={params.roomId} />
                     </Route>
                     <Route path="/:language/play/game/:gameId" let:params>
-                        <Game key={params.gameId} gameId={params.gameId} />
+                        <Game key={params.roomId} gameId={params.gameId} />
                     </Route>
 
                     <Route path="/:language/profile"><Profile /></Route>
@@ -127,9 +127,9 @@
 
                 <Route path="*"><NotFound /></Route>
             </Router>
+            <Footer />
         {:else}
             <Loader loading />
         {/if}
     </div>
-    <Footer />
 </main>

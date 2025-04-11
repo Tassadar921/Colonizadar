@@ -7,9 +7,9 @@
     import { t } from 'svelte-i18n';
     import { createEventDispatcher } from 'svelte';
     import { get } from 'svelte/store';
-    import type {Subscription} from "@adonisjs/transmit-client";
-    import type SerializedRoomPlayer from "colonizadar-backend/app/types/serialized/serialized_room_player";
-    import type SerializedRoom from "colonizadar-backend/app/types/serialized/serialized_room";
+    import type { Subscription } from '@adonisjs/transmit-client';
+    import type SerializedRoomPlayer from 'colonizadar-backend/app/types/serialized/serialized_room_player';
+    import type SerializedRoom from 'colonizadar-backend/app/types/serialized/serialized_room';
 
     const dispatch = createEventDispatcher();
 

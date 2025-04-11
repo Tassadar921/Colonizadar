@@ -6,9 +6,9 @@
     import { t } from 'svelte-i18n';
     import GamePlayer from './GamePlayer.svelte';
     import { formatGameNumbers } from '../../services/stringService';
-    import type SerializedGame from "colonizadar-backend/app/types/serialized/serialized_game";
-    import type SerializedGameTerritory from "colonizadar-backend/app/types/serialized/serialized_game_territory";
-    import type SerializedRoomPlayer from "colonizadar-backend/app/types/serialized/serialized_room_player";
+    import type SerializedGame from 'colonizadar-backend/app/types/serialized/serialized_game';
+    import type SerializedGameTerritory from 'colonizadar-backend/app/types/serialized/serialized_game_territory';
+    import type SerializedRoomPlayer from 'colonizadar-backend/app/types/serialized/serialized_room_player';
 
     export let game: SerializedGame;
 
@@ -61,7 +61,7 @@
                 path.removeEventListener('mouseover', () => handleHover(path));
                 path.removeEventListener('mouseout', () => handleBlur(path));
             });
-        }
+        };
     });
 
     const handleResize = (): void => {
@@ -119,7 +119,7 @@
 
     const handleClick = (territoryId: string): void => {
         if (!hasDragged && territoryId) {
-            const filteredTerritories: SerializedGameTerritory[] = game.territories.filter((territoryObject) : boolean => {
+            const filteredTerritories: SerializedGameTerritory[] = game.territories.filter((territoryObject): boolean => {
                 return territoryObject.territory.code.toLowerCase() === territoryId;
             });
             if (filteredTerritories.length > 0) {
@@ -180,8 +180,7 @@
             graphicalTerritory.setAttribute('fill', territoryObject.owner.country.color);
 
             // Select the good path : path or .mainland into a <g>
-            let path: SVGPathElement =
-                graphicalTerritory.tagName === 'path' ? graphicalTerritory as unknown as SVGPathElement : graphicalTerritory.querySelector('.mainland') as SVGPathElement;
+            let path: SVGPathElement = graphicalTerritory.tagName === 'path' ? (graphicalTerritory as unknown as SVGPathElement) : (graphicalTerritory.querySelector('.mainland') as SVGPathElement);
             const bbox = path.getBBox();
             const x = bbox.x + bbox.width / 2;
             const y = bbox.y + bbox.height / 2;

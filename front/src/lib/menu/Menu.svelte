@@ -33,7 +33,13 @@
 <div class="relative z-20 flex justify-start">
     <div class="mt-3">
         <!-- Bind the button element reference -->
-        <Button idName="menu-button" customStyle className={`text-primary-500 hover:text-primary-800 duration-300 transition-colors ${isOpen ? 'opacity-0' : ''}`} on:click={() => (isOpen = !isOpen)} bind:this={button}>
+        <Button
+            idName="menu-button"
+            customStyle
+            className={`text-primary-500 hover:text-primary-800 duration-300 transition-colors ${isOpen ? 'opacity-0' : ''}`}
+            on:click={() => (isOpen = !isOpen)}
+            bind:this={button}
+        >
             <Icon name="burger" />
         </Button>
 

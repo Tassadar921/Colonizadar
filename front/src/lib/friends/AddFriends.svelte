@@ -13,9 +13,9 @@
     import { profile } from '../../stores/profileStore';
     import { createEventDispatcher } from 'svelte';
     import { setPendingFriendRequests } from '../../stores/notificationStore';
-    import type SerializedUser from "colonizadar-backend/app/types/serialized/serialized_user";
-    import type PaginatedUsers from "colonizadar-backend/app/types/paginated/paginated_users";
-    import type SerializedPendingFriend from "colonizadar-backend/app/types/serialized/serialized_pending_friend";
+    import type SerializedUser from 'colonizadar-backend/app/types/serialized/serialized_user';
+    import type PaginatedUsers from 'colonizadar-backend/app/types/paginated/paginated_users';
+    import type SerializedPendingFriend from 'colonizadar-backend/app/types/serialized/serialized_pending_friend';
 
     const dispatch = createEventDispatcher();
 

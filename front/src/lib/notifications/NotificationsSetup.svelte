@@ -5,8 +5,8 @@
     import { t } from 'svelte-i18n';
     import { profile } from '../../stores/profileStore';
     import { navigate } from '../../stores/locationStore';
-    import type SerializedPendingFriend from "colonizadar-backend/app/types/serialized/serialized_pending_friend";
-    import type SerializedUser from "colonizadar-backend/app/types/serialized/serialized_user";
+    import type SerializedPendingFriend from 'colonizadar-backend/app/types/serialized/serialized_pending_friend';
+    import type SerializedUser from 'colonizadar-backend/app/types/serialized/serialized_user';
 
     const setupPendingFriendRequests = async (): Promise<void> => {
         const addFriendNotification = $transmit.subscription(`notification/add-friend/${$profile!.id}`);
@@ -30,7 +30,7 @@
 
         const inviteRequest = $transmit.subscription(`notification/play/invite/${$profile!.id}`);
         await inviteRequest.create();
-        inviteRequest.onMessage((data: { roomId: number, from: SerializedUser }) => {
+        inviteRequest.onMessage((data: { roomId: number; from: SerializedUser }) => {
             const handleJoin = async (roomId: number) => {
                 showToast($t('toast.notification.play.accepted'));
                 navigate(`/play/room/${roomId}`);

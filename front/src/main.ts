@@ -1,19 +1,17 @@
 import App from './App.svelte';
-import { init, register, locale } from 'svelte-i18n';
+import './app.css';
+import { initLanguages } from './stores/languageStore';
 
-const language: string | null = localStorage.getItem("language");
-if (language !== "en" && language !== "fr") {
-    localStorage.setItem("language", "en");
-}
-
-register('en', () => import('./locales/en.json'));
-register('fr', () => import('./locales/fr.json'));
-
-init({ fallbackLocale: 'en', initialLocale: language || 'en' });
-locale.set(localStorage.getItem('language'));
+initLanguages()
+    .then((): void => {
+        console.log('Languages initialized');
+    })
+    .catch((error: any): void => {
+        console.error('Error initializing languages:', error);
+    });
 
 const app = new App({
-    target: document.getElementById('app')!
+    target: document.getElementById('app')!,
 });
 
 export default app;

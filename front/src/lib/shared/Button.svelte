@@ -1,5 +1,5 @@
 <script lang="ts">
-    export let type: "button" | "reset" | "submit" | null | undefined = 'button';
+    export let type: 'button' | 'reset' | 'submit' | null | undefined = 'button';
     export let disabled: boolean = false;
     export let idName: string = '';
     export let className: string = '';

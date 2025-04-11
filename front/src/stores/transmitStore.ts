@@ -1,4 +1,4 @@
-import {type Writable, writable} from 'svelte/store';
+import { type Writable, writable } from 'svelte/store';
 import { Transmit } from '@adonisjs/transmit-client';
 
 const baseUrl: string = import.meta.env.VITE_API_BASE_URL;

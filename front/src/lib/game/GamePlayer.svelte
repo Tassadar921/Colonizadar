@@ -2,8 +2,8 @@
     import Icon from '../shared/Icon.svelte';
     import { profile } from '../../stores/profileStore';
     import { t } from 'svelte-i18n';
-    import type SerializedGame from "colonizadar-backend/app/types/serialized/serialized_game";
-    import type SerializedRoomPlayer from "colonizadar-backend/app/types/serialized/serialized_room_player";
+    import type SerializedGame from 'colonizadar-backend/app/types/serialized/serialized_game';
+    import type SerializedRoomPlayer from 'colonizadar-backend/app/types/serialized/serialized_room_player';
 
     export let game: SerializedGame;
     export let player: SerializedRoomPlayer;

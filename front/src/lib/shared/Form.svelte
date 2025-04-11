@@ -10,7 +10,7 @@
 
     const dispatch = createEventDispatcher();
 
-    export let method: "GET" | "POST" | undefined = 'GET';
+    export let method: 'GET' | 'POST' | 'get' | 'post' | undefined = 'GET';
     export let action: string = '';
     export let isValid: boolean = false;
     export let submittable: boolean = true;

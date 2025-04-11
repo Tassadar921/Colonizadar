@@ -3,8 +3,8 @@
     import Icon from '../shared/Icon.svelte';
     import axios from 'axios';
     import { showToast } from '../../services/toastService';
-    import type SerializedRoom from "colonizadar-backend/app/types/serialized/serialized_room";
-    import type SerializedRoomPlayer from "colonizadar-backend/app/types/serialized/serialized_room_player";
+    import type SerializedRoom from 'colonizadar-backend/app/types/serialized/serialized_room';
+    import type SerializedRoomPlayer from 'colonizadar-backend/app/types/serialized/serialized_room_player';
 
     export let room: SerializedRoom;
     export let player: SerializedRoomPlayer;

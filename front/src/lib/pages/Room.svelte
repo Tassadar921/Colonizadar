@@ -9,16 +9,16 @@
     import Icon from '../shared/Icon.svelte';
     import Modal from '../shared/Modal.svelte';
     import Subtitle from '../shared/Subtitle.svelte';
-    import InviteFriends from "../room/InviteFriends.svelte";
+    import InviteFriends from '../room/InviteFriends.svelte';
     import { onMount, onDestroy } from 'svelte';
     import AddBot from '../room/AddBot.svelte';
     import RoomNotifications from '../room/RoomNotifications.svelte';
     import RoomPlayer from '../room/RoomPlayer.svelte';
     import SelectMap from '../room/SelectMap.svelte';
-    import type SerializedRoom from "colonizadar-backend/app/types/serialized/serialized_room";
-    import type SerializedPlayableCountry from "colonizadar-backend/app/types/serialized/serialized_playable_country";
-    import type SerializedBotDifficulty from "colonizadar-backend/app/types/serialized/serialized_bot_difficulty";
-    import type SerializedMap from "colonizadar-backend/app/types/serialized/serialized_map";
+    import type SerializedRoom from 'colonizadar-backend/app/types/serialized/serialized_room';
+    import type SerializedPlayableCountry from 'colonizadar-backend/app/types/serialized/serialized_playable_country';
+    import type SerializedBotDifficulty from 'colonizadar-backend/app/types/serialized/serialized_bot_difficulty';
+    import type SerializedMap from 'colonizadar-backend/app/types/serialized/serialized_map';
 
     export let roomId: string;
 

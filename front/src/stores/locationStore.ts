@@ -1,4 +1,4 @@
-import {type Writable, writable} from 'svelte/store';
+import { type Writable, writable } from 'svelte/store';
 import { navigate as svelteNavigate } from 'svelte-routing';
 
 export const location: Writable<string> = writable(window.location.pathname);

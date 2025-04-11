@@ -15,10 +15,10 @@
     import { showToast } from '../../services/toastService';
     import { profile } from '../../stores/profileStore';
     import { transmit } from '../../stores/transmitStore';
-    import type PaginatedFriends from "colonizadar-backend/app/types/paginated/paginated_friends";
-    import type SerializedUser from "colonizadar-backend/app/types/serialized/serialized_user";
+    import type PaginatedFriends from 'colonizadar-backend/app/types/paginated/paginated_friends';
+    import type SerializedUser from 'colonizadar-backend/app/types/serialized/serialized_user';
 
-    let paginatedFriends: PaginatedFriends
+    let paginatedFriends: PaginatedFriends;
     let searchBaseUrl: string = '/api/friends';
     let query: string = '';
 

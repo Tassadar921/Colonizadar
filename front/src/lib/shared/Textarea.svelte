@@ -9,8 +9,8 @@
     export let max: number | null = null;
 
     interface InputAttributes {
-        maxlength?: number
-        minlength?: number
+        maxlength?: number;
+        minlength?: number;
     }
 
     let focused: boolean = false;

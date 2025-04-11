@@ -11,8 +11,8 @@
     import { showToast } from '../../services/toastService';
     import Subtitle from '../shared/Subtitle.svelte';
     import ConfirmModal from '../shared/ConfirmModal.svelte';
-    import type PaginatedBlockedUsers from "colonizadar-backend/app/types/paginated/paginated_blocked_users";
-    import type SerializedUser from "colonizadar-backend/app/types/serialized/serialized_user";
+    import type PaginatedBlockedUsers from 'colonizadar-backend/app/types/paginated/paginated_blocked_users';
+    import type SerializedUser from 'colonizadar-backend/app/types/serialized/serialized_user';
 
     let paginatedBlockedUsers: PaginatedBlockedUsers;
     let searchBaseUrl: string = '/api/blocked';

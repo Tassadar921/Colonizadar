@@ -6,7 +6,7 @@
     import { t } from 'svelte-i18n';
     import { onMount } from 'svelte';
     import { profile } from '../../stores/profileStore';
-    import type SerializedBotDifficulty from "colonizadar-backend/app/types/serialized/serialized_bot_difficulty";
+    import type SerializedBotDifficulty from 'colonizadar-backend/app/types/serialized/serialized_bot_difficulty';
 
     export let room;
     export let difficulties: SerializedBotDifficulty[] = [];

@@ -9,7 +9,7 @@
     import { onMount } from 'svelte';
     import FileUpload from '../shared/FileUpload.svelte';
     import Breadcrumbs from '../shared/Breadcrumbs.svelte';
-    import type SerializedUser from "colonizadar-backend/app/types/serialized/serialized_user";
+    import type SerializedUser from 'colonizadar-backend/app/types/serialized/serialized_user';
 
     let formValues: { username: string; email: string } = {
         username: '',

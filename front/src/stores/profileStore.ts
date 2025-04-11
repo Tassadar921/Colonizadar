@@ -1,6 +1,6 @@
-import {type Writable, writable} from 'svelte/store';
+import { type Writable, writable } from 'svelte/store';
 import axios from 'axios';
-import type SerializedUser from "colonizadar-backend/app/types/serialized/serialized_user";
+import type SerializedUser from 'colonizadar-backend/app/types/serialized/serialized_user';
 
 export const profile: Writable<SerializedUser | null> = writable(null);
 

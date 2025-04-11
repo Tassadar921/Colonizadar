@@ -1,5 +1,5 @@
 import UserRoleEnum from '#types/enum/user_role_enum';
-import SerializedFile from "#types/serialized/serialized_file";
+import SerializedFile from '#types/serialized/serialized_file';
 
 type SerializedUser = {
     id: number;

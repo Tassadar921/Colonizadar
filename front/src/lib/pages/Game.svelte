@@ -5,9 +5,9 @@
     import { showToast } from '../../services/toastService';
     import { navigate } from '../../stores/locationStore';
     import Title from '../shared/Title.svelte';
-    import type SerializedGame from "colonizadar-backend/app/types/serialized/serialized_game";
+    import type SerializedGame from 'colonizadar-backend/app/types/serialized/serialized_game';
 
-    export let gameId: number;
+    export let gameId: string;
 
     let game: SerializedGame;
 
