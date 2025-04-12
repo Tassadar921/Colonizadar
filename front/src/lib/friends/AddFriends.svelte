@@ -5,7 +5,6 @@
     import Pagination from '../shared/Pagination.svelte';
     import { showToast } from '../../services/toastService';
     import Search from '../shared/Search.svelte';
-    import Icon from '../shared/Icon.svelte';
     import Button from '../shared/Button.svelte';
     import ConfirmModal from '../shared/ConfirmModal.svelte';
     import Subtitle from '../shared/Subtitle.svelte';
@@ -16,6 +15,10 @@
     import type SerializedUser from 'colonizadar-backend/app/types/serialized/serialized_user';
     import type PaginatedUsers from 'colonizadar-backend/app/types/paginated/paginated_users';
     import type SerializedPendingFriend from 'colonizadar-backend/app/types/serialized/serialized_pending_friend';
+    import Close from "../icons/Close.svelte";
+    import Confirm from "../icons/Confirm.svelte";
+    import AddUser from "../icons/AddUser.svelte";
+    import Stop from "../icons/Stop.svelte";
 
     const dispatch = createEventDispatcher();
 
@@ -204,7 +207,7 @@
                                 className="transition-all duration-300 hover:scale-110 transform text-red-600 hover:text-red-500"
                                 on:click={() => handleCancelFriendRequest(user)}
                             >
-                                <Icon name="close" />
+                                <Close />
                             </Button>
                         {:else if user.receivedFriendRequest}
                             <div class="flex gap-5">
@@ -214,7 +217,7 @@
                                     className="transition-all duration-300 hover:scale-110 transform text-green-600 hover:text-green-400"
                                     on:click={() => handleAcceptPendingRequest(user)}
                                 >
-                                    <Icon name="confirm" />
+                                    <Confirm />
                                 </Button>
                                 <Button
                                     ariaLabel="Refuse friend request"
@@ -222,7 +225,7 @@
                                     className="transition-all duration-300 hover:scale-110 transform text-red-600 hover:text-red-400"
                                     on:click={() => handleRefusePendingRequest(user)}
                                 >
-                                    <Icon name="close" />
+                                    <Close />
                                 </Button>
                             </div>
                         {:else}
@@ -232,7 +235,7 @@
                                 className="transition-all duration-300 hover:scale-110 transform text-green-600 hover:text-green-400 flex gap-1"
                                 on:click={() => handleAddFriend(user)}
                             >
-                                <Icon name="addUser" />
+                                <AddUser />
                             </Button>
                         {/if}
                         <Button
@@ -241,7 +244,7 @@
                             className="transition-all duration-300 hover:scale-110 transform text-red-600 hover:text-red-400"
                             on:click={() => handleShowBlockingModal(user)}
                         >
-                            <Icon name="stop" />
+                            <Stop />
                         </Button>
                     </div>
                 </div>

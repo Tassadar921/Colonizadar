@@ -15,7 +15,7 @@
         <div class="flex flex-col items-center justify-center order-1 md:order-2 text-center transition-opacity duration-300 {description && hovering ? 'opacity-50' : ''}">
             <p class="text-gray-800 text-2xl mb-1">{title}</p>
             <div class="size-12 dark:bg-gray-700 text-primary-500 shadow-lg rounded-full flex items-center justify-center">
-                <Icon name={icon} size="32" />
+<!--                <Icon name={icon} size="32" />-->
             </div>
         </div>
         <div

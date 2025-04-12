@@ -1,9 +1,10 @@
 <script lang="ts">
     import Button from '../shared/Button.svelte';
-    import Icon from '../shared/Icon.svelte';
     import { createEventDispatcher } from 'svelte';
     import Subtitle from '../shared/Subtitle.svelte';
     import type SerializedPendingFriendNotification from 'colonizadar-backend/app/types/serialized/serialized_pending_friend_notification';
+    import Close from "../icons/Close.svelte";
+    import Confirm from "../icons/Confirm.svelte";
 
     const dispatch = createEventDispatcher();
 
@@ -37,7 +38,7 @@
                             className="transition-colors duration-300 text-green-600 hover:text-green-400"
                             on:click={() => dispatch('accept', notificationObject)}
                         >
-                            <Icon name="confirm" />
+                            <Confirm />
                         </Button>
                         <Button
                             ariaLabel="Refuse friend request"
@@ -45,7 +46,7 @@
                             className="transition-colors duration-300 text-red-600 hover:text-red-400"
                             on:click={() => dispatch('refuse', notificationObject)}
                         >
-                            <Icon name="close" />
+                            <Close />
                         </Button>
                     </div>
                 </div>

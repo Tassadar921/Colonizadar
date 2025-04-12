@@ -1,6 +1,7 @@
 <script lang="ts">
     import Switch from './Switch.svelte';
-    import Icon from './Icon.svelte';
+    import Moon from "../icons/Moon.svelte";
+    import Sun from "../icons/Sun.svelte";
 
     export let title: string = '';
 
@@ -21,10 +22,10 @@
 
 <div class="flex flex-row items-center gap-0.5">
     <span class={checked ? 'dark:text-white' : 'text-primary-500'}>
-        <Icon name="sun" size={iconSize} />
+        <Sun size={iconSize} />
     </span>
     <Switch size={switchSize} bind:value={checked} />
     <span class={checked ? 'text-primary-500' : 'dark:text-white'}>
-        <Icon name="moon" size={iconSize} />
+        <Moon size={iconSize} />
     </span>
 </div>

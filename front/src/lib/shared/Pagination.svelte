@@ -1,8 +1,11 @@
 <script lang="ts">
-    import Icon from './Icon.svelte';
     import Button from './Button.svelte';
     import axios from 'axios';
     import Loader from './Loader.svelte';
+    import ChevronRight from "../icons/ChevronRight.svelte";
+    import DoubleArrowRight from "../icons/DoubleArrowRight.svelte";
+    import DoubleArrowLeft from "../icons/DoubleArrowLeft.svelte";
+    import ArrowLeft from "../icons/ArrowLeft.svelte";
 
     interface PaginatedObject {
         currentPage: number;
@@ -46,11 +49,11 @@
         {#if !loading}
             <!-- First Page Button -->
             <Button disabled={!canGoBack} on:click={() => handleClick(paginatedObject.firstPage, paginatedObject.perPage)}>
-                <Icon name="doubleArrowLeft" />
+                <DoubleArrowLeft />
             </Button>
             <!-- Previous Page Button -->
             <Button disabled={!canGoBack} on:click={() => handleClick(paginatedObject.currentPage - 1, paginatedObject.perPage)}>
-                <Icon name="chevronLeft" />
+                <ArrowLeft />
             </Button>
             <!-- Page Indicator -->
             <p>
@@ -58,11 +61,11 @@
             </p>
             <!-- Next Page Button -->
             <Button disabled={!canGoForward} on:click={() => handleClick(paginatedObject.currentPage + 1, paginatedObject.perPage)}>
-                <Icon name="chevronRight" />
+                <ChevronRight />
             </Button>
             <!-- Last Page Button -->
             <Button disabled={!canGoForward} on:click={() => handleClick(paginatedObject.lastPage, paginatedObject.perPage)}>
-                <Icon name="doubleArrowRight" />
+                <DoubleArrowRight />
             </Button>
         {:else}
             <Loader bind:loading />

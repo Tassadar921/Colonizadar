@@ -6,13 +6,13 @@
     import Search from '../shared/Search.svelte';
     import Pagination from '../shared/Pagination.svelte';
     import Breadcrumbs from '../shared/Breadcrumbs.svelte';
-    import Icon from '../shared/Icon.svelte';
     import Button from '../shared/Button.svelte';
     import { showToast } from '../../services/toastService';
     import Subtitle from '../shared/Subtitle.svelte';
     import ConfirmModal from '../shared/ConfirmModal.svelte';
     import type PaginatedBlockedUsers from 'colonizadar-backend/app/types/paginated/paginated_blocked_users';
     import type SerializedUser from 'colonizadar-backend/app/types/serialized/serialized_user';
+    import Unblock from "../icons/Unblock.svelte";
 
     let paginatedBlockedUsers: PaginatedBlockedUsers;
     let searchBaseUrl: string = '/api/blocked';
@@ -92,7 +92,7 @@
                         className="transition-all duration-300 hover:scale-110 transform text-green-600 hover:text-green-400"
                         on:click={() => handleShowUnblockModal(blocked.user)}
                     >
-                        <Icon name="unblock" />
+                        <Unblock />
                     </Button>
                 </div>
             {/each}

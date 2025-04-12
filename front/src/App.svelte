@@ -62,6 +62,7 @@
             await axios.get('/api');
         } catch (e) {
             localStorage.removeItem('apiToken');
+            localStorage.removeItem('apiTokenExpiration');
             axios.defaults.headers.common['Authorization'] = '';
         }
     };
@@ -81,13 +82,17 @@
             await updateProfile();
         }
     });
+
+    $: console.log($isLoading);
+    $: console.log($location);
+    $: console.log($profile);
 </script>
 
 <NotificationsSetup />
 
 <main class="flex flex-col bg-gray-200 dark:bg-gray-900 h-screen w-screen">
     <div class="px-3.5 min-h-screen">
-        {#if $isLoading}
+        {#if !$isLoading}
             <Menu />
             <Router>
                 <Route path="/:language/reset-password"><ResetPassword /></Route>
@@ -127,9 +132,9 @@
 
                 <Route path="*"><NotFound /></Route>
             </Router>
-            <Footer />
         {:else}
             <Loader loading />
         {/if}
     </div>
+    <Footer />
 </main>

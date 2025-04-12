@@ -60,9 +60,9 @@
 
 <div class="relative inline-block" bind:this={buttonContainerElement}>
     <Button customStyle className="mb-2 flex items-center space-x-2" on:click={togglePopover}>
-        <Icon bind:name={selectedFlag.icon} />
+<!--        <Icon bind:name={selectedFlag.icon} />-->
         <div class="dark:text-primary-500 transform transition-transform duration-300" class:rotate-180={isExpanded}>
-            <Icon bind:name={chevronIcon} />
+<!--            <Icon bind:name={chevronIcon} />-->
         </div>
     </Button>
 
@@ -74,7 +74,7 @@
                     className="w-full flex items-center space-x-2 mb-1 p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md shadow-md {selectedFlag.value === flag.value ? 'shadow-green-500' : ''}"
                     on:click={() => selectFlag(flag)}
                 >
-                    <Icon name={flag.icon} />
+<!--                    <Icon name={flag.icon} />-->
                     <p class="capitalize">{flag.label}</p>
                 </Button>
             {/each}

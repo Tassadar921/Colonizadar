@@ -15,6 +15,7 @@
         try {
             await axios.get('/api/logout');
             localStorage.removeItem('apiToken');
+            localStorage.removeItem('apiTokenExpiration');
             localStorage.removeItem('subscribed');
             clearProfile();
         } catch (error) {

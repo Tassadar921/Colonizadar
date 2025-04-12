@@ -2,18 +2,41 @@
     import MenuItem from './MenuItem.svelte';
     import { t } from 'svelte-i18n';
     import { profile } from '../../stores/profileStore';
+    import Home from "../icons/Home.svelte";
+    import Game from "../icons/Game.svelte";
+    import People from "../icons/People.svelte";
+    import User from "../icons/User.svelte";
+    import UserRemove from "../icons/UserRemove.svelte";
 
     export let footer: boolean = false;
 </script>
 
 <ul class={`${footer ? '' : 'space-y-4'} p-4`}>
     {#if $profile}
-        <MenuItem {footer} iconLeft="home" href="/" on:click>{$t('home.title')}</MenuItem>
-        <MenuItem {footer} iconLeft="game" href="/play" on:click>{$t('play.title')}</MenuItem>
-        <MenuItem {footer} iconLeft="people" href="/social" on:click>{$t('social.title')}</MenuItem>
-        <MenuItem {footer} iconLeft="user" href="/profile" on:click>{$t('profile.title')}</MenuItem>
-        <MenuItem {footer} iconLeft="userRemove" href="/logout" on:click>{$t('logout.title')}</MenuItem>
+        <MenuItem {footer} href="/" on:click>
+            <Home slot="iconLeft" />
+            {$t('home.title')}
+        </MenuItem>
+        <MenuItem {footer} href="/play" on:click>
+            <Game slot="iconLeft" />
+            {$t('play.title')}
+        </MenuItem>
+        <MenuItem {footer} href="/social" on:click>
+            <People slot="iconLeft" />
+            {$t('social.title')}
+        </MenuItem>
+        <MenuItem {footer} href="/profile" on:click>
+            <User slot="iconLeft" />
+            {$t('profile.title')}
+        </MenuItem>
+        <MenuItem {footer} href="/logout" on:click>
+            <UserRemove slot="iconLeft" />
+            {$t('logout.title')}
+        </MenuItem>
     {:else}
-        <MenuItem {footer} iconLeft="user" href="/login" on:click>{$t('login.title')}</MenuItem>
+        <MenuItem {footer} href="/login" on:click>
+            <User slot="iconLeft" />
+            {$t('login.title')}
+        </MenuItem>
     {/if}
 </ul>

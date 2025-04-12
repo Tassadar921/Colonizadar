@@ -5,13 +5,13 @@
     import Search from '../shared/Search.svelte';
     import Pagination from '../shared/Pagination.svelte';
     import Button from '../shared/Button.svelte';
-    import Icon from '../shared/Icon.svelte';
     import { profile } from '../../stores/profileStore';
     import { transmit } from '../../stores/transmitStore';
     import { showToast } from '../../services/toastService';
     import type SerializedRoom from 'colonizadar-backend/app/types/serialized/serialized_room';
     import type PaginatedFriends from 'colonizadar-backend/app/types/paginated/paginated_friends';
     import type SerializedUser from 'colonizadar-backend/app/types/serialized/serialized_user';
+    import Invite from "../icons/Invite.svelte";
 
     export let room: SerializedRoom;
 
@@ -107,7 +107,7 @@
                                 className="transition-all duration-300 hover:scale-110 transform text-green-600 hover:text-green-400"
                                 on:click={() => handleInviteFriend(friendObject.friend)}
                             >
-                                <Icon name="invite" />
+                                <Invite />
                             </Button>
                         {/if}
                     </div>

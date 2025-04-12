@@ -1,15 +1,15 @@
 <script lang="ts">
     import Button from '../shared/Button.svelte';
-    import Icon from '../shared/Icon.svelte';
     import axios from 'axios';
     import { showToast } from '../../services/toastService';
     import { t } from 'svelte-i18n';
     import { onMount } from 'svelte';
     import { profile } from '../../stores/profileStore';
     import type SerializedBotDifficulty from 'colonizadar-backend/app/types/serialized/serialized_bot_difficulty';
+    import Plus from "../icons/Plus.svelte";
 
     export let room;
-    export let difficulties: SerializedBotDifficulty[] = [];
+    export let difficulties: { value: string, label: string }[] = [];
 
     const checkedProfile = $profile!;
 
@@ -40,7 +40,7 @@
             className="flex items-center gap-3 rounded-full hover:scale-105 bg-green-600 dark:bg-green-600 transition-all duration-300 p-2 px-4 text-xl"
             on:click={handleAddBot}
         >
-            <Icon name="plus" />
+            <Plus />
             <span>{$t('play.room.add-bot')}</span>
         </Button>
     </div>

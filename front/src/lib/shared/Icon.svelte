@@ -4,23 +4,13 @@
     export let name: string = '';
     export let size: number = 24;
 
+    let currentName = '';
+
     let IconComponent: typeof SvelteComponent | null = null;
 
     const validIcons: string[] = [
-        'Book',
-        'Camera',
-        'Moon',
-        'Sun',
-        'Burger',
-        'Close',
-        'Settings',
-        'ChevronLeft',
-        'ChevronRight',
-        'DoubleArrowLeft',
-        'DoubleArrowRight',
-        'Home',
-        'User',
-        'UserRemove',
+        'Book', 'Camera', 'Moon', 'Sun', 'Burger', 'Close','Settings', 'ChevronLeft', 'ChevronRight',
+        'DoubleArrowLeft', 'DoubleArrowRight', 'Home', 'User', 'UserRemove',
         'Eye',
         'EyeSlash',
         'Trash',
@@ -73,14 +63,23 @@
     const setIcon = async (name: string): Promise<void> => {
         const camelCaseName = toCamelCase(name);
         if (validIcons.includes(camelCaseName)) {
-            IconComponent = (await import(`../icons/${camelCaseName}.svelte`)).default;
+            console.log(camelCaseName);
+            const module = await import(`../icons/${camelCaseName}.svelte`);
+            IconComponent = module.default;
         } else {
             throw new Error(`Invalid icon name: ${name}`);
         }
     };
 
-    $: {
-        setIcon(name);
+    $: if (name && name !== currentName) {
+        currentName = name;
+        (async () => {
+            try {
+                await setIcon(name);
+            } catch (err) {
+                console.error(err);
+            }
+        })();
     }
 </script>
 

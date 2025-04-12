@@ -1,9 +1,8 @@
 <script lang="ts">
     export let size: number = 24;
-    export let className: string = '';
 </script>
 
-<svg class={className} aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width={size} height={size} fill="none" viewBox="0 0 32 32">
+<svg class="transition-all duration-300" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width={size} height={size} fill="none" viewBox="0 0 32 32">
     <path fill="currentColor" d="M18 10h2v2h-2zm-6 0h2v2h-2z" />
     <path
         fill="currentColor"

@@ -14,5 +14,5 @@
     on:click
     {disabled}
 >
-    <Icon bind:name={icon} {size} />
+<!--    <Icon bind:name={icon} {size} />-->
 </button>

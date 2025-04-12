@@ -72,7 +72,7 @@
 
     {#if editable}
         <div class={iconClassName}>
-            <IconButton bind:icon on:click={handleIconClick} />
+<!--            <IconButton bind:icon on:click={handleIconClick} />-->
         </div>
     {/if}
 </div>

@@ -1,7 +1,7 @@
 <script lang="ts">
-    import Icon from './Icon.svelte';
     import Button from './Button.svelte';
     import Link from './Link.svelte';
+    import ArrowLeft from "../icons/ArrowLeft.svelte";
 
     export let href: string;
     export let text: string;
@@ -11,7 +11,7 @@
     <Link {href}>
         <div class="inline-block">
             <div class="flex flex-row gap-1">
-                <Icon name="arrowLeft" />
+                <ArrowLeft />
                 <p>{text}</p>
             </div>
         </div>

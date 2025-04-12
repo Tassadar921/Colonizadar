@@ -6,7 +6,6 @@
     import { navigate } from '../../stores/locationStore';
     import axios from 'axios';
     import Button from '../shared/Button.svelte';
-    import Icon from '../shared/Icon.svelte';
     import Modal from '../shared/Modal.svelte';
     import Subtitle from '../shared/Subtitle.svelte';
     import InviteFriends from '../room/InviteFriends.svelte';
@@ -17,15 +16,22 @@
     import SelectMap from '../room/SelectMap.svelte';
     import type SerializedRoom from 'colonizadar-backend/app/types/serialized/serialized_room';
     import type SerializedPlayableCountry from 'colonizadar-backend/app/types/serialized/serialized_playable_country';
-    import type SerializedBotDifficulty from 'colonizadar-backend/app/types/serialized/serialized_bot_difficulty';
     import type SerializedMap from 'colonizadar-backend/app/types/serialized/serialized_map';
+    import Copy from "../icons/Copy.svelte";
+    import Invite from "../icons/Invite.svelte";
 
     export let roomId: string;
 
+    interface Option {
+        label: string;
+        value: string;
+        uri?: string;
+    }
+
     let room: SerializedRoom;
     let showInviteFriendModal: boolean = false;
-    let playableCountries: SerializedPlayableCountry[];
-    let botDifficulties: SerializedBotDifficulty;
+    let playableCountries: Option[];
+    let botDifficulties: Option[];
     let maps: SerializedMap[];
     let heartbeat: NodeJS.Timeout;
 
@@ -92,7 +98,7 @@
         <Button ariaLabel="Copy token" customStyle={true} className="group flex items-center px-2 hover:cursor-pointer text-black dark:text-white" on:click={handleCopy}>
             <span class="group-hover:text-primary-500 transition-all duration-300 group-hover:scale-110">{room.token}</span>
             <div class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 ml-7">
-                <Icon name="copy" />
+                <Copy />
             </div>
         </Button>
     </div>
@@ -104,7 +110,7 @@
             on:click={() => (showInviteFriendModal = true)}
         >
             <span>{$t('play.room.invite.title')}</span>
-            <Icon name="invite" />
+            <Invite />
         </Button>
     </div>
 </div>

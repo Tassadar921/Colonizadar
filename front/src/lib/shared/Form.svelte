@@ -7,6 +7,7 @@
     import { createEventDispatcher } from 'svelte';
     import FormBackground from './background/FormBackground.svelte';
     import { language } from '../../stores/languageStore';
+    import Send from "../icons/Send.svelte";
 
     const dispatch = createEventDispatcher();
 
@@ -77,7 +78,7 @@
                 <div class="flex flex-row items-center gap-3">
                     <p class="text-white">{$t('common.submit')}</p>
                     <div class="text-primary-500">
-                        <Icon name="send" />
+                        <Send />
                     </div>
                 </div>
             </Button>

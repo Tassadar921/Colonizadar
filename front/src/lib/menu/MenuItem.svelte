@@ -1,11 +1,9 @@
 <script lang="ts">
     import { location } from '../../stores/locationStore';
     import Link from '../shared/Link.svelte';
-    import Icon from '../shared/Icon.svelte';
+    import ChevronRight from "../icons/ChevronRight.svelte";
 
     export let href: string = '';
-    export let iconLeft: string = '';
-    export let iconRight: string = 'chevronRight';
     export let footer: boolean = false;
     export let target: string = '';
 
@@ -21,16 +19,14 @@
     on:click
 >
     <div class="text-primary-500 left">
-        <Icon name={iconLeft} />
+        <slot name="iconLeft" />
     </div>
     <p class="{footer ? '' : 'text-white text-xl'} text-nowrap p-2">
         <slot />
     </p>
-    {#if iconRight}
-        <div class="flex dark:text-white right">
-            <Icon name={iconRight} />
-        </div>
-    {/if}
+    <div class="dark:text-white right">
+        <ChevronRight />
+    </div>
 </Link>
 
 <style>

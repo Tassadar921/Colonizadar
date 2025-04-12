@@ -10,13 +10,15 @@
     import Subtitle from '../shared/Subtitle.svelte';
     import AddFriends from '../friends/AddFriends.svelte';
     import Button from '../shared/Button.svelte';
-    import Icon from '../shared/Icon.svelte';
     import ConfirmModal from '../shared/ConfirmModal.svelte';
     import { showToast } from '../../services/toastService';
     import { profile } from '../../stores/profileStore';
     import { transmit } from '../../stores/transmitStore';
     import type PaginatedFriends from 'colonizadar-backend/app/types/paginated/paginated_friends';
     import type SerializedUser from 'colonizadar-backend/app/types/serialized/serialized_user';
+    import Plus from "../icons/Plus.svelte";
+    import RemoveUser from "../icons/RemoveUser.svelte";
+    import Stop from "../icons/Stop.svelte";
 
     let paginatedFriends: PaginatedFriends;
     let searchBaseUrl: string = '/api/friends';
@@ -103,7 +105,7 @@
         className="rounded-full bg-green-500 hover:bg-green-600 dark:bg-green-700 dark:hover:bg-green-600 transition-colors duration-300 p-1 mb-1.5"
         on:click={() => (showAddFriendsModal = true)}
     >
-        <Icon name="plus" />
+        <Plus />
     </Button>
 </div>
 
@@ -143,7 +145,7 @@
                             className="transition-all duration-300 hover:scale-110 transform text-red-600 hover:text-red-400"
                             on:click={() => handleShowRemoveFriendModal(friendObject.friend)}
                         >
-                            <Icon name="RemoveUser" />
+                            <RemoveUser />
                         </Button>
                         <Button
                             ariaLabel="Block user"
@@ -151,7 +153,7 @@
                             className="transition-all duration-300 hover:scale-110 transform text-red-600 hover:text-red-400"
                             on:click={() => handleShowBlockingModal(friendObject.friend)}
                         >
-                            <Icon name="stop" />
+                            <Stop />
                         </Button>
                     </div>
                 </div>

@@ -1,9 +1,10 @@
 <script lang="ts">
-    import Icon from '../shared/Icon.svelte';
     import { profile } from '../../stores/profileStore';
     import { t } from 'svelte-i18n';
     import type SerializedGame from 'colonizadar-backend/app/types/serialized/serialized_game';
     import type SerializedRoomPlayer from 'colonizadar-backend/app/types/serialized/serialized_room_player';
+    import Crown from "../icons/Crown.svelte";
+    import Bot from "../icons/Bot.svelte";
 
     export let game: SerializedGame;
     export let player: SerializedRoomPlayer;
@@ -31,7 +32,7 @@
                 <p class="flex gap-1 {player.user.id === $profile?.id ? 'font-bold' : ''}">
                     {#if game.owner.id === player.user.id}
                         <span class="text-orange-500">
-                            <Icon name="crown" />
+                            <Crown />
                         </span>
                     {/if}
                     {player.user.username}
@@ -40,7 +41,7 @@
                 <img alt={player.bot.name} src={`${import.meta.env.VITE_API_BASE_URL}/api/static/bot-picture/${player.bot.id}?token=${localStorage.getItem('apiToken')}`} class="w-10 rounded-full" />
                 <p class="flex gap-1">
                     <span class="text-green-500">
-                        <Icon name="bot" />
+                        <Bot />
                     </span>
                     {player.bot.name} ({player.difficulty.name})
                 </p>

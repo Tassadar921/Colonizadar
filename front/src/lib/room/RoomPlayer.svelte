@@ -9,6 +9,9 @@
     import Loader from '../shared/Loader.svelte';
     import type SerializedRoom from 'colonizadar-backend/app/types/serialized/serialized_room';
     import type SerializedRoomPlayer from 'colonizadar-backend/app/types/serialized/serialized_room_player';
+    import Crown from "../icons/Crown.svelte";
+    import Bot from "../icons/Bot.svelte";
+    import Check from "../icons/Check.svelte";
 
     export let playableCountries: Option[] = [];
     export let botDifficulties: Option[] = [];
@@ -104,7 +107,7 @@
             <p class="flex gap-1 {player.user.id === checkedProfile.id ? 'font-bold' : ''}">
                 {#if room.owner.id === player.user.id}
                     <span class="text-orange-500">
-                        <Icon name="crown" />
+                        <Crown />
                     </span>
                 {/if}
                 {player.user.username}
@@ -113,7 +116,7 @@
             <img alt={player.bot.name} src={`${import.meta.env.VITE_API_BASE_URL}/api/static/bot-picture/${player.bot.id}?token=${localStorage.getItem('apiToken')}`} class="w-10 rounded-full" />
             <p class="flex gap-1">
                 <span class="text-green-500">
-                    <Icon name="bot" />
+                    <Bot />
                 </span>
                 {player.bot.name}
             </p>
@@ -156,7 +159,7 @@
                 className="{player.user.id === checkedProfile.id ? 'transition-transform duration-300 hover:scale-125 transform' : ''} {player.isReady ? 'text-green-500' : 'text-red-500'}"
                 on:click={() => handleReady(player, !player.isReady)}
             >
-                <Icon name="check" />
+                <Check />
             </Button>
         {/if}
         {#if checkedProfile.id === room.owner.id && checkedProfile.id !== player.user?.id}
