@@ -1,9 +1,14 @@
-<script>
-    export let name = '';
-    export let size = 24;
+<script lang="ts">
+    import type { SvelteComponent } from 'svelte';
 
-    let IconComponent = null;
-    const validIcons = [
+    export let name: string = '';
+    export let size: number = 24;
+
+    let currentName = '';
+
+    let IconComponent: typeof SvelteComponent | null = null;
+
+    const validIcons: string[] = [
         'Book',
         'Camera',
         'Moon',
@@ -60,27 +65,35 @@
         'Bot',
     ];
 
-    const toCamelCase = (str) => {
+    const toCamelCase = (str: string): string => {
         if (str.length === 0) {
             return '';
         }
         return str[0].toUpperCase() + str.slice(1);
     };
 
-    const setIcon = async (name) => {
+    const setIcon = async (name: string): Promise<void> => {
         const camelCaseName = toCamelCase(name);
         if (validIcons.includes(camelCaseName)) {
-            IconComponent = (await import(`../icons/${camelCaseName}.svelte`)).default;
+            const module = await import(`../icons/${camelCaseName}.svelte`);
+            IconComponent = module.default;
         } else {
             throw new Error(`Invalid icon name: ${name}`);
         }
     };
 
-    $: {
-        setIcon(name);
+    $: if (name && name !== currentName) {
+        currentName = name;
+        (async () => {
+            try {
+                await setIcon(name);
+            } catch (err) {
+                console.error(err);
+            }
+        })();
     }
 </script>
 
 {#if IconComponent}
-    <svelte:component this={IconComponent} {size} className="transition-all duration-300" />
+    <svelte:component this={IconComponent} {size} class="transition-all duration-300" />
 {/if}

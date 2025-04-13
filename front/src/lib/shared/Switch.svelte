@@ -1,17 +1,18 @@
-<script>
+<script lang="ts">
     import { createEventDispatcher } from 'svelte';
 
     const dispatch = createEventDispatcher();
 
-    export let value = false;
-    export let size = 2;
-    export let disabled = false;
-    export let label = '';
-    export let name = '';
-    export let required = false;
+    export let value: boolean = false;
+    export let size: number = 2;
+    export let disabled: boolean = false;
+    export let label: string = '';
+    export let name: string = '';
+    export let required: boolean = false;
 
-    const handleToggleChange = (event) => {
-        value = event.target.checked;
+    const handleToggleChange = (event: Event) => {
+        const target = event.target as HTMLInputElement;
+        value = target.checked;
         dispatch('change', value);
     };
 </script>

@@ -1,23 +1,34 @@
-<script>
-    import Icon from './Icon.svelte';
+<script lang="ts">
     import Button from './Button.svelte';
     import axios from 'axios';
     import Loader from './Loader.svelte';
+    import ChevronRight from '../icons/ChevronRight.svelte';
+    import DoubleArrowRight from '../icons/DoubleArrowRight.svelte';
+    import DoubleArrowLeft from '../icons/DoubleArrowLeft.svelte';
+    import ArrowLeft from '../icons/ArrowLeft.svelte';
 
-    let canGoBack = false;
-    let canGoForward = false;
-    let loading = false;
+    interface PaginatedObject {
+        currentPage: number;
+        firstPage: number;
+        lastPage: number;
+        perPage: number;
+        total: number;
+    }
 
     export let baseUrl;
-    export let paginatedObject;
+    export let paginatedObject: PaginatedObject;
     export let containerRef = window;
 
-    const handleClick = async (page, perPage) => {
+    let canGoBack: boolean = false;
+    let canGoForward: boolean = false;
+    let loading: boolean = false;
+
+    const handleClick = async (page: number, perPage: number) => {
         try {
             loading = true;
             const { data } = await axios.get(`${baseUrl}&page=${page}&perPage=${perPage}`);
             paginatedObject = data;
-        } catch (error) {
+        } catch (error: any) {
             console.error('Failed to fetch paginated data:', error);
         } finally {
             loading = false;
@@ -38,11 +49,11 @@
         {#if !loading}
             <!-- First Page Button -->
             <Button disabled={!canGoBack} on:click={() => handleClick(paginatedObject.firstPage, paginatedObject.perPage)}>
-                <Icon name="doubleArrowLeft" />
+                <DoubleArrowLeft />
             </Button>
             <!-- Previous Page Button -->
             <Button disabled={!canGoBack} on:click={() => handleClick(paginatedObject.currentPage - 1, paginatedObject.perPage)}>
-                <Icon name="chevronLeft" />
+                <ArrowLeft />
             </Button>
             <!-- Page Indicator -->
             <p>
@@ -50,11 +61,11 @@
             </p>
             <!-- Next Page Button -->
             <Button disabled={!canGoForward} on:click={() => handleClick(paginatedObject.currentPage + 1, paginatedObject.perPage)}>
-                <Icon name="chevronRight" />
+                <ChevronRight />
             </Button>
             <!-- Last Page Button -->
             <Button disabled={!canGoForward} on:click={() => handleClick(paginatedObject.lastPage, paginatedObject.perPage)}>
-                <Icon name="doubleArrowRight" />
+                <DoubleArrowRight />
             </Button>
         {:else}
             <Loader bind:loading />

@@ -123,9 +123,9 @@ export default class RoomController {
         player.isUserConnected = true;
         await player.save();
 
-        transmit.broadcast(`notification/play/room/${room.frontId}/player/joined`, { player: player.apiSerialize(language) });
+        transmit.broadcast(`notification/play/room/${room.frontId}/player/joined`, { player: player.apiSerialize(language, user) });
 
-        return response.send({ room: await room.apiSerialize(language) });
+        return response.send({ room: await room.apiSerialize(language, user) });
     }
 
     public async leave({ response, user, room, language }: HttpContext): Promise<void> {
@@ -167,9 +167,9 @@ export default class RoomController {
             await player.load('difficulty');
             await player.refresh();
 
-            transmit.broadcast(`notification/play/room/${room.frontId}/player/joined`, { player: player.apiSerialize(language) });
+            transmit.broadcast(`notification/play/room/${room.frontId}/player/joined`, { player: player.apiSerialize(language, user) });
 
-            return response.send({ player: player.apiSerialize(language) });
+            return response.send({ player: player.apiSerialize(language, user) });
         } else {
             return response.badRequest({ error: 'Too many players' });
         }
@@ -194,7 +194,7 @@ export default class RoomController {
 
         await player.delete();
 
-        transmit.broadcast(`notification/play/room/${room.frontId}/player/leave`, { player: player.apiSerialize(language) });
+        transmit.broadcast(`notification/play/room/${room.frontId}/player/leave`, { player: player.apiSerialize(language, user) });
 
         return response.send({ message: 'Player kicked' });
     }
@@ -224,7 +224,7 @@ export default class RoomController {
 
         await this.setRoomNotReady(room);
 
-        transmit.broadcast(`notification/play/room/${room.frontId}/player/update`, { player: player.apiSerialize(language) });
+        transmit.broadcast(`notification/play/room/${room.frontId}/player/update`, { player: player.apiSerialize(language, user) });
 
         return response.send({ message: 'Country selected' });
     }
@@ -256,7 +256,7 @@ export default class RoomController {
 
         await this.setRoomNotReady(room);
 
-        transmit.broadcast(`notification/play/room/${room.frontId}/player/update`, { player: player.apiSerialize(language) });
+        transmit.broadcast(`notification/play/room/${room.frontId}/player/update`, { player: player.apiSerialize(language, user) });
 
         return response.send({ message: 'Difficulty selected' });
     }
@@ -301,7 +301,7 @@ export default class RoomController {
         player.isReady = isReady;
         await player.save();
 
-        transmit.broadcast(`notification/play/room/${room.frontId}/player/update`, { player: player.apiSerialize(language) });
+        transmit.broadcast(`notification/play/room/${room.frontId}/player/update`, { player: player.apiSerialize(language, user) });
         response.send({ message: `Set to ${isReady ? 'ready' : 'not ready'}` });
 
         if (room.players.length === 6) {
@@ -348,7 +348,7 @@ export default class RoomController {
 
             await player.delete();
 
-            transmit.broadcast(`notification/play/room/${room.frontId}/player/leave`, { player: player.apiSerialize(language) });
+            transmit.broadcast(`notification/play/room/${room.frontId}/player/leave`, { player: player.apiSerialize(language, user) });
         }
     }
 

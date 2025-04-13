@@ -1,6 +1,6 @@
 {
     "extends": "@tsconfig/svelte/tsconfig.json",
-    "include": ["src/**/*", "vite.config.ts", "svelte.config.js", ".env", ".env.local"],
+    "include": ["src/**/*", "vite.config.ts", "svelte.config.js", ".env", "svelte.d.ts"],
     "exclude": ["node_modules", "public", "dist"],
     "compilerOptions": {
         "strict": true,

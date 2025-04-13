@@ -1,47 +1,50 @@
-<script>
+<script lang="ts">
     import Form from '../shared/Form.svelte';
     import Input from '../shared/Input.svelte';
     import Title from '../shared/Title.svelte';
     import Link from '../shared/Link.svelte';
-    import { profile, setProfile } from '../../stores/profileStore.js';
-    import { showToast } from '../../services/toastService.js';
+    import { profile, setProfile } from '../../stores/profileStore';
+    import { showToast } from '../../services/toastService';
     import { t } from 'svelte-i18n';
     import { onMount } from 'svelte';
     import FileUpload from '../shared/FileUpload.svelte';
     import Breadcrumbs from '../shared/Breadcrumbs.svelte';
+    import type SerializedUser from 'colonizadar-backend/app/types/serialized/serialized_user';
 
-    let formValues = {
+    let formValues: { username: string; email: string } = {
         username: '',
         email: '',
     };
-    let path = '';
-    let isValid = false;
+    let path: string = '';
+    let isValid: boolean = false;
 
-    onMount(() => {
+    let profileData: SerializedUser = $profile!;
+
+    onMount((): void => {
         formValues = {
             username: $profile?.username || '',
             email: $profile?.email || '',
         };
 
-        if ($profile.profilePicture) {
-            path = `/api/profile/profile-picture/${$profile.profilePicture?.name}`;
+        if ($profile!.profilePicture) {
+            path = `${import.meta.env.VITE_API_BASE_URL}/api/static/profile-picture/${$profile!.id}?token=${localStorage.getItem('apiToken')}`;
         }
     });
 
-    const handleSuccess = (event) => {
+    const handleSuccess = (event: CustomEvent): void => {
         setProfile(event.detail.user);
         showToast($t('toast.profile.update.success'));
     };
 
-    const handleError = () => {
+    const handleError = (): void => {
         showToast($t('toast.profile.update.error'), 'error');
         formValues = {
-            username: $profile.username,
-            email: $profile.email,
+            username: $profile!.username,
+            email: $profile!.email,
         };
     };
 
-    $: isValid = formValues.username && formValues.email;
+    $: isValid = !!formValues.username && !!formValues.email;
 </script>
 
 <Title title={$t('profile.title')} hasBackground />
@@ -57,10 +60,10 @@
     <FileUpload
         name="profilePicture"
         accept="png jpg gif jpeg webp"
-        fileName={$profile.profilePicture?.name}
+        fileName={profileData.profilePicture?.name}
         title={$t('profile.profile-picture.title')}
         description={$t('profile.profile-picture.description')}
         pathPrefix="profile-picture"
-        id={$profile.id}
+        id={profileData.id}
     />
 </Form>

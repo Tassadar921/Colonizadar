@@ -1,6 +1,6 @@
-<script>
-    export let title;
-    export let hasBackground = false;
+<script lang="ts">
+    export let title: string;
+    export let hasBackground: boolean = false;
 
     $: document.title = title;
 </script>

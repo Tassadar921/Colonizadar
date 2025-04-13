@@ -1,11 +1,11 @@
-<script>
-    export let show = false;
-    export let target = null;
+<script lang="ts">
+    export let show: boolean = false;
+    export let target: HTMLElement;
 
-    let x = 0;
-    let y = 0;
-    let popover;
-    let popoverHeight = 0;
+    let x: number = 0;
+    let y: number = 0;
+    let popover: HTMLElement;
+    let popoverHeight: number = 0;
 
     $: if (popover) {
         popoverHeight = popover.offsetHeight || 0;
@@ -14,10 +14,10 @@
     $: {
         if (target && show) {
             const { left, top, width, height } = target.getBoundingClientRect();
-            const viewportHeight = window.innerHeight;
+            const viewportHeight: number = window.innerHeight;
 
-            const bottomY = top + height + 10;
-            const isOffscreen = bottomY + popoverHeight > viewportHeight;
+            const bottomY: number = top + height + 10;
+            const isOffscreen: boolean = bottomY + popoverHeight > viewportHeight;
 
             x = left + width / 2;
             y = isOffscreen ? top - popoverHeight - 10 : bottomY;

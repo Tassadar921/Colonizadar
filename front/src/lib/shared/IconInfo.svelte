@@ -1,9 +1,9 @@
-<script>
+<script lang="ts">
     import Popover from './Popover.svelte';
-    import Icon from './Icon.svelte';
+    import Help from '../icons/Help.svelte';
 
-    let show = false;
-    let iconElement;
+    let show: boolean = false;
+    let iconElement: HTMLDivElement;
 </script>
 
 <div class="flex items-center justify-center">
@@ -17,7 +17,7 @@
         on:mouseleave={() => (show = false)}
         on:blur={() => (show = false)}
     >
-        <Icon name="help" />
+        <Help />
     </div>
 
     <Popover {show} target={iconElement}>

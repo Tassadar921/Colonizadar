@@ -1,21 +1,22 @@
-<script>
+<script lang="ts">
     import Map from '../game/Map.svelte';
     import { onMount } from 'svelte';
     import axios from 'axios';
-    import { showToast } from '../../services/toastService.js';
-    import { navigate } from '../../stores/locationStore.js';
+    import { showToast } from '../../services/toastService';
+    import { navigate } from '../../stores/locationStore';
     import Title from '../shared/Title.svelte';
+    import type SerializedGame from 'colonizadar-backend/app/types/serialized/serialized_game';
 
-    export let gameId;
+    export let gameId: string;
 
-    let game;
+    let game: SerializedGame;
 
-    onMount(async () => {
+    onMount(async (): Promise<void> => {
         try {
             const { data: gameData } = await axios.get(`/api/game/${gameId}`);
             game = gameData.game;
-        } catch (e) {
-            showToast(e.response.data.error, 'error');
+        } catch (error: any) {
+            showToast(error.response.data.error, 'error');
             navigate('/play');
         }
     });

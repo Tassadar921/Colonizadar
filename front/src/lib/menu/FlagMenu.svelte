@@ -1,27 +1,33 @@
-<script>
+<script lang="ts">
     import { onMount } from 'svelte';
     import Button from '../shared/Button.svelte';
     import Icon from '../shared/Icon.svelte';
     import { locale } from 'svelte-i18n';
-    import { setLanguage, language } from '../../stores/languageStore.js';
-    import { location, navigate } from '../../stores/locationStore.js';
+    import { setLanguage } from '../../stores/languageStore';
+    import { location, navigate } from '../../stores/locationStore';
     import axios from 'axios';
 
-    let flags = [
+    interface Flag {
+        icon: string;
+        label: string;
+        value: string;
+    }
+
+    let flags: Flag[] = [
         { icon: 'englishFlag', label: 'English', value: 'en' },
         { icon: 'frenchFlag', label: 'Français', value: 'fr' },
     ];
-    let selectedFlag = flags[0];
+    let selectedFlag: Flag = flags[0];
     let chevronIcon = 'chevronDown';
     let isExpanded = false;
-    let popoverEl;
-    let buttonEl;
+    let popoverEl: HTMLDivElement;
+    let buttonContainerElement: HTMLDivElement;
 
-    const togglePopover = () => {
+    const togglePopover = (): void => {
         isExpanded = !isExpanded;
     };
 
-    const selectFlag = (flag) => {
+    const selectFlag = (flag: Flag): void => {
         const initialLanguage = localStorage.getItem('language');
         if (initialLanguage === flag.value) {
             return;
@@ -38,8 +44,8 @@
         isExpanded = false;
     };
 
-    const handleClickOutside = (event) => {
-        if (popoverEl && !popoverEl.contains(event.target) && !buttonEl.contains(event.target)) {
+    const handleClickOutside = (event: MouseEvent): void => {
+        if (popoverEl && !popoverEl.contains(event.target as Node) && !buttonContainerElement.contains(event.target as Node)) {
             isExpanded = false;
         }
     };
@@ -49,10 +55,10 @@
         return () => document.removeEventListener('click', handleClickOutside);
     });
 
-    $: selectedFlag = flags.find((flag) => flag.value === localStorage.getItem('language')) || flags[0];
+    $: selectedFlag = flags.find((flag: Flag) => flag.value === localStorage.getItem('language')) || flags[0];
 </script>
 
-<div class="relative inline-block" bind:this={buttonEl}>
+<div class="relative inline-block" bind:this={buttonContainerElement}>
     <Button customStyle className="mb-2 flex items-center space-x-2" on:click={togglePopover}>
         <Icon bind:name={selectedFlag.icon} />
         <div class="dark:text-primary-500 transform transition-transform duration-300" class:rotate-180={isExpanded}>

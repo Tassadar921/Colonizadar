@@ -1,14 +1,16 @@
-<script>
+<script lang="ts">
     import Button from '../shared/Button.svelte';
-    import Icon from '../shared/Icon.svelte';
     import { createEventDispatcher } from 'svelte';
     import Subtitle from '../shared/Subtitle.svelte';
+    import type SerializedPendingFriendNotification from 'colonizadar-backend/app/types/serialized/serialized_pending_friend_notification';
+    import Close from '../icons/Close.svelte';
+    import Confirm from '../icons/Confirm.svelte';
 
     const dispatch = createEventDispatcher();
 
     export let title;
-    export let notifications = [];
-    export let noneMessage;
+    export let notifications: SerializedPendingFriendNotification[] = [];
+    export let noneMessage: string;
 </script>
 
 <div class="flex flex-col gap-5 my-5 p-5 overflow-y-scroll scrollbar-hide max-h-[400px]">
@@ -21,11 +23,11 @@
                         {#if notificationObject.from.profilePicture}
                             <img
                                 alt={notificationObject.from.username}
-                                src={`${process.env.VITE_API_BASE_URL}/api/static/profile-picture/${notificationObject.from.id}?token=${localStorage.getItem('apiToken')}`}
+                                src={`${import.meta.env.VITE_API_BASE_URL}/api/static/profile-picture/${notificationObject.from.id}?token=${localStorage.getItem('apiToken')}`}
                                 class="w-10 rounded-full"
                             />
                         {:else}
-                            <img alt={notificationObject.from.username} src={process.env.VITE_DEFAULT_IMAGE} class="max-h-10 rounded-full" />
+                            <img alt={notificationObject.from.username} src={import.meta.env.VITE_DEFAULT_IMAGE} class="max-h-10 rounded-full" />
                         {/if}
                         <p>{notificationObject.from.username}</p>
                     </div>
@@ -36,7 +38,7 @@
                             className="transition-colors duration-300 text-green-600 hover:text-green-400"
                             on:click={() => dispatch('accept', notificationObject)}
                         >
-                            <Icon name="confirm" />
+                            <Confirm />
                         </Button>
                         <Button
                             ariaLabel="Refuse friend request"
@@ -44,7 +46,7 @@
                             className="transition-colors duration-300 text-red-600 hover:text-red-400"
                             on:click={() => dispatch('refuse', notificationObject)}
                         >
-                            <Icon name="close" />
+                            <Close />
                         </Button>
                     </div>
                 </div>

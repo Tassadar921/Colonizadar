@@ -1,46 +1,57 @@
-<script>
-    import Icon from './Icon.svelte';
+<script lang="ts">
     import Button from './Button.svelte';
     import { createEventDispatcher } from 'svelte';
+    import Eye from '../icons/Eye.svelte';
+    import EyeSlash from '../icons/EyeSlash.svelte';
 
     const dispatch = createEventDispatcher();
 
-    export let type = 'text';
-    export let value = '';
-    export let placeholder;
-    export let name;
-    export let required = false;
-    export let disabled = false;
-    export let label;
-    export let readonly = false;
+    export let type: string = 'text';
+    export let value: string = '';
+    export let placeholder: string;
+    export let name: string;
+    export let required: boolean = false;
+    export let disabled: boolean = false;
+    export let label: string;
+    export let readonly: boolean = false;
     export let inputRef = null;
-    export let min = null;
-    export let max = null;
+    export let min: number | null = null;
+    export let max: number | null = null;
 
-    const realType = type;
+    interface InputAttributes {
+        maxLength?: number;
+        minLength?: number;
+        max?: number;
+        min?: number;
+    }
 
-    let focused = false;
+    const realType: string = type;
 
-    const classes = `block w-full px-3 py-2 mt-1 text-base text-gray-800 placeholder-gray-500 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${
+    let focused: boolean = false;
+
+    const classes: string = `block w-full px-3 py-2 mt-1 text-base text-gray-800 placeholder-gray-500 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${
         disabled || readonly ? 'bg-gray-300 dark:bg-gray-500' : ''
     }`;
 
-    const typeWorkaround = (node) => (node.type = type);
-    const switchType = () => (type = type === 'password' ? 'text' : 'password');
+    const typeWorkaround = (node: HTMLInputElement): void => {
+        node.type = type;
+    };
 
-    const inputAttributes = {
+    const switchType = (): string => (type = type === 'password' ? 'text' : 'password');
+
+    const inputAttributes: InputAttributes = {
         ...(min !== null && realType !== 'text' && { min }),
         ...(max !== null && realType !== 'text' && { max }),
         ...(realType === 'text' && min !== null && { minlength: min }),
         ...(realType === 'text' && max !== null && { maxlength: max }),
     };
 
-    const handleFocus = () => {
+    const handleFocus = (): void => {
         focused = true;
         dispatch('focus');
     };
 
-    const handleBlur = () => {
+    const handleBlur = (): void => {
         focused = false;
         dispatch('blur');
     };
@@ -87,7 +98,7 @@
             {...inputAttributes}
         />
         <Button additionalStyle="absolute top-2 right-2 cursor-pointer" on:click={switchType}>
-            <Icon name="eye" />
+            <Eye />
         </Button>
     {:else}
         <input
@@ -104,7 +115,7 @@
             {...inputAttributes}
         />
         <Button additionalStyle="absolute top-2 right-2 cursor-pointer" on:click={switchType}>
-            <Icon name="eyeSlash" />
+            <EyeSlash />
         </Button>
     {/if}
 </div>

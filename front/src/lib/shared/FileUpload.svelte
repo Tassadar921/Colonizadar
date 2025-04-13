@@ -1,28 +1,28 @@
-<script>
-    import Icon from './Icon.svelte';
+<script lang="ts">
     import { t } from 'svelte-i18n';
     import { onMount } from 'svelte';
-    import { raw } from '../../services/stringService.js';
+    import { raw } from '../../services/stringService';
     import Loader from './Loader.svelte';
+    import Upload from '../icons/Upload.svelte';
 
-    export let name = '';
-    export let description = '';
-    export let title = null;
-    export let width = '96';
-    export let accept = '';
-    export let fileName = '';
-    export let file = null;
-    export let pathPrefix;
-    export let id;
-    export let disabled = false;
+    export let name: string = '';
+    export let description: string = '';
+    export let title: string = '';
+    export let width: string = '96';
+    export let accept: string = '';
+    export let fileName: string = '';
+    export let file: File | null = null;
+    export let pathPrefix: string;
+    export let id: number;
+    export let disabled: boolean = false;
 
-    let acceptedFormats = '';
-    let isDragging = false;
-    let previewSrc = `${process.env.VITE_API_BASE_URL}/api/static/${pathPrefix}/${id}?token=${localStorage.getItem('apiToken')}`;
-    let inputRef;
-    let loading = false;
+    let acceptedFormats: string = '';
+    let isDragging: boolean = false;
+    let previewSrc: string = `${import.meta.env.VITE_API_BASE_URL}/api/static/${pathPrefix}/${id}?token=${localStorage.getItem('apiToken')}`;
+    let inputRef: HTMLInputElement;
+    let loading: boolean = false;
 
-    onMount(() => {
+    onMount((): void => {
         title = title ?? $t('common.file.description');
         description = description ?? $t('common.file.description');
         acceptedFormats = accept
@@ -31,7 +31,7 @@
             .join(',');
     });
 
-    const processFiles = (files) => {
+    const processFiles = (files: FileList): void => {
         if (disabled) {
             return;
         }
@@ -42,8 +42,8 @@
 
             if (file.type.startsWith('image/')) {
                 const reader = new FileReader();
-                reader.onload = (e) => {
-                    previewSrc = e.target.result;
+                reader.onload = (e: ProgressEvent<FileReader>) => {
+                    previewSrc = e.target?.result as string;
                 };
                 reader.readAsDataURL(file);
             } else {
@@ -57,32 +57,37 @@
         }
     };
 
-    const handleFileChange = (event) => {
-        if (!disabled) processFiles(event.target.files);
+    const handleFileChange = (event: Event): void => {
+        const target = event.target as HTMLInputElement;
+        if (!disabled && target.files) {
+            processFiles(target.files);
+        }
     };
 
-    const handleDragOver = (event) => {
+    const handleDragOver = (event: DragEvent): void => {
         if (!disabled) {
             event.preventDefault();
             isDragging = true;
         }
     };
 
-    const handleDragLeave = () => {
+    const handleDragLeave = (): void => {
         if (!disabled) {
             isDragging = false;
         }
     };
 
-    const handleDrop = (event) => {
+    const handleDrop = (event: DragEvent): void => {
         if (!disabled) {
             event.preventDefault();
             isDragging = false;
-            processFiles(event.dataTransfer.files);
+            if (event.dataTransfer?.files) {
+                processFiles(event.dataTransfer.files);
+            }
         }
     };
 
-    const handleKeyDown = (event) => {
+    const handleKeyDown = (event: KeyboardEvent): void => {
         if (!disabled && (event.key === 'Enter' || event.key === ' ')) {
             inputRef.click();
         }
@@ -112,7 +117,7 @@
     >
         <input bind:this={inputRef} type="file" class="hidden" {name} accept={acceptedFormats} on:change={handleFileChange} {disabled} />
         <span class="text-primary-500">
-            <Icon name="upload" size="35" />
+            <Upload size={35} />
         </span>
         <span class="text-center text-sm text-gray-500 my-3">
             {#if fileName}

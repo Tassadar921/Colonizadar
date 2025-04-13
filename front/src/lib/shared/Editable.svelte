@@ -1,23 +1,23 @@
-<script>
+<script lang="ts">
     import IconButton from './IconButton.svelte';
     import { createEventDispatcher } from 'svelte';
 
     const dispatch = createEventDispatcher();
 
-    export let className = '';
-    export let iconClassName = '';
-    export let value = '';
-    export let min = 3;
-    export let max = 100;
-    export let editable = true;
+    export let className: string = '';
+    export let iconClassName: string = '';
+    export let value: string = '';
+    export let min: number = 3;
+    export let max: number = 100;
+    export let editable: boolean = true;
 
-    let editing = false;
-    let icon = 'pen';
-    let inputElement;
-    let message = '';
-    let initialValue = value;
+    let editing: boolean = false;
+    let icon: string = 'pen';
+    let inputElement: HTMLInputElement;
+    let message: string = '';
+    let initialValue: string = value;
 
-    const checkValue = () => {
+    const checkValue = (): boolean => {
         if (value.length < min || value.length > max) {
             message = `The value must be between ${min} and ${max} characters`;
             return false;
@@ -27,7 +27,7 @@
         }
     };
 
-    const handleKeyDown = (event) => {
+    const handleKeyDown = (event: KeyboardEvent): void => {
         if ((event.key === 'Enter' || event.key === 'Escape' || event.key === 'Tab') && checkValue()) {
             editing = false;
             if (value !== initialValue) {
@@ -36,7 +36,7 @@
         }
     };
 
-    const handleBlur = () => {
+    const handleBlur = (): void => {
         if (checkValue()) {
             if (value !== initialValue) {
                 dispatch('rename', { value });
@@ -48,7 +48,7 @@
         editing = false;
     };
 
-    const handleIconClick = () => {
+    const handleIconClick = (): void => {
         if (editable) {
             editing = !editing;
             if (editing) {

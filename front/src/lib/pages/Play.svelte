@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import { t } from 'svelte-i18n';
     import Title from '../shared/Title.svelte';
     import Form from '../shared/Form.svelte';
@@ -7,48 +7,48 @@
     import Modal from '../shared/Modal.svelte';
     import Subtitle from '../shared/Subtitle.svelte';
     import Input from '../shared/Input.svelte';
-    import { isValidUuid } from '../../services/checkStringService.js';
+    import { isValidUuid } from '../../services/checkStringService';
     import Loader from '../shared/Loader.svelte';
     import Switch from '../shared/Switch.svelte';
     import PasswordInput from '../shared/PasswordInput.svelte';
-    import { showToast } from '../../services/toastService.js';
-    import { navigate } from '../../stores/locationStore.js';
+    import { showToast } from '../../services/toastService';
+    import { navigate } from '../../stores/locationStore';
 
-    let showJoinModal = false;
-    let showCreateModal = false;
+    let showJoinModal: boolean = false;
+    let showCreateModal: boolean = false;
 
-    let isJoinSubmittable = false;
-    let isCreateSubmittable = false;
+    let isJoinSubmittable: boolean = false;
+    let isCreateSubmittable: boolean = false;
 
-    let token;
-    let name;
-    let isPrivate = false;
-    let password;
+    let token: string;
+    let name: string;
+    let isPrivate: boolean = false;
+    let password: string;
 
     let loading = false;
 
-    const handleJoinSuccess = (event) => {
+    const handleJoinSuccess = (event: CustomEvent): void => {
         showJoinModal = false;
         showToast(event.detail.message);
         navigate(`/play/room/${event.detail.roomId}`);
     };
 
-    const handleJoinFailure = (event) => {
+    const handleJoinFailure = (event: CustomEvent): void => {
         showToast(event.detail, 'error');
     };
 
-    const handleCreateSuccess = (event) => {
+    const handleCreateSuccess = (event: CustomEvent): void => {
         showCreateModal = false;
         showToast($t('toast.room.create.success'));
         navigate(`/play/room/${event.detail.roomId}`);
     };
 
-    const handleCreateFailure = () => {
+    const handleCreateFailure = (): void => {
         showToast($t('toast.room.create.error'), 'error');
     };
 
-    $: isJoinSubmittable = token && isValidUuid(token);
-    $: isCreateSubmittable = name && (isPrivate ? password : true);
+    $: isJoinSubmittable = !!token && isValidUuid(token);
+    $: isCreateSubmittable = !!name && !!(isPrivate ? password : true);
 </script>
 
 <Loader bind:loading />

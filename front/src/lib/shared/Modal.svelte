@@ -1,23 +1,24 @@
-<script>
+<script lang="ts">
     import Button from './Button.svelte';
     import { createEventDispatcher } from 'svelte';
     import { t } from 'svelte-i18n';
 
     const dispatch = createEventDispatcher();
 
-    export let showModal = false;
-    export let closeText = null;
-    export let successText = '';
-    export let fullWidth = false;
-    export let dialog;
-    export let confirm = false;
-    export let closable = true;
+    export let showModal: boolean = false;
+    export let closeText: string | null = null;
+    export let successText: string = '';
+    export let fullWidth: boolean = false;
+    export let confirm: boolean = false;
+    export let closable: boolean = true;
 
-    const handleSuccess = () => {
+    let dialog: HTMLDialogElement;
+
+    const handleSuccess = (): void => {
         dispatch('success');
     };
 
-    const handleClose = () => {
+    const handleClose = (): void => {
         if (closable) {
             dispatch('close');
             dialog.close();

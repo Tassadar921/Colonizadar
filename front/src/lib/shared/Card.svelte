@@ -1,11 +1,11 @@
-<script>
+<script lang="ts">
     import Icon from './Icon.svelte';
     import Link from './Link.svelte';
 
-    export let title = '';
-    export let icon = '';
-    export let href = '';
-    export let description = '';
+    export let title: string = '';
+    export let icon: string = '';
+    export let href: string = '';
+    export let description: string = '';
 
     let hovering = false;
 </script>

@@ -1,7 +1,7 @@
-<script>
-    import { showToast } from '../../services/toastService.js';
-    import { navigate } from '../../stores/locationStore.js';
-    import { clearProfile } from '../../stores/profileStore.js';
+<script lang="ts">
+    import { showToast } from '../../services/toastService';
+    import { navigate } from '../../stores/locationStore';
+    import { clearProfile } from '../../stores/profileStore';
     import Subtitle from '../shared/Subtitle.svelte';
     import { t } from 'svelte-i18n';
     import Title from '../shared/Title.svelte';
@@ -9,12 +9,13 @@
     import axios from 'axios';
     import Breadcrumbs from '../shared/Breadcrumbs.svelte';
 
-    let showModal = true;
+    let showModal: boolean = true;
 
-    const handleSuccess = async () => {
+    const handleSuccess = async (): Promise<void> => {
         try {
             await axios.get('/api/logout');
             localStorage.removeItem('apiToken');
+            localStorage.removeItem('apiTokenExpiration');
             localStorage.removeItem('subscribed');
             clearProfile();
         } catch (error) {
@@ -26,7 +27,7 @@
         }
     };
 
-    const handleClose = () => {
+    const handleClose = (): void => {
         navigate('/');
     };
 </script>

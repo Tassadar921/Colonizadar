@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import { onMount } from 'svelte';
     import { Router, Route } from 'svelte-routing';
     import Homepage from './lib/pages/Home.svelte';
@@ -7,7 +7,7 @@
     import ResetPassword from './lib/pages/ResetPassword.svelte';
     import ConfirmResetPassword from './lib/pages/ConfirmResetPassword.svelte';
     import Forbidden from './lib/pages/Forbidden.svelte';
-    import { updateProfile, profile } from './stores/profileStore.js';
+    import { updateProfile, profile } from './stores/profileStore';
     import NotFound from './lib/pages/NotFound.svelte';
     import axios from 'axios';
     import Profile from './lib/pages/Profile.svelte';
@@ -17,8 +17,8 @@
     import AlreadyConnected from './lib/pages/AlreadyConnected.svelte';
     import Notifications from './lib/pages/Notifications.svelte';
     import Menu from './lib/menu/Menu.svelte';
-    import { setLanguage } from './stores/languageStore.js';
-    import { location, navigate } from './stores/locationStore.js';
+    import { setLanguage } from './stores/languageStore';
+    import { location, navigate } from './stores/locationStore';
     import { locale } from 'svelte-i18n';
     import Social from './lib/pages/Social.svelte';
     import Friends from './lib/pages/Friends.svelte';
@@ -34,7 +34,7 @@
         const langRegex = new RegExp(`^\/(${supportedLanguages.join('|')})(\/|$)`);
         const langMatch = langRegex.exec($location);
 
-        const initialSetLanguage = (language) => {
+        const initialSetLanguage = (language: string) => {
             setLanguage(language);
             locale.set(language);
             axios.defaults.headers.common['Accept-Language'] = `${language}-${language.toUpperCase()}`;
@@ -50,7 +50,7 @@
         }
     };
 
-    const logInformations = async (token) => {
+    const logInformations = async (token: string) => {
         const tokenExpiresAt = localStorage.getItem('apiTokenExpiration');
         if (tokenExpiresAt && new Date(tokenExpiresAt) < new Date()) {
             localStorage.removeItem('apiToken');
@@ -62,12 +62,13 @@
             await axios.get('/api');
         } catch (e) {
             localStorage.removeItem('apiToken');
+            localStorage.removeItem('apiTokenExpiration');
             axios.defaults.headers.common['Authorization'] = '';
         }
     };
 
     onMount(async () => {
-        axios.defaults.baseURL = process.env.VITE_API_BASE_URL;
+        axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL;
         initializeLanguage();
 
         const theme = localStorage.getItem('theme');
@@ -87,8 +88,8 @@
 
 <main class="flex flex-col bg-gray-200 dark:bg-gray-900 h-screen w-screen">
     <div class="px-3.5 min-h-screen">
-        <Menu />
         {#if !$isLoading}
+            <Menu />
             <Router>
                 <Route path="/:language/reset-password"><ResetPassword /></Route>
                 <Route path="/:language/reset-password/confirm/:token" let:params><ConfirmResetPassword {...params} /></Route>
@@ -106,7 +107,7 @@
                         <Room key={params.roomId} roomId={params.roomId} />
                     </Route>
                     <Route path="/:language/play/game/:gameId" let:params>
-                        <Game key={params.gameId} gameId={params.gameId} />
+                        <Game key={params.roomId} gameId={params.gameId} />
                     </Route>
 
                     <Route path="/:language/profile"><Profile /></Route>

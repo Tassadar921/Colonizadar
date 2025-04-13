@@ -1,34 +1,40 @@
-<script>
-    import { createEventDispatcher, onMount, onDestroy } from 'svelte';
+<script lang="ts">
+    import { createEventDispatcher, onMount } from 'svelte';
     import Icon from './Icon.svelte';
+
+    interface Option {
+        label: string;
+        value: string;
+        uri?: string;
+    }
 
     const dispatch = createEventDispatcher();
 
-    export let options = [];
-    export let selectedOption = null;
-    export let name = '';
-    export let label = '';
-    export let required = false;
+    export let options: Option[] = [];
+    export let selectedOption: Option | null = null;
+    export let name: string = '';
+    export let label: string = '';
+    export let required: boolean = false;
 
-    let isOpen = false;
-    let chevronIcon = 'chevronDown';
-    let dropdownRef;
-    let buttonRef;
-    let dropdownWidth = 'auto';
+    let isOpen: boolean = false;
+    let chevronIcon: string = 'chevronDown';
+    let dropdownRef: HTMLDivElement;
+    let buttonRef: HTMLButtonElement;
+    let dropdownWidth: string = 'auto';
 
-    const handleSelect = (option) => {
+    const handleSelect = (option: Option): void => {
         selectedOption = option;
         isOpen = false;
         dispatch('change', { ...option });
     };
 
-    const handleClickOutside = (event) => {
-        if (dropdownRef && !dropdownRef.contains(event.target)) {
+    const handleClickOutside = (event: MouseEvent): void => {
+        if (dropdownRef && !dropdownRef.contains(event.target as Node)) {
             isOpen = false;
         }
     };
 
-    const setDropdownWidth = () => {
+    const setDropdownWidth = (): void => {
         if (buttonRef) {
             dropdownWidth = `${buttonRef.offsetWidth}px`;
         }
@@ -37,10 +43,10 @@
     onMount(() => {
         window.addEventListener('click', handleClickOutside);
         setDropdownWidth();
-    });
 
-    onDestroy(() => {
-        window.removeEventListener('click', handleClickOutside);
+        return (): void => {
+            window.removeEventListener('click', handleClickOutside);
+        };
     });
 </script>
 

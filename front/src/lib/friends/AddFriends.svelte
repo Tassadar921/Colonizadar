@@ -1,37 +1,45 @@
-<script>
+<script lang="ts">
     import { t } from 'svelte-i18n';
     import { onMount } from 'svelte';
     import axios from 'axios';
     import Pagination from '../shared/Pagination.svelte';
-    import { showToast } from '../../services/toastService.js';
+    import { showToast } from '../../services/toastService';
     import Search from '../shared/Search.svelte';
-    import Icon from '../shared/Icon.svelte';
     import Button from '../shared/Button.svelte';
     import ConfirmModal from '../shared/ConfirmModal.svelte';
     import Subtitle from '../shared/Subtitle.svelte';
-    import { transmit } from '../../stores/transmitStore.js';
-    import { profile } from '../../stores/profileStore.js';
+    import { transmit } from '../../stores/transmitStore';
+    import { profile } from '../../stores/profileStore';
     import { createEventDispatcher } from 'svelte';
-    import { setPendingFriendRequests } from '../../stores/notificationStore.js';
+    import { setPendingFriendRequests } from '../../stores/notificationStore';
+    import type SerializedUser from 'colonizadar-backend/app/types/serialized/serialized_user';
+    import type PaginatedUsers from 'colonizadar-backend/app/types/paginated/paginated_users';
+    import type SerializedPendingFriend from 'colonizadar-backend/app/types/serialized/serialized_pending_friend';
+    import Close from '../icons/Close.svelte';
+    import Confirm from '../icons/Confirm.svelte';
+    import AddUser from '../icons/AddUser.svelte';
+    import Stop from '../icons/Stop.svelte';
+    import Loader from '../shared/Loader.svelte';
 
     const dispatch = createEventDispatcher();
 
-    let paginatedUsers = { users: [] };
-    let searchBaseUrl = '/api/friends/add?';
-    let query = '';
-    let showModal = false;
-    let blockingUser = { username: '' };
+    let loading: boolean = false;
+    let paginatedUsers: PaginatedUsers;
+    let searchBaseUrl: string = '/api/friends/add?';
+    let query: string = '';
+    let showModal: boolean = false;
+    let blockingUser: SerializedUser;
 
-    onMount(async () => {
+    onMount(async (): Promise<void> => {
         await updateAddFriends();
     });
 
-    const updateAddFriends = async () => {
+    const updateAddFriends = async (): Promise<void> => {
         const { data } = await axios.get(searchBaseUrl);
         paginatedUsers = data.users;
     };
 
-    const handleSearch = async () => {
+    const handleSearch = async (): Promise<void> => {
         searchBaseUrl = `/api/friends/add?${query ? `query=${query}` : ''}`;
         const response = await axios.get(searchBaseUrl);
         if (response.status === 200) {
@@ -41,7 +49,7 @@
         }
     };
 
-    const handleAddFriend = async (user) => {
+    const handleAddFriend = async (user: SerializedUser): Promise<void> => {
         const response = await axios.post('/api/friends/ask', {
             userId: user.id,
         });
@@ -53,7 +61,7 @@
         }
     };
 
-    const handleCancelFriendRequest = async (user) => {
+    const handleCancelFriendRequest = async (user: SerializedUser): Promise<void> => {
         const response = await axios.delete(`/api/friends/pending/cancel/${user.id}`);
 
         if (response.status === 200) {
@@ -64,7 +72,7 @@
         }
     };
 
-    const handleBlockUser = async () => {
+    const handleBlockUser = async (): Promise<void> => {
         const response = await axios.get(`/api/blocked/add/${blockingUser.id}`);
         if (response.status === 200) {
             paginatedUsers.users = paginatedUsers.users.filter((currentUser) => currentUser.id !== blockingUser.id);
@@ -75,71 +83,71 @@
         showModal = false;
     };
 
-    const updateUser = (userId, updates) => {
+    const updateUser = (userId: number, updates: Partial<SerializedUser>): void => {
         paginatedUsers = {
             ...paginatedUsers,
             users: paginatedUsers.users.map((user) => (user.id === userId ? { ...user, ...updates } : user)),
         };
     };
 
-    const handleShowBlockingModal = (user) => {
+    const handleShowBlockingModal = (user: SerializedUser): void => {
         blockingUser = user;
         showModal = true;
     };
 
-    const setupEvents = async () => {
+    const setupEvents = async (): Promise<void> => {
         // sender updated when receiver accepts friend request
-        const acceptedFriendRequest = $transmit.subscription(`notification/add-friend/accept/${$profile.id}`);
+        const acceptedFriendRequest = $transmit.subscription(`notification/add-friend/accept/${$profile!.id}`);
         await acceptedFriendRequest.create();
-        acceptedFriendRequest.onMessage((user) => {
+        acceptedFriendRequest.onMessage((user: SerializedUser) => {
             paginatedUsers.users = paginatedUsers.users.filter((currentUser) => currentUser.id !== user.id);
             dispatch('updateFriends');
         });
 
         // sender updated when friend request is refused by receiver
-        const refuseFriendRequest = $transmit.subscription(`notification/add-friend/refuse/${$profile.id}`);
+        const refuseFriendRequest = $transmit.subscription(`notification/add-friend/refuse/${$profile!.id}`);
         await refuseFriendRequest.create();
-        refuseFriendRequest.onMessage((user) => {
+        refuseFriendRequest.onMessage((user: SerializedUser) => {
             updateUser(user.id, { sentFriendRequest: false });
         });
 
         // receiver updated when request received
-        const receivedFriendRequest = $transmit.subscription(`notification/add-friend/${$profile.id}`);
+        const receivedFriendRequest = $transmit.subscription(`notification/add-friend/${$profile!.id}`);
         await receivedFriendRequest.create();
-        receivedFriendRequest.onMessage((data) => {
-            updateUser(data.notification.from.id, { receivedFriendRequest: true });
+        receivedFriendRequest.onMessage((pendingFriendRequest: SerializedPendingFriend) => {
+            updateUser(pendingFriendRequest.notification.from.id, { receivedFriendRequest: true });
         });
 
         // receiver updated when his request is canceled by sender
-        const cancelFriendRequest = $transmit.subscription(`notification/add-friend/cancel/${$profile.id}`);
+        const cancelFriendRequest = $transmit.subscription(`notification/add-friend/cancel/${$profile!.id}`);
         await cancelFriendRequest.create();
-        cancelFriendRequest.onMessage((data) => {
-            updateUser(data.notification.from.id, { receivedFriendRequest: false });
+        cancelFriendRequest.onMessage((pendingFriendRequest: SerializedPendingFriend) => {
+            updateUser(pendingFriendRequest.notification.from.id, { receivedFriendRequest: false });
         });
 
         // receiver updated when becomes blocked
-        const blockedUser = $transmit.subscription(`notification/blocked/${$profile.id}`);
+        const blockedUser = $transmit.subscription(`notification/blocked/${$profile!.id}`);
         await blockedUser.create();
-        blockedUser.onMessage((user) => {
-            paginatedUsers.users = paginatedUsers.users.filter((currentUser) => currentUser.id !== user.id);
+        blockedUser.onMessage((user: SerializedUser) => {
+            paginatedUsers.users = paginatedUsers.users.filter((currentUser: SerializedUser) => currentUser.id !== user.id);
         });
 
         // receiver updated when becomes unblocked
-        const unblockedUser = $transmit.subscription(`notification/unblocked/${$profile.id}`);
+        const unblockedUser = $transmit.subscription(`notification/unblocked/${$profile!.id}`);
         await unblockedUser.create();
         unblockedUser.onMessage(async () => {
             await updateAddFriends();
         });
 
         // update when a user removes us from its friends
-        const removeFriend = $transmit.subscription(`notification/friend/remove/${$profile.id}`);
+        const removeFriend = $transmit.subscription(`notification/friend/remove/${$profile!.id}`);
         await removeFriend.create();
         removeFriend.onMessage(async () => {
             await updateAddFriends();
         });
     };
 
-    const handleAcceptPendingRequest = async (user) => {
+    const handleAcceptPendingRequest = async (user: SerializedUser): Promise<void> => {
         const response = await axios.post('/api/friends/accept', { userId: user.id });
         if (response.status === 200) {
             showToast(`${user.username} ${$t('toast.notification.friend-request.accept')}`, 'success', '/friends');
@@ -149,7 +157,7 @@
         }
     };
 
-    const handleRefusePendingRequest = async (user) => {
+    const handleRefusePendingRequest = async (user: SerializedUser): Promise<void> => {
         const response = await axios.post('/api/friends/refuse', { userId: user.id });
         if (response.status === 200) {
             showToast(`${$t('toast.notification.friend-request.refuse')} ${user.username}`, 'success', '/friends');
@@ -165,90 +173,96 @@
     }
 </script>
 
-<Search
-    selected
-    bind:results={paginatedUsers.users}
-    placeholder={$t('social.friends.add.search.placeholder')}
-    label={$t('social.friends.add.search.label')}
-    name="search-user"
-    minChars={3}
-    bind:search={query}
-    on:search={handleSearch}
-/>
+{#if paginatedUsers}
+    <Search
+        selected
+        bind:results={paginatedUsers.users}
+        placeholder={$t('social.friends.add.search.placeholder')}
+        label={$t('social.friends.add.search.label')}
+        name="search-user"
+        minChars={3}
+        bind:search={query}
+        on:search={handleSearch}
+    />
 
-<div class="flex flex-row flex-wrap gap-5 justify-center my-5">
-    {#if paginatedUsers.users.length}
-        <div class="flex flex-col gap-1 w-full">
-            {#each paginatedUsers.users as user}
-                <div class="flex justify-between items-center h-12 border border-gray-300 dark:border-gray-800 rounded-xl hover:bg-gray-300 dark:hover:bg-gray-800 transition-colors duration-300 px-3">
-                    <div class="flex gap-5 flex-wrap items-center">
-                        {#if user.profilePicture}
-                            <img
-                                alt={user.username}
-                                src={`${process.env.VITE_API_BASE_URL}/api/static/profile-picture/${user.id}?token=${localStorage.getItem('apiToken')}`}
-                                class="w-10 rounded-full"
-                            />
-                        {:else}
-                            <img alt={user.username} src={process.env.VITE_DEFAULT_IMAGE} class="max-h-10 rounded-full" />
-                        {/if}
-                        <p>{user.username}</p>
-                    </div>
-                    <div class="flex gap-5">
-                        {#if user.sentFriendRequest}
-                            <Button
-                                ariaLabel="Cancel friend request"
-                                customStyle
-                                className="transition-all duration-300 hover:scale-110 transform text-red-600 hover:text-red-500"
-                                on:click={() => handleCancelFriendRequest(user)}
-                            >
-                                <Icon name="close" />
-                            </Button>
-                        {:else if user.receivedFriendRequest}
-                            <div class="flex gap-5">
+    <div class="flex flex-row flex-wrap gap-5 justify-center my-5">
+        {#if paginatedUsers.users.length}
+            <div class="flex flex-col gap-1 w-full">
+                {#each paginatedUsers.users as user}
+                    <div
+                        class="flex justify-between items-center h-12 border border-gray-300 dark:border-gray-800 rounded-xl hover:bg-gray-300 dark:hover:bg-gray-800 transition-colors duration-300 px-3"
+                    >
+                        <div class="flex gap-5 flex-wrap items-center">
+                            {#if user.profilePicture}
+                                <img
+                                    alt={user.username}
+                                    src={`${import.meta.env.VITE_API_BASE_URL}/api/static/profile-picture/${user.id}?token=${localStorage.getItem('apiToken')}`}
+                                    class="w-10 rounded-full"
+                                />
+                            {:else}
+                                <img alt={user.username} src={import.meta.env.VITE_DEFAULT_IMAGE} class="max-h-10 rounded-full" />
+                            {/if}
+                            <p>{user.username}</p>
+                        </div>
+                        <div class="flex gap-5">
+                            {#if user.sentFriendRequest}
                                 <Button
-                                    ariaLabel="Accept as friend"
+                                    ariaLabel="Cancel friend request"
                                     customStyle
-                                    className="transition-all duration-300 hover:scale-110 transform text-green-600 hover:text-green-400"
-                                    on:click={() => handleAcceptPendingRequest(user)}
+                                    className="transition-all duration-300 hover:scale-110 transform text-red-600 hover:text-red-500"
+                                    on:click={() => handleCancelFriendRequest(user)}
                                 >
-                                    <Icon name="confirm" />
+                                    <Close />
                                 </Button>
+                            {:else if user.receivedFriendRequest}
+                                <div class="flex gap-5">
+                                    <Button
+                                        ariaLabel="Accept as friend"
+                                        customStyle
+                                        className="transition-all duration-300 hover:scale-110 transform text-green-600 hover:text-green-400"
+                                        on:click={() => handleAcceptPendingRequest(user)}
+                                    >
+                                        <Confirm />
+                                    </Button>
+                                    <Button
+                                        ariaLabel="Refuse friend request"
+                                        customStyle
+                                        className="transition-all duration-300 hover:scale-110 transform text-red-600 hover:text-red-400"
+                                        on:click={() => handleRefusePendingRequest(user)}
+                                    >
+                                        <Close />
+                                    </Button>
+                                </div>
+                            {:else}
                                 <Button
-                                    ariaLabel="Refuse friend request"
+                                    ariaLabel="Send friend request"
                                     customStyle
-                                    className="transition-all duration-300 hover:scale-110 transform text-red-600 hover:text-red-400"
-                                    on:click={() => handleRefusePendingRequest(user)}
+                                    className="transition-all duration-300 hover:scale-110 transform text-green-600 hover:text-green-400 flex gap-1"
+                                    on:click={() => handleAddFriend(user)}
                                 >
-                                    <Icon name="close" />
+                                    <AddUser />
                                 </Button>
-                            </div>
-                        {:else}
+                            {/if}
                             <Button
-                                ariaLabel="Send friend request"
+                                ariaLabel="Block user"
                                 customStyle
-                                className="transition-all duration-300 hover:scale-110 transform text-green-600 hover:text-green-400 flex gap-1"
-                                on:click={() => handleAddFriend(user)}
+                                className="transition-all duration-300 hover:scale-110 transform text-red-600 hover:text-red-400"
+                                on:click={() => handleShowBlockingModal(user)}
                             >
-                                <Icon name="addUser" />
+                                <Stop />
                             </Button>
-                        {/if}
-                        <Button
-                            ariaLabel="Block user"
-                            customStyle
-                            className="transition-all duration-300 hover:scale-110 transform text-red-600 hover:text-red-400"
-                            on:click={() => handleShowBlockingModal(user)}
-                        >
-                            <Icon name="stop" />
-                        </Button>
+                        </div>
                     </div>
-                </div>
-            {/each}
-        </div>
-    {:else}
-        <p class="my-5">{$t('social.friends.add.none')}</p>
-    {/if}
-</div>
-<Pagination bind:paginatedObject={paginatedUsers} bind:baseUrl={searchBaseUrl} />
+                {/each}
+            </div>
+        {:else}
+            <p class="my-5">{$t('social.friends.add.none')}</p>
+        {/if}
+    </div>
+    <Pagination bind:paginatedObject={paginatedUsers} bind:baseUrl={searchBaseUrl} />
+{:else}
+    <Loader bind:loading />
+{/if}
 
 <ConfirmModal bind:showModal on:success={handleBlockUser}>
     <Subtitle slot="header">{$t('social.blocked.modal.title')}</Subtitle>

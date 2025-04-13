@@ -1,36 +1,32 @@
-<script>
-    import { location } from '../../stores/locationStore.js';
+<script lang="ts">
+    import { location } from '../../stores/locationStore';
     import Link from '../shared/Link.svelte';
-    import Icon from '../shared/Icon.svelte';
+    import ChevronRight from '../icons/ChevronRight.svelte';
 
-    export let href = '';
-    export let iconLeft = '';
-    export let iconRight = 'chevronRight';
-    export let footer = false;
-    export let target = '';
+    export let href: string = '';
+    export let footer: boolean = false;
+    export let target: string = '';
 
-    let notClickable = true;
+    let notClickable: boolean = true;
 
     $: notClickable = href === $location;
 </script>
 
 <Link
-    href={notClickable ? null : href}
+    href={notClickable ? undefined : href}
     className={`${!notClickable ? (footer ? 'hover:bg-gray-300' : 'hover:bg-gray-600') : ''} ${footer ? 'flex justify-center' : ''} px-2 flex flex-row transition-colors duration-300 rounded ${notClickable ? 'cursor-not-allowed opacity-50' : 'cursor-pointer dark:hover:bg-gray-700'}`}
     {target}
     on:click
 >
     <div class="text-primary-500 left">
-        <Icon name={iconLeft} />
+        <slot name="iconLeft" />
     </div>
     <p class="{footer ? '' : 'text-white text-xl'} text-nowrap p-2">
         <slot />
     </p>
-    {#if iconRight}
-        <div class="flex dark:text-white right">
-            <Icon name={iconRight} />
-        </div>
-    {/if}
+    <div class="dark:text-white right">
+        <ChevronRight />
+    </div>
 </Link>
 
 <style>

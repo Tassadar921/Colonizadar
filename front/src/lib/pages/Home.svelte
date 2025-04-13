@@ -1,7 +1,16 @@
-<script>
+<script lang="ts">
     import Card from '../shared/Card.svelte';
     import { t } from 'svelte-i18n';
     import Title from '../shared/Title.svelte';
+
+    interface Page {
+        title: string;
+        icon: string;
+        href: string;
+        description: string;
+    }
+
+    let pages: Page[] = [];
 
     $: pages = [
         {
