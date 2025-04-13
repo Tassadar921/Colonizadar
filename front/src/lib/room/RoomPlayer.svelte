@@ -9,9 +9,9 @@
     import Loader from '../shared/Loader.svelte';
     import type SerializedRoom from 'colonizadar-backend/app/types/serialized/serialized_room';
     import type SerializedRoomPlayer from 'colonizadar-backend/app/types/serialized/serialized_room_player';
-    import Crown from "../icons/Crown.svelte";
-    import Bot from "../icons/Bot.svelte";
-    import Check from "../icons/Check.svelte";
+    import Crown from '../icons/Crown.svelte';
+    import Bot from '../icons/Bot.svelte';
+    import Check from '../icons/Check.svelte';
 
     export let playableCountries: Option[] = [];
     export let botDifficulties: Option[] = [];

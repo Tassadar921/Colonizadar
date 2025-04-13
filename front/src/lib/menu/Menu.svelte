@@ -4,8 +4,8 @@
     import Button from '../shared/Button.svelte';
     import CommonMenu from './CommonMenu.svelte';
     import FlagMenu from './FlagMenu.svelte';
-    import Burger from "../icons/Burger.svelte";
-    import Close from "../icons/Close.svelte";
+    import Burger from '../icons/Burger.svelte';
+    import Close from '../icons/Close.svelte';
 
     let isOpen: boolean = false;
 
@@ -28,8 +28,6 @@
             document.removeEventListener('click', handleClickOutside);
         };
     });
-
-    $: console.log(buttonContainerElement);
 </script>
 
 <div class="relative z-20 flex justify-start">
@@ -57,7 +55,7 @@
                 <div class="flex gap-5 justify-center items-center">
                     <ThemeSwitch />
                     <div class="mt-2">
-<!--                        <FlagMenu />-->
+                        <FlagMenu />
                     </div>
                 </div>
                 <Button on:click={closeMenu}>

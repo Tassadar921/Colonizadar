@@ -2,10 +2,10 @@
     import Button from './Button.svelte';
     import axios from 'axios';
     import Loader from './Loader.svelte';
-    import ChevronRight from "../icons/ChevronRight.svelte";
-    import DoubleArrowRight from "../icons/DoubleArrowRight.svelte";
-    import DoubleArrowLeft from "../icons/DoubleArrowLeft.svelte";
-    import ArrowLeft from "../icons/ArrowLeft.svelte";
+    import ChevronRight from '../icons/ChevronRight.svelte';
+    import DoubleArrowRight from '../icons/DoubleArrowRight.svelte';
+    import DoubleArrowLeft from '../icons/DoubleArrowLeft.svelte';
+    import ArrowLeft from '../icons/ArrowLeft.svelte';
 
     interface PaginatedObject {
         currentPage: number;

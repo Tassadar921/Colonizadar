@@ -50,5 +50,5 @@
         {verticalClasses[vertical]}
         {horizontalClasses[horizontal]}"
 >
-<!--    <Icon name={icon} />-->
+    <Icon name={icon} />
 </Button>

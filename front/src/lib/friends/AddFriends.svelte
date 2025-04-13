@@ -15,13 +15,15 @@
     import type SerializedUser from 'colonizadar-backend/app/types/serialized/serialized_user';
     import type PaginatedUsers from 'colonizadar-backend/app/types/paginated/paginated_users';
     import type SerializedPendingFriend from 'colonizadar-backend/app/types/serialized/serialized_pending_friend';
-    import Close from "../icons/Close.svelte";
-    import Confirm from "../icons/Confirm.svelte";
-    import AddUser from "../icons/AddUser.svelte";
-    import Stop from "../icons/Stop.svelte";
+    import Close from '../icons/Close.svelte';
+    import Confirm from '../icons/Confirm.svelte';
+    import AddUser from '../icons/AddUser.svelte';
+    import Stop from '../icons/Stop.svelte';
+    import Loader from '../shared/Loader.svelte';
 
     const dispatch = createEventDispatcher();
 
+    let loading: boolean = false;
     let paginatedUsers: PaginatedUsers;
     let searchBaseUrl: string = '/api/friends/add?';
     let query: string = '';
@@ -171,90 +173,96 @@
     }
 </script>
 
-<Search
-    selected
-    bind:results={paginatedUsers.users}
-    placeholder={$t('social.friends.add.search.placeholder')}
-    label={$t('social.friends.add.search.label')}
-    name="search-user"
-    minChars={3}
-    bind:search={query}
-    on:search={handleSearch}
-/>
+{#if paginatedUsers}
+    <Search
+        selected
+        bind:results={paginatedUsers.users}
+        placeholder={$t('social.friends.add.search.placeholder')}
+        label={$t('social.friends.add.search.label')}
+        name="search-user"
+        minChars={3}
+        bind:search={query}
+        on:search={handleSearch}
+    />
 
-<div class="flex flex-row flex-wrap gap-5 justify-center my-5">
-    {#if paginatedUsers.users.length}
-        <div class="flex flex-col gap-1 w-full">
-            {#each paginatedUsers.users as user}
-                <div class="flex justify-between items-center h-12 border border-gray-300 dark:border-gray-800 rounded-xl hover:bg-gray-300 dark:hover:bg-gray-800 transition-colors duration-300 px-3">
-                    <div class="flex gap-5 flex-wrap items-center">
-                        {#if user.profilePicture}
-                            <img
-                                alt={user.username}
-                                src={`${import.meta.env.VITE_API_BASE_URL}/api/static/profile-picture/${user.id}?token=${localStorage.getItem('apiToken')}`}
-                                class="w-10 rounded-full"
-                            />
-                        {:else}
-                            <img alt={user.username} src={import.meta.env.VITE_DEFAULT_IMAGE} class="max-h-10 rounded-full" />
-                        {/if}
-                        <p>{user.username}</p>
-                    </div>
-                    <div class="flex gap-5">
-                        {#if user.sentFriendRequest}
-                            <Button
-                                ariaLabel="Cancel friend request"
-                                customStyle
-                                className="transition-all duration-300 hover:scale-110 transform text-red-600 hover:text-red-500"
-                                on:click={() => handleCancelFriendRequest(user)}
-                            >
-                                <Close />
-                            </Button>
-                        {:else if user.receivedFriendRequest}
-                            <div class="flex gap-5">
+    <div class="flex flex-row flex-wrap gap-5 justify-center my-5">
+        {#if paginatedUsers.users.length}
+            <div class="flex flex-col gap-1 w-full">
+                {#each paginatedUsers.users as user}
+                    <div
+                        class="flex justify-between items-center h-12 border border-gray-300 dark:border-gray-800 rounded-xl hover:bg-gray-300 dark:hover:bg-gray-800 transition-colors duration-300 px-3"
+                    >
+                        <div class="flex gap-5 flex-wrap items-center">
+                            {#if user.profilePicture}
+                                <img
+                                    alt={user.username}
+                                    src={`${import.meta.env.VITE_API_BASE_URL}/api/static/profile-picture/${user.id}?token=${localStorage.getItem('apiToken')}`}
+                                    class="w-10 rounded-full"
+                                />
+                            {:else}
+                                <img alt={user.username} src={import.meta.env.VITE_DEFAULT_IMAGE} class="max-h-10 rounded-full" />
+                            {/if}
+                            <p>{user.username}</p>
+                        </div>
+                        <div class="flex gap-5">
+                            {#if user.sentFriendRequest}
                                 <Button
-                                    ariaLabel="Accept as friend"
+                                    ariaLabel="Cancel friend request"
                                     customStyle
-                                    className="transition-all duration-300 hover:scale-110 transform text-green-600 hover:text-green-400"
-                                    on:click={() => handleAcceptPendingRequest(user)}
-                                >
-                                    <Confirm />
-                                </Button>
-                                <Button
-                                    ariaLabel="Refuse friend request"
-                                    customStyle
-                                    className="transition-all duration-300 hover:scale-110 transform text-red-600 hover:text-red-400"
-                                    on:click={() => handleRefusePendingRequest(user)}
+                                    className="transition-all duration-300 hover:scale-110 transform text-red-600 hover:text-red-500"
+                                    on:click={() => handleCancelFriendRequest(user)}
                                 >
                                     <Close />
                                 </Button>
-                            </div>
-                        {:else}
+                            {:else if user.receivedFriendRequest}
+                                <div class="flex gap-5">
+                                    <Button
+                                        ariaLabel="Accept as friend"
+                                        customStyle
+                                        className="transition-all duration-300 hover:scale-110 transform text-green-600 hover:text-green-400"
+                                        on:click={() => handleAcceptPendingRequest(user)}
+                                    >
+                                        <Confirm />
+                                    </Button>
+                                    <Button
+                                        ariaLabel="Refuse friend request"
+                                        customStyle
+                                        className="transition-all duration-300 hover:scale-110 transform text-red-600 hover:text-red-400"
+                                        on:click={() => handleRefusePendingRequest(user)}
+                                    >
+                                        <Close />
+                                    </Button>
+                                </div>
+                            {:else}
+                                <Button
+                                    ariaLabel="Send friend request"
+                                    customStyle
+                                    className="transition-all duration-300 hover:scale-110 transform text-green-600 hover:text-green-400 flex gap-1"
+                                    on:click={() => handleAddFriend(user)}
+                                >
+                                    <AddUser />
+                                </Button>
+                            {/if}
                             <Button
-                                ariaLabel="Send friend request"
+                                ariaLabel="Block user"
                                 customStyle
-                                className="transition-all duration-300 hover:scale-110 transform text-green-600 hover:text-green-400 flex gap-1"
-                                on:click={() => handleAddFriend(user)}
+                                className="transition-all duration-300 hover:scale-110 transform text-red-600 hover:text-red-400"
+                                on:click={() => handleShowBlockingModal(user)}
                             >
-                                <AddUser />
+                                <Stop />
                             </Button>
-                        {/if}
-                        <Button
-                            ariaLabel="Block user"
-                            customStyle
-                            className="transition-all duration-300 hover:scale-110 transform text-red-600 hover:text-red-400"
-                            on:click={() => handleShowBlockingModal(user)}
-                        >
-                            <Stop />
-                        </Button>
+                        </div>
                     </div>
-                </div>
-            {/each}
-        </div>
-    {:else}
-        <p class="my-5">{$t('social.friends.add.none')}</p>
-    {/if}
-</div>
-<Pagination bind:paginatedObject={paginatedUsers} bind:baseUrl={searchBaseUrl} />
+                {/each}
+            </div>
+        {:else}
+            <p class="my-5">{$t('social.friends.add.none')}</p>
+        {/if}
+    </div>
+    <Pagination bind:paginatedObject={paginatedUsers} bind:baseUrl={searchBaseUrl} />
+{:else}
+    <Loader bind:loading />
+{/if}
 
 <ConfirmModal bind:showModal on:success={handleBlockUser}>
     <Subtitle slot="header">{$t('social.blocked.modal.title')}</Subtitle>

@@ -1,7 +1,7 @@
 <script lang="ts">
     import Switch from './Switch.svelte';
-    import Moon from "../icons/Moon.svelte";
-    import Sun from "../icons/Sun.svelte";
+    import Moon from '../icons/Moon.svelte';
+    import Sun from '../icons/Sun.svelte';
 
     export let title: string = '';
 

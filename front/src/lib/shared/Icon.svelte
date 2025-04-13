@@ -9,8 +9,20 @@
     let IconComponent: typeof SvelteComponent | null = null;
 
     const validIcons: string[] = [
-        'Book', 'Camera', 'Moon', 'Sun', 'Burger', 'Close','Settings', 'ChevronLeft', 'ChevronRight',
-        'DoubleArrowLeft', 'DoubleArrowRight', 'Home', 'User', 'UserRemove',
+        'Book',
+        'Camera',
+        'Moon',
+        'Sun',
+        'Burger',
+        'Close',
+        'Settings',
+        'ChevronLeft',
+        'ChevronRight',
+        'DoubleArrowLeft',
+        'DoubleArrowRight',
+        'Home',
+        'User',
+        'UserRemove',
         'Eye',
         'EyeSlash',
         'Trash',
@@ -63,7 +75,6 @@
     const setIcon = async (name: string): Promise<void> => {
         const camelCaseName = toCamelCase(name);
         if (validIcons.includes(camelCaseName)) {
-            console.log(camelCaseName);
             const module = await import(`../icons/${camelCaseName}.svelte`);
             IconComponent = module.default;
         } else {

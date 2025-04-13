@@ -16,10 +16,12 @@
     import { transmit } from '../../stores/transmitStore';
     import type PaginatedFriends from 'colonizadar-backend/app/types/paginated/paginated_friends';
     import type SerializedUser from 'colonizadar-backend/app/types/serialized/serialized_user';
-    import Plus from "../icons/Plus.svelte";
-    import RemoveUser from "../icons/RemoveUser.svelte";
-    import Stop from "../icons/Stop.svelte";
+    import Plus from '../icons/Plus.svelte';
+    import RemoveUser from '../icons/RemoveUser.svelte';
+    import Stop from '../icons/Stop.svelte';
+    import Loader from '../shared/Loader.svelte';
 
+    let loading: boolean = false;
     let paginatedFriends: PaginatedFriends;
     let searchBaseUrl: string = '/api/friends';
     let query: string = '';
@@ -97,73 +99,80 @@
     }
 </script>
 
-<div class="flex gap-3 items-center">
-    <Title title={$t('social.friends.title')} />
-    <Button
-        ariaLabel="Add a friend"
-        customStyle
-        className="rounded-full bg-green-500 hover:bg-green-600 dark:bg-green-700 dark:hover:bg-green-600 transition-colors duration-300 p-1 mb-1.5"
-        on:click={() => (showAddFriendsModal = true)}
-    >
-        <Plus />
-    </Button>
-</div>
+<Title title={$t('social.friends.title')} />
 
 <Breadcrumbs items={[{ label: $t('home.title'), path: '/' }, { label: $t('social.title'), path: '/social' }, { label: $t('social.friends.title') }]} />
 
-<Search
-    selected
-    bind:results={paginatedFriends.friends}
-    placeholder={$t('social.friends.search.placeholder')}
-    label={$t('social.friends.search.label')}
-    name="search-friend"
-    bind:search={query}
-    on:search={handleSearch}
-/>
+{#if paginatedFriends}
+    <div class="flex gap-3 items-center">
+        <Button
+            ariaLabel="Add a friend"
+            customStyle
+            className="rounded-full bg-green-500 hover:bg-green-600 dark:bg-green-700 dark:hover:bg-green-600 transition-colors duration-300 p-1 mb-1.5"
+            on:click={() => (showAddFriendsModal = true)}
+        >
+            <Plus />
+        </Button>
+    </div>
 
-<div class="flex flex-row flex-wrap gap-5 justify-center my-5">
-    {#if paginatedFriends.friends.length}
-        <div class="flex flex-col gap-1 w-full">
-            {#each paginatedFriends.friends as friendObject}
-                <div class="flex justify-between items-center h-12 border border-gray-300 dark:border-gray-800 rounded-xl hover:bg-gray-300 dark:hover:bg-gray-800 transition-colors duration-300 px-3">
-                    <div class="flex gap-5 flex-wrap items-center">
-                        {#if friendObject.friend.profilePicture}
-                            <img
-                                alt={friendObject.friend.username}
-                                src={`${import.meta.env.VITE_API_BASE_URL}/api/static/profile-picture/${friendObject.friend.id}?token=${localStorage.getItem('apiToken')}`}
-                                class="w-10 rounded-full"
-                            />
-                        {:else}
-                            <img alt={friendObject.friend.username} src={import.meta.env.VITE_DEFAULT_IMAGE} class="max-h-10 rounded-full" />
-                        {/if}
-                        <p>{friendObject.friend.username}</p>
+    <Search
+        selected
+        bind:results={paginatedFriends.friends}
+        placeholder={$t('social.friends.search.placeholder')}
+        label={$t('social.friends.search.label')}
+        name="search-friend"
+        bind:search={query}
+        on:search={handleSearch}
+    />
+
+    <div class="flex flex-row flex-wrap gap-5 justify-center my-5">
+        {#if paginatedFriends.friends.length}
+            <div class="flex flex-col gap-1 w-full">
+                {#each paginatedFriends.friends as friendObject}
+                    <div
+                        class="flex justify-between items-center h-12 border border-gray-300 dark:border-gray-800 rounded-xl hover:bg-gray-300 dark:hover:bg-gray-800 transition-colors duration-300 px-3"
+                    >
+                        <div class="flex gap-5 flex-wrap items-center">
+                            {#if friendObject.friend.profilePicture}
+                                <img
+                                    alt={friendObject.friend.username}
+                                    src={`${import.meta.env.VITE_API_BASE_URL}/api/static/profile-picture/${friendObject.friend.id}?token=${localStorage.getItem('apiToken')}`}
+                                    class="w-10 rounded-full"
+                                />
+                            {:else}
+                                <img alt={friendObject.friend.username} src={import.meta.env.VITE_DEFAULT_IMAGE} class="max-h-10 rounded-full" />
+                            {/if}
+                            <p>{friendObject.friend.username}</p>
+                        </div>
+                        <div class="flex gap-10 pr-5">
+                            <Button
+                                ariaLabel="Remove friend"
+                                customStyle
+                                className="transition-all duration-300 hover:scale-110 transform text-red-600 hover:text-red-400"
+                                on:click={() => handleShowRemoveFriendModal(friendObject.friend)}
+                            >
+                                <RemoveUser />
+                            </Button>
+                            <Button
+                                ariaLabel="Block user"
+                                customStyle
+                                className="transition-all duration-300 hover:scale-110 transform text-red-600 hover:text-red-400"
+                                on:click={() => handleShowBlockingModal(friendObject.friend)}
+                            >
+                                <Stop />
+                            </Button>
+                        </div>
                     </div>
-                    <div class="flex gap-10 pr-5">
-                        <Button
-                            ariaLabel="Remove friend"
-                            customStyle
-                            className="transition-all duration-300 hover:scale-110 transform text-red-600 hover:text-red-400"
-                            on:click={() => handleShowRemoveFriendModal(friendObject.friend)}
-                        >
-                            <RemoveUser />
-                        </Button>
-                        <Button
-                            ariaLabel="Block user"
-                            customStyle
-                            className="transition-all duration-300 hover:scale-110 transform text-red-600 hover:text-red-400"
-                            on:click={() => handleShowBlockingModal(friendObject.friend)}
-                        >
-                            <Stop />
-                        </Button>
-                    </div>
-                </div>
-            {/each}
-        </div>
-    {:else}
-        <p class="mt-5">{$t('social.friends.none')}</p>
-    {/if}
-</div>
-<Pagination bind:paginatedObject={paginatedFriends} bind:baseUrl={searchBaseUrl} />
+                {/each}
+            </div>
+        {:else}
+            <p class="mt-5">{$t('social.friends.none')}</p>
+        {/if}
+    </div>
+    <Pagination bind:paginatedObject={paginatedFriends} bind:baseUrl={searchBaseUrl} />
+{:else}
+    <Loader bind:loading />
+{/if}
 
 <Modal bind:showModal={showAddFriendsModal} fullWidth>
     <Subtitle slot="header">{$t('social.friends.add.title')}</Subtitle>

@@ -6,10 +6,10 @@
     import { onMount } from 'svelte';
     import { profile } from '../../stores/profileStore';
     import type SerializedBotDifficulty from 'colonizadar-backend/app/types/serialized/serialized_bot_difficulty';
-    import Plus from "../icons/Plus.svelte";
+    import Plus from '../icons/Plus.svelte';
 
     export let room;
-    export let difficulties: { value: string, label: string }[] = [];
+    export let difficulties: { value: string; label: string }[] = [];
 
     const checkedProfile = $profile!;
 

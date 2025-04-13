@@ -1,6 +1,6 @@
 <script lang="ts">
     import Popover from './Popover.svelte';
-    import Help from "../icons/Help.svelte";
+    import Help from '../icons/Help.svelte';
 
     let show: boolean = false;
     let iconElement: HTMLDivElement;

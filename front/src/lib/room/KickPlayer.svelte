@@ -5,7 +5,7 @@
     import { showToast } from '../../services/toastService';
     import type SerializedRoom from 'colonizadar-backend/app/types/serialized/serialized_room';
     import type SerializedRoomPlayer from 'colonizadar-backend/app/types/serialized/serialized_room_player';
-    import Close from "../icons/Close.svelte";
+    import Close from '../icons/Close.svelte';
 
     export let room: SerializedRoom;
     export let player: SerializedRoomPlayer;

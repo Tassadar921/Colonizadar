@@ -1,7 +1,7 @@
 <script lang="ts">
     import { location } from '../../stores/locationStore';
     import Link from '../shared/Link.svelte';
-    import ChevronRight from "../icons/ChevronRight.svelte";
+    import ChevronRight from '../icons/ChevronRight.svelte';
 
     export let href: string = '';
     export let footer: boolean = false;

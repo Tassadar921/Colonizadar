@@ -8,11 +8,4 @@ export default defineConfig({
         allowedHosts: ['localhost', 'app.colonizadar.fr'],
     },
     plugins: [svelte()],
-    build: {
-        rollupOptions: {
-            output: {
-                assetFileNames: '[name].[hash].[ext]',
-            },
-        },
-    },
 });

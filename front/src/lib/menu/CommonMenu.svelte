@@ -2,11 +2,11 @@
     import MenuItem from './MenuItem.svelte';
     import { t } from 'svelte-i18n';
     import { profile } from '../../stores/profileStore';
-    import Home from "../icons/Home.svelte";
-    import Game from "../icons/Game.svelte";
-    import People from "../icons/People.svelte";
-    import User from "../icons/User.svelte";
-    import UserRemove from "../icons/UserRemove.svelte";
+    import Home from '../icons/Home.svelte';
+    import Game from '../icons/Game.svelte';
+    import People from '../icons/People.svelte';
+    import User from '../icons/User.svelte';
+    import UserRemove from '../icons/UserRemove.svelte';
 
     export let footer: boolean = false;
 </script>

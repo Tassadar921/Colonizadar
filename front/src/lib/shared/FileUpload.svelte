@@ -3,7 +3,7 @@
     import { onMount } from 'svelte';
     import { raw } from '../../services/stringService';
     import Loader from './Loader.svelte';
-    import Upload from "../icons/Upload.svelte";
+    import Upload from '../icons/Upload.svelte';
 
     export let name: string = '';
     export let description: string = '';

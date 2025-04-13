@@ -7,7 +7,7 @@
     import { createEventDispatcher } from 'svelte';
     import FormBackground from './background/FormBackground.svelte';
     import { language } from '../../stores/languageStore';
-    import Send from "../icons/Send.svelte";
+    import Send from '../icons/Send.svelte';
 
     const dispatch = createEventDispatcher();
 

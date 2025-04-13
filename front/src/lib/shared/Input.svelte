@@ -1,8 +1,8 @@
 <script lang="ts">
     import Button from './Button.svelte';
     import { createEventDispatcher } from 'svelte';
-    import Eye from "../icons/Eye.svelte";
-    import EyeSlash from "../icons/EyeSlash.svelte";
+    import Eye from '../icons/Eye.svelte';
+    import EyeSlash from '../icons/EyeSlash.svelte';
 
     const dispatch = createEventDispatcher();
 

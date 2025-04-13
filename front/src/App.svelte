@@ -82,10 +82,6 @@
             await updateProfile();
         }
     });
-
-    $: console.log($isLoading);
-    $: console.log($location);
-    $: console.log($profile);
 </script>
 
 <NotificationsSetup />

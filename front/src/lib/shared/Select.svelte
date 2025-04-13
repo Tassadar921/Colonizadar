@@ -77,7 +77,7 @@
             {selectedOption?.label || 'Select an option'}
         </span>
         <span class="dark:text-primary-500 transform transition-transform duration-300" class:rotate-180={isOpen}>
-<!--            <Icon bind:name={chevronIcon} />-->
+            <Icon bind:name={chevronIcon} />
         </span>
     </button>
 

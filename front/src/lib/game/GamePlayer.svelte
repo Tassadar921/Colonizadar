@@ -3,8 +3,8 @@
     import { t } from 'svelte-i18n';
     import type SerializedGame from 'colonizadar-backend/app/types/serialized/serialized_game';
     import type SerializedRoomPlayer from 'colonizadar-backend/app/types/serialized/serialized_room_player';
-    import Crown from "../icons/Crown.svelte";
-    import Bot from "../icons/Bot.svelte";
+    import Crown from '../icons/Crown.svelte';
+    import Bot from '../icons/Bot.svelte';
 
     export let game: SerializedGame;
     export let player: SerializedRoomPlayer;

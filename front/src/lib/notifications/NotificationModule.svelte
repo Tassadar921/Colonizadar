@@ -3,8 +3,8 @@
     import { createEventDispatcher } from 'svelte';
     import Subtitle from '../shared/Subtitle.svelte';
     import type SerializedPendingFriendNotification from 'colonizadar-backend/app/types/serialized/serialized_pending_friend_notification';
-    import Close from "../icons/Close.svelte";
-    import Confirm from "../icons/Confirm.svelte";
+    import Close from '../icons/Close.svelte';
+    import Confirm from '../icons/Confirm.svelte';
 
     const dispatch = createEventDispatcher();
 

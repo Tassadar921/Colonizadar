@@ -3,8 +3,7 @@
     import MenuItem from '../menu/MenuItem.svelte';
     import { t } from 'svelte-i18n';
     import { isLoading } from 'svelte-i18n';
-    import OpenSource from "../icons/OpenSource.svelte";
-
+    import OpenSource from '../icons/OpenSource.svelte';
 </script>
 
 {#if !$isLoading}
