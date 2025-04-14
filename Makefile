@@ -26,8 +26,11 @@ stop:
 up:
 	make stop && docker compose up -d --build
 
-start:
-	docker compose down --volumes --remove-orphans && make up && make db
-
 rm:
-	make stop && docker system prune -f
+	docker compose down --volumes --remove-orphans
+
+start:
+	make rm && make up && make db
+
+make prune:
+	docker system prune -f
