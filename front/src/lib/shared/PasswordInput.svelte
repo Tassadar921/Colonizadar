@@ -18,8 +18,6 @@
         if (!label) {
             label = $t('common.password.label');
         }
-
-        console.log(min);
     });
 </script>
 
