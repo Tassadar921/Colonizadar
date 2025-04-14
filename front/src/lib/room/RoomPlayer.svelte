@@ -12,11 +12,13 @@
     import Crown from '../icons/Crown.svelte';
     import Bot from '../icons/Bot.svelte';
     import Check from '../icons/Check.svelte';
+    import Ready from './Ready.svelte';
 
     export let playableCountries: Option[] = [];
     export let botDifficulties: Option[] = [];
     export let room: SerializedRoom;
     export let player: SerializedRoomPlayer;
+    export let isLoading: boolean;
 
     interface Option {
         label: string;
@@ -27,16 +29,14 @@
     let invalidCountry: boolean = true;
     let selectedCountry: Option;
     let selectedDifficulty: Option;
-    let isLoading: boolean = false;
 
     const checkedProfile = $profile!;
 
     const handleSelectCountry = async (event: CustomEvent) => {
         try {
-            const { data } = await axios.patch(`/api/room/${room.id}/player/${player.id}/select-country`, {
+            await axios.patch(`/api/room/${room.id}/player/${player.id}/select-country`, {
                 countryId: event.detail.value,
             });
-            showToast(`${data.message}`);
         } catch (error: any) {
             showToast(error.response.data.error, 'error');
         }
@@ -44,25 +44,12 @@
 
     const handleSelectBotDifficulty = async (event: CustomEvent) => {
         try {
-            const { data } = await axios.patch(`/api/room/${room.id}/player/${player.id}/select-difficulty`, {
+            await axios.patch(`/api/room/${room.id}/player/${player.id}/select-difficulty`, {
                 difficultyId: event.detail.value,
             });
-            showToast(`${data.message}`);
         } catch (error: any) {
             showToast(error.response.data.error, 'error');
         }
-    };
-
-    const handleReady = async (player: SerializedRoomPlayer, isReady: boolean) => {
-        isLoading = true;
-        try {
-            await axios.patch(`/api/room/${room.id}/player/${player.id}/ready`, {
-                isReady,
-            });
-        } catch (error: any) {
-            showToast(error.response.data.error, 'error');
-        }
-        isLoading = false;
     };
 
     $: if (player.country) {
@@ -84,8 +71,6 @@
         };
     }
 </script>
-
-<Loader bind:isLoading />
 
 <div
     class="grid grid-cols-4 border {invalidCountry ? 'shadow-md shadow-red-500' : ''} {player.user && checkedProfile.id === player.user.id
@@ -153,14 +138,9 @@
     <!--    Player actions for room owner    -->
     <div class="flex gap-3 justify-end">
         {#if player.user}
-            <Button
-                disabled={player.user.id !== checkedProfile.id}
-                customStyle
-                className="{player.user.id === checkedProfile.id ? 'transition-transform duration-300 hover:scale-125 transform' : ''} {player.isReady ? 'text-green-500' : 'text-red-500'}"
-                on:click={() => handleReady(player, !player.isReady)}
-            >
-                <Check />
-            </Button>
+            <div class="flex items-center {player.isReady ? 'text-green-500' : 'text-red-500'}">
+                <Check size={40} />
+            </div>
         {/if}
         {#if checkedProfile.id === room.owner.id && checkedProfile.id !== player.user?.id}
             <KickPlayer bind:room bind:player />

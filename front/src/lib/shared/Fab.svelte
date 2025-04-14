@@ -2,6 +2,12 @@
     import Icon from './Icon.svelte';
     import Button from './Button.svelte';
 
+    export let horizontal: Props['horizontal'] = 'right';
+    export let vertical: Props['vertical'] = 'bottom';
+    export let icon: string = '';
+    export let color: string = 'primary';
+    export let ariaLabel: string;
+
     interface Props {
         horizontal: 'right' | 'left' | 'middle';
         vertical: 'top' | 'bottom' | 'center';
@@ -18,10 +24,6 @@
         bottom: string;
         center: string;
     }
-
-    export let horizontal: Props['horizontal'] = 'right';
-    export let vertical: Props['vertical'] = 'bottom';
-    export let icon: string = '';
 
     const validHorizontal: string[] = ['right', 'left', 'middle'];
     const validVertical: string[] = ['top', 'bottom', 'center'];
@@ -44,9 +46,10 @@
 
 <Button
     on:click
+    {ariaLabel}
     customStyle
     style="z-index: 5000"
-    className="text-white shadow-lg flex items-center justify-center fixed size-10 rounded-full bg-primary-600 hover:bg-primary-900 transition-colors duration-300
+    className="text-white shadow-lg flex items-center justify-center fixed size-10 rounded-full {`bg-${color}-600 hover:bg-${color}-900`} transition-colors duration-300
         {verticalClasses[vertical]}
         {horizontalClasses[horizontal]}"
 >
