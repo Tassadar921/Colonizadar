@@ -4,6 +4,7 @@ export const roomMiddlewareValidator = vine.compile(
     vine.object({
         roomId: vine.number().positive().optional(),
         token: vine.string().uuid().optional(),
+        password: vine.string().minLength(3).optional(),
     })
 );
 

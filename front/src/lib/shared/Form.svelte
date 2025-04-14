@@ -22,7 +22,7 @@
 
     const handleSubmit = async (event: SubmitEvent) => {
         event.preventDefault();
-        loading = true;
+        isLoading = true;
         const form: HTMLFormElement = <HTMLFormElement>event.target;
         const formData: FormData = new FormData(form);
 

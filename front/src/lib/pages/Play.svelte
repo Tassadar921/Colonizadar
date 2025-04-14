@@ -15,7 +15,7 @@
     import { navigate } from '../../stores/locationStore';
 
     let showJoinModal: boolean = false;
-    let showCreateModal: boolean = true;
+    let showCreateModal: boolean = false;
 
     let isJoinSubmittable: boolean = false;
     let isCreateSubmittable: boolean = false;
@@ -72,6 +72,7 @@
     <Subtitle slot="header">{$t('play.room.join.title')}</Subtitle>
     <Form action="/api/room/join" method="POST" showBackground={false} bind:isValid={isJoinSubmittable} on:success={handleJoinSuccess} on:error={handleJoinFailure}>
         <Input name="token" label={$t('play.room.join.modal.token.label')} placeholder={$t('play.room.join.modal.token.placeholder')} bind:value={token} required />
+        <PasswordInput min={3} bind:value={password} required={false} />
     </Form>
 </Modal>
 

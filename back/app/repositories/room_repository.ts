@@ -1,6 +1,7 @@
 import BaseRepository from '#repositories/base/base_repository';
 import Room from '#models/room';
 import RoomStatusEnum from '#types/enum/room_status_enum';
+import hash from '@adonisjs/core/services/hash';
 
 export default class RoomRepository extends BaseRepository<typeof Room> {
     constructor() {
@@ -28,11 +29,10 @@ export default class RoomRepository extends BaseRepository<typeof Room> {
             .first();
     }
 
-    public async getFromUserAndToken(token: string): Promise<Room | null> {
-        return this.Model.query()
+    public async getFromUserAndToken(token: string, password?: string): Promise<Room | null> {
+        const room: Room | null = await this.Model.query()
             .select('rooms.*')
-            .where('rooms.status', RoomStatusEnum.OPENED)
-            .orWhere('rooms.status', RoomStatusEnum.STARTING)
+            .whereIn('rooms.status', [RoomStatusEnum.OPENED, RoomStatusEnum.STARTING])
             .andWhere('rooms.token', token)
             .preload('owner')
             .preload('players', (playersQuery): void => {
@@ -48,6 +48,19 @@ export default class RoomRepository extends BaseRepository<typeof Room> {
                     .preload('createdBy');
             })
             .first();
+
+        if (!room || (!room.public && !password)) {
+            return null;
+        }
+
+        if (!room.public) {
+            const isValidPassword: boolean = await hash.verify(<string>room.password, <string>password);
+            if (!isValidPassword) {
+                return null;
+            }
+        }
+
+        return room;
     }
 
     public async getPaginatedForHeartbeatChecks(page: number) {

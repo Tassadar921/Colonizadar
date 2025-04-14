@@ -10,13 +10,13 @@ export default class RoomMiddleware {
 
     public async handle(ctx: HttpContext, next: () => Promise<void>): Promise<void> {
         const { roomId: paramRoomId } = await roomMiddlewareValidator.validate(ctx.request.params());
-        const { token, roomId: bodyRoomId } = await roomMiddlewareValidator.validate(ctx.request.all());
+        const { token, roomId: bodyRoomId, password } = await roomMiddlewareValidator.validate(ctx.request.all());
 
         let room: Room | null = null;
         if (!paramRoomId && !token && !bodyRoomId) {
             return ctx.response.badRequest({ error: 'Either roomId or token are required' });
         } else if (token) {
-            room = await this.roomRepository.getFromUserAndToken(token);
+            room = await this.roomRepository.getFromUserAndToken(token, password);
         } else if (paramRoomId || bodyRoomId) {
             room = await this.roomRepository.getFromFrontId(<number>(paramRoomId || bodyRoomId));
         }
