@@ -8,7 +8,7 @@
     import axios from 'axios';
     import { showToast } from '../../services/toastService';
 
-    let loading = false;
+    let isLoading: boolean = false;
 
     const handleAcceptPendingRequest = async (event: CustomEvent): Promise<void> => {
         const response = await axios.post('/api/friends/accept', { userId: event.detail.from.id });
@@ -33,7 +33,7 @@
     };
 </script>
 
-<Loader bind:loading />
+<Loader bind:isLoading />
 
 <Title title={$t('notifications.title')} />
 

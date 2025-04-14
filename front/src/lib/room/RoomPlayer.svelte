@@ -27,7 +27,7 @@
     let invalidCountry: boolean = true;
     let selectedCountry: Option;
     let selectedDifficulty: Option;
-    let loading: boolean = false;
+    let isLoading: boolean = false;
 
     const checkedProfile = $profile!;
 
@@ -54,7 +54,7 @@
     };
 
     const handleReady = async (player: SerializedRoomPlayer, isReady: boolean) => {
-        loading = true;
+        isLoading = true;
         try {
             await axios.patch(`/api/room/${room.id}/player/${player.id}/ready`, {
                 isReady,
@@ -62,7 +62,7 @@
         } catch (error: any) {
             showToast(error.response.data.error, 'error');
         }
-        loading = false;
+        isLoading = false;
     };
 
     $: if (player.country) {
@@ -85,7 +85,7 @@
     }
 </script>
 
-<Loader bind:loading />
+<Loader bind:isLoading />
 
 <div
     class="grid grid-cols-4 border {invalidCountry ? 'shadow-md shadow-red-500' : ''} {player.user && checkedProfile.id === player.user.id

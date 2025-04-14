@@ -2,14 +2,14 @@
     import Button from '../shared/Button.svelte';
     import { createEventDispatcher } from 'svelte';
     import Subtitle from '../shared/Subtitle.svelte';
-    import type SerializedPendingFriendNotification from 'colonizadar-backend/app/types/serialized/serialized_pending_friend_notification';
     import Close from '../icons/Close.svelte';
     import Confirm from '../icons/Confirm.svelte';
+    import type SerializedPendingFriend from 'colonizadar-backend/app/types/serialized/serialized_pending_friend';
 
     const dispatch = createEventDispatcher();
 
     export let title;
-    export let notifications: SerializedPendingFriendNotification[] = [];
+    export let notifications: SerializedPendingFriend[] = [];
     export let noneMessage: string;
 </script>
 
@@ -20,16 +20,16 @@
             {#each notifications as notificationObject}
                 <div class="flex justify-between items-center h-12 rounded-xl border border-gray-800 px-3 hover:bg-gray-800 transition-colors duration-300">
                     <div class="flex gap-5 flex-wrap items-center">
-                        {#if notificationObject.from.profilePicture}
+                        {#if notificationObject.notification.from.profilePicture}
                             <img
-                                alt={notificationObject.from.username}
-                                src={`${import.meta.env.VITE_API_BASE_URL}/api/static/profile-picture/${notificationObject.from.id}?token=${localStorage.getItem('apiToken')}`}
+                                alt={notificationObject.notification.from.username}
+                                src={`${import.meta.env.VITE_API_BASE_URL}/api/static/profile-picture/${notificationObject.notification.from.id}?token=${localStorage.getItem('apiToken')}`}
                                 class="w-10 rounded-full"
                             />
                         {:else}
-                            <img alt={notificationObject.from.username} src={import.meta.env.VITE_DEFAULT_IMAGE} class="max-h-10 rounded-full" />
+                            <img alt={notificationObject.notification.from.username} src={import.meta.env.VITE_DEFAULT_IMAGE} class="max-h-10 rounded-full" />
                         {/if}
-                        <p>{notificationObject.from.username}</p>
+                        <p>{notificationObject.notification.from.username}</p>
                     </div>
                     <div class="flex gap-10 pr-5">
                         <Button

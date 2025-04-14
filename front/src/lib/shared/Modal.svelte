@@ -1,6 +1,6 @@
 <script lang="ts">
     import Button from './Button.svelte';
-    import { createEventDispatcher } from 'svelte';
+    import { createEventDispatcher, onMount } from 'svelte';
     import { t } from 'svelte-i18n';
 
     const dispatch = createEventDispatcher();
@@ -12,6 +12,7 @@
     export let confirm: boolean = false;
     export let closable: boolean = true;
 
+    let initialFullWidth: boolean = fullWidth;
     let dialog: HTMLDialogElement;
 
     const handleSuccess = (): void => {
@@ -24,6 +25,14 @@
             dialog.close();
         }
     };
+
+    onMount((): void => {
+        if (!initialFullWidth) {
+            window.addEventListener('resize', () => {
+                fullWidth = window.innerWidth < 768;
+            });
+        }
+    });
 
     $: if (dialog) {
         if (showModal) {
@@ -40,7 +49,7 @@
         <Button type="button" ariaLabel={$t('common.close-modal')} className="fixed inset-0 w-full h-full cursor-default" customStyle on:click={handleClose} />
     {/if}
 
-    <div class="p-2 md:p-4 bg-white dark:bg-gray-700 rounded-lg relative">
+    <div class="p-4 bg-white dark:bg-gray-700 rounded-lg relative">
         <slot name="header" />
         <hr class="my-2" />
         <slot />

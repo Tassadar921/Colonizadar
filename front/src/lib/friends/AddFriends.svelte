@@ -23,7 +23,7 @@
 
     const dispatch = createEventDispatcher();
 
-    let loading: boolean = false;
+    let isLoading: boolean = false;
     let paginatedUsers: PaginatedUsers;
     let searchBaseUrl: string = '/api/friends/add?';
     let query: string = '';
@@ -261,7 +261,7 @@
     </div>
     <Pagination bind:paginatedObject={paginatedUsers} bind:baseUrl={searchBaseUrl} />
 {:else}
-    <Loader bind:loading />
+    <Loader bind:isLoading />
 {/if}
 
 <ConfirmModal bind:showModal on:success={handleBlockUser}>

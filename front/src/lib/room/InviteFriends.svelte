@@ -16,7 +16,7 @@
 
     export let room: SerializedRoom;
 
-    let loading: boolean = false;
+    let isLoading: boolean = false;
     let paginatedFriends: PaginatedFriends;
     let searchBaseUrl: string = '/api/friends';
     let query: string = '';
@@ -125,5 +125,5 @@
     </div>
     <Pagination bind:paginatedObject={paginatedFriends} bind:baseUrl={searchBaseUrl} />
 {:else}
-    <Loader bind:loading />
+    <Loader bind:isLoading />
 {/if}

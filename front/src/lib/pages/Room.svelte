@@ -29,7 +29,7 @@
         uri?: string;
     }
 
-    let loading: boolean = true;
+    let isLoading: boolean = true;
     let room: SerializedRoom;
     let showInviteFriendModal: boolean = false;
     let playableCountries: Option[];
@@ -39,7 +39,7 @@
 
     async function fetchRoomData(): Promise<void> {
         try {
-            loading = true;
+            isLoading = true;
             const { data: roomData } = await axios.put(`/api/room/${roomId}/join`);
             room = roomData.room;
 
@@ -49,7 +49,7 @@
                 label: playableCountry.name,
                 uri: `${import.meta.env.VITE_API_BASE_URL}/api/static/country-flag/${playableCountry.id}?token=${localStorage.getItem('apiToken')}`,
             }));
-            loading = false;
+            isLoading = false;
         } catch (e: any) {
             showToast($t('toast.room.error'), 'error');
             await unloadCleanup();
@@ -143,5 +143,5 @@
         <InviteFriends bind:room />
     </Modal>
 {:else}
-    <Loader bind:loading />
+    <Loader bind:isLoading />
 {/if}

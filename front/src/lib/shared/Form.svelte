@@ -17,7 +17,7 @@
     export let submittable: boolean = true;
     export let showBackground: boolean = true;
 
-    let loading: boolean = false;
+    let isLoading: boolean = false;
     let isSendButtonDisabled: boolean = false;
 
     const handleSubmit = async (event: SubmitEvent) => {
@@ -40,11 +40,11 @@
                 params: method === 'GET' ? formDataObj : null,
                 headers: method !== 'GET' ? { 'Content-Type': 'multipart/form-data', 'Accept-Language': `${$language}-${$language.toUpperCase()}` || 'en-US' } : {},
             });
-            loading = false;
+            isLoading = false;
             dispatch('success', response.data);
         } catch (error: any) {
             console.log(error.message);
-            loading = false;
+            isLoading = false;
             dispatch('error', error.message);
         }
     };
@@ -84,5 +84,5 @@
             </Button>
         </div>
     {/if}
-    <Loader bind:loading />
+    <Loader bind:isLoading />
 </form>
