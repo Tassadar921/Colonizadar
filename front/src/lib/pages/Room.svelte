@@ -20,6 +20,8 @@
     import Copy from '../icons/Copy.svelte';
     import Invite from '../icons/Invite.svelte';
     import Loader from '../shared/Loader.svelte';
+    import Ready from "../room/Ready.svelte";
+    import { profile } from '../../stores/profileStore';
 
     export let roomId: string;
 
@@ -36,6 +38,7 @@
     let botDifficulties: Option[];
     let maps: SerializedMap[];
     let heartbeat: NodeJS.Timeout;
+    const checkedProfile = $profile!;
 
     async function fetchRoomData(): Promise<void> {
         try {
@@ -87,10 +90,6 @@
     $: if (roomId) {
         fetchRoomData();
     }
-
-    $: if (room) {
-        console.log(room);
-    }
 </script>
 
 {#if room}
@@ -127,7 +126,10 @@
     <div class="flex flex-row flex-wrap gap-5 justify-center my-5">
         <div class="flex flex-col gap-1 w-full">
             {#each room.players as player}
-                <RoomPlayer bind:room {player} bind:playableCountries bind:botDifficulties />
+                <RoomPlayer bind:room bind:player bind:playableCountries bind:botDifficulties bind:isLoading />
+                {#if player.user && player.user.id === checkedProfile.id}
+                    <Ready bind:room bind:player bind:isLoading />
+                {/if}
             {/each}
             <div class="w-full flex mt-5 px-5">
                 <AddBot bind:room bind:difficulties={botDifficulties} />

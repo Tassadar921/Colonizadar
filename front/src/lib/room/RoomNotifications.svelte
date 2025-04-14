@@ -64,20 +64,22 @@
         });
 
         playerJoinedNotification.onMessage(({ player }: { player: SerializedRoomPlayer }): void => {
-            if (!room.players.some((player: SerializedRoomPlayer) => player.id === player.id)) {
-                room.players = [...room.players, player];
+            if (!room.players.some((p: SerializedRoomPlayer) => p.id === player.id)) {
+                room = { ...room, players: [...room.players, player] };
+                console.log(room.players.length);
             }
         });
 
         playerLeftNotification.onMessage(({ player }: { player: SerializedRoomPlayer }): void => {
             if (player.bot || (player && player.user.id !== $profile!.id)) {
-                room.players = room.players.filter((player: SerializedRoomPlayer) => player.id !== player.id);
+                room = { ...room, players: room.players.filter((player: SerializedRoomPlayer) => player.id === player.id) };
             }
         });
 
         playerUpdateNotification.onMessage(({ player }: { player: SerializedRoomPlayer }): void => {
-            room.players = room.players.map((p: SerializedRoomPlayer) => (p.id === player.id ? player : p));
-            room.players = room.players.map((player: SerializedRoomPlayer) => (player = { ...player, isReady: false }));
+            room.players = room.players.map((p: SerializedRoomPlayer) =>
+                p.id === player.id ? { ...p, ...player } : p
+            );
         });
 
         roomStartingNotification.onMessage(({ countdown }: { countdown: number }): void => {
