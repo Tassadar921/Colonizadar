@@ -20,7 +20,7 @@
     import Copy from '../icons/Copy.svelte';
     import Invite from '../icons/Invite.svelte';
     import Loader from '../shared/Loader.svelte';
-    import Ready from "../room/Ready.svelte";
+    import Ready from '../room/Ready.svelte';
     import { profile } from '../../stores/profileStore';
 
     export let roomId: string;

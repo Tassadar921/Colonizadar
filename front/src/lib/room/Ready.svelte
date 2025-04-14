@@ -1,9 +1,9 @@
 <script lang="ts">
-    import type SerializedRoomPlayer from "colonizadar-backend/app/types/serialized/serialized_room_player";
-    import axios from "axios";
-    import {showToast} from "../../services/toastService";
-    import type SerializedRoom from "colonizadar-backend/app/types/serialized/serialized_room";
-    import Fab from "../shared/Fab.svelte";
+    import type SerializedRoomPlayer from 'colonizadar-backend/app/types/serialized/serialized_room_player';
+    import axios from 'axios';
+    import { showToast } from '../../services/toastService';
+    import type SerializedRoom from 'colonizadar-backend/app/types/serialized/serialized_room';
+    import Fab from '../shared/Fab.svelte';
 
     export let room: SerializedRoom;
     export let player: SerializedRoomPlayer;

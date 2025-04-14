@@ -12,7 +12,7 @@
     import Crown from '../icons/Crown.svelte';
     import Bot from '../icons/Bot.svelte';
     import Check from '../icons/Check.svelte';
-    import Ready from "./Ready.svelte";
+    import Ready from './Ready.svelte';
 
     export let playableCountries: Option[] = [];
     export let botDifficulties: Option[] = [];

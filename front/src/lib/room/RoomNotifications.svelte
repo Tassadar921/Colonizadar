@@ -77,9 +77,7 @@
         });
 
         playerUpdateNotification.onMessage(({ player }: { player: SerializedRoomPlayer }): void => {
-            room.players = room.players.map((p: SerializedRoomPlayer) =>
-                p.id === player.id ? { ...p, ...player } : p
-            );
+            room.players = room.players.map((p: SerializedRoomPlayer) => (p.id === player.id ? { ...p, ...player } : p));
         });
 
         roomStartingNotification.onMessage(({ countdown }: { countdown: number }): void => {
