@@ -25,7 +25,7 @@
     let isPrivate: boolean = false;
     let password: string;
 
-    let loading = false;
+    let isLoading: boolean = false;
 
     const handleJoinSuccess = (event: CustomEvent): void => {
         showJoinModal = false;
@@ -48,10 +48,10 @@
     };
 
     $: isJoinSubmittable = !!token && isValidUuid(token);
-    $: isCreateSubmittable = !!name && !!(isPrivate ? password : true);
+    $: isCreateSubmittable = !!name && name.length >= 3 && !!(isPrivate ? password && password.length >= 3 : true);
 </script>
 
-<Loader bind:loading />
+<Loader bind:isLoading />
 
 <Title title={$t('play.title')} hasBackground />
 
@@ -68,23 +68,24 @@
     </div>
 </Form>
 
-<Modal bind:showModal={showJoinModal} fullWidth>
+<Modal bind:showModal={showJoinModal}>
     <Subtitle slot="header">{$t('play.room.join.title')}</Subtitle>
     <Form action="/api/room/join" method="POST" showBackground={false} bind:isValid={isJoinSubmittable} on:success={handleJoinSuccess} on:error={handleJoinFailure}>
         <Input name="token" label={$t('play.room.join.modal.token.label')} placeholder={$t('play.room.join.modal.token.placeholder')} bind:value={token} required />
+        <PasswordInput min={3} bind:value={password} required={false} />
     </Form>
 </Modal>
 
-<Modal bind:showModal={showCreateModal} fullWidth>
+<Modal bind:showModal={showCreateModal}>
     <Subtitle slot="header">{$t('play.room.create.title')}</Subtitle>
     <Form action="/api/room/create" method="POST" showBackground={false} bind:isValid={isCreateSubmittable} on:success={handleCreateSuccess} on:error={handleCreateFailure}>
-        <Input name="name" label={$t('play.room.create.modal.name.label')} placeholder={$t('play.room.create.modal.name.placeholder')} bind:value={name} required />
-        <div class="grid grid-cols-1 md:grid-cols-2">
+        <Input name="name" label={$t('play.room.create.modal.name.label')} placeholder={$t('play.room.create.modal.name.placeholder')} bind:value={name} min={3} required />
+        <div class="flex flex-col">
             <div class="flex items-center mt-10 mb-5">
                 <Switch size={4} bind:value={isPrivate} label={$t('common.private')} />
             </div>
             {#if isPrivate}
-                <PasswordInput bind:value={password} />
+                <PasswordInput min={3} bind:value={password} marginTop={5} marginBottom={0} />
             {/if}
         </div>
     </Form>

@@ -15,7 +15,7 @@
     import Unblock from '../icons/Unblock.svelte';
     import Loader from '../shared/Loader.svelte';
 
-    let loading: boolean = false;
+    let isLoading: boolean = false;
     let paginatedBlockedUsers: PaginatedBlockedUsers;
     let searchBaseUrl: string = '/api/blocked';
     let query: string = '';
@@ -108,7 +108,7 @@
     </div>
     <Pagination bind:paginatedObject={paginatedBlockedUsers} bind:baseUrl={searchBaseUrl} />
 {:else}
-    <Loader bind:loading />
+    <Loader bind:isLoading />
 {/if}
 
 <ConfirmModal bind:showModal on:success={handleUnblockUser}>

@@ -20,7 +20,7 @@
     let isDragging: boolean = false;
     let previewSrc: string = `${import.meta.env.VITE_API_BASE_URL}/api/static/${pathPrefix}/${id}?token=${localStorage.getItem('apiToken')}`;
     let inputRef: HTMLInputElement;
-    let loading: boolean = false;
+    let isLoading: boolean = false;
 
     onMount((): void => {
         title = title ?? $t('common.file.description');
@@ -36,7 +36,7 @@
             return;
         }
         if (files.length > 0) {
-            loading = true;
+            isLoading = true;
             file = files[0];
             fileName = file.name;
 
@@ -49,7 +49,7 @@
             } else {
                 previewSrc = '';
             }
-            loading = false;
+            isLoading = false;
         } else {
             file = null;
             fileName = '';
@@ -94,7 +94,7 @@
     };
 </script>
 
-<Loader bind:loading />
+<Loader bind:isLoading />
 
 <div class="flex flex-col w-full my-5">
     {#if title}

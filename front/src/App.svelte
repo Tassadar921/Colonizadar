@@ -129,7 +129,7 @@
                 <Route path="*"><NotFound /></Route>
             </Router>
         {:else}
-            <Loader loading />
+            <Loader isLoading />
         {/if}
     </div>
     <Footer />

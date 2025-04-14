@@ -21,7 +21,7 @@
     import Stop from '../icons/Stop.svelte';
     import Loader from '../shared/Loader.svelte';
 
-    let loading: boolean = false;
+    let isLoading: boolean = false;
     let paginatedFriends: PaginatedFriends;
     let searchBaseUrl: string = '/api/friends';
     let query: string = '';
@@ -171,7 +171,7 @@
     </div>
     <Pagination bind:paginatedObject={paginatedFriends} bind:baseUrl={searchBaseUrl} />
 {:else}
-    <Loader bind:loading />
+    <Loader bind:isLoading />
 {/if}
 
 <Modal bind:showModal={showAddFriendsModal} fullWidth>

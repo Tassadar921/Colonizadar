@@ -17,6 +17,8 @@
     export let inputRef = null;
     export let min: number | null = null;
     export let max: number | null = null;
+    export let marginTop: number = 10;
+    export let marginBottom: number = 5;
 
     interface InputAttributes {
         maxLength?: number;
@@ -25,7 +27,8 @@
         min?: number;
     }
 
-    const realType: string = type;
+    let realType: string;
+    let inputAttributes: InputAttributes;
 
     let focused: boolean = false;
 
@@ -39,13 +42,6 @@
 
     const switchType = (): string => (type = type === 'password' ? 'text' : 'password');
 
-    const inputAttributes: InputAttributes = {
-        ...(min !== null && realType !== 'text' && { min }),
-        ...(max !== null && realType !== 'text' && { max }),
-        ...(realType === 'text' && min !== null && { minlength: min }),
-        ...(realType === 'text' && max !== null && { maxlength: max }),
-    };
-
     const handleFocus = (): void => {
         focused = true;
         dispatch('focus');
@@ -55,9 +51,18 @@
         focused = false;
         dispatch('blur');
     };
+
+    $: realType = type;
+
+    $: inputAttributes = {
+        ...(min !== null && realType !== 'text' && { min }),
+        ...(max !== null && realType !== 'text' && { max }),
+        ...(realType === 'text' && min !== null && { minlength: min }),
+        ...(realType === 'text' && max !== null && { maxlength: max }),
+    };
 </script>
 
-<div class="relative mt-10 mb-5">
+<div class={`relative mt-${marginTop} mb-${marginBottom}`}>
     <label
         for={name}
         class="absolute pointer-events-none z-10 transition-all duration-800 ease-in-out font-medium {focused || value ? 'text-primary-500 bottom-11 left-1' : 'text-gray-500 bottom-2.5 left-3'}"

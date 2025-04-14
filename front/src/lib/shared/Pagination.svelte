@@ -21,17 +21,17 @@
 
     let canGoBack: boolean = false;
     let canGoForward: boolean = false;
-    let loading: boolean = false;
+    let isLoading: boolean = false;
 
     const handleClick = async (page: number, perPage: number) => {
         try {
-            loading = true;
+            isLoading = true;
             const { data } = await axios.get(`${baseUrl}&page=${page}&perPage=${perPage}`);
             paginatedObject = data;
         } catch (error: any) {
             console.error('Failed to fetch paginated data:', error);
         } finally {
-            loading = false;
+            isLoading = false;
             if (containerRef) {
                 containerRef.scrollTo({
                     top: 0,
@@ -46,7 +46,7 @@
 
 <div class="my-2 flex flex-row gap-3 justify-center" class:hidden={paginatedObject.lastPage === 1}>
     {#if paginatedObject.currentPage}
-        {#if !loading}
+        {#if !isLoading}
             <!-- First Page Button -->
             <Button disabled={!canGoBack} on:click={() => handleClick(paginatedObject.firstPage, paginatedObject.perPage)}>
                 <DoubleArrowLeft />
@@ -68,7 +68,7 @@
                 <DoubleArrowRight />
             </Button>
         {:else}
-            <Loader bind:loading />
+            <Loader bind:isLoading />
         {/if}
     {/if}
 </div>

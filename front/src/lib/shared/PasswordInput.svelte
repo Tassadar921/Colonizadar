@@ -7,6 +7,9 @@
     export let name: string = 'password';
     export let required: boolean = false;
     export let label: string = '';
+    export let min: number | null = null;
+    export let marginTop: number = 10;
+    export let marginBottom: number = 5;
 
     let placeholder: string;
 
@@ -15,7 +18,9 @@
         if (!label) {
             label = $t('common.password.label');
         }
+
+        console.log(min);
     });
 </script>
 
-<Input bind:value type="password" {name} {placeholder} {label} {required} />
+<Input bind:value type="password" {name} {placeholder} {label} {min} {marginBottom} {marginTop} {required} />
