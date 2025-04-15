@@ -5,7 +5,7 @@ import Territory from '#models/territory';
 import GameTerritory from '#models/game_territory';
 import RoomStatusEnum from '#types/enum/room_status_enum';
 import RoomPlayer from '#models/room_player';
-import rollTerritoryValue from '#services/normal_distribution_service';
+import { rollTerritoryPower, rollTerritoryValue } from '#services/roll_territory_service';
 
 export default class GameRepository extends BaseRepository<typeof Game> {
     constructor() {
@@ -50,11 +50,12 @@ export default class GameRepository extends BaseRepository<typeof Game> {
                 if (territory.defaultBelongsToId) {
                     owner = room.players.find((player: RoomPlayer): boolean => player.countryId === territory.defaultBelongsToId);
                 }
+                rollTerritoryPower(territory, rollTerritoryValue(territory));
                 return await GameTerritory.create({
                     territoryId: territory.id,
                     gameId: game.id,
                     ownerId: owner?.id,
-                    power: territory.defaultPower ?? 1,
+                    power: territory.defaultPower ?? 1000,
                     value: rollTerritoryValue(territory),
                 });
             })

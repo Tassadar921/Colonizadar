@@ -21,6 +21,11 @@
     };
 </script>
 
-<Button ariaLabel="Kick user from room" customStyle className="transition-all duration-300 hover:scale-110 mt-2 transform text-red-600 hover:text-red-400" on:click={() => handleKick(player)}>
-    <Close />
+<Button
+    ariaLabel="Kick user from room"
+    customStyle
+    className="flex items-center transition-all duration-300 hover:scale-110 mt-2 transform text-red-600 hover:text-red-400"
+    on:click={() => handleKick(player)}
+>
+    <Close size={40} />
 </Button>

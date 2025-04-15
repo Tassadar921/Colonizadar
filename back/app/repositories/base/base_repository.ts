@@ -69,8 +69,15 @@ export default class BaseRepository<T extends LucidModel> {
             : await this.Model.firstOrNew(searchPayload, savePayload);
     }
 
-    public async firstOrFail(): Promise<InstanceType<T>> {
-        return this.Model.query().firstOrFail();
+    public async firstOrFail(conditions: Partial<ModelAttributes<InstanceType<T>>>, preload: ExtractModelRelations<InstanceType<T>>[] = [], trx?: TransactionClientContract): Promise<InstanceType<T>> {
+        const query = trx ? this.Model.query({ client: trx }) : this.Model.query();
+        this.applyConditions(query, conditions);
+
+        if (preload.length) {
+            preload.forEach((relation) => query.preload(relation));
+        }
+
+        return query.firstOrFail();
     }
 
     private isStrictValue(value: any): value is StrictValues {
