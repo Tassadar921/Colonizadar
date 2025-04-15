@@ -12,7 +12,7 @@ export default class extends BaseSchema {
             table.string('french_name', 255).notNullable();
             table.boolean('is_coastal').notNullable().defaultTo(false);
             table.boolean('is_factory').notNullable().defaultTo(false);
-            table.integer('default_power').notNullable().defaultTo(1);
+            table.integer('default_power').notNullable().defaultTo(1000);
             table.integer('default_ships').nullable();
             table.uuid('map_id').notNullable().references('id').inTable('maps').onDelete('CASCADE');
             table.timestamp('created_at', { useTz: true });

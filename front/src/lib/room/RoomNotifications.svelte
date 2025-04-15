@@ -66,7 +66,6 @@
         playerJoinedNotification.onMessage(({ player }: { player: SerializedRoomPlayer }): void => {
             if (!room.players.some((p: SerializedRoomPlayer) => p.id === player.id)) {
                 room = { ...room, players: [...room.players, player] };
-                console.log(room.players.length);
             }
         });
 
