@@ -258,6 +258,7 @@
             "country-modal": {
                 "owner": "Owner",
                 "indigenous": "Indigenous",
+                "value": "Value",
                 "infantry": "Infantry",
                 "ships": "Ships"
             }
