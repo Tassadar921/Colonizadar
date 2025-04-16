@@ -53,7 +53,7 @@
         transition-colors duration-300
         ${verticalClasses[vertical]}
         ${horizontalClasses[horizontal]}
-        bg-${color}-600 hover:bg-${color}-900`}
+        bg-${color}-500 hover:bg-${color}-900`}
 >
     <Icon name={icon} />
 </button>
