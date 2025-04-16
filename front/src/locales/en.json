@@ -44,10 +44,7 @@
         "file": {
             "title": "Select a file",
             "description": "Drag & drop or click to select a file."
-        },
-        "infantry": "Infantry",
-        "ships": "Ships",
-        "landing": "Landing"
+        }
     },
     "toast": {
         "copy": {
@@ -232,6 +229,14 @@
     "play": {
         "title": "Play",
         "description": "Play alone or with your friends",
+        "common": {
+            "infantry": "Infantry",
+            "ships": "Ships",
+            "landing": "Landing",
+            "attack": "Attack",
+            "defense": "Defense",
+            "price": "Price"
+        },
         "room": {
             "title": "Room",
             "create": {

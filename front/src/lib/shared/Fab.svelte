@@ -1,6 +1,5 @@
 <script lang="ts">
     import Icon from './Icon.svelte';
-    import Button from './Button.svelte';
 
     export let horizontal: Props['horizontal'] = 'right';
     export let vertical: Props['vertical'] = 'bottom';
@@ -42,16 +41,19 @@
         bottom: 'bottom-4',
         center: 'top-1/2 transform -translate-y-1/2',
     };
+
+    $: console.log(`bg-${color}-500 hover:bg-${color}-900`);
 </script>
 
-<Button
+<button
     on:click
-    {ariaLabel}
-    customStyle
+    aria-label={ariaLabel}
     style="z-index: 5000"
-    className="text-white shadow-lg flex items-center justify-center fixed size-10 rounded-full {`bg-${color}-600 hover:bg-${color}-900`} transition-colors duration-300
-        {verticalClasses[vertical]}
-        {horizontalClasses[horizontal]}"
+    class={`text-white shadow-lg flex items-center justify-center fixed size-10 rounded-full
+        transition-colors duration-300
+        ${verticalClasses[vertical]}
+        ${horizontalClasses[horizontal]}
+        bg-${color}-500 hover:bg-${color}-900`}
 >
     <Icon name={icon} />
-</Button>
+</button>

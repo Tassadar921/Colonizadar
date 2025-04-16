@@ -48,7 +48,7 @@
                 return `${flyStyle}; ${fadeStyle};`;
             },
         };
-    }
+    };
 </script>
 
 {#if playableCountries.length}
@@ -77,21 +77,21 @@
 
                         <div class="flex gap-10 text-sm justify-center text-white z-10">
                             <div>
-                                <h3 class="font-semibold">{$t('common.infantry')}</h3>
-                                <p>Attack: {playableCountries[currentIndex].infantryAttack / 100}</p>
-                                <p>Defense: {playableCountries[currentIndex].infantryDefense / 100}</p>
-                                <p>Price: {playableCountries[currentIndex].infantryPrice * 1000}</p>
+                                <h3 class="font-semibold">{$t('play.common.infantry')}</h3>
+                                <p>{$t('play.common.attack')}: {playableCountries[currentIndex].infantryAttack / 100}</p>
+                                <p>{$t('play.common.defense')}: {playableCountries[currentIndex].infantryDefense / 100}</p>
+                                <p>{$t('play.common.price')}: {playableCountries[currentIndex].infantryPrice * 1000}</p>
                             </div>
                             <div>
-                                <h3 class="font-semibold">{$t('common.landing')}</h3>
-                                <p>Attack: {playableCountries[currentIndex].landingAttack / 100}</p>
-                                <p>Defense: {playableCountries[currentIndex].landingDefense / 100}</p>
+                                <h3 class="font-semibold">{$t('play.common.landing')}</h3>
+                                <p>{$t('play.common.attack')}: {playableCountries[currentIndex].landingAttack / 100}</p>
+                                <p>{$t('play.common.defense')}: {playableCountries[currentIndex].landingDefense / 100}</p>
                             </div>
                             <div>
-                                <h3 class="font-semibold">{$t('common.ships')}</h3>
-                                <p>Attack: {playableCountries[currentIndex].shipAttack / 100}</p>
-                                <p>Defense: {playableCountries[currentIndex].shipDefense / 100}</p>
-                                <p>Price: {playableCountries[currentIndex].shipPrice * 1000}</p>
+                                <h3 class="font-semibold">{$t('play.common.ships')}</h3>
+                                <p>{$t('play.common.attack')}: {playableCountries[currentIndex].shipAttack / 100}</p>
+                                <p>{$t('play.common.defense')}: {playableCountries[currentIndex].shipDefense / 100}</p>
+                                <p>{$t('play.common.price')}: {playableCountries[currentIndex].shipPrice * 1000}</p>
                             </div>
                         </div>
                     </div>
