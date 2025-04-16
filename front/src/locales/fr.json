@@ -44,10 +44,7 @@
         "file": {
             "title": "Sélectionnez un fichier",
             "description": "Glissez-déposez ou cliquez pour sélectionner un fichier."
-        },
-        "infantry": "Infanterie",
-        "ships": "Navires",
-        "landing": "Débarquement"
+        }
     },
     "toast": {
         "copy": {
@@ -232,6 +229,14 @@
     "play": {
         "title": "Jouer",
         "description": "Jouez seul ou avec vos amis",
+        "common": {
+            "infantry": "Infanterie",
+            "ships": "Navires",
+            "landing": "Débarquement",
+            "attack": "Attaque",
+            "defense": "Défense",
+            "price": "Prix"
+        },
         "room": {
             "title": "Salon",
             "create": {
