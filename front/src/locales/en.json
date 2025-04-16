@@ -44,7 +44,10 @@
         "file": {
             "title": "Select a file",
             "description": "Drag & drop or click to select a file."
-        }
+        },
+        "infantry": "Infantry",
+        "ships": "Ships",
+        "landing": "Landing"
     },
     "toast": {
         "copy": {
@@ -258,9 +261,7 @@
             "country-modal": {
                 "owner": "Owner",
                 "indigenous": "Indigenous",
-                "value": "Value",
-                "infantry": "Infantry",
-                "ships": "Ships"
+                "value": "Value"
             }
         }
     }

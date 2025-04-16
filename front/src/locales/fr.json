@@ -44,7 +44,10 @@
         "file": {
             "title": "Sélectionnez un fichier",
             "description": "Glissez-déposez ou cliquez pour sélectionner un fichier."
-        }
+        },
+        "infantry": "Infanterie",
+        "ships": "Navires",
+        "landing": "Débarquement"
     },
     "toast": {
         "copy": {
@@ -258,9 +261,7 @@
             "country-modal": {
                 "owner": "Propriétaire",
                 "indigenous": "Indigènes",
-                "value": "Valeur",
-                "infantry": "Infanterie",
-                "ships": "Navires"
+                "value": "Valeur"
             }
         }
     }

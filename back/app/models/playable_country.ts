@@ -23,6 +23,30 @@ export default class PlayableCountry extends BaseModel {
     declare color: string;
 
     @column()
+    declare infantryAttack: number;
+
+    @column()
+    declare infantryDefense: number;
+
+    @column()
+    declare infantryPrice: number;
+
+    @column()
+    declare shipAttack: number;
+
+    @column()
+    declare shipDefense: number;
+
+    @column()
+    declare shipPrice: number;
+
+    @column()
+    declare landingAttack: number;
+
+    @column()
+    declare landingDefense: number;
+
+    @column()
     declare flagId: string | null;
 
     @belongsTo((): typeof File => File, {
@@ -58,6 +82,14 @@ export default class PlayableCountry extends BaseModel {
             id: this.frontId,
             name: this.translate(language),
             color: this.color,
+            infantryAttack: this.infantryAttack,
+            infantryDefense: this.infantryDefense,
+            infantryPrice: this.infantryPrice,
+            shipAttack: this.shipAttack,
+            shipDefense: this.shipDefense,
+            shipPrice: this.shipPrice,
+            landingAttack: this.landingAttack,
+            landingDefense: this.landingDefense,
             createdAt: this.createdAt?.toString(),
             updatedAt: this.updatedAt?.toString(),
         };

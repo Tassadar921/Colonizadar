@@ -218,9 +218,9 @@
         <GamePlayer bind:game bind:player={selectedTerritoryOwner} />
     </div>
     <p>{$t('play.game.country-modal.value')} : {formatGameNumbers(selectedTerritory?.value ?? 0)}</p>
-    <p>{$t('play.game.country-modal.infantry')} : {selectedTerritory?.power ? formatGameNumbers(selectedTerritory.power) : '???'}</p>
+    <p>{$t('common.infantry')} : {selectedTerritory?.power ? formatGameNumbers(selectedTerritory.power) : '???'}</p>
     {#if selectedTerritory && selectedTerritoryOwner && selectedTerritory.territory.isCoastal}
-        <p>{$t('play.game.country-modal.ships')} : {selectedTerritory?.ships ?? '???'}</p>
+        <p>{$t('common.ships')} : {selectedTerritory?.ships ?? '???'}</p>
     {/if}
 </Modal>
 
