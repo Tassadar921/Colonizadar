@@ -11,20 +11,19 @@
     export let playableCountries: SerializedPlayableCountry[] = [];
 
     let currentIndex = 0;
-    let direction = 1; // 1 = next, -1 = prev
+    let direction = 1;
 
-    const next = () => {
-        direction = -1; // reverse direction for the next button (move the new country from left)
+    const next = (): void => {
+        direction = -1;
         currentIndex = (currentIndex + 1) % playableCountries.length;
     };
 
-    const prev = () => {
-        direction = 1; // reverse direction for the prev button (move the new country from right)
+    const prev = (): void => {
+        direction = 1;
         currentIndex = (currentIndex - 1 + playableCountries.length) % playableCountries.length;
     };
 
-    // flyFade supports separate in/out directions
-    function flyFade(node: Element, params: { x?: number; duration?: number } = {}) {
+    const flyFade = (node: Element, params: { x?: number; duration?: number } = {}) => {
         const defaultDuration = 250;
         const x = params.x ?? 100;
         const duration = params.duration ?? defaultDuration;
