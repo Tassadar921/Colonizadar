@@ -73,9 +73,9 @@
                             />
                         </div>
 
-                        <Subtitle className="text-2xl font-bold mb-2 text-center text-white">{playableCountries[currentIndex].name}</Subtitle>
+                        <Subtitle className="text-2xl font-bold mb-2 text-center">{playableCountries[currentIndex].name}</Subtitle>
 
-                        <div class="flex gap-10 text-sm justify-center text-white z-10">
+                        <div class="flex gap-10 text-sm justify-center z-10">
                             <div>
                                 <h3 class="font-semibold">{$t('play.common.infantry')}</h3>
                                 <p>{$t('play.common.attack')}: {playableCountries[currentIndex].infantryAttack / 100}</p>
