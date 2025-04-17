@@ -34,7 +34,7 @@
         "@adonisjs/transmit-client": "^1.0.0",
         "@sveltejs/adapter-auto": "^3.2.2",
         "@sveltejs/vite-plugin-svelte": "^4.0.4",
-        "axios": "^1.7.7",
+        "axios": "^1.8.2",
         "colonizadar-backend": "file:../back",
         "dotenv": "^16.4.5",
         "svelte-i18n": "^4.0.1",
