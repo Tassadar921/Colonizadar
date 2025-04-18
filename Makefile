@@ -6,6 +6,14 @@ format-front:
 format-back:
 	cd back && npm run format
 
+upgrade: upgrade-front upgrade-back
+
+upgrade-front:
+	cd front && ncu -u && npm install
+
+upgrade-back:
+	cd back && ncu -u && npm install
+
 list-routes:
 	cd back && node ace list:routes
 
