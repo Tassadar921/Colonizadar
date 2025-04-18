@@ -263,6 +263,15 @@
 			"add-bot": "Ajouter un bot"
 		},
 		"game": {
+			"score": "Score",
+			"territories": "Territoires",
+			"gold": "Or",
+			"year": "Year",
+			"season": "Saison",
+			"spring": "Printemps",
+			"summer": "Été",
+			"fall": "Automne",
+			"winter": "Hiver",
 			"country-modal": {
 				"owner": "Propriétaire",
 				"indigenous": "Indigènes",
