@@ -2,9 +2,3 @@
 node_modules/
 dist/
 build/
-
-# Ignore all files in a specific folder
-public/assets/
-
-# Ignore test snapshots
-**/__snapshots__/**

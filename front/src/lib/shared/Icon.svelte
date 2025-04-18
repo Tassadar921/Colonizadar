@@ -1,99 +1,99 @@
 <script lang="ts">
-    import type { SvelteComponent } from 'svelte';
+	import type { SvelteComponent } from 'svelte';
 
-    export let name: string = '';
-    export let size: number = 24;
+	export let name: string = '';
+	export let size: number = 24;
 
-    let currentName = '';
+	let currentName = '';
 
-    let IconComponent: typeof SvelteComponent | null = null;
+	let IconComponent: typeof SvelteComponent | null = null;
 
-    const validIcons: string[] = [
-        'Book',
-        'Camera',
-        'Moon',
-        'Sun',
-        'Burger',
-        'Close',
-        'Settings',
-        'ChevronLeft',
-        'ChevronRight',
-        'DoubleArrowLeft',
-        'DoubleArrowRight',
-        'Home',
-        'User',
-        'UserRemove',
-        'Eye',
-        'EyeSlash',
-        'Trash',
-        'Undo',
-        'ArrowDown',
-        'ArrowUp',
-        'Euro',
-        'Dollar',
-        'Upload',
-        'Search',
-        'Pen',
-        'Plus',
-        'Minus',
-        'Save',
-        'Check',
-        'Exchange',
-        'PaperClip',
-        'Send',
-        'Download',
-        'Help',
-        'Clear',
-        'ArrowLeft',
-        'ArrowRight',
-        'OpenSource',
-        'ChevronDown',
-        'ChevronUp',
-        'EnglishFlag',
-        'FrenchFlag',
-        'People',
-        'Game',
-        'Stop',
-        'Bell',
-        'RemoveUser',
-        'AddUser',
-        'Unblock',
-        'Confirm',
-        'Crown',
-        'Invite',
-        'Copy',
-        'Bot',
-    ];
+	const validIcons: string[] = [
+		'Book',
+		'Camera',
+		'Moon',
+		'Sun',
+		'Burger',
+		'Close',
+		'Settings',
+		'ChevronLeft',
+		'ChevronRight',
+		'DoubleArrowLeft',
+		'DoubleArrowRight',
+		'Home',
+		'User',
+		'UserRemove',
+		'Eye',
+		'EyeSlash',
+		'Trash',
+		'Undo',
+		'ArrowDown',
+		'ArrowUp',
+		'Euro',
+		'Dollar',
+		'Upload',
+		'Search',
+		'Pen',
+		'Plus',
+		'Minus',
+		'Save',
+		'Check',
+		'Exchange',
+		'PaperClip',
+		'Send',
+		'Download',
+		'Help',
+		'Clear',
+		'ArrowLeft',
+		'ArrowRight',
+		'OpenSource',
+		'ChevronDown',
+		'ChevronUp',
+		'EnglishFlag',
+		'FrenchFlag',
+		'People',
+		'Game',
+		'Stop',
+		'Bell',
+		'RemoveUser',
+		'AddUser',
+		'Unblock',
+		'Confirm',
+		'Crown',
+		'Invite',
+		'Copy',
+		'Bot',
+	];
 
-    const toCamelCase = (str: string): string => {
-        if (str.length === 0) {
-            return '';
-        }
-        return str[0].toUpperCase() + str.slice(1);
-    };
+	const toCamelCase = (str: string): string => {
+		if (str.length === 0) {
+			return '';
+		}
+		return str[0].toUpperCase() + str.slice(1);
+	};
 
-    const setIcon = async (name: string): Promise<void> => {
-        const camelCaseName = toCamelCase(name);
-        if (validIcons.includes(camelCaseName)) {
-            const module = await import(`../icons/${camelCaseName}.svelte`);
-            IconComponent = module.default;
-        } else {
-            throw new Error(`Invalid icon name: ${name}`);
-        }
-    };
+	const setIcon = async (name: string): Promise<void> => {
+		const camelCaseName = toCamelCase(name);
+		if (validIcons.includes(camelCaseName)) {
+			const module = await import(`../icons/${camelCaseName}.svelte`);
+			IconComponent = module.default;
+		} else {
+			throw new Error(`Invalid icon name: ${name}`);
+		}
+	};
 
-    $: if (name && name !== currentName) {
-        currentName = name;
-        (async () => {
-            try {
-                await setIcon(name);
-            } catch (err) {
-                console.error(err);
-            }
-        })();
-    }
+	$: if (name && name !== currentName) {
+		currentName = name;
+		(async () => {
+			try {
+				await setIcon(name);
+			} catch (err) {
+				console.error(err);
+			}
+		})();
+	}
 </script>
 
 {#if IconComponent}
-    <svelte:component this={IconComponent} {size} class="transition-all duration-300" />
+	<svelte:component this={IconComponent} {size} class="transition-all duration-300" />
 {/if}

@@ -1,273 +1,273 @@
 {
-    "common": {
-        "yes": "Oui",
-        "no": "Non",
-        "language": "Langue",
-        "close": "Fermer",
-        "close-modal": "Fermer la fenêtre",
-        "cancel": "Annuler",
-        "back-to-home": "Retour à la page d'accueil",
-        "search": "Rechercher ...",
-        "name": "Nom",
-        "created-at": "Créé le",
-        "updated-at": "Mis à jour le",
-        "public": "Public",
-        "private": "Privé",
-        "title": {
-            "label": "Titre",
-            "placeholder": "Photo de Jésus"
-        },
-        "username": {
-            "label": "Nom d'utilisateur",
-            "placeholder": "Jean123"
-        },
-        "email": {
-            "label": "Email",
-            "placeholder": "jean.dupont@gmail.com"
-        },
-        "password": {
-            "label": "Mot de passe",
-            "placeholder": "xxx",
-            "match": "Les mots de passe ne correspondent pas",
-            "length": "Le mot de passe doit contenir au moins 8 caractères",
-            "lowercase": "Le mot de passe doit contenir au moins une lettre minuscule",
-            "uppercase": "Le mot de passe doit contenir au moins une lettre majuscule",
-            "number": "Le mot de passe doit contenir au moins un chiffre",
-            "special-character": "Le mot de passe doit contenir au moins un caractère spécial"
-        },
-        "confirm-password": {
-            "label": "Confirmer le mot de passe",
-            "placeholder": "xxx"
-        },
-        "reset-password": "Réinitialiser le mot de passe",
-        "submit": "Envoyer",
-        "file": {
-            "title": "Sélectionnez un fichier",
-            "description": "Glissez-déposez ou cliquez pour sélectionner un fichier."
-        }
-    },
-    "toast": {
-        "copy": {
-            "success": "Copié dans le presse-papier"
-        },
-        "login": {
-            "success": "Vous êtes maintenant connecté",
-            "error": "Identifiants invalides"
-        },
-        "logout": {
-            "success": "Vous êtes maintenant déconnecté",
-            "error": "Une erreur est survenue lors de la déconnexion"
-        },
-        "reset-password": {
-            "mail": {
-                "success": "Un mail a été envoyé pour réinitialiser votre mot de passe",
-                "error": "Une erreur s'est produite lors de l'envoi du mail. Réessayez plus tard."
-            },
-            "confirm": {
-                "success": "Mot de passe changé avec succès",
-                "error": "Une erreur s'est produite lors de la confirmation de la création du compte. Réessayez plus tard."
-            }
-        },
-        "profile": {
-            "get": {
-                "error": "Une erreur est survenue lors de la récupération de votre profil"
-            },
-            "update": {
-                "success": "Profil mis à jour",
-                "error": "Une erreur est survenue lors de la mise à jour du profil"
-            }
-        },
-        "friends": {
-            "search": {
-                "error": "Une erreur est survenue lors de la recherche d'amis"
-            },
-            "add": {
-                "success": "Demande d'ami envoyée",
-                "error": "Une erreur est survenue lors de la demande en ami",
-                "cancel": {
-                    "success": "Demande d'ami annulée",
-                    "error": "Une erreur est survenue lors de l'annulation de la demande d'ami"
-                }
-            },
-            "remove": {
-                "success": "Ami supprimé"
-            }
-        },
-        "blocked": {
-            "success": "Utilisateur bloqué",
-            "error": "Une erreur est survenue lors du blocage de l'utilisateur"
-        },
-        "unblock": {
-            "success": "Utilisateur débloqué",
-            "error": "Une erreur est survenue lors du déblocage de l'utilisateur"
-        },
-        "invite": {
-            "success": "a été invité dans votre salon",
-            "error": "Une erreur est survenue lors de l'invitation de l'utilisateur"
-        },
-        "notification": {
-            "friend-request": {
-                "ask": "Vous avez reçu une demande d'ami de",
-                "accept": "a été ajouté à vos amis",
-                "accepted": "a accepté votre demande d'ami",
-                "refuse": "Vous avez refusé la demande d'ami de"
-            },
-            "play": {
-                "invited": "vous a invité à rejoindre son salon",
-                "accepted": "Invitation acceptée",
-                "room": {
-                    "closed": "Salon fermé"
-                }
-            }
-        },
-        "room": {
-            "error": "Une erreur est survenue lors de la requête au salon",
-            "create": {
-                "success": "Salon créé",
-                "error": "Une erreur est survenue lors de la création du salon"
-            },
-            "add-bot": {
-                "success": "Bot ajouté",
-                "error": "Une erreur est survenue lors de l'ajout du bot"
-            }
-        }
-    },
-    "menu": {
-        "source-code": "Code source"
-    },
-    "profile": {
-        "title": "Profil",
-        "description": "Mettez à jour votre profil",
-        "reset-password": "Réinitialiser le mot de passe",
-        "profile-picture": {
-            "title": "Photo de profil",
-            "description": "Uploadez ici une photo de phofil"
-        }
-    },
-    "reset-password": {
-        "title": "Réinitialiser le mot de passe",
-        "confirm": {
-            "title": "Finaliser la réinitialisation du mot de passe"
-        }
-    },
-    "home": {
-        "title": "Accueil"
-    },
-    "login": {
-        "title": "Connexion"
-    },
-    "logout": {
-        "title": "Déconnexion",
-        "modal": {
-            "title": "Déconnexion",
-            "text": "Êtes-vous sûr de vouloir vous déconnecter ?"
-        }
-    },
-    "forbidden": {
-        "title": "Accès refusé",
-        "subtitle": "Vous devez êtez connecté pour accéder à cette partie de l'application."
-    },
-    "not-found": {
-        "title": "Page inexistante"
-    },
-    "already-connected": {
-        "title": "Déjà connecté"
-    },
-    "social": {
-        "title": "Social",
-        "description": "Gérez vos amis et les utilisateurs bloqués",
-        "friends": {
-            "title": "Amis",
-            "description": "Gérez vos amis",
-            "none": "Pas d'ami trouvé",
-            "search": {
-                "placeholder": "Jean123",
-                "label": "Pseudonyme de l'ami"
-            },
-            "add": {
-                "title": "Inviter un nouvel ami",
-                "none": "Aucun utilisateur disponible",
-                "search": {
-                    "placeholder": "Jean123",
-                    "label": "Pseudonyme de l'utilisateur"
-                }
-            },
-            "remove": {
-                "modal": {
-                    "title": "Retirer un ami",
-                    "text": "sera supprimé de vos amis"
-                }
-            }
-        },
-        "blocked": {
-            "title": "Utilisateurs bloqués",
-            "description": "Gérez les utilisateurs bloqués",
-            "none": "Pas d'utilisateur bloqué trouvé",
-            "search": {
-                "placeholder": "Jean123",
-                "label": "Pseudonyme de l'utilisateur bloqué"
-            },
-            "modal": {
-                "title": "Bloquer l'utilisateur",
-                "text": "sera bloqué"
-            }
-        },
-        "unblock": {
-            "modal": {
-                "title": "Débloquer l'utilisateur",
-                "text": "sera débloqué"
-            }
-        }
-    },
-    "notifications": {
-        "title": "Notifications",
-        "friend-requests": {
-            "title": "Demandes d'ami",
-            "none": "Pas de demande d'ami en attente"
-        }
-    },
-    "play": {
-        "title": "Jouer",
-        "description": "Jouez seul ou avec vos amis",
-        "common": {
-            "infantry": "Infanterie",
-            "ships": "Navires",
-            "landing": "Débarquement",
-            "attack": "Attaque",
-            "defense": "Défense",
-            "price": "Prix"
-        },
-        "room": {
-            "title": "Salon",
-            "create": {
-                "title": "Créer un salon",
-                "modal": {
-                    "name": {
-                        "label": "Nom",
-                        "placeholder": "Salon de Jean123"
-                    }
-                }
-            },
-            "join": {
-                "title": "Rejoindre",
-                "modal": {
-                    "token": {
-                        "label": "Token",
-                        "placeholder": "550e8400-e29b-41d4-a716-446655440000"
-                    }
-                }
-            },
-            "invite": {
-                "title": "Inviter un ami"
-            },
-            "add-bot": "Ajouter un bot"
-        },
-        "game": {
-            "country-modal": {
-                "owner": "Propriétaire",
-                "indigenous": "Indigènes",
-                "value": "Valeur"
-            }
-        }
-    }
+	"common": {
+		"yes": "Oui",
+		"no": "Non",
+		"language": "Langue",
+		"close": "Fermer",
+		"close-modal": "Fermer la fenêtre",
+		"cancel": "Annuler",
+		"back-to-home": "Retour à la page d'accueil",
+		"search": "Rechercher ...",
+		"name": "Nom",
+		"created-at": "Créé le",
+		"updated-at": "Mis à jour le",
+		"public": "Public",
+		"private": "Privé",
+		"title": {
+			"label": "Titre",
+			"placeholder": "Photo de Jésus"
+		},
+		"username": {
+			"label": "Nom d'utilisateur",
+			"placeholder": "Jean123"
+		},
+		"email": {
+			"label": "Email",
+			"placeholder": "jean.dupont@gmail.com"
+		},
+		"password": {
+			"label": "Mot de passe",
+			"placeholder": "xxx",
+			"match": "Les mots de passe ne correspondent pas",
+			"length": "Le mot de passe doit contenir au moins 8 caractères",
+			"lowercase": "Le mot de passe doit contenir au moins une lettre minuscule",
+			"uppercase": "Le mot de passe doit contenir au moins une lettre majuscule",
+			"number": "Le mot de passe doit contenir au moins un chiffre",
+			"special-character": "Le mot de passe doit contenir au moins un caractère spécial"
+		},
+		"confirm-password": {
+			"label": "Confirmer le mot de passe",
+			"placeholder": "xxx"
+		},
+		"reset-password": "Réinitialiser le mot de passe",
+		"submit": "Envoyer",
+		"file": {
+			"title": "Sélectionnez un fichier",
+			"description": "Glissez-déposez ou cliquez pour sélectionner un fichier."
+		}
+	},
+	"toast": {
+		"copy": {
+			"success": "Copié dans le presse-papier"
+		},
+		"login": {
+			"success": "Vous êtes maintenant connecté",
+			"error": "Identifiants invalides"
+		},
+		"logout": {
+			"success": "Vous êtes maintenant déconnecté",
+			"error": "Une erreur est survenue lors de la déconnexion"
+		},
+		"reset-password": {
+			"mail": {
+				"success": "Un mail a été envoyé pour réinitialiser votre mot de passe",
+				"error": "Une erreur s'est produite lors de l'envoi du mail. Réessayez plus tard."
+			},
+			"confirm": {
+				"success": "Mot de passe changé avec succès",
+				"error": "Une erreur s'est produite lors de la confirmation de la création du compte. Réessayez plus tard."
+			}
+		},
+		"profile": {
+			"get": {
+				"error": "Une erreur est survenue lors de la récupération de votre profil"
+			},
+			"update": {
+				"success": "Profil mis à jour",
+				"error": "Une erreur est survenue lors de la mise à jour du profil"
+			}
+		},
+		"friends": {
+			"search": {
+				"error": "Une erreur est survenue lors de la recherche d'amis"
+			},
+			"add": {
+				"success": "Demande d'ami envoyée",
+				"error": "Une erreur est survenue lors de la demande en ami",
+				"cancel": {
+					"success": "Demande d'ami annulée",
+					"error": "Une erreur est survenue lors de l'annulation de la demande d'ami"
+				}
+			},
+			"remove": {
+				"success": "Ami supprimé"
+			}
+		},
+		"blocked": {
+			"success": "Utilisateur bloqué",
+			"error": "Une erreur est survenue lors du blocage de l'utilisateur"
+		},
+		"unblock": {
+			"success": "Utilisateur débloqué",
+			"error": "Une erreur est survenue lors du déblocage de l'utilisateur"
+		},
+		"invite": {
+			"success": "a été invité dans votre salon",
+			"error": "Une erreur est survenue lors de l'invitation de l'utilisateur"
+		},
+		"notification": {
+			"friend-request": {
+				"ask": "Vous avez reçu une demande d'ami de",
+				"accept": "a été ajouté à vos amis",
+				"accepted": "a accepté votre demande d'ami",
+				"refuse": "Vous avez refusé la demande d'ami de"
+			},
+			"play": {
+				"invited": "vous a invité à rejoindre son salon",
+				"accepted": "Invitation acceptée",
+				"room": {
+					"closed": "Salon fermé"
+				}
+			}
+		},
+		"room": {
+			"error": "Une erreur est survenue lors de la requête au salon",
+			"create": {
+				"success": "Salon créé",
+				"error": "Une erreur est survenue lors de la création du salon"
+			},
+			"add-bot": {
+				"success": "Bot ajouté",
+				"error": "Une erreur est survenue lors de l'ajout du bot"
+			}
+		}
+	},
+	"menu": {
+		"source-code": "Code source"
+	},
+	"profile": {
+		"title": "Profil",
+		"description": "Mettez à jour votre profil",
+		"reset-password": "Réinitialiser le mot de passe",
+		"profile-picture": {
+			"title": "Photo de profil",
+			"description": "Uploadez ici une photo de phofil"
+		}
+	},
+	"reset-password": {
+		"title": "Réinitialiser le mot de passe",
+		"confirm": {
+			"title": "Finaliser la réinitialisation du mot de passe"
+		}
+	},
+	"home": {
+		"title": "Accueil"
+	},
+	"login": {
+		"title": "Connexion"
+	},
+	"logout": {
+		"title": "Déconnexion",
+		"modal": {
+			"title": "Déconnexion",
+			"text": "Êtes-vous sûr de vouloir vous déconnecter ?"
+		}
+	},
+	"forbidden": {
+		"title": "Accès refusé",
+		"subtitle": "Vous devez êtez connecté pour accéder à cette partie de l'application."
+	},
+	"not-found": {
+		"title": "Page inexistante"
+	},
+	"already-connected": {
+		"title": "Déjà connecté"
+	},
+	"social": {
+		"title": "Social",
+		"description": "Gérez vos amis et les utilisateurs bloqués",
+		"friends": {
+			"title": "Amis",
+			"description": "Gérez vos amis",
+			"none": "Pas d'ami trouvé",
+			"search": {
+				"placeholder": "Jean123",
+				"label": "Pseudonyme de l'ami"
+			},
+			"add": {
+				"title": "Inviter un nouvel ami",
+				"none": "Aucun utilisateur disponible",
+				"search": {
+					"placeholder": "Jean123",
+					"label": "Pseudonyme de l'utilisateur"
+				}
+			},
+			"remove": {
+				"modal": {
+					"title": "Retirer un ami",
+					"text": "sera supprimé de vos amis"
+				}
+			}
+		},
+		"blocked": {
+			"title": "Utilisateurs bloqués",
+			"description": "Gérez les utilisateurs bloqués",
+			"none": "Pas d'utilisateur bloqué trouvé",
+			"search": {
+				"placeholder": "Jean123",
+				"label": "Pseudonyme de l'utilisateur bloqué"
+			},
+			"modal": {
+				"title": "Bloquer l'utilisateur",
+				"text": "sera bloqué"
+			}
+		},
+		"unblock": {
+			"modal": {
+				"title": "Débloquer l'utilisateur",
+				"text": "sera débloqué"
+			}
+		}
+	},
+	"notifications": {
+		"title": "Notifications",
+		"friend-requests": {
+			"title": "Demandes d'ami",
+			"none": "Pas de demande d'ami en attente"
+		}
+	},
+	"play": {
+		"title": "Jouer",
+		"description": "Jouez seul ou avec vos amis",
+		"common": {
+			"infantry": "Infanterie",
+			"ships": "Navires",
+			"landing": "Débarquement",
+			"attack": "Attaque",
+			"defense": "Défense",
+			"price": "Prix"
+		},
+		"room": {
+			"title": "Salon",
+			"create": {
+				"title": "Créer un salon",
+				"modal": {
+					"name": {
+						"label": "Nom",
+						"placeholder": "Salon de Jean123"
+					}
+				}
+			},
+			"join": {
+				"title": "Rejoindre",
+				"modal": {
+					"token": {
+						"label": "Token",
+						"placeholder": "550e8400-e29b-41d4-a716-446655440000"
+					}
+				}
+			},
+			"invite": {
+				"title": "Inviter un ami"
+			},
+			"add-bot": "Ajouter un bot"
+		},
+		"game": {
+			"country-modal": {
+				"owner": "Propriétaire",
+				"indigenous": "Indigènes",
+				"value": "Valeur"
+			}
+		}
+	}
 }
