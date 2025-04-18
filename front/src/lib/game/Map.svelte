@@ -72,34 +72,34 @@
 		viewBox = `${offsetX} ${offsetY} ${width} ${height}`;
 	};
 
-    const zoom = (delta: number, cursorX: number, cursorY: number): void => {
-        const svgRect = svgElement.getBoundingClientRect();
+	const zoom = (delta: number, cursorX: number, cursorY: number): void => {
+		const svgRect = svgElement.getBoundingClientRect();
 
-        const mouseX: number = cursorX - svgRect.left;
-        const mouseY: number = cursorY - svgRect.top;
+		const mouseX: number = cursorX - svgRect.left;
+		const mouseY: number = cursorY - svgRect.top;
 
-        const svgX: number = offsetX + (mouseX / svgRect.width) * (width / zoomLevel);
-        const svgY: number = offsetY + (mouseY / svgRect.height) * (height / zoomLevel);
+		const svgX: number = offsetX + (mouseX / svgRect.width) * (width / zoomLevel);
+		const svgY: number = offsetY + (mouseY / svgRect.height) * (height / zoomLevel);
 
-        zoomLevel *= delta;
-        zoomLevel = Math.max(minZoomLevel, Math.min(maxZoomLevel, zoomLevel));
+		zoomLevel *= delta;
+		zoomLevel = Math.max(minZoomLevel, Math.min(maxZoomLevel, zoomLevel));
 
-        const newViewboxWidth: number = width / zoomLevel;
-        const newViewboxHeight: number = height / zoomLevel;
+		const newViewboxWidth: number = width / zoomLevel;
+		const newViewboxHeight: number = height / zoomLevel;
 
-        offsetX = svgX - (mouseX / svgRect.width) * newViewboxWidth;
-        offsetY = svgY - (mouseY / svgRect.height) * newViewboxHeight;
+		offsetX = svgX - (mouseX / svgRect.width) * newViewboxWidth;
+		offsetY = svgY - (mouseY / svgRect.height) * newViewboxHeight;
 
-        viewBox = `${offsetX} ${offsetY} ${newViewboxWidth} ${newViewboxHeight}`;
-    };
+		viewBox = `${offsetX} ${offsetY} ${newViewboxWidth} ${newViewboxHeight}`;
+	};
 
-    const handleWheel = (event: WheelEvent): void => {
-        event.preventDefault();
-        const delta: number = event.deltaY > 0 ? 0.9 : 1.1;
-        zoom(delta, event.clientX, event.clientY);
-    };
+	const handleWheel = (event: WheelEvent): void => {
+		event.preventDefault();
+		const delta: number = event.deltaY > 0 ? 0.9 : 1.1;
+		zoom(delta, event.clientX, event.clientY);
+	};
 
-    const startDrag = (event: MouseEvent): void => {
+	const startDrag = (event: MouseEvent): void => {
 		isDragging = true;
 		hasDragged = false;
 		startX = event.clientX;
@@ -198,21 +198,21 @@
 			const pointInGroup: DOMPoint = point.matrixTransform(ctm).matrixTransform(groupCTMInverse);
 
 			const flag: SVGImageElement = document.createElementNS('http://www.w3.org/2000/svg', 'image');
-            flag.classList.add('flag-icon');
+			flag.classList.add('flag-icon');
 
 			if (territoryObject.owner) {
-                flag.setAttribute('href', `${import.meta.env.VITE_API_BASE_URL}/api/static/country-flag/${territoryObject.owner.country.id}?token=${localStorage.getItem('apiToken')}`);
+				flag.setAttribute('href', `${import.meta.env.VITE_API_BASE_URL}/api/static/country-flag/${territoryObject.owner.country.id}?token=${localStorage.getItem('apiToken')}`);
 			} else {
-                flag.setAttribute('href', `${import.meta.env.VITE_API_BASE_URL}/api/static/country-flag/${game.map.id}/neutral?token=${localStorage.getItem('apiToken')}`);
+				flag.setAttribute('href', `${import.meta.env.VITE_API_BASE_URL}/api/static/country-flag/${game.map.id}/neutral?token=${localStorage.getItem('apiToken')}`);
 			}
 
 			const flagSize = 8;
 
-            flag.setAttribute('width', String(flagSize));
-            flag.setAttribute('height', String(flagSize));
+			flag.setAttribute('width', String(flagSize));
+			flag.setAttribute('height', String(flagSize));
 
-            flag.setAttribute('x', String(pointInGroup.x - flagSize / 2));
-            flag.setAttribute('y', String(pointInGroup.y - flagSize / 2));
+			flag.setAttribute('x', String(pointInGroup.x - flagSize / 2));
+			flag.setAttribute('y', String(pointInGroup.y - flagSize / 2));
 
 			svgGroup.appendChild(flag);
 		}
