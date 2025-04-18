@@ -68,7 +68,7 @@
 | `API_URI`              | http://localhost:3333                                                                                    |
 | `ACCOUNT_SENDER_EMAIL` | account@colonizadar.fr                                                                                   |
 | `BREVO_API_KEY`        | **`A valid Brevo API key`**                                                                              |
-| `FRIEND_EMAILS`        | ["paul.lecuisinier@gmail.com"] **Feel free to add other emails to create other users and test emailing** |
+| `FRIEND_EMAILS`        | ["paul.lecuisinier@gmail.com"] **Feel free to add other emails to create other users or test emailing** |
 
 ### Development frontend .env (front/.env)
 
