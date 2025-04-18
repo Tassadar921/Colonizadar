@@ -20,7 +20,7 @@
 
 	let viewBox: string = '';
 	let svgElement: SVGSVGElement;
-	let minZoomLevel: number = 2;
+	let minZoomLevel: number = 1;
 	let maxZoomLevel: number = 15;
 	let zoomLevel: number = minZoomLevel;
 	let isDragging: boolean = false;
@@ -107,9 +107,6 @@
 
 		const viewboxWidth: number = width / zoomLevel;
 		const viewboxHeight: number = height / zoomLevel;
-
-		offsetX = Math.max(0, Math.min(width - viewboxWidth, offsetX));
-		offsetY = Math.max(0, Math.min(height - viewboxHeight, offsetY));
 
 		startX = event.clientX;
 		startY = event.clientY;
