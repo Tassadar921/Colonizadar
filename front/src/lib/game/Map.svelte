@@ -4,7 +4,7 @@
 	import Modal from '../shared/Modal.svelte';
 	import Subtitle from '../shared/Subtitle.svelte';
 	import { t } from 'svelte-i18n';
-	import GamePlayer from './GamePlayer.svelte';
+	import InGamePlayer from './InGamePlayer.svelte';
 	import { formatGameNumbers } from '../../services/stringService';
 	import type SerializedGame from 'colonizadar-backend/app/types/serialized/serialized_game';
 	import type SerializedGameTerritory from 'colonizadar-backend/app/types/serialized/serialized_game_territory';
@@ -235,7 +235,7 @@
 	<Subtitle slot="header">{selectedTerritory?.territory.name}</Subtitle>
 	<div class="flex gap-1 items-center">
 		<p>{$t('play.game.country-modal.owner')} :</p>
-		<GamePlayer bind:game bind:player={selectedTerritoryOwner} />
+		<InGamePlayer bind:game bind:player={selectedTerritoryOwner} />
 	</div>
 	<p>{$t('play.game.country-modal.value')} : {formatGameNumbers(selectedTerritory?.value ?? 0)}</p>
 	<p>{$t('play.common.infantry')} : {selectedTerritory?.power ? formatGameNumbers(selectedTerritory.power) : '???'}</p>
@@ -246,6 +246,6 @@
 
 <style>
 	.width-map {
-		width: 79%;
+		width: 70%;
 	}
 </style>
