@@ -72,23 +72,34 @@
 		viewBox = `${offsetX} ${offsetY} ${width} ${height}`;
 	};
 
-	const zoom = (delta: number): void => {
-		zoomLevel *= delta;
-		zoomLevel = Math.max(minZoomLevel, Math.min(maxZoomLevel, zoomLevel));
+    const zoom = (delta: number, cursorX: number, cursorY: number): void => {
+        const svgRect = svgElement.getBoundingClientRect();
 
-		const viewboxWidth: number = width / zoomLevel;
-		const viewboxHeight: number = height / zoomLevel;
+        const mouseX = cursorX - svgRect.left;
+        const mouseY = cursorY - svgRect.top;
 
-		viewBox = `${offsetX} ${offsetY} ${viewboxWidth} ${viewboxHeight}`;
-	};
+        const svgX = offsetX + (mouseX / svgRect.width) * (width / zoomLevel);
+        const svgY = offsetY + (mouseY / svgRect.height) * (height / zoomLevel);
 
-	const handleWheel = (event: WheelEvent): void => {
-		event.preventDefault();
-		const delta: number = event.deltaY > 0 ? 0.9 : 1.1;
-		zoom(delta);
-	};
+        zoomLevel *= delta;
+        zoomLevel = Math.max(minZoomLevel, Math.min(maxZoomLevel, zoomLevel));
 
-	const startDrag = (event: MouseEvent): void => {
+        const newViewboxWidth = width / zoomLevel;
+        const newViewboxHeight = height / zoomLevel;
+
+        offsetX = svgX - (mouseX / svgRect.width) * newViewboxWidth;
+        offsetY = svgY - (mouseY / svgRect.height) * newViewboxHeight;
+
+        viewBox = `${offsetX} ${offsetY} ${newViewboxWidth} ${newViewboxHeight}`;
+    };
+
+    const handleWheel = (event: WheelEvent): void => {
+        event.preventDefault();
+        const delta: number = event.deltaY > 0 ? 0.9 : 1.1;
+        zoom(delta, event.clientX, event.clientY);
+    };
+
+    const startDrag = (event: MouseEvent): void => {
 		isDragging = true;
 		hasDragged = false;
 		startX = event.clientX;
