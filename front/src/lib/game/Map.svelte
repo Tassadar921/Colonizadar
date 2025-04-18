@@ -9,6 +9,7 @@
 	import type SerializedGame from 'colonizadar-backend/app/types/serialized/serialized_game';
 	import type SerializedGameTerritory from 'colonizadar-backend/app/types/serialized/serialized_game_territory';
 	import type SerializedRoomPlayer from 'colonizadar-backend/app/types/serialized/serialized_room_player';
+	import { getCentroidFromPath } from '../../services/gameGeometryService';
 
 	export let game: SerializedGame;
 
@@ -149,13 +150,11 @@
 		const filteredTerritories = game.territories.filter((territoryObject): boolean => {
 			return territoryObject.territory.code.toLowerCase() === svgGroup.id;
 		});
-		console.log(svgGroup, filteredTerritories);
 		if (filteredTerritories.length > 0) {
 			if (filteredTerritories[0].owner) {
 				svgGroup.setAttribute('fill', filteredTerritories[0].owner.country.color);
 			} else {
 				svgGroup.setAttribute('fill', 'black');
-				console.log(svgGroup);
 			}
 		}
 	};
@@ -175,20 +174,14 @@
 		svgElement.querySelectorAll('.flag-icon').forEach((el) => el.remove());
 
 		for (const territoryObject of game.territories) {
-			if (!territoryObject.owner) {
-				continue;
-			}
-
 			const svgGroup = document.getElementById(territoryObject.territory.code.toLowerCase()) as unknown as SVGGElement;
+			const svgPath = svgGroup.querySelector('.mainland') as SVGPathElement;
 
 			resetTerritoryColor(svgGroup);
 
-			const bbox = svgGroup.getBBox();
-			const point = svgElement.createSVGPoint();
-			point.x = bbox.x + bbox.width / 2;
-			point.y = bbox.y + bbox.height / 2;
+			const point = getCentroidFromPath(svgPath, svgElement);
 
-			const ctm = svgGroup.getCTM();
+			const ctm = svgPath.getCTM();
 			const svgCTMInverse = svgElement.getScreenCTM()?.inverse();
 			if (!ctm || !svgCTMInverse) {
 				continue;
@@ -199,10 +192,16 @@
 
 			const icon = document.createElementNS('http://www.w3.org/2000/svg', 'image');
 			icon.classList.add('flag-icon');
-			icon.setAttribute('href', `${import.meta.env.VITE_API_BASE_URL}/api/static/country-flag/${territoryObject.owner.country.id}?token=${localStorage.getItem('apiToken')}`);
+
+			if (territoryObject.owner) {
+				icon.setAttribute('href', `${import.meta.env.VITE_API_BASE_URL}/api/static/country-flag/${territoryObject.owner.country.id}?token=${localStorage.getItem('apiToken')}`);
+			} else {
+				icon.setAttribute('href', `${import.meta.env.VITE_API_BASE_URL}/api/static/country-flag/${game.map.id}/neutral?token=${localStorage.getItem('apiToken')}`);
+			}
+
 			icon.setAttribute('width', '4');
 			icon.setAttribute('x', String(svgCoords.x + 72 - 2));
-			icon.setAttribute('y', String(svgCoords.y + 31 - 2));
+			icon.setAttribute('y', String(svgCoords.y + 37 - 2));
 
 			svgElement.appendChild(icon);
 		}

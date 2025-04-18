@@ -17,3 +17,9 @@ export const serveStaticCountryFlagFileValidator = vine.compile(
         countryId: vine.number().positive(),
     })
 );
+
+export const serveStaticNeutralCountryFlagFileValidator = vine.compile(
+    vine.object({
+        mapId: vine.number().positive(),
+    })
+);

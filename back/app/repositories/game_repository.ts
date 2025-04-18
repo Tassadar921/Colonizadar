@@ -34,6 +34,9 @@ export default class GameRepository extends BaseRepository<typeof Game> {
                         });
                     });
             })
+            .preload('map', (mapQuery): void => {
+                mapQuery.preload('createdBy');
+            })
             .first();
     }
 
