@@ -121,7 +121,12 @@ router
             .group((): void => {
                 router.get('/profile-picture/:userId', [FileController, 'serveStaticProfilePictureFile']);
                 router.get('/bot-picture/:botId', [FileController, 'serveStaticBotPictureFile']);
-                router.get('/country-flag/:countryId', [FileController, 'serveStaticCountryFlagFile']);
+                router
+                    .group((): void => {
+                        router.get('/:countryId', [FileController, 'serveStaticCountryFlagFile']);
+                        router.get('/:mapId/neutral', [FileController, 'serveStaticNeutralCountryFlagFile']);
+                    })
+                    .prefix('country-flag');
             })
             .prefix('static')
             .use([middleware.queryStringAuth()]);

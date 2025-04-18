@@ -6,7 +6,7 @@ export default class extends BaseSchema {
 
     public async up(): Promise<void> {
         this.schema.alterTable(this.tableName, (table: Knex.CreateTableBuilder): void => {
-            table.uuid('default_belongs_to_id').nullable().references('id').inTable('playable_countries');
+            table.uuid('default_belongs_to_id').nullable().references('id').inTable('playable_countries').onDelete('CASCADE');
         });
     }
 

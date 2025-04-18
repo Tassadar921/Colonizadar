@@ -6,6 +6,8 @@ import SerializedMap from '#types/serialized/serialized_map';
 import Territory from '#models/territory';
 import SerializedTerritory from '#types/serialized/serialized_territory';
 import Language from '#models/language';
+import File from '#models/file';
+import SerializedMapLight from '#types/serialized/serialized_map_light';
 
 export default class Map extends BaseModel {
     @column({ isPrimary: true })
@@ -16,6 +18,14 @@ export default class Map extends BaseModel {
 
     @column()
     declare name: string;
+
+    @column()
+    declare neutralFlagId: string;
+
+    @belongsTo((): typeof File => File, {
+        foreignKey: 'neutralFlagId',
+    })
+    declare neutralFlag: BelongsTo<typeof File>;
 
     @column()
     declare createdById: string;
@@ -39,6 +49,16 @@ export default class Map extends BaseModel {
             id: this.frontId,
             name: this.name,
             territories: await Promise.all(this.territories.map(async (territory: Territory): Promise<SerializedTerritory> => territory.apiSerialize(language))),
+            createdBy: this.createdBy.apiSerialize(),
+            createdAt: this.createdAt?.toString(),
+            updatedAt: this.updatedAt?.toString(),
+        };
+    }
+
+    public apiSerializeLight(): SerializedMapLight {
+        return {
+            id: this.frontId,
+            name: this.name,
             createdBy: this.createdBy.apiSerialize(),
             createdAt: this.createdAt?.toString(),
             updatedAt: this.updatedAt?.toString(),

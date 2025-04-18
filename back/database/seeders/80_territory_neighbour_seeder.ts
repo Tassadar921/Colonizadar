@@ -509,8 +509,8 @@ export default class extends BaseSeeder {
         ];
 
         for (const neighbourhood of neighbourhoods) {
-            const territory: Territory | null = await territoryRepository.firstOrFail({ code: neighbourhood.territoryCode });
-            const neighbour: Territory | null = await territoryRepository.firstOrFail({ code: neighbourhood.neighbourCode });
+            const territory: Territory = await territoryRepository.firstOrFail({ code: neighbourhood.territoryCode });
+            const neighbour: Territory = await territoryRepository.firstOrFail({ code: neighbourhood.neighbourCode });
 
             if (!(await territoryNeighbourRepository.findOneBy({ territoryId: territory.id, neighbourId: neighbour.id }))) {
                 await TerritoryNeighbour.create({

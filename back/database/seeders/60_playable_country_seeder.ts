@@ -13,11 +13,7 @@ export default class extends BaseSeeder {
         const fileService: FileService = new FileService();
         const mapRepository: MapRepository = new MapRepository();
 
-        const worldMap: Map | null = await mapRepository.findOneBy({ name: 'World Map' });
-        if (!worldMap) {
-            console.error('World map not found');
-            return;
-        }
+        const worldMap: Map | null = await mapRepository.firstOrFail({ name: 'World Map' });
 
         const playableCountries: {
             french: string;
@@ -128,9 +124,9 @@ export default class extends BaseSeeder {
 
         for (const country of playableCountries) {
             if (!(await playableCountryRepository.findOneBy({ englishName: country.english, mapId: country.map.id }))) {
-                const path: string = `static/world-map/country-flag/${country.flagFileName}`;
+                const path: string = `static/map/country-flag/${country.flagFileName}`;
                 const { size, mimeType, extension, name } = await fileService.getFileInfo(app.makePath(path));
-                const flag: File | null = await File.create({
+                const flag: File = await File.create({
                     name,
                     path,
                     extension,
