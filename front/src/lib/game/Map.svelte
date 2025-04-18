@@ -75,17 +75,17 @@
     const zoom = (delta: number, cursorX: number, cursorY: number): void => {
         const svgRect = svgElement.getBoundingClientRect();
 
-        const mouseX = cursorX - svgRect.left;
-        const mouseY = cursorY - svgRect.top;
+        const mouseX: number = cursorX - svgRect.left;
+        const mouseY: number = cursorY - svgRect.top;
 
-        const svgX = offsetX + (mouseX / svgRect.width) * (width / zoomLevel);
-        const svgY = offsetY + (mouseY / svgRect.height) * (height / zoomLevel);
+        const svgX: number = offsetX + (mouseX / svgRect.width) * (width / zoomLevel);
+        const svgY: number = offsetY + (mouseY / svgRect.height) * (height / zoomLevel);
 
         zoomLevel *= delta;
         zoomLevel = Math.max(minZoomLevel, Math.min(maxZoomLevel, zoomLevel));
 
-        const newViewboxWidth = width / zoomLevel;
-        const newViewboxHeight = height / zoomLevel;
+        const newViewboxWidth: number = width / zoomLevel;
+        const newViewboxHeight: number = height / zoomLevel;
 
         offsetX = svgX - (mouseX / svgRect.width) * newViewboxWidth;
         offsetY = svgY - (mouseY / svgRect.height) * newViewboxHeight;
@@ -182,39 +182,39 @@
 		svgElement.querySelectorAll('.flag-icon').forEach((el) => el.remove());
 
 		for (const territoryObject of game.territories) {
-			const svgGroup = document.getElementById(territoryObject.territory.code.toLowerCase()) as unknown as SVGGElement;
-			const svgPath = svgGroup.querySelector('.mainland') as SVGPathElement;
+			const svgGroup: SVGGElement = document.getElementById(territoryObject.territory.code.toLowerCase()) as unknown as SVGGElement;
+			const svgPath: SVGPathElement = svgGroup.querySelector('.mainland') as SVGPathElement;
 
 			resetTerritoryColor(svgGroup);
 
-			const point = getCentroidFromPath(svgPath, svgElement);
+			const point: SVGPoint = getCentroidFromPath(svgPath, svgElement);
 
-			const ctm = svgPath.getCTM();
-			const groupCTMInverse = svgGroup.getCTM()?.inverse();
+			const ctm: DOMMatrix | null = svgPath.getCTM();
+			const groupCTMInverse: DOMMatrix | undefined = svgGroup.getCTM()?.inverse();
 			if (!ctm || !groupCTMInverse) {
 				continue;
 			}
 
-			const pointInGroup = point.matrixTransform(ctm).matrixTransform(groupCTMInverse);
+			const pointInGroup: DOMPoint = point.matrixTransform(ctm).matrixTransform(groupCTMInverse);
 
-			const icon = document.createElementNS('http://www.w3.org/2000/svg', 'image');
-			icon.classList.add('flag-icon');
+			const flag: SVGImageElement = document.createElementNS('http://www.w3.org/2000/svg', 'image');
+            flag.classList.add('flag-icon');
 
 			if (territoryObject.owner) {
-				icon.setAttribute('href', `${import.meta.env.VITE_API_BASE_URL}/api/static/country-flag/${territoryObject.owner.country.id}?token=${localStorage.getItem('apiToken')}`);
+                flag.setAttribute('href', `${import.meta.env.VITE_API_BASE_URL}/api/static/country-flag/${territoryObject.owner.country.id}?token=${localStorage.getItem('apiToken')}`);
 			} else {
-				icon.setAttribute('href', `${import.meta.env.VITE_API_BASE_URL}/api/static/country-flag/${game.map.id}/neutral?token=${localStorage.getItem('apiToken')}`);
+                flag.setAttribute('href', `${import.meta.env.VITE_API_BASE_URL}/api/static/country-flag/${game.map.id}/neutral?token=${localStorage.getItem('apiToken')}`);
 			}
 
-			const iconSize = 8;
+			const flagSize = 8;
 
-			icon.setAttribute('width', String(iconSize));
-			icon.setAttribute('height', String(iconSize));
+            flag.setAttribute('width', String(flagSize));
+            flag.setAttribute('height', String(flagSize));
 
-			icon.setAttribute('x', String(pointInGroup.x - iconSize / 2));
-			icon.setAttribute('y', String(pointInGroup.y - iconSize / 2));
+            flag.setAttribute('x', String(pointInGroup.x - flagSize / 2));
+            flag.setAttribute('y', String(pointInGroup.y - flagSize / 2));
 
-			svgGroup.appendChild(icon);
+			svgGroup.appendChild(flag);
 		}
 	}
 </script>
