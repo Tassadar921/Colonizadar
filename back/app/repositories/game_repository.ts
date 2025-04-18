@@ -59,6 +59,7 @@ export default class GameRepository extends BaseRepository<typeof Game> {
                     gameId: game.id,
                     ownerId: owner?.id,
                     power: territory.defaultPower ?? 1000,
+                    ships: territory.defaultShips,
                     value: rollTerritoryValue(territory),
                 });
             })

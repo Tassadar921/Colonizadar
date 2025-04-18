@@ -227,7 +227,7 @@ export default class extends BaseSeeder {
                     isCoastal: territory.isCoastal,
                     isFactory: territory.isFactory,
                     defaultPower: territory.power,
-                    defaultShips: territory.isCoastal ? 0 : territory.ships,
+                    defaultShips: territory.isCoastal ? territory.ships : 0,
                     mapId: territory.map.id,
                     defaultBelongsToId: territory.defaultBelongsTo?.id,
                 });

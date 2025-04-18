@@ -182,13 +182,12 @@
 			const point = getCentroidFromPath(svgPath, svgElement);
 
 			const ctm = svgPath.getCTM();
-			const svgCTMInverse = svgElement.getScreenCTM()?.inverse();
-			if (!ctm || !svgCTMInverse) {
+			const groupCTMInverse = svgGroup.getCTM()?.inverse();
+			if (!ctm || !groupCTMInverse) {
 				continue;
 			}
 
-			const screenPoint = point.matrixTransform(ctm);
-			const svgCoords = screenPoint.matrixTransform(svgCTMInverse);
+			const pointInGroup = point.matrixTransform(ctm).matrixTransform(groupCTMInverse);
 
 			const icon = document.createElementNS('http://www.w3.org/2000/svg', 'image');
 			icon.classList.add('flag-icon');
@@ -199,11 +198,15 @@
 				icon.setAttribute('href', `${import.meta.env.VITE_API_BASE_URL}/api/static/country-flag/${game.map.id}/neutral?token=${localStorage.getItem('apiToken')}`);
 			}
 
-			icon.setAttribute('width', '4');
-			icon.setAttribute('x', String(svgCoords.x + 72 - 2));
-			icon.setAttribute('y', String(svgCoords.y + 37 - 2));
+			const iconSize = 8;
 
-			svgElement.appendChild(icon);
+			icon.setAttribute('width', String(iconSize));
+			icon.setAttribute('height', String(iconSize));
+
+			icon.setAttribute('x', String(pointInGroup.x - iconSize / 2));
+			icon.setAttribute('y', String(pointInGroup.y - iconSize / 2));
+
+			svgGroup.appendChild(icon);
 		}
 	}
 </script>
@@ -227,9 +230,9 @@
 		<GamePlayer bind:game bind:player={selectedTerritoryOwner} />
 	</div>
 	<p>{$t('play.game.country-modal.value')} : {formatGameNumbers(selectedTerritory?.value ?? 0)}</p>
-	<p>{$t('common.infantry')} : {selectedTerritory?.power ? formatGameNumbers(selectedTerritory.power) : '???'}</p>
+	<p>{$t('play.common.infantry')} : {selectedTerritory?.power ? formatGameNumbers(selectedTerritory.power) : '???'}</p>
 	{#if selectedTerritory && selectedTerritoryOwner && selectedTerritory.territory.isCoastal}
-		<p>{$t('common.ships')} : {selectedTerritory?.ships ?? '???'}</p>
+		<p>{$t('play.common.ships')} : {selectedTerritory?.ships ? formatGameNumbers(selectedTerritory.ships) : '???'}</p>
 	{/if}
 </Modal>
 
