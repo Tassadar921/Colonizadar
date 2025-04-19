@@ -12,7 +12,6 @@
 		"format": "npx prettier --write ."
 	},
 	"devDependencies": {
-		"@tailwindcss/postcss": "^4.1.4",
 		"@tsconfig/svelte": "^5.0.4",
 		"@types/node": "^22.14.1",
 		"@types/toastify-js": "^1.12.3",
@@ -24,7 +23,6 @@
 		"svelte": "^5.27.3",
 		"svelte-check": "^4.1.6",
 		"svelte-preprocess": "^6.0.3",
-		"tailwind-scrollbar-hide": "^2.0.0",
 		"tailwindcss": "^4.1.4",
 		"tslib": "^2.8.1",
 		"typescript": "^5.8.3",
@@ -34,6 +32,8 @@
 		"@adonisjs/transmit-client": "^1.0.0",
 		"@sveltejs/adapter-auto": "^6.0.0",
 		"@sveltejs/vite-plugin-svelte": "^5.0.3",
+		"@tailwindcss/postcss": "^4.1.4",
+		"@tailwindcss/vite": "^4.1.4",
 		"axios": "^1.8.4",
 		"colonizadar-backend": "file:../back",
 		"dotenv": "^16.5.0",

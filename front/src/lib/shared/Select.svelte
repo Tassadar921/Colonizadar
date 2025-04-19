@@ -64,7 +64,7 @@
 
 	<button
 		bind:this={buttonRef}
-		class="w-full px-3 py-2 border border-gray-300 dark:border-gray-800 dark:bg-gray-700 dark:text-gray-300 rounded-xl shadow-sm flex justify-between items-center flex-wrap gap-5"
+		class="w-full px-3 py-2 border border-gray-300 dark:border-gray-800 dark:bg-gray-700 dark:text-gray-300 rounded-xl shadow-xs flex justify-between items-center flex-wrap gap-5"
 		on:click={() => {
 			isOpen = !isOpen;
 			setDropdownWidth();
