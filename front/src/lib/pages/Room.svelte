@@ -137,7 +137,7 @@
 	<div class="flex flex-row flex-wrap gap-5 justify-center my-10">
 		<div class="flex flex-col gap-1 w-full">
 			{#each room.players as player}
-				<RoomPlayer bind:room bind:player bind:playableCountries={playableCountriesOptions} bind:botDifficulties bind:isLoading />
+				<RoomPlayer bind:room bind:player bind:playableCountries={playableCountriesOptions} bind:botDifficulties />
 				{#if player.user && player.user.id === checkedProfile.id}
 					<Ready bind:room bind:player bind:isLoading />
 				{/if}

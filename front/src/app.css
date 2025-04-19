@@ -89,12 +89,24 @@
 	}
 }
 
-p,
-li,
-h1,
-h2,
-h3,
-h4,
-h5 {
-	@apply text-gray-700 dark:text-white;
+@layer base {
+    p,
+    li,
+    h1,
+    h2,
+    h3,
+    h4,
+    h5 {
+        /*@apply text-gray-700;*/
+    }
+
+    .dark p,
+    .dark li,
+    .dark h1,
+    .dark h2,
+    .dark h3,
+    .dark h4,
+    .dark h5 {
+        /*@apply text-white;*/
+    }
 }
