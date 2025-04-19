@@ -18,7 +18,6 @@
 	export let botDifficulties: Option[] = [];
 	export let room: SerializedRoom;
 	export let player: SerializedRoomPlayer;
-	export let isLoading: boolean;
 
 	interface Option {
 		label: string;
