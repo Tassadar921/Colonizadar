@@ -11,6 +11,7 @@ import UserRoleEnum from '#types/enum/user_role_enum';
 import Friend from '#models/friend';
 import BlockedUser from '#models/blocked_user';
 import PendingFriend from '#models/pending_friend';
+import { ModelAttributes } from '@adonisjs/lucid/types/model';
 
 const AuthFinder = withAuthFinder(() => hash.use('scrypt'), {
     uids: ['email'],
@@ -75,6 +76,13 @@ export default class User extends compose(BaseModel, AuthFinder) {
         type: 'auth_token',
         tokenSecretLength: 40,
     });
+
+    static fromCache(attributes: ModelAttributes<User>): User {
+        const user = new User();
+        user.fill(attributes);
+        user.$isPersisted = true;
+        return user;
+    }
 
     public apiSerialize(): SerializedUser {
         return {
