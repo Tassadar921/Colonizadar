@@ -6,13 +6,17 @@ format-front:
 format-back:
 	cd back && npm run format
 
-upgrade: upgrade-front upgrade-back
+upgrade:
+	make upgrade-front && make upgrade-back && rm -rf node_modules package-lock.json front/node_modules back/node_modules && npm install
 
 upgrade-front:
-	cd front && ncu -u && npm install
+	cd front && ncu -u
 
 upgrade-back:
-	cd back && ncu -u && npm install
+	cd back && ncu -u
+
+install:
+	rm -rf node_modules package-lock.json front/node_modules back/node_modules && npm install
 
 list-routes:
 	cd back && node ace list:routes
@@ -38,7 +42,7 @@ rm:
 	docker compose down --volumes --remove-orphans
 
 start:
-	make rm && make up && make db
+	make install && make rm && make up && make db
 
 make prune:
 	docker system prune -f
