@@ -9,7 +9,7 @@
 	export let player: SerializedRoomPlayer;
 	export let isLoading: boolean = false;
 
-	let color = 'green';
+	let color: 'red' | 'green' = 'green';
 
 	const handleReady = async (player: SerializedRoomPlayer) => {
 		isLoading = true;
