@@ -44,7 +44,12 @@
 	}
 </script>
 
-<dialog bind:this={dialog} on:close={() => (showModal = false)} style={`width: ${fullWidth ? '90%' : '50%'}`} class={`rounded-lg border-none p-0`}>
+<dialog
+	bind:this={dialog}
+	on:close={() => (showModal = false)}
+	style={`width: ${fullWidth ? '90%' : '50%'}`}
+	class="rounded-lg border-none p-0 fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
+>
 	{#if closable}
 		<Button type="button" ariaLabel={$t('common.close-modal')} className="fixed inset-0 w-full h-full cursor-default" customStyle on:click={handleClose} />
 	{/if}
@@ -58,21 +63,21 @@
 			{#if successText}
 				<div class="flex flex-row justify-center space-x-12 w-full">
 					{#if !confirm && closable}
-						<Button on:click={handleClose}>
+						<Button on:click={handleClose} ariaLabel={closeText || $t('common.no')}>
 							{closeText || $t('common.no')}
 						</Button>
 					{/if}
-					<Button on:click={handleSuccess}>
+					<Button on:click={handleSuccess} ariaLabel={successText || $t('common.yes')}>
 						{successText || $t('common.yes')}
 					</Button>
 					{#if confirm && closable}
-						<Button on:click={handleClose}>
+						<Button on:click={handleClose} ariaLabel={closeText || $t('common.no')}>
 							{closeText || $t('common.no')}
 						</Button>
 					{/if}
 				</div>
 			{:else}
-				<Button className="mx-auto" on:click={handleClose}>
+				<Button className="mx-auto" on:click={handleClose} ariaLabel={$t('common.close')}>
 					{closeText || $t('common.close')}
 				</Button>
 			{/if}
