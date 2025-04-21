@@ -8,10 +8,8 @@ export default class LanguageMiddleware {
     constructor(private readonly languageRepository: LanguageRepository) {}
 
     public async handle(ctx: HttpContext, next: () => Promise<void>): Promise<void> {
-        const { request } = ctx;
-
         ctx.language = await this.languageRepository.firstOrFail({
-            code: this.getLanguageCode(request).toLowerCase(),
+            code: this.getLanguageCode(ctx.request).toLowerCase(),
         });
 
         await next();
