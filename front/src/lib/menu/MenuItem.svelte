@@ -21,9 +21,9 @@
 	<div class="text-primary-500 left">
 		<slot name="iconLeft" />
 	</div>
-    <span class="{footer ? 'text-black dark:text-white' : 'text-white text-xl'} text-nowrap p-2">
-        <slot />
-    </span>
+	<span class="{footer ? 'text-black dark:text-white' : 'text-white text-xl'} text-nowrap p-2">
+		<slot />
+	</span>
 	<div class="dark:text-white right">
 		<ChevronRight />
 	</div>

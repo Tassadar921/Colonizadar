@@ -7,7 +7,7 @@
 	}
 
 	export let items: Breadcrumb[];
-    // TODO: put this back when we'll have a form background
+	// TODO: put this back when we'll have a form background
 	export let hasBackground: boolean = false;
 </script>
 
@@ -17,10 +17,10 @@
 			<Link href={item.path ?? '#'} className="text-blue-500 hover:text-blue-700 dark:text-blue-300 dark:hover:text-blue-500 duration-300 transition-colors">
 				<span>{item.label}</span>
 			</Link>
-<!--			<span class:text-white={hasBackground} class="dark:text-white">></span>-->
+			<!--			<span class:text-white={hasBackground} class="dark:text-white">></span>-->
 			<span class="dark:text-white">></span>
 		{:else}
-<!--			<span class:text-white={hasBackground} class="dark:text-white">{item.label}</span>-->
+			<!--			<span class:text-white={hasBackground} class="dark:text-white">{item.label}</span>-->
 			<span class="dark:text-white">{item.label}</span>
 		{/if}
 	{/each}
