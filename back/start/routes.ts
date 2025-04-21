@@ -17,6 +17,7 @@ const RoomController = () => import('#controllers/room_controller');
 const PlayableCountryController = () => import('#controllers/playable_country_controller');
 const MapController = () => import('#controllers/map_controller');
 const GameController = () => import('#controllers/game_controller');
+const BotDifficultyController = () => import('#controllers/bot_difficulty_controller');
 
 // API requests
 router
@@ -87,9 +88,9 @@ router
                 router
                     .group((): void => {
                         router.post('/create', [RoomController, 'create']);
-                        router.get('/bot-difficulties', [RoomController, 'getBotDifficulties']);
-                        router.get('/:mapId/playable-countries', [PlayableCountryController, 'getAll']);
+                        router.get('/bot-difficulties', [BotDifficultyController, 'getAll']);
                         router.get('/maps', [MapController, 'getAll']);
+                        router.get('/:mapId/playable-countries', [PlayableCountryController, 'getAll']);
                         router.post('/join', [RoomController, 'checkWithToken']).use([middleware.room()]);
                         router
                             .group((): void => {

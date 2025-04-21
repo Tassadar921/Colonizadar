@@ -8,6 +8,7 @@ import SerializedTerritory from '#types/serialized/serialized_territory';
 import Language from '#models/language';
 import File from '#models/file';
 import SerializedMapLight from '#types/serialized/serialized_map_light';
+import PlayableCountry from '#models/playable_country';
 
 export default class Map extends BaseModel {
     @column({ isPrimary: true })
@@ -37,6 +38,9 @@ export default class Map extends BaseModel {
 
     @hasMany((): typeof Territory => Territory)
     declare territories: HasMany<typeof Territory>;
+
+    @hasMany((): typeof PlayableCountry => PlayableCountry)
+    declare playableCountries: HasMany<typeof PlayableCountry>;
 
     @column.dateTime({ autoCreate: true })
     declare createdAt: DateTime;

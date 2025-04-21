@@ -5,8 +5,4 @@ export default class BotDifficultyRepository extends BaseRepository<typeof BotDi
     constructor() {
         super(BotDifficulty);
     }
-
-    public async getDefaultDifficulty(): Promise<BotDifficulty> {
-        return this.Model.query().firstOrFail();
-    }
 }

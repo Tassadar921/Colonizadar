@@ -9,7 +9,6 @@ import User from '#models/user';
 import FriendRepository from '#repositories/friend_repository';
 import UserRepository from '#repositories/user_repository';
 import transmit from '@adonisjs/transmit/services/main';
-import Friend from '#models/friend';
 import { DateTime } from 'luxon';
 import Bot from '#models/bot';
 import BotRepository from '#repositories/bot_repository';
@@ -19,7 +18,6 @@ import PlayableCountry from '#models/playable_country';
 import { selectBotDifficultyParamValidator, selectBotDifficultyValidator, selectCountryParamValidator, selectCountryValidator, setReadyValidator } from '#validators/room_player';
 import BotDifficultyRepository from '#repositories/bot_difficulty_repository';
 import BotDifficulty from '#models/bot_difficulty';
-import SerializedBotDifficulty from '#types/serialized/serialized_bot_difficulty';
 import sleep from '../utils/sleep.js';
 import GameRepository from '#repositories/game_repository';
 import Map from '#models/map';
@@ -62,7 +60,7 @@ export default class RoomController {
         });
         await room.refresh();
 
-        const country: PlayableCountry = await this.playableCountryRepository.getFirst();
+        const country: PlayableCountry = await this.playableCountryRepository.firstOrFail();
         await RoomPlayer.create({
             userId: user.id,
             isUserConnected: true,
@@ -80,10 +78,7 @@ export default class RoomController {
             return response.notFound({ error: 'User not found' });
         }
 
-        const friendRelationship: Friend | null = await this.friendRepository.findOneFromUsers(user, friend);
-        if (!friendRelationship) {
-            return response.notFound({ error: 'You are not friend with this user' });
-        }
+        await this.friendRepository.findOneFromUsers(user, friend);
 
         transmit.broadcast(`notification/play/invite/${userId}`, { roomId: room.frontId, from: user.apiSerialize() });
         return response.send({ message: 'Invitation sent' });
@@ -105,7 +100,7 @@ export default class RoomController {
     public async join({ response, user, room, language }: HttpContext): Promise<void> {
         if (!room.players.some((player: RoomPlayer): boolean => player.userId === user.id)) {
             if (room.players.length < 6) {
-                const country: PlayableCountry = await this.playableCountryRepository.getFirst();
+                const country: PlayableCountry = await this.playableCountryRepository.firstOrFail();
                 await RoomPlayer.create({
                     userId: user.id,
                     roomId: room.id,
@@ -153,8 +148,8 @@ export default class RoomController {
 
         if (room.players.length < 6) {
             let bot: Bot = await this.botRepository.getOneForRoom(room);
-            const country: PlayableCountry = await this.playableCountryRepository.getFirst();
-            const difficulty: BotDifficulty = await this.botDifficultyRepository.getDefaultDifficulty();
+            const country: PlayableCountry = await this.playableCountryRepository.firstOrFail();
+            const difficulty: BotDifficulty = await this.botDifficultyRepository.firstOrFail({ isDefault: true });
             const player: RoomPlayer = await RoomPlayer.create({
                 roomId: room.id,
                 difficultyId: difficulty.id,
@@ -173,11 +168,6 @@ export default class RoomController {
         } else {
             return response.badRequest({ error: 'Too many players' });
         }
-    }
-
-    public async getBotDifficulties({ response, language }: HttpContext): Promise<void> {
-        const difficulties: BotDifficulty[] = await this.botDifficultyRepository.all();
-        return response.send({ difficulties: difficulties.map((difficulty: BotDifficulty): SerializedBotDifficulty => difficulty.apiSerialize(language)) });
     }
 
     public async kick({ request, response, user, room, language }: HttpContext): Promise<void> {

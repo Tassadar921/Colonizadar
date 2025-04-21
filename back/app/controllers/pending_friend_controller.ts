@@ -7,6 +7,8 @@ import transmit from '@adonisjs/transmit/services/main';
 import UserRepository from '#repositories/user_repository';
 import User from '#models/user';
 import PendingFriendNotification from '#models/pending_friend_notification';
+import cache from '@adonisjs/cache/services/main';
+import PaginatedPendingFriends from '#types/paginated/paginated_pending_friends';
 
 @inject()
 export default class PendingFriendController {
@@ -17,8 +19,15 @@ export default class PendingFriendController {
 
     public async search({ request, response, user }: HttpContext): Promise<void> {
         const { query, page, perPage } = await getPendingFriendsValidator.validate(request.all());
+
         return response.send({
-            pendingFriends: await this.pendingFriendRepository.search(query ?? '', page ?? 1, perPage ?? 10, user),
+            pendingFriends: await cache.getOrSet({
+                key: `pending-friends:${user.id}`,
+                ttl: '5m',
+                factory: async (): Promise<PaginatedPendingFriends> => {
+                    return await this.pendingFriendRepository.search(query ?? '', page ?? 1, perPage ?? 10, user);
+                },
+            }),
         });
     }
 

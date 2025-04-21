@@ -33,12 +33,7 @@ export default class ProfileController {
     public async sendResetPasswordEmail({ request, response }: HttpContext): Promise<void> {
         const { email, frontUri } = await sendResetPasswordEmailValidator.validate(request.all());
 
-        const user: User | null = await this.userRepository.findOneBy({
-            email,
-        });
-        if (!user) {
-            return response.badRequest({ error: 'User not found' });
-        }
+        const user: User = await this.userRepository.firstOrFail({ email });
 
         const previousResetPassword: ResetPassword | null = await this.resetPasswordRepository.findOneBy({ userId: user.id });
         if (previousResetPassword) {

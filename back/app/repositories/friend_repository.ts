@@ -43,7 +43,7 @@ export default class FriendRepository extends BaseRepository<typeof Friend> {
             });
     }
 
-    public async findOneFromUsers(user1: User, user2: User): Promise<Friend | null> {
+    public async findOneFromUsers(user1: User, user2: User): Promise<Friend> {
         return this.Model.query()
             .where((query): void => {
                 query.where('userId', user1.id).andWhere('friendId', user2.id);
@@ -51,6 +51,6 @@ export default class FriendRepository extends BaseRepository<typeof Friend> {
             .orWhere((query): void => {
                 query.where('userId', user2.id).andWhere('friendId', user1.id);
             })
-            .first();
+            .firstOrFail();
     }
 }

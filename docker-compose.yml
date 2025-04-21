@@ -1,7 +1,7 @@
 services:
     db:
-        image: postgres:15
-        container_name: colonizadar_db
+        image: postgres:latest
+        container_name: db
         restart: always
         environment:
             POSTGRES_DB: colonizadar
@@ -12,11 +12,18 @@ services:
         volumes:
             - postgres_data:/var/lib/postgresql/data
 
+    redis:
+        image: redis:latest
+        container_name: redis
+        restart: always
+        ports:
+            - "6379:6379"
+
     backend:
         build:
             context: .
             dockerfile: ./Dockerfile.back
-        container_name: colonizadar_backend
+        container_name: back
         restart: always
         env_file: ./back/.env
         working_dir: /app
@@ -32,7 +39,7 @@ services:
         build:
             context: .
             dockerfile: ./Dockerfile.front
-        container_name: colonizadar_frontend
+        container_name: front
         restart: always
         env_file: ./front/.env
         working_dir: /app
@@ -50,7 +57,7 @@ services:
 
     adminer:
         image: ghcr.io/shyim/adminerevo:latest
-        container_name: colonizadar_adminer
+        container_name: adminer
         restart: always
         ports:
             - "8080:8080"

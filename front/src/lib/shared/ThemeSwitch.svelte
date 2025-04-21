@@ -10,8 +10,10 @@
 	const iconSize: number = 20;
 	const switchSize: number = 4;
 
-	$: localStorage.setItem('theme', checked ? 'dark' : 'light');
-	$: document.body.classList.toggle('dark', checked);
+	$: {
+        localStorage.setItem('theme', checked ? 'dark' : 'light');
+        document.documentElement.classList.toggle('dark', checked);
+    }
 </script>
 
 {#if title}

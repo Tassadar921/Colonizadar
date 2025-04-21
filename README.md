@@ -51,23 +51,26 @@
 
 ### Development backend .env (back/.env)
 
-| Variable               | Value                                                                                                    |
-|------------------------|----------------------------------------------------------------------------------------------------------|
-| `PORT`                 | 3333                                                                                                     |
-| `HOST`                 | 0.0.0.0                                                                                                  |
-| `NODE_ENV`             | development                                                                                              |
-| `APP_KEY`              | **Run `node ace genetate:key` to generate this field**                                                   |
-| `LOG_LEVEL`            | debug                                                                                                    |
-| `DB_CONNECTION`        | pg                                                                                                       |
-| `DB_HOST`              | db                                                                                                       |
-| `DB_PORT`              | 5432                                                                                                     |
-| `DB_USER`              | superadmin                                                                                               |
-| `DB_PASSWORD`          | xxx                                                                                                      |
-| `DB_DATABASE`          | colonizadar                                                                                              |
-| `FRONT_URI`            | http://localhost:5173                                                                                    |
-| `API_URI`              | http://localhost:3333                                                                                    |
-| `ACCOUNT_SENDER_EMAIL` | account@colonizadar.fr                                                                                   |
-| `BREVO_API_KEY`        | **`A valid Brevo API key`**                                                                              |
+| Variable               | Value                                                                                                   |
+|------------------------|---------------------------------------------------------------------------------------------------------|
+| `PORT`                 | 3333                                                                                                    |
+| `HOST`                 | 0.0.0.0                                                                                                 |
+| `NODE_ENV`             | development                                                                                             |
+| `APP_KEY`              | **Run `node ace genetate:key` to generate this field**                                                  |
+| `LOG_LEVEL`            | debug                                                                                                   |
+| `DB_CONNECTION`        | pg                                                                                                      |
+| `DB_HOST`              | db                                                                                                      |
+| `DB_PORT`              | 5432                                                                                                    |
+| `DB_USER`              | superadmin                                                                                              |
+| `DB_PASSWORD`          | xxx                                                                                                     |
+| `DB_DATABASE`          | colonizadar                                                                                             |
+| `REDIS_HOST`           | 127.0.0.1                                                                                               |
+| `REDIS_PORT`           | 6379                                                                                                    |
+| `REDIS_PASSWORD`       |                                                                                                         |
+| `FRONT_URI`            | http://localhost:5173                                                                                   |
+| `API_URI`              | http://localhost:3333                                                                                   |
+| `ACCOUNT_SENDER_EMAIL` | account@colonizadar.fr                                                                                  |
+| `BREVO_API_KEY`        | **`A valid Brevo API key`**                                                                             |
 | `FRIEND_EMAILS`        | ["paul.lecuisinier@gmail.com"] **Feel free to add other emails to create other users or test emailing** |
 
 ### Development frontend .env (front/.env)
