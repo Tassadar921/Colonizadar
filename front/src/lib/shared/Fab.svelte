@@ -6,6 +6,7 @@
     export let icon: string = '';
     export let color: keyof typeof colorClasses = 'primary';
     export let ariaLabel: string;
+    export let iconSize: number;
 
     interface Props {
         horizontal: 'right' | 'left' | 'middle';
@@ -50,5 +51,5 @@
     style="z-index: 5000"
     class={buttonClasses}
 >
-    <Icon name={icon} />
+    <Icon name={icon} bind:size={iconSize} />
 </button>
