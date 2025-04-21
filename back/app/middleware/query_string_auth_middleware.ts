@@ -13,7 +13,7 @@ export default class QueryStringAuthMiddleware {
 
         try {
             const decodedToken = AccessToken.decode('oat_', token);
-            if (decodedToken === null) {
+            if (!decodedToken) {
                 return ctx.response.unauthorized({ error: 'Invalid or expired token' });
             }
 

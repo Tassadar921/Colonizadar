@@ -18,8 +18,8 @@ export default class PlayableCountryController {
     public async getAll({ request, response, language }: HttpContext): Promise<void> {
         const { mapId } = await getAllPlayableCountriesValidator.validate(request.params());
 
-        return response.send({
-            pendingFriends: await cache.getOrSet({
+        return response.send(
+            await cache.getOrSet({
                 key: `map-playable-countries:${mapId}`,
                 ttl: '5m',
                 factory: async (): Promise<SerializedPlayableCountry[]> => {
@@ -27,7 +27,7 @@ export default class PlayableCountryController {
                     const playableCountries: PlayableCountry[] = await this.playableCountryRepository.getAllFromMapForRoom(map);
                     return playableCountries.map((playableCountry: PlayableCountry): SerializedPlayableCountry => playableCountry.apiSerialize(language));
                 },
-            }),
-        });
+            })
+        );
     }
 }
