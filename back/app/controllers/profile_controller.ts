@@ -14,7 +14,6 @@ import FileService from '#services/file_service';
 import SlugifyService from '#services/slugify_service';
 import { resetPasswordValidator, sendResetPasswordEmailValidator, updateProfileValidator, uploadProfilePictureValidator } from '#validators/profile';
 import path from 'node:path';
-import CacheService from '#services/cache_service';
 
 @inject()
 export default class ProfileController {
@@ -23,8 +22,7 @@ export default class ProfileController {
         private readonly resetPasswordRepository: ResetPasswordRepository,
         private readonly mailService: BrevoMailService,
         private readonly fileService: FileService,
-        private readonly slugifyService: SlugifyService,
-        private readonly cacheService: CacheService
+        private readonly slugifyService: SlugifyService
     ) {}
 
     public async getProfile({ response, user }: HttpContext): Promise<void> {
@@ -35,16 +33,7 @@ export default class ProfileController {
     public async sendResetPasswordEmail({ request, response }: HttpContext): Promise<void> {
         const { email, frontUri } = await sendResetPasswordEmailValidator.validate(request.all());
 
-        const user: User = <User>await this.cacheService.get(
-            `user:${email}`,
-            async (): Promise<User> => {
-                return this.userRepository.firstOrFail({
-                    email,
-                });
-            },
-            '5m',
-            User
-        );
+        const user: User = await this.userRepository.firstOrFail({ email });
 
         const previousResetPassword: ResetPassword | null = await this.resetPasswordRepository.findOneBy({ userId: user.id });
         if (previousResetPassword) {

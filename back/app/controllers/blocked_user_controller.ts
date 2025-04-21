@@ -10,6 +10,8 @@ import Friend from '#models/friend';
 import FriendRepository from '#repositories/friend_repository';
 import BlockedUser from '#models/blocked_user';
 import transmit from '@adonisjs/transmit/services/main';
+import cache from '@adonisjs/cache/services/main';
+import PaginatedBlockedUsers from '#types/paginated/paginated_blocked_users';
 
 @inject()
 export default class BlockedUserController {
@@ -23,7 +25,13 @@ export default class BlockedUserController {
     public async search({ request, response, user }: HttpContext): Promise<void> {
         const { query, page, perPage } = await getBlockedUsersValidator.validate(request.all());
         return response.send({
-            blockedUsers: await this.blockedUserRepository.search(query ?? '', page ?? 1, perPage ?? 10, user),
+            blockedUsers: await cache.getOrSet({
+                key: `user-blocked:${user.id}`,
+                ttl: '5m',
+                factory: async (): Promise<PaginatedBlockedUsers> => {
+                    return await this.blockedUserRepository.search(query ?? '', page ?? 1, perPage ?? 10, user);
+                },
+            }),
         });
     }
 

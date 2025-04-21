@@ -16,8 +16,10 @@ export default class RoomMiddleware {
         if (!paramRoomId && !token && !bodyRoomId) {
             return ctx.response.badRequest({ error: 'Either roomId or token are required' });
         } else if (token) {
+            // Join on invite from room's token
             room = await this.roomRepository.getFromUserAndToken(token, password);
         } else if (paramRoomId || bodyRoomId) {
+            // get room from roomId, on friend invite or page refresh
             room = await this.roomRepository.getFromFrontId(<number>(paramRoomId || bodyRoomId));
         }
 
