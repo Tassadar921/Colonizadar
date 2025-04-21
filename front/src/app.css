@@ -1,5 +1,7 @@
 @import 'tailwindcss';
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
 	--color-primary-50: #fff5f2;
 	--color-primary-100: #fff1ee;
@@ -13,16 +15,14 @@
 	--color-primary-900: #a5371b;
 }
 
-@layer base {
-	p,
-	li,
-	h1,
-	h2,
-	h3,
-	h4,
-	h5 {
-		@apply text-gray-700 dark:text-white;
-	}
+p,
+li,
+h1,
+h2,
+h3,
+h4,
+h5 {
+	@apply text-gray-700 dark:text-white;
 }
 
 @layer utilities {
@@ -86,27 +86,5 @@
 	}
 	.text-primary-900 {
 		color: var(--color-primary-900);
-	}
-}
-
-@layer base {
-	p,
-	li,
-	h1,
-	h2,
-	h3,
-	h4,
-	h5 {
-		/*@apply text-gray-700;*/
-	}
-
-	.dark p,
-	.dark li,
-	.dark h1,
-	.dark h2,
-	.dark h3,
-	.dark h4,
-	.dark h5 {
-		/*@apply text-white;*/
 	}
 }
