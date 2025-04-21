@@ -14,7 +14,7 @@
 
 <Link
 	href={notClickable ? undefined : href}
-	className={`${!notClickable ? (footer ? 'hover:bg-white-' : 'hover:bg-gray-600') : 'cursor-not-allowed opacity-50'} ${footer ? 'flex justify-center' : ''} px-2 flex flex-row transition-colors duration-300 rounded ${notClickable ? '' : 'cursor-pointer dark:hover:bg-gray-700'}`}
+	className={`${!notClickable ? (footer ? 'hover:bg-gray-400' : 'hover:bg-gray-600') : 'cursor-not-allowed opacity-50'} ${footer ? 'flex justify-center' : ''} px-2 flex flex-row transition-colors duration-300 rounded ${notClickable ? '' : 'cursor-pointer dark:hover:bg-gray-700'}`}
 	{target}
 	on:click
 >

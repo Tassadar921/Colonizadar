@@ -25,6 +25,10 @@ h5 {
 	@apply text-gray-700 dark:text-white;
 }
 
+button {
+    @apply cursor-pointer;
+}
+
 @layer utilities {
 	.bg-primary-50 {
 		background-color: var(--color-primary-50);
