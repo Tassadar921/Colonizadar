@@ -254,7 +254,7 @@ export default class RoomController {
     public async ready({ request, response, user, room, language }: HttpContext): Promise<void> {
         const player: RoomPlayer | undefined = room.players.find((player: RoomPlayer): boolean => player.userId === user.id);
         if (!player) {
-            return response.notFound({ error: 'You are not the owner of this room' });
+            return response.notFound({ error: 'You are not into this room' });
         }
 
         const { isReady } = await setReadyValidator.validate(request.all());
