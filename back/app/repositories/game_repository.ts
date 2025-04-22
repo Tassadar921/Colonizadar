@@ -47,29 +47,27 @@ export default class GameRepository extends BaseRepository<typeof Game> {
         });
         await game.refresh();
 
-        await Promise.all(
-            [
-                ...room.map.territories.map(async (territory: Territory): Promise<GameTerritory> => {
-                    let owner: RoomPlayer | undefined = undefined;
-                    if (territory.defaultBelongsToId) {
-                        owner = room.players.find((player: RoomPlayer): boolean => player.countryId === territory.defaultBelongsToId);
-                    }
-                    rollTerritoryPower(territory, rollTerritoryValue(territory));
-                    return await GameTerritory.create({
-                        territoryId: territory.id,
-                        gameId: game.id,
-                        ownerId: owner?.id,
-                        power: territory.defaultPower ?? 1000,
-                        ships: territory.defaultShips,
-                        value: rollTerritoryValue(territory),
-                    });
-                }),
-                ...room.players.map(async (player: RoomPlayer): Promise<RoomPlayer> => {
-                    player.isReady = false;
-                    return await player.save();
-                }),
-            ]
-        );
+        await Promise.all([
+            ...room.map.territories.map(async (territory: Territory): Promise<GameTerritory> => {
+                let owner: RoomPlayer | undefined = undefined;
+                if (territory.defaultBelongsToId) {
+                    owner = room.players.find((player: RoomPlayer): boolean => player.countryId === territory.defaultBelongsToId);
+                }
+                rollTerritoryPower(territory, rollTerritoryValue(territory));
+                return await GameTerritory.create({
+                    territoryId: territory.id,
+                    gameId: game.id,
+                    ownerId: owner?.id,
+                    power: territory.defaultPower ?? 1000,
+                    ships: territory.defaultShips,
+                    value: rollTerritoryValue(territory),
+                });
+            }),
+            ...room.players.map(async (player: RoomPlayer): Promise<RoomPlayer> => {
+                player.isReady = false;
+                return await player.save();
+            }),
+        ]);
 
         await game.refresh();
 

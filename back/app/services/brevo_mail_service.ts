@@ -8,7 +8,7 @@ export default class BrevoMailService {
     private sender: object = {
         name: 'Colonizadar',
         email: env.get('ACCOUNT_SENDER_EMAIL'),
-    }
+    };
 
     private headers: object = {
         'Api-Key': `${env.get('BREVO_API_KEY')}`,
@@ -34,7 +34,7 @@ export default class BrevoMailService {
                 },
             },
             {
-                headers: this.headers
+                headers: this.headers,
             }
         );
     }
@@ -57,7 +57,7 @@ export default class BrevoMailService {
                 },
             },
             {
-                headers: this.headers
+                headers: this.headers,
             }
         );
     }

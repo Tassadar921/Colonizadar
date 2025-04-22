@@ -15,7 +15,7 @@ export default class GameController {
     public async ready({ request, response, user, game, language }: HttpContext): Promise<void> {
         const player: RoomPlayer | undefined = game.room.players.find((player: RoomPlayer): boolean => player.userId === user.id);
         if (!player) {
-            return response.notFound({ error: 'You are not the owner of this room' });
+            return response.notFound({ error: 'You are not into this room' });
         }
 
         const { isReady } = await setReadyValidator.validate(request.all());
@@ -27,7 +27,7 @@ export default class GameController {
         response.send({ message: `Set to ${isReady ? 'ready' : 'not ready'}` });
 
         if (game.room.players.every((player: RoomPlayer): boolean => (player.botId ? true : player.isReady))) {
-            transmit.broadcast(`notification/play/game/${game.frontId}/next-turn`, { message: 'Next turn' });
+            transmit.broadcast(`notification/play/game/${game.frontId}/next-turn`);
         }
     }
 }
