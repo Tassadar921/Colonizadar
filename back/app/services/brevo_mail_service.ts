@@ -5,14 +5,22 @@ import User from '#models/user';
 export default class BrevoMailService {
     private apiUrl: string = 'https://api.brevo.com/v3/smtp/email';
 
+    private sender: object = {
+        name: 'Colonizadar',
+        email: env.get('ACCOUNT_SENDER_EMAIL'),
+    }
+
+    private headers: object = {
+        'Api-Key': `${env.get('BREVO_API_KEY')}`,
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+    };
+
     public async sendResetPasswordEmail(user: User, uri: string): Promise<void> {
         await axios.post(
             this.apiUrl,
             {
-                sender: {
-                    name: 'Colonizadar',
-                    email: env.get('ACCOUNT_SENDER_EMAIL'),
-                },
+                sender: this.sender,
                 to: [
                     {
                         name: 'Colonizadar User',
@@ -26,11 +34,7 @@ export default class BrevoMailService {
                 },
             },
             {
-                headers: {
-                    'Api-Key': `${env.get('BREVO_API_KEY')}`,
-                    'Content-Type': 'application/json',
-                    Accept: 'application/json',
-                },
+                headers: this.headers
             }
         );
     }
@@ -39,10 +43,7 @@ export default class BrevoMailService {
         await axios.post(
             this.apiUrl,
             {
-                sender: {
-                    name: 'Colonizadar',
-                    email: env.get('ACCOUNT_SENDER_EMAIL'),
-                },
+                sender: this.sender,
                 to: [
                     {
                         name: 'Colonizadar User',
@@ -56,11 +57,7 @@ export default class BrevoMailService {
                 },
             },
             {
-                headers: {
-                    'Api-Key': `${env.get('BREVO_API_KEY')}`,
-                    'Content-Type': 'application/json',
-                    Accept: 'application/json',
-                },
+                headers: this.headers
             }
         );
     }
