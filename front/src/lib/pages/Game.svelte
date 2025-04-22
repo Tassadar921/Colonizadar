@@ -48,7 +48,7 @@
 {#if game}
 	<p>{$t('play.game.gold')}: {myPlayer?.gold}</p>
 	<p>{$t('play.game.year')}: {game.year}</p>
-	<p>{$t('play.game.gold')}: {$t(`play.game.${formatSeasonFromNumber(game.season)}`)}</p>
+	<p>{$t('play.game.season')}: {$t(`play.game.${formatSeasonFromNumber(game.season)}`)}</p>
 {/if}
 
 <!-- TODO: faire en sorte que ça soit présentable pour 2, 4, 6 (idéalement 8 ou même 10 mais pas sûr d'avoir la place) -->
