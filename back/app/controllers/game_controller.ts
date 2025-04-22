@@ -27,6 +27,16 @@ export default class GameController {
         response.send({ message: `Set to ${isReady ? 'ready' : 'not ready'}` });
 
         if (game.room.players.every((player: RoomPlayer): boolean => (player.botId ? true : player.isReady))) {
+            switch (game.season === 4) {
+                case true:
+                    game.season = 1;
+                    game.year++;
+                    break;
+                case false:
+                    game.season++;
+                    break;
+            }
+            await game.save();
             transmit.broadcast(`notification/play/game/${game.frontId}/next-turn`);
         }
     }

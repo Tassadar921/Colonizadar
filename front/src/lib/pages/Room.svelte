@@ -75,7 +75,6 @@
 	const unloadCleanup = async (): Promise<void> => {
 		try {
 			clearInterval(heartbeat);
-			await axios.delete(`/api/room/${roomId}/leave`);
 		} catch (e) {}
 	};
 
@@ -92,6 +91,7 @@
 
 	onDestroy(async (): Promise<void> => {
 		await unloadCleanup();
+		await axios.delete(`/api/room/${roomId}/leave`);
 	});
 
 	$: if (roomId) {
