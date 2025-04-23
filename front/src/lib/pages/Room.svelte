@@ -117,7 +117,7 @@
 				</div>
 			</Button>
 		</div>
-		<div class="flex justify-center mt-3">
+		<div class="flex justify-center mt-3 gap-x-4">
 			<Button
 				ariaLabel="Invite a user"
 				customStyle
@@ -127,6 +127,7 @@
 				<span>{$t('play.room.invite.title')}</span>
 				<Invite />
 			</Button>
+			<Ready bind:room bind:isLoading />
 		</div>
 	</div>
 
@@ -138,9 +139,6 @@
 		<div class="flex flex-col gap-1 w-full">
 			{#each room.players as player}
 				<RoomPlayer bind:room bind:player bind:playableCountries={playableCountriesOptions} bind:botDifficulties />
-				{#if player.user && player.user.id === checkedProfile.id}
-					<Ready bind:room bind:player bind:isLoading />
-				{/if}
 			{/each}
 			<div class="w-full flex mt-5 px-5">
 				<AddBot bind:room bind:difficulties={botDifficulties} />

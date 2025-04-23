@@ -4,11 +4,12 @@
 	import { showToast } from '../../services/toastService';
 	import type SerializedRoom from 'colonizadar-backend/app/types/serialized/serialized_room';
 	import Fab from '../shared/Fab.svelte';
+	import { profile } from '../../stores/profileStore';
 
 	export let room: SerializedRoom;
-	export let player: SerializedRoomPlayer;
 	export let isLoading: boolean = false;
 
+	let player: SerializedRoomPlayer;
 	let color: 'red' | 'green' = 'green';
 	let icon: string = 'check';
 
@@ -24,7 +25,9 @@
 		isLoading = false;
 	};
 
+	$: player = room.players.find((player) => player.user.id === $profile!.id);
+
 	$: color = player.isReady ? 'green' : 'red';
 </script>
 
-<Fab ariaLabel="Ready toggle" horizontal="middle" vertical="bottom" {isLoading} {icon} {color} on:click={() => handleReady(player)} />
+<Fab ariaLabel="Ready toggle" {icon} {color} on:click={() => handleReady(player)} />

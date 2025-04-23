@@ -13,6 +13,8 @@
 	--color-primary-700: #eb4f27;
 	--color-primary-800: #cc4522;
 	--color-primary-900: #a5371b;
+    --shadow-color: #00000040;
+    --shadow-main: 0 35px 35px var(--shadow-color);
 }
 
 p,
@@ -60,7 +62,6 @@ button {
 	.bg-primary-900 {
 		background-color: var(--color-primary-900);
 	}
-
 	.text-primary-50 {
 		color: var(--color-primary-50);
 	}
@@ -90,5 +91,8 @@ button {
 	}
 	.text-primary-900 {
 		color: var(--color-primary-900);
+	}
+    .shadow-main {
+	    box-shadow: var(--shadow-main);
 	}
 }

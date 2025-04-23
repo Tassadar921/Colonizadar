@@ -39,7 +39,7 @@
 	$: horizontal = validHorizontal.includes(horizontal) ? horizontal : 'right';
 	$: vertical = validVertical.includes(vertical) ? vertical : 'bottom';
 
-	$: buttonClasses = `text-white shadow-lg flex items-center justify-center fixed size-10 rounded-full
+	$: buttonClasses = `text-white shadow-lg flex items-center justify-center  size-10 rounded-full
         transition-colors duration-300
         ${verticalClasses[vertical]}
         ${horizontalClasses[horizontal]}
