@@ -16,7 +16,7 @@
 	const handleReady = async (player: SerializedRoomPlayer) => {
 		isLoading = true;
 		try {
-			await axios.patch(`/api/room/${room.id}/player/${player.id}/ready`, {
+			await axios.patch(`/api/room/${room.id}/player/ready`, {
 				isReady: !player.isReady,
 			});
 		} catch (error: any) {

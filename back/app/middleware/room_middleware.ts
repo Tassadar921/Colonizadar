@@ -9,17 +9,18 @@ export default class RoomMiddleware {
     constructor(private readonly roomRepository: RoomRepository) {}
 
     public async handle(ctx: HttpContext, next: () => Promise<void>): Promise<void> {
-        const { token, roomId, password } = await ctx.request.validateUsing(roomMiddlewareValidator);
+        const { roomId: paramRoomId } = await roomMiddlewareValidator.validate(ctx.request.params());
+        const { token, roomId: bodyRoomId, password } = await roomMiddlewareValidator.validate(ctx.request.all());
 
         let room: Room | null = null;
-        if (!roomId && !token) {
+        if (!paramRoomId && !token && !bodyRoomId) {
             return ctx.response.badRequest({ error: 'Either roomId or token are required' });
         } else if (token) {
             // Join on invite from room's token
             room = await this.roomRepository.getFromUserAndToken(token, password);
-        } else if (roomId) {
+        } else if (paramRoomId || bodyRoomId) {
             // get room from roomId, on friend invite or page refresh
-            room = await this.roomRepository.getFromFrontId(<number>roomId);
+            room = await this.roomRepository.getFromFrontId(<number>(paramRoomId || bodyRoomId));
         }
 
         if (!room) {

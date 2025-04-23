@@ -1,15 +1,25 @@
 import vine from '@vinejs/vine';
 
-export const selectCountryValidator = vine.compile(
+export const selectCountryParamsValidator = vine.compile(
     vine.object({
         playerId: vine.number().positive(),
+    })
+);
+
+export const selectCountryValidator = vine.compile(
+    vine.object({
         countryId: vine.number().positive(),
+    })
+);
+
+export const selectBotDifficultyParamsValidator = vine.compile(
+    vine.object({
+        playerId: vine.number().positive(),
     })
 );
 
 export const selectBotDifficultyValidator = vine.compile(
     vine.object({
-        playerId: vine.number().positive(),
         difficultyId: vine.number().positive(),
     })
 );

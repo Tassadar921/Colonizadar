@@ -98,11 +98,11 @@ router
                                 router.put('/join', [RoomController, 'join']);
                                 router.delete('/leave', [RoomController, 'leave']);
                                 router.patch('/heartbeat', [RoomController, 'heartbeat']);
-                                router.post('add-bot', [RoomController, 'addBot']);
-                                router.delete('kick/:playerId', [RoomController, 'kick']);
+                                router.post('/add-bot', [RoomController, 'addBot']);
+                                router.delete('/player/kick/:playerId', [RoomController, 'kick']);
                                 router.patch('/player/:playerId/select-country', [RoomController, 'selectCountry']);
                                 router.patch('/player/:playerId/select-difficulty', [RoomController, 'selectBotDifficulty']);
-                                router.patch('/player/:playerId/ready', [RoomController, 'ready']);
+                                router.patch('/player/ready', [RoomController, 'ready']);
                             })
                             .prefix(':roomId')
                             .use([middleware.room()]);
@@ -112,6 +112,7 @@ router
                 router
                     .group((): void => {
                         router.get('/', [GameController, 'get']);
+                        router.get('/player/ready', [GameController, 'ready']);
                     })
                     .prefix('game/:gameId')
                     .use([middleware.game()]);

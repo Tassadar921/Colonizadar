@@ -22,7 +22,7 @@ export default class FileController {
     ) {}
 
     public async serveStaticProfilePictureFile({ request, response }: HttpContext): Promise<void> {
-        const { userId } = await request.validateUsing(serveStaticProfilePictureFileValidator);
+        const { userId } = await serveStaticProfilePictureFileValidator.validate(request.params());
 
         try {
             const filePath: string = await cache.getOrSet({
@@ -48,7 +48,7 @@ export default class FileController {
     }
 
     public async serveStaticBotPictureFile({ request, response }: HttpContext): Promise<void> {
-        const { botId } = await request.validateUsing(serveStaticBotPictureFileValidator);
+        const { botId } = await serveStaticBotPictureFileValidator.validate(request.params());
 
         try {
             const filePath: string = await cache.getOrSet({
@@ -74,7 +74,7 @@ export default class FileController {
     }
 
     public async serveStaticCountryFlagFile({ request, response }: HttpContext): Promise<void> {
-        const { countryId } = await request.validateUsing(serveStaticCountryFlagFileValidator);
+        const { countryId } = await serveStaticCountryFlagFileValidator.validate(request.params());
 
         try {
             const filePath: string = await cache.getOrSet({
@@ -100,7 +100,7 @@ export default class FileController {
     }
 
     public async serveStaticNeutralCountryFlagFile({ request, response }: HttpContext): Promise<void> {
-        const { mapId } = await request.validateUsing(serveStaticNeutralCountryFlagFileValidator);
+        const { mapId } = await serveStaticNeutralCountryFlagFileValidator.validate(request.params());
 
         try {
             const filePath: string = await cache.getOrSet({

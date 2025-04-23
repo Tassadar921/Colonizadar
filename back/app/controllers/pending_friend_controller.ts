@@ -65,7 +65,7 @@ export default class PendingFriendController {
     }
 
     public async cancel({ request, response, user }: HttpContext): Promise<void> {
-        const { userId } = await request.validateUsing(cancelPendingFriendValidator);
+        const { userId } = await cancelPendingFriendValidator.validate(request.params());
 
         const askingToUser: User = await this.userRepository.firstOrFail({ frontId: userId });
 

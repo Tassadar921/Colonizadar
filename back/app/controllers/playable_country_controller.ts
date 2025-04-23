@@ -16,7 +16,7 @@ export default class PlayableCountryController {
     ) {}
 
     public async getAll({ request, response, language }: HttpContext): Promise<void> {
-        const { mapId } = await request.validateUsing(getAllPlayableCountriesValidator);
+        const { mapId } = await getAllPlayableCountriesValidator.validate(request.params());
 
         return response.send(
             await cache.getOrSet({

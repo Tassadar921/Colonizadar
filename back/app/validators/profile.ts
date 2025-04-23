@@ -17,6 +17,12 @@ export const resetPasswordValidator = vine.compile(
     })
 );
 
+export const resetPasswordParamsValidator = vine.compile(
+    vine.object({
+        token: vine.string().trim().uuid(),
+    })
+);
+
 export const updateProfileValidator = vine.compile(
     vine.object({
         username: vine.string().trim().minLength(3).maxLength(50).alphaNumeric(),

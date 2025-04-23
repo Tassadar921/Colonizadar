@@ -37,7 +37,7 @@ export default class BlockedUserController {
     }
 
     public async block({ request, response, user }: HttpContext): Promise<void> {
-        const { userId } = await request.validateUsing(blockValidator);
+        const { userId } = await blockValidator.validate(request.params());
 
         const blockingUser: User = await this.userRepository.firstOrFail({ frontId: userId });
 
@@ -67,7 +67,7 @@ export default class BlockedUserController {
     }
 
     public async cancel({ request, response, user }: HttpContext): Promise<void> {
-        const { userId } = await request.validateUsing(cancelValidator);
+        const { userId } = await cancelValidator.validate(request.params());
 
         const blockingUser: User | null = await this.userRepository.firstOrFail({ frontId: userId });
 

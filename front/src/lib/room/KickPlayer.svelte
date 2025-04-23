@@ -12,7 +12,7 @@
 
 	const handleKick = async (player: SerializedRoomPlayer) => {
 		try {
-			const response = await axios.delete(`/api/room/${room.id}/kick/${player.id}`);
+			const response = await axios.delete(`/api/room/${room.id}/player/kick/${player.id}`);
 			showToast(`${response.data.message}`);
 			room.players = room.players.filter((p) => p.id !== player.id);
 		} catch (error: any) {

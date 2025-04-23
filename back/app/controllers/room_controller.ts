@@ -13,7 +13,7 @@ import { DateTime } from 'luxon';
 import Language from '#models/language';
 import PlayableCountryRepository from '#repositories/playable_country_repository';
 import PlayableCountry from '#models/playable_country';
-import { selectBotDifficultyValidator, selectCountryValidator, setReadyValidator } from '#validators/room_player';
+import { selectBotDifficultyParamsValidator, selectBotDifficultyValidator, selectCountryParamsValidator, selectCountryValidator, setReadyValidator } from '#validators/room_player';
 import BotDifficultyRepository from '#repositories/bot_difficulty_repository';
 import BotDifficulty from '#models/bot_difficulty';
 import sleep from '../utils/sleep.js';
@@ -158,7 +158,7 @@ export default class RoomController {
             return response.forbidden({ error: 'You are not the owner of this room' });
         }
 
-        const { playerId } = await request.validateUsing(kickValidator);
+        const { playerId } = await kickValidator.validate(request.params());
 
         const player: RoomPlayer | undefined = room.players.find((player: RoomPlayer): boolean => player.frontId === playerId);
         if (!player) {
@@ -173,7 +173,8 @@ export default class RoomController {
     }
 
     public async selectCountry({ request, response, user, room, language }: HttpContext): Promise<void> {
-        const { playerId, countryId } = await request.validateUsing(selectCountryValidator);
+        const { playerId } = await selectCountryParamsValidator.validate(request.params());
+        const { countryId } = await request.validateUsing(selectCountryValidator);
 
         const player: RoomPlayer | undefined = room.players.find((player: RoomPlayer): boolean => player.frontId === playerId);
         if (!player) {
@@ -199,7 +200,8 @@ export default class RoomController {
     }
 
     public async selectBotDifficulty({ request, response, user, room, language }: HttpContext): Promise<void> {
-        const { playerId, difficultyId } = await request.validateUsing(selectBotDifficultyValidator);
+        const { playerId } = await selectBotDifficultyParamsValidator.validate(request.params());
+        const { difficultyId } = await request.validateUsing(selectBotDifficultyValidator);
 
         const player: RoomPlayer | undefined = room.players.find((player: RoomPlayer): boolean => player.frontId === playerId);
         if (!player) {

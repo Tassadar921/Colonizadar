@@ -70,7 +70,7 @@ export default class FriendController {
     }
 
     public async remove({ request, response, user }: HttpContext): Promise<void> {
-        const { userId } = await request.validateUsing(removeFriendValidator);
+        const { userId } = await removeFriendValidator.validate(request.params());
 
         const friend: User | null = await this.userRepository.firstOrFail({ frontId: userId });
 

@@ -12,7 +12,7 @@ export default class GameRepository extends BaseRepository<typeof Game> {
         super(Game);
     }
 
-    public async getFromFrontId(gameId: number): Promise<Game | null> {
+    public async getFromFrontId(gameId: number): Promise<Game> {
         return this.Model.query()
             .select('games.*')
             .leftJoin('rooms', 'rooms.id', 'games.room_id')
@@ -37,7 +37,7 @@ export default class GameRepository extends BaseRepository<typeof Game> {
             .preload('map', (mapQuery): void => {
                 mapQuery.preload('createdBy');
             })
-            .first();
+            .firstOrFail();
     }
 
     public async create(room: Room): Promise<Game> {

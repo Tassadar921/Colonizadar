@@ -78,7 +78,7 @@ export default class AuthController {
     }
 
     public async confirmAccountCreation({ request, response }: HttpContext): Promise<void> {
-        const { token } = await request.validateUsing(confirmAccountCreationValidator);
+        const { token } = await confirmAccountCreationValidator.validate(request.params());
 
         const user: User = await this.userRepository.firstOrFail({ creationToken: token });
 

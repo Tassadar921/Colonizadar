@@ -12,7 +12,7 @@ import app from '@adonisjs/core/services/app';
 import { cuid } from '@adonisjs/core/helpers';
 import FileService from '#services/file_service';
 import SlugifyService from '#services/slugify_service';
-import { resetPasswordValidator, sendResetPasswordEmailValidator, updateProfileValidator } from '#validators/profile';
+import { resetPasswordParamsValidator, resetPasswordValidator, sendResetPasswordEmailValidator, updateProfileValidator } from '#validators/profile';
 import path from 'node:path';
 
 @inject()
@@ -65,17 +65,15 @@ export default class ProfileController {
     }
 
     public async resetPassword({ request, response }: HttpContext): Promise<void> {
-        const { password } = await resetPasswordValidator.validate(request.all());
-        const { token } = request.params();
+        const { token } = await resetPasswordParamsValidator.validate(request.params());
 
-        const resetPassword: ResetPassword = await this.resetPasswordRepository.firstOrFail(
-            {
-                token,
-            },
-            ['user']
-        );
+        const resetPassword: ResetPassword = await this.resetPasswordRepository.firstOrFail({
+            token,
+        });
 
         const user: User = await this.userRepository.firstOrFail({ id: resetPassword.userId });
+
+        const { password } = await request.validateUsing(resetPasswordValidator);
 
         await resetPassword.delete();
 
