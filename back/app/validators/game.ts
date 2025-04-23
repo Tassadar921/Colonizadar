@@ -5,3 +5,9 @@ export const gameMiddlewareValidator = vine.compile(
         gameId: vine.number().positive(),
     })
 );
+
+export const isForeignTerritoryValidator = vine.compile(
+    vine.object({
+        territoryId: vine.number().positive(),
+    })
+);

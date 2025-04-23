@@ -121,8 +121,18 @@ router
 
                 router
                     .group((): void => {
-                        router.get('/', [GameController, 'get']);
-                        router.get('/player/ready', [GameController, 'ready']);
+                        router
+                            .group((): void => {
+                                router.get('/', [GameController, 'get']);
+                                router.get('/player/ready', [GameController, 'ready']);
+
+                                router
+                                    .group((): void => {
+                                        router.get('/:territoryId/spy', [GameController, 'spyTerritory']);
+                                    })
+                                    .prefix('actions');
+                            })
+                            .middleware([middleware.isRoomPlayer()]);
                     })
                     .prefix('game/:gameId')
                     .use([middleware.game()]);

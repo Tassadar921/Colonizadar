@@ -1,23 +1,14 @@
-import { inject } from '@adonisjs/core';
 import { HttpContext } from '@adonisjs/core/http';
 import RoomPlayer from '#models/room_player';
 import { setReadyValidator } from '#validators/room_player';
 import transmit from '@adonisjs/transmit/services/main';
 
-@inject()
 export default class GameController {
-    constructor() {}
-
     public async get({ response, user, language, game }: HttpContext): Promise<void> {
         return response.send({ game: game.apiSerialize(language, user) });
     }
 
-    public async ready({ request, response, user, game, language }: HttpContext): Promise<void> {
-        const player: RoomPlayer | undefined = game.room.players.find((player: RoomPlayer): boolean => player.userId === user.id);
-        if (!player) {
-            return response.notFound({ error: 'You are not into this room' });
-        }
-
+    public async ready({ request, response, user, player, game, language }: HttpContext): Promise<void> {
         const { isReady } = await request.validateUsing(setReadyValidator);
 
         player.isReady = isReady;
@@ -41,5 +32,15 @@ export default class GameController {
         }
     }
 
-    public async spy({ request, response, user, game, language }: HttpContext): Promise<void> {}
+    public async spyTerritory({ response, user, player, gameTerritory, language }: HttpContext): Promise<void> {
+        // TODO: make price depend on the map
+        if (player.gold < 200000) {
+            return response.forbidden({ error: 'Not enough gold' });
+        }
+
+        player.gold -= 200000;
+        await player.save();
+
+        return response.send(gameTerritory.apiSerialize(language, user, true));
+    }
 }

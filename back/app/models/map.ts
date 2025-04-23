@@ -52,7 +52,7 @@ export default class Map extends BaseModel {
         return {
             id: this.frontId,
             name: this.name,
-            territories: await Promise.all(this.territories.map(async (territory: Territory): Promise<SerializedTerritory> => territory.apiSerialize(language))),
+            territories: await Promise.all(this.territories.map(async (territory: Territory): Promise<SerializedTerritory> => territory.apiSerialize(language, true))),
             createdBy: this.createdBy.apiSerialize(),
             createdAt: this.createdAt?.toString(),
             updatedAt: this.updatedAt?.toString(),

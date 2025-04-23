@@ -50,14 +50,14 @@ export default class GameTerritory extends BaseModel {
     @column.dateTime({ autoCreate: true, autoUpdate: true })
     declare updatedAt: DateTime;
 
-    public apiSerialize(language: Language, user: User): SerializedGameTerritory {
+    public apiSerialize(language: Language, user: User, isSpied: boolean = false): SerializedGameTerritory {
         return {
             id: this.frontId,
-            power: this.owner?.userId === user.id ? this.power : undefined,
-            ships: this.owner?.userId === user.id ? this.ships : undefined,
+            power: this.owner?.userId === user.id || isSpied ? this.power : undefined,
+            ships: this.owner?.userId === user.id || isSpied ? this.ships : undefined,
             value: this.value,
             owner: this.owner?.apiSerialize(language, user),
-            territory: this.territory.apiSerialize(language),
+            territory: this.territory.apiSerialize(language, true),
             createdAt: this.createdAt?.toString(),
             updatedAt: this.updatedAt?.toString(),
         };

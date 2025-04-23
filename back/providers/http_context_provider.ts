@@ -5,6 +5,7 @@ import Room from '#models/room';
 import { inject } from '@adonisjs/core';
 import Game from '#models/game';
 import RoomPlayer from '#models/room_player';
+import GameTerritory from '#models/game_territory';
 
 declare module '@adonisjs/core/http' {
     export interface HttpContext {
@@ -13,6 +14,7 @@ declare module '@adonisjs/core/http' {
         room: Room;
         game: Game;
         player: RoomPlayer;
+        gameTerritory: GameTerritory;
     }
 }
 
