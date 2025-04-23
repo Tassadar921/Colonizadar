@@ -132,7 +132,7 @@ router
                                     })
                                     .prefix('actions');
                             })
-                            .middleware([middleware.isRoomPlayer()]);
+                            .middleware([middleware.isGamePlayer()]);
                     })
                     .prefix('game/:gameId')
                     .use([middleware.game()]);
