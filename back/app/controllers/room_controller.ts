@@ -1,5 +1,5 @@
 import { inject } from '@adonisjs/core';
-import { HttpContext, Response } from '@adonisjs/core/http';
+import { HttpContext } from '@adonisjs/core/http';
 import { createRoomValidator, inviteRoomValidator, kickValidator } from '#validators/room';
 import Room from '#models/room';
 import RoomRepository from '#repositories/room_repository';
@@ -119,18 +119,13 @@ export default class RoomController {
         return response.send({ room: await room.apiSerialize(language, user) });
     }
 
-    public async leave({ response, user, room, language }: HttpContext): Promise<void> {
-        await this.disconnect(user, room, language, response);
+    public async leave({ response, user, room, language, player }: HttpContext): Promise<void> {
+        await this.disconnect(user, player, room, language);
 
         return response.send({ message: 'Room left' });
     }
 
-    public async heartbeat({ response, user, room }: HttpContext): Promise<void> {
-        const player: RoomPlayer | undefined = room.players.find((player: RoomPlayer): boolean => player.userId === user.id);
-        if (!player) {
-            return response.notFound({ error: 'You are not into this room' });
-        }
-
+    public async heartbeat({ response, player }: HttpContext): Promise<void> {
         player.lastHeartbeat = DateTime.now();
         await player.save();
 
@@ -138,10 +133,6 @@ export default class RoomController {
     }
 
     public async addBot({ response, user, room, language }: HttpContext): Promise<void> {
-        if (room.ownerId !== user.id) {
-            return response.forbidden({ error: 'You are not the owner of this room' });
-        }
-
         if (room.players.length < 6) {
             const player: RoomPlayer = await this.roomPlayerRepository.createBot(room);
 
@@ -154,10 +145,6 @@ export default class RoomController {
     }
 
     public async kick({ request, response, user, room, language }: HttpContext): Promise<void> {
-        if (room.ownerId !== user.id) {
-            return response.forbidden({ error: 'You are not the owner of this room' });
-        }
-
         const { playerId } = await kickValidator.validate(request.params());
 
         const player: RoomPlayer | undefined = room.players.find((player: RoomPlayer): boolean => player.frontId === playerId);
@@ -206,8 +193,6 @@ export default class RoomController {
         const player: RoomPlayer | undefined = room.players.find((player: RoomPlayer): boolean => player.frontId === playerId);
         if (!player) {
             return response.notFound({ error: 'Player is not into this room' });
-        } else if (room.ownerId !== user.id) {
-            return response.forbidden({ error: 'You are not the owner of this room' });
         } else if (player.userId) {
             return response.forbidden({ error: 'Players have no difficulty' });
         } else if (player.botId && room.ownerId !== user.id) {
@@ -228,12 +213,7 @@ export default class RoomController {
         return response.send({ message: 'Difficulty selected' });
     }
 
-    public async ready({ request, response, user, room, language }: HttpContext): Promise<void> {
-        const player: RoomPlayer | undefined = room.players.find((player: RoomPlayer): boolean => player.userId === user.id);
-        if (!player) {
-            return response.notFound({ error: 'You are not into this room' });
-        }
-
+    public async ready({ request, response, user, room, language, player }: HttpContext): Promise<void> {
         const { isReady } = await request.validateUsing(setReadyValidator);
 
         if (isReady) {
@@ -307,18 +287,13 @@ export default class RoomController {
         transmit.broadcast(`notification/play/room/${room.frontId}/game/start`, { message: 'Game is starting', gameId: game.frontId });
     }
 
-    private async disconnect(user: User, room: Room, language: Language, response: Response): Promise<void> {
+    private async disconnect(user: User, player: RoomPlayer, room: Room, language: Language): Promise<void> {
         if (room.ownerId === user.id) {
             room.status = RoomStatusEnum.CLOSED;
             await room.save();
 
             transmit.broadcast(`notification/play/room/${room.frontId}/closed`);
         } else {
-            const player: RoomPlayer | undefined = room.players.find((player: RoomPlayer): boolean => player.userId === user.id);
-            if (!player) {
-                return response.notFound({ error: 'You are not into this room' });
-            }
-
             await player.delete();
 
             transmit.broadcast(`notification/play/room/${room.frontId}/player/leave`, { player: player.apiSerialize(language, user) });

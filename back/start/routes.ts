@@ -96,13 +96,23 @@ router
                             .group((): void => {
                                 router.post('/invite', [RoomController, 'invite']);
                                 router.put('/join', [RoomController, 'join']);
-                                router.delete('/leave', [RoomController, 'leave']);
-                                router.patch('/heartbeat', [RoomController, 'heartbeat']);
-                                router.post('/add-bot', [RoomController, 'addBot']);
-                                router.delete('/player/kick/:playerId', [RoomController, 'kick']);
                                 router.patch('/player/:playerId/select-country', [RoomController, 'selectCountry']);
-                                router.patch('/player/:playerId/select-difficulty', [RoomController, 'selectBotDifficulty']);
-                                router.patch('/player/ready', [RoomController, 'ready']);
+
+                                router
+                                    .group((): void => {
+                                        router.post('/add-bot', [RoomController, 'addBot']);
+                                        router.delete('/player/kick/:playerId', [RoomController, 'kick']);
+                                        router.patch('/player/:playerId/select-difficulty', [RoomController, 'selectBotDifficulty']);
+                                    })
+                                    .middleware([middleware.isRoomOwner()]);
+
+                                router
+                                    .group((): void => {
+                                        router.delete('/leave', [RoomController, 'leave']);
+                                        router.patch('/heartbeat', [RoomController, 'heartbeat']);
+                                        router.patch('/player/ready', [RoomController, 'ready']);
+                                    })
+                                    .middleware([middleware.isRoomPlayer()]);
                             })
                             .prefix(':roomId')
                             .use([middleware.room()]);

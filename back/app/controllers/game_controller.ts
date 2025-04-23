@@ -40,4 +40,6 @@ export default class GameController {
             transmit.broadcast(`notification/play/game/${game.frontId}/next-turn`);
         }
     }
+
+    public async spy({ request, response, user, game, language }: HttpContext): Promise<void> {}
 }

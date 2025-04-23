@@ -3,12 +3,13 @@ import { inject } from '@adonisjs/core';
 import { AccessToken } from '@adonisjs/auth/access_tokens';
 import { queryStringAccessTokenValidator } from '#validators/query_string';
 import UserRepository from '#repositories/user_repository';
+import type { NextFn } from '@adonisjs/core/types/http';
 
 @inject()
 export default class QueryStringAuthMiddleware {
     constructor(private readonly userRepository: UserRepository) {}
 
-    public async handle(ctx: HttpContext, next: () => Promise<void>): Promise<void> {
+    public async handle(ctx: HttpContext, next: NextFn): Promise<void> {
         const { token } = await ctx.request.validateUsing(queryStringAccessTokenValidator);
 
         try {

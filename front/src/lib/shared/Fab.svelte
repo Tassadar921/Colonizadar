@@ -47,7 +47,7 @@
 </script>
 
 <button on:click aria-label={ariaLabel} style="z-index: 5000" class={buttonClasses} disabled={isLoading}>
-    {#key isLoading}
-        <Icon name={isLoading ? 'spinner' : icon} size={isLoading ? 30 : undefined} />
-    {/key}
+	{#key isLoading}
+		<Icon name={isLoading ? 'spinner' : icon} size={isLoading ? 30 : undefined} />
+	{/key}
 </button>

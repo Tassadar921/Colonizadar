@@ -40,4 +40,6 @@ export const middleware = router.named({
     queryStringAuth: () => import('#middleware/query_string_auth_middleware'),
     room: () => import('#middleware/room_middleware'),
     game: () => import('#middleware/game_middleware'),
+    isRoomOwner: () => import('#middleware/is_room_owner_middleware'),
+    isRoomPlayer: () => import('#middleware/is_room_player_middleware'),
 });
