@@ -7,3 +7,15 @@ export const getBlockedUsersValidator = vine.compile(
         perPage: vine.number().positive().optional(),
     })
 );
+
+export const blockValidator = vine.compile(
+    vine.object({
+        userId: vine.number().positive(),
+    })
+);
+
+export const cancelValidator = vine.compile(
+    vine.object({
+        userId: vine.number().positive(),
+    })
+);

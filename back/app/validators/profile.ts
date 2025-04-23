@@ -20,11 +20,6 @@ export const resetPasswordValidator = vine.compile(
 export const updateProfileValidator = vine.compile(
     vine.object({
         username: vine.string().trim().minLength(3).maxLength(50).alphaNumeric(),
-    })
-);
-
-export const uploadProfilePictureValidator = vine.compile(
-    vine.object({
         profilePicture: vine
             .file({
                 size: '2mb',

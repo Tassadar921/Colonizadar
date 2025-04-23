@@ -18,7 +18,7 @@ export default class GameController {
             return response.notFound({ error: 'You are not into this room' });
         }
 
-        const { isReady } = await setReadyValidator.validate(request.all());
+        const { isReady } = await request.validateUsing(setReadyValidator);
 
         player.isReady = isReady;
         await player.save();

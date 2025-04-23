@@ -17,6 +17,7 @@ export default class extends BaseSeeder {
                     password: 'xxx',
                     role: email === 'paul.lecuisinier@gmail.com' ? UserRoleEnum.ADMIN : UserRoleEnum.USER,
                     enabled: true,
+                    acceptedTermsAndConditions: true,
                 });
                 console.log(`User ${email} created`);
             }

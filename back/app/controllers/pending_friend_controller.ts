@@ -1,6 +1,6 @@
 import { inject } from '@adonisjs/core';
 import { HttpContext } from '@adonisjs/core/http';
-import { addPendingFriendValidator, getPendingFriendsValidator } from '#validators/pending_friend';
+import { searchPendingFriendsValidator, addPendingFriendValidator, cancelPendingFriendValidator } from '#validators/pending_friend';
 import PendingFriendRepository from '#repositories/pending_friend_repository';
 import PendingFriend from '#models/pending_friend';
 import transmit from '@adonisjs/transmit/services/main';
@@ -18,7 +18,7 @@ export default class PendingFriendController {
     ) {}
 
     public async search({ request, response, user }: HttpContext): Promise<void> {
-        const { query, page, perPage } = await getPendingFriendsValidator.validate(request.all());
+        const { query, page, perPage } = await request.validateUsing(searchPendingFriendsValidator);
 
         return response.send({
             pendingFriends: await cache.getOrSet({
@@ -32,28 +32,26 @@ export default class PendingFriendController {
     }
 
     public async add({ request, response, user }: HttpContext): Promise<void> {
-        const { userId } = await addPendingFriendValidator.validate(request.all());
+        const { userId } = await request.validateUsing(addPendingFriendValidator);
 
-        const askingToUser: User | null = await this.userRepository.findOneBy({ frontId: Number(userId) });
-        if (!askingToUser) {
-            return response.notFound({ error: 'User not found' });
-        }
+        const askingToUser: User = await this.userRepository.firstOrFail({ frontId: userId });
 
-        let pendingFriend: PendingFriend | null = await this.pendingFriendRepository.findOneFromUsers(user, askingToUser);
-        let notification: PendingFriendNotification | null = null;
-        if (!pendingFriend) {
+        let pendingFriend: PendingFriend | null;
+
+        try {
+            pendingFriend = await this.pendingFriendRepository.findOneFromUsers(user, askingToUser);
+        } catch (error: any) {
             pendingFriend = await PendingFriend.create({
                 userId: user.id,
                 friendId: askingToUser.id,
             });
             await pendingFriend.refresh();
 
-            notification = await PendingFriendNotification.create({
+            await PendingFriendNotification.create({
                 forId: askingToUser.id,
                 fromId: user.id,
                 pendingFriendId: pendingFriend.id,
             });
-            await notification.refresh();
 
             await pendingFriend.load('friend');
             await pendingFriend.load('notification', (notificationQuery): void => {
@@ -67,26 +65,17 @@ export default class PendingFriendController {
     }
 
     public async cancel({ request, response, user }: HttpContext): Promise<void> {
-        const { userId } = request.params();
+        const { userId } = await request.validateUsing(cancelPendingFriendValidator);
 
-        const askingToUser: User | null = await this.userRepository.findOneBy({ frontId: Number(userId) });
-        if (!askingToUser) {
-            return response.notFound({ error: 'User not found' });
-        }
+        const askingToUser: User = await this.userRepository.firstOrFail({ frontId: userId });
 
-        let pendingFriend: PendingFriend | null = await this.pendingFriendRepository.findOneFromUsers(user, askingToUser);
-        if (!pendingFriend) {
-            return response.notFound({ error: 'This pending friends request does not exist' });
-        }
+        const pendingFriend: PendingFriend = await this.pendingFriendRepository.findOneFromUsers(user, askingToUser);
 
         if (pendingFriend.userId === user.id || pendingFriend.friendId === user.id) {
-            await pendingFriend.load('friend');
-            await pendingFriend.load('notification', (notificationQuery): void => {
-                notificationQuery.preload('from');
-            });
             transmit.broadcast(`notification/add-friend/cancel/${userId}`, pendingFriend.apiSerialize());
             await pendingFriend.notification.delete();
             await pendingFriend.delete();
+
             return response.send({ message: 'Request deleted' });
         }
 

@@ -9,7 +9,7 @@ export default class QueryStringAuthMiddleware {
     constructor(private readonly userRepository: UserRepository) {}
 
     public async handle(ctx: HttpContext, next: () => Promise<void>): Promise<void> {
-        const { token } = await queryStringAccessTokenValidator.validate(ctx.request.all());
+        const { token } = await ctx.request.validateUsing(queryStringAccessTokenValidator);
 
         try {
             const decodedToken = AccessToken.decode('oat_', token);

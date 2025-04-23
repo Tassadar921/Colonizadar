@@ -1,7 +1,7 @@
 import { inject } from '@adonisjs/core';
 import FriendRepository from '#repositories/friend_repository';
 import { HttpContext } from '@adonisjs/core/http';
-import { acceptFriendValidator, getFriendsValidator, refuseFriendValidator } from '#validators/friend';
+import { searchFriendsValidator, acceptFriendValidator, refuseFriendValidator, removeFriendValidator } from '#validators/friend';
 import User from '#models/user';
 import PendingFriend from '#models/pending_friend';
 import transmit from '@adonisjs/transmit/services/main';
@@ -20,7 +20,8 @@ export default class FriendController {
     ) {}
 
     public async search({ request, response, user }: HttpContext): Promise<void> {
-        const { query, page, perPage } = await getFriendsValidator.validate(request.all());
+        const { query, page, perPage } = await request.validateUsing(searchFriendsValidator);
+
         return response.send({
             friends: await cache.getOrSet({
                 key: `user-friends:${user.id}`,
@@ -33,17 +34,11 @@ export default class FriendController {
     }
 
     public async accept({ request, response, user }: HttpContext): Promise<void> {
-        const { userId } = await acceptFriendValidator.validate(request.all());
+        const { userId } = await request.validateUsing(acceptFriendValidator);
 
-        const askingToUser: User | null = await this.userRepository.findOneBy({ frontId: Number(userId) });
-        if (!askingToUser) {
-            return response.notFound({ error: 'User not found' });
-        }
+        const askingToUser: User | null = await this.userRepository.firstOrFail({ frontId: userId });
 
-        let pendingFriend: PendingFriend | null = await this.pendingFriendRepository.findOneFromUsers(user, askingToUser);
-        if (!pendingFriend) {
-            return response.notFound({ error: 'This pending friends request does not exist' });
-        }
+        let pendingFriend: PendingFriend = await this.pendingFriendRepository.findOneFromUsers(user, askingToUser);
 
         transmit.broadcast(`notification/add-friend/accept/${userId}`, user.apiSerialize());
         await Friend.createMany([
@@ -62,17 +57,11 @@ export default class FriendController {
     }
 
     public async refuse({ request, response, user }: HttpContext): Promise<void> {
-        const { userId } = await refuseFriendValidator.validate(request.all());
+        const { userId } = await request.validateUsing(refuseFriendValidator);
 
-        const askingToUser: User | null = await this.userRepository.findOneBy({ frontId: Number(userId) });
-        if (!askingToUser) {
-            return response.notFound({ error: 'User not found' });
-        }
+        const askingToUser: User | null = await this.userRepository.firstOrFail({ frontId: userId });
 
-        let pendingFriend: PendingFriend | null = await this.pendingFriendRepository.findOneFromUsers(user, askingToUser);
-        if (!pendingFriend) {
-            return response.notFound({ error: 'This pending friends request does not exist' });
-        }
+        let pendingFriend: PendingFriend = await this.pendingFriendRepository.findOneFromUsers(user, askingToUser);
 
         transmit.broadcast(`notification/add-friend/refuse/${userId}`, user.apiSerialize());
         await pendingFriend.notification.delete();
@@ -81,19 +70,18 @@ export default class FriendController {
     }
 
     public async remove({ request, response, user }: HttpContext): Promise<void> {
-        const { userId } = request.params();
+        const { userId } = await request.validateUsing(removeFriendValidator);
 
-        const friend: User | null = await this.userRepository.findOneBy({ frontId: Number(userId) });
-        if (!friend) {
-            return response.notFound({ error: 'User not found' });
-        }
+        const friend: User | null = await this.userRepository.firstOrFail({ frontId: userId });
 
         const friendRelationships: Friend[] = await this.friendRepository.findFromUsers(user, friend);
         if (!friendRelationships.length) {
             return response.notFound({ error: 'You are not friend with this user' });
         }
 
-        friendRelationships.map(async (friend: Friend): Promise<void> => await friend.delete());
+        friendRelationships.map(async (friend: Friend): Promise<void> => {
+            await friend.delete();
+        });
 
         transmit.broadcast(`notification/friend/remove/${userId}`, user.apiSerialize());
         transmit.broadcast(`notification/friend/remove/${user.frontId}`, friend.apiSerialize());

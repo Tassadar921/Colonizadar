@@ -16,7 +16,7 @@ export default class PlayableCountryController {
     ) {}
 
     public async getAll({ request, response, language }: HttpContext): Promise<void> {
-        const { mapId } = await getAllPlayableCountriesValidator.validate(request.params());
+        const { mapId } = await request.validateUsing(getAllPlayableCountriesValidator);
 
         return response.send(
             await cache.getOrSet({
@@ -25,7 +25,10 @@ export default class PlayableCountryController {
                 factory: async (): Promise<SerializedPlayableCountry[]> => {
                     const map: Map = await this.mapRepository.firstOrFail({ frontId: mapId }, ['playableCountries']);
                     const playableCountries: PlayableCountry[] = await this.playableCountryRepository.getAllFromMapForRoom(map);
-                    return playableCountries.map((playableCountry: PlayableCountry): SerializedPlayableCountry => playableCountry.apiSerialize(language));
+
+                    return playableCountries.map((playableCountry: PlayableCountry): SerializedPlayableCountry => {
+                        return playableCountry.apiSerialize(language);
+                    });
                 },
             })
         );

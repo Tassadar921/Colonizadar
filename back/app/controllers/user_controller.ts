@@ -10,7 +10,8 @@ export default class UserController {
     constructor(private readonly userRepository: UserRepository) {}
 
     public async searchNotFriends({ request, response, user }: HttpContext): Promise<void> {
-        const { query, page, perPage } = await getUsersValidator.validate(request.all());
+        const { query, page, perPage } = await request.validateUsing(getUsersValidator);
+
         return response.send({
             users: await cache.getOrSet({
                 key: `user-not-friends:${user.id}`,

@@ -5,10 +5,10 @@ import { inject } from '@adonisjs/core';
 import UserRoleEnum from '#types/enum/user_role_enum';
 import { DateTime } from 'luxon';
 import UserRepository from '#repositories/user_repository';
-import { sendAccountCreationEmailValidator } from '#validators/auth';
+import { confirmAccountCreationValidator, loginValidator, sendAccountCreationEmailValidator } from '#validators/auth';
 import BrevoMailService from '#services/brevo_mail_service';
-import crypto from 'crypto';
 import env from '#start/env';
+import { randomUUID } from 'node:crypto';
 
 @inject()
 export default class AuthController {
@@ -18,7 +18,7 @@ export default class AuthController {
     ) {}
     public async login({ request, response }: HttpContext): Promise<void> {
         try {
-            const { email, password } = request.only(['email', 'password']);
+            const { email, password } = await request.validateUsing(loginValidator);
 
             const user: User = await User.verifyCredentials(email, password);
             await user.load('profilePicture');
@@ -30,7 +30,7 @@ export default class AuthController {
                 token,
                 user: user.apiSerialize(),
             });
-        } catch (e) {
+        } catch (error: any) {
             return response.unauthorized({ error: 'API Login failed' });
         }
     }
@@ -42,27 +42,25 @@ export default class AuthController {
     }
 
     public async sendAccountCreationEmail({ request, response }: HttpContext): Promise<void> {
-        const { username, email, password, consent } = await sendAccountCreationEmailValidator.validate(request.all());
+        const { username, email, password, consent } = await request.validateUsing(sendAccountCreationEmailValidator);
 
         if (!consent) {
-            return response.badRequest({ error: 'Content is required' });
+            return response.badRequest({ error: 'Consent is required' });
         }
 
-        let user: User | null = await this.userRepository.findOneBy({ email });
-        if (user) {
-            if (!user.enabled) {
-                if (user.createdAt && user.createdAt > DateTime.now().minus({ minutes: 5 })) {
-                    return response.send({ success: true });
-                } else {
-                    await user.delete();
-                }
+        let user: User = await this.userRepository.firstOrFail({ email });
+        if (!user.enabled) {
+            if (user.createdAt && user.createdAt > DateTime.now().minus({ minutes: 5 })) {
+                return response.send({ success: true });
             } else {
-                return response.status(409).send({ error: 'User already exists' });
+                await user.delete();
             }
+        } else {
+            return response.status(409).send({ error: 'User already exists' });
         }
 
         try {
-            const token: string = crypto.randomBytes(32).toString('hex');
+            const token: string = randomUUID();
             await this.mailService.sendAccountCreationEmail(email, `${env.get('FRONT_URI')}/reset-password/confirm/${token}`);
             await User.create({
                 username,
@@ -72,7 +70,7 @@ export default class AuthController {
                 creationToken: token,
                 acceptedTermsAndConditions: true,
             });
-        } catch (error) {
+        } catch (error: any) {
             return response.status(error.status).send({ error: error.message });
         }
 
@@ -80,12 +78,9 @@ export default class AuthController {
     }
 
     public async confirmAccountCreation({ request, response }: HttpContext): Promise<void> {
-        const { token } = request.params();
+        const { token } = await request.validateUsing(confirmAccountCreationValidator);
 
-        const user: User | null = await this.userRepository.findOneBy({ creationToken: token });
-        if (!user) {
-            return response.badRequest({ error: 'User not found' });
-        }
+        const user: User = await this.userRepository.firstOrFail({ creationToken: token });
 
         user.enabled = true;
         user.creationToken = null;

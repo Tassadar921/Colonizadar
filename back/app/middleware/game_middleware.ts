@@ -9,7 +9,7 @@ export default class GameMiddleware {
     constructor(private readonly gameRepository: GameRepository) {}
 
     public async handle(ctx: HttpContext, next: () => Promise<void>): Promise<void> {
-        const { gameId } = await gameMiddlewareValidator.validate(ctx.request.params());
+        const { gameId } = await ctx.request.validateUsing(gameMiddlewareValidator);
 
         if (!gameId) {
             return ctx.response.badRequest({ error: 'Game id is required' });

@@ -22,7 +22,7 @@ export default class FileController {
     ) {}
 
     public async serveStaticProfilePictureFile({ request, response }: HttpContext): Promise<void> {
-        const { userId } = await serveStaticProfilePictureFileValidator.validate(request.params());
+        const { userId } = await request.validateUsing(serveStaticProfilePictureFileValidator);
 
         try {
             const filePath: string = await cache.getOrSet({
@@ -44,13 +44,11 @@ export default class FileController {
             if (error.message === 'NO_PICTURE') {
                 return response.notFound({ error: "User's profile picture not found" });
             }
-
-            throw error;
         }
     }
 
     public async serveStaticBotPictureFile({ request, response }: HttpContext): Promise<void> {
-        const { botId } = await serveStaticBotPictureFileValidator.validate(request.params());
+        const { botId } = await request.validateUsing(serveStaticBotPictureFileValidator);
 
         try {
             const filePath: string = await cache.getOrSet({
@@ -72,13 +70,11 @@ export default class FileController {
             if (error.message === 'NO_PICTURE') {
                 return response.notFound({ error: "Bot's picture not found" });
             }
-
-            throw error;
         }
     }
 
     public async serveStaticCountryFlagFile({ request, response }: HttpContext): Promise<void> {
-        const { countryId } = await serveStaticCountryFlagFileValidator.validate(request.params());
+        const { countryId } = await request.validateUsing(serveStaticCountryFlagFileValidator);
 
         try {
             const filePath: string = await cache.getOrSet({
@@ -100,13 +96,11 @@ export default class FileController {
             if (error.message === 'NO_PICTURE') {
                 return response.notFound({ error: 'Country flag not found' });
             }
-
-            throw error;
         }
     }
 
     public async serveStaticNeutralCountryFlagFile({ request, response }: HttpContext): Promise<void> {
-        const { mapId } = await serveStaticNeutralCountryFlagFileValidator.validate(request.params());
+        const { mapId } = await request.validateUsing(serveStaticNeutralCountryFlagFileValidator);
 
         try {
             const filePath: string = await cache.getOrSet({
@@ -128,8 +122,6 @@ export default class FileController {
             if (error.message === 'NO_PICTURE') {
                 return response.notFound({ error: 'Neutral flag not found' });
             }
-
-            throw error;
         }
     }
 }

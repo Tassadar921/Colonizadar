@@ -22,7 +22,7 @@ export default class NotificationController {
     }
 
     public async getPendingFriends({ request, response, user }: HttpContext): Promise<void> {
-        const { page, perPage, seen } = await getPendingFriendNotificationsValidator.validate(request.all());
+        const { page, perPage, seen } = await request.validateUsing(getPendingFriendNotificationsValidator);
 
         return response.send({
             notifications: await cache.getOrSet({

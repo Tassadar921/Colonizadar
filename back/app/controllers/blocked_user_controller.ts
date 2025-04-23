@@ -1,7 +1,7 @@
 import { inject } from '@adonisjs/core';
 import { HttpContext } from '@adonisjs/core/http';
 import BlockedUserRepository from '#repositories/blocked_user_repository';
-import { getBlockedUsersValidator } from '#validators/blocked';
+import { blockValidator, cancelValidator, getBlockedUsersValidator } from '#validators/blocked';
 import User from '#models/user';
 import PendingFriend from '#models/pending_friend';
 import UserRepository from '#repositories/user_repository';
@@ -23,7 +23,8 @@ export default class BlockedUserController {
     ) {}
 
     public async search({ request, response, user }: HttpContext): Promise<void> {
-        const { query, page, perPage } = await getBlockedUsersValidator.validate(request.all());
+        const { query, page, perPage } = await request.validateUsing(getBlockedUsersValidator);
+
         return response.send({
             blockedUsers: await cache.getOrSet({
                 key: `user-blocked:${user.id}`,
@@ -36,12 +37,9 @@ export default class BlockedUserController {
     }
 
     public async block({ request, response, user }: HttpContext): Promise<void> {
-        const { userId } = request.params();
+        const { userId } = await request.validateUsing(blockValidator);
 
-        const blockingUser: User | null = await this.userRepository.findOneBy({ frontId: Number(userId) });
-        if (!blockingUser) {
-            return response.notFound({ error: 'User not found' });
-        }
+        const blockingUser: User = await this.userRepository.firstOrFail({ frontId: userId });
 
         const blockedUsers: BlockedUser[] = await this.blockedUserRepository.findFromUsers(user, blockingUser);
         if (blockedUsers.length) {
@@ -55,7 +53,9 @@ export default class BlockedUserController {
         });
 
         const friendRelationships: Friend[] = await this.friendRepository.findFromUsers(user, blockingUser);
-        friendRelationships.map(async (friend: Friend): Promise<void> => await friend.delete());
+        friendRelationships.map(async (friend: Friend): Promise<void> => {
+            await friend.delete();
+        });
 
         await BlockedUser.create({
             blockerId: user.id,
@@ -67,19 +67,18 @@ export default class BlockedUserController {
     }
 
     public async cancel({ request, response, user }: HttpContext): Promise<void> {
-        const { userId } = request.params();
+        const { userId } = await request.validateUsing(cancelValidator);
 
-        const blockingUser: User | null = await this.userRepository.findOneBy({ frontId: Number(userId) });
-        if (!blockingUser) {
-            return response.notFound({ error: 'User not found' });
-        }
+        const blockingUser: User | null = await this.userRepository.firstOrFail({ frontId: userId });
 
         const blockedUsers: BlockedUser[] = await this.blockedUserRepository.findFromUsers(user, blockingUser);
-        if (!blockedUsers) {
+        if (!blockedUsers.length) {
             return response.notFound({ error: 'Invalid blocking id' });
         }
 
-        blockedUsers.map(async (blockedUser: BlockedUser): Promise<void> => await blockedUser.delete());
+        blockedUsers.map(async (blockedUser: BlockedUser): Promise<void> => {
+            await blockedUser.delete();
+        });
 
         transmit.broadcast(`notification/unblocked/${userId}`);
 
