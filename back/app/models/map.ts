@@ -55,6 +55,7 @@ export default class Map extends BaseModel {
         return {
             id: this.frontId,
             name: this.name,
+            mainSeason: this.mainSeason,
             territories: await Promise.all(this.territories.map(async (territory: Territory): Promise<SerializedTerritory> => territory.apiSerialize(language, true))),
             createdBy: this.createdBy.apiSerialize(),
             createdAt: this.createdAt?.toString(),
@@ -66,6 +67,7 @@ export default class Map extends BaseModel {
         return {
             id: this.frontId,
             name: this.name,
+            mainSeason: this.mainSeason,
             createdBy: this.createdBy.apiSerialize(),
             createdAt: this.createdAt?.toString(),
             updatedAt: this.updatedAt?.toString(),
