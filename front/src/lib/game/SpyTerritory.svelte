@@ -28,17 +28,9 @@
 		}
 	};
 
-	const handleClick = async (): Promise<void> => {
-		if (selectedTerritory) {
-			await handleSpyTerritory();
-		} else {
-			console.log('ici');
-		}
-	};
-
 	$: isButtonDisabled = !!selectedTerritory.power;
 </script>
 
-<button class="{isButtonDisabled ? 'cursor-disabled' : 'hover:bg-green-600'} bg-green-500 transition-colors duration-300 px-3 rounded-xl" on:click={handleClick} disabled={isButtonDisabled}>
+<button class="{isButtonDisabled ? 'cursor-disabled' : 'hover:bg-green-600'} bg-green-500 transition-colors duration-300 px-3 rounded-xl" on:click={handleSpyTerritory} disabled={isButtonDisabled}>
 	{$t('play.game.spy')}
 </button>
