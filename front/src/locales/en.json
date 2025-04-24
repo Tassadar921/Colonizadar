@@ -272,6 +272,9 @@
 			"summer": "Summer",
 			"fall": "Autumn",
 			"winter": "Winter",
+			"spy": "Spy",
+			"declare-war": "Declare a war",
+			"subversion": "Subversion",
 			"country-modal": {
 				"owner": "Owner",
 				"indigenous": "Indigenous",

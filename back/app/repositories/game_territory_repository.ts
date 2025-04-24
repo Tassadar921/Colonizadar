@@ -7,13 +7,20 @@ export default class GameTerritoryRepository extends BaseRepository<typeof GameT
         super(GameTerritory);
     }
 
-    public async findOneFromTerritoryId(territoryId: number, game: Game): Promise<GameTerritory> {
+    public async findOneFromTerritoryId(territoryCode: string, game: Game): Promise<GameTerritory> {
         return this.Model.query()
             .select('game_territories.*')
             .leftJoin('territories', 'game_territories.territory_id', 'territories.id')
             .where('game_territories.game_id', game.id)
-            .andWhere('territories.front_id', territoryId)
-            .preload('territory')
+            .andWhere('territories.code', territoryCode)
+            .preload('owner', (ownerQuery): void => {
+                ownerQuery.preload('bot').preload('user').preload('country').preload('difficulty');
+            })
+            .preload('territory', (territoryQuery): void => {
+                territoryQuery.preload('neighbours', (neighboursQuery): void => {
+                    neighboursQuery.preload('neighbour');
+                });
+            })
             .firstOrFail();
     }
 }

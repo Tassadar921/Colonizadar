@@ -13,8 +13,8 @@ export default class IsForeignTerritoryMiddleware {
         const { territoryCode } = await isForeignTerritoryValidator.validate(ctx.request.params());
 
         const territory: GameTerritory = await this.gameTerritoryRepository.findOneFromTerritoryId(territoryCode, ctx.game);
-        if (territory.ownerId === ctx.player.id) {
-            return ctx.response.forbidden({ error: "You can't perform this on your own territory" });
+        if (territory.ownerId !== ctx.player.id) {
+            return ctx.response.forbidden({ error: 'You only can perform this on your own territory' });
         }
 
         ctx.gameTerritory = territory;

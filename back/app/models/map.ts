@@ -23,6 +23,9 @@ export default class Map extends BaseModel {
     @column()
     declare neutralFlagId: string;
 
+    @column()
+    declare mainSeason: number;
+
     @belongsTo((): typeof File => File, {
         foreignKey: 'neutralFlagId',
     })

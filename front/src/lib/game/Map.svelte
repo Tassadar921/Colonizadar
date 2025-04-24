@@ -10,6 +10,8 @@
 	import type SerializedGameTerritory from 'colonizadar-backend/app/types/serialized/serialized_game_territory';
 	import type SerializedRoomPlayer from 'colonizadar-backend/app/types/serialized/serialized_room_player';
 	import { getCentroidFromPath } from '../../services/gameGeometryService';
+	import SpyTerritory from './SpyTerritory.svelte';
+	import { profile } from '../../stores/profileStore';
 
 	export let game: SerializedGame;
 
@@ -37,6 +39,8 @@
 
 	let hoverColor: string = '#ffffac';
 	let mountainColor: string = '#653a06';
+
+	const checkedProfile = $profile!;
 
 	onMount(() => {
 		svgElement.classList.add('rounded-lg', 'bg-blue-950', 'border', 'border-black', 'dark:border-white', 'box-content');
@@ -179,11 +183,15 @@
 	}
 
 	$: if (game) {
-		svgElement.querySelectorAll('.flag-icon').forEach((el) => el.remove());
+		svgElement?.querySelectorAll('.flag-icon').forEach((el) => el.remove());
 
 		for (const territoryObject of game.territories) {
-			const svgGroup: SVGGElement = document.getElementById(territoryObject.territory.code.toLowerCase()) as unknown as SVGGElement;
-			const svgPath: SVGPathElement = svgGroup.querySelector('.mainland') as SVGPathElement;
+			const svgGroup: SVGGElement | null = document.getElementById(territoryObject.territory.code.toLowerCase()) as unknown as SVGGElement | null;
+			const svgPath: SVGPathElement | null = svgGroup?.querySelector('.mainland') as SVGPathElement | null;
+
+			if (!svgGroup || !svgPath) {
+				continue;
+			}
 
 			resetTerritoryColor(svgGroup);
 
@@ -220,7 +228,7 @@
 </script>
 
 <button
-	class="width-map overflow-hidden {isDragging ? 'cursor-grabbing' : 'cursor-pointer'}"
+	class="w-4/5 overflow-hidden {isDragging ? 'cursor-grabbing' : 'cursor-pointer'}"
 	on:wheel={handleWheel}
 	on:mousedown={startDrag}
 	on:mousemove={onDrag}
@@ -231,21 +239,30 @@
 	<WorldMap bind:svgElement bind:viewBox />
 </button>
 
-<Modal bind:showModal={showCountryModal}>
-	<Subtitle slot="header">{selectedTerritory?.territory.name}</Subtitle>
-	<div class="flex gap-1 items-center">
-		<p>{$t('play.game.country-modal.owner')} :</p>
-		<InGamePlayer bind:game bind:player={selectedTerritoryOwner} />
+<div class="flex gap-3">
+	<div class="flex flex-row flex-wrap gap-5 justify-center">
+		<button class="bg-orange-500 hover:bg-orange-600 transition-colors duration-300 px-5 py-3 rounded-xl">
+			{$t('play.game.declare-war')}
+		</button>
 	</div>
-	<p>{$t('play.game.country-modal.value')} : {formatGameNumbers(selectedTerritory?.value ?? 0)}</p>
-	<p>{$t('play.common.infantry')} : {selectedTerritory?.power ? formatGameNumbers(selectedTerritory.power) : '???'}</p>
-	{#if selectedTerritory && selectedTerritoryOwner && selectedTerritory.territory.isCoastal}
-		<p>{$t('play.common.ships')} : {selectedTerritory?.ships ? formatGameNumbers(selectedTerritory.ships) : '???'}</p>
-	{/if}
-</Modal>
+</div>
 
-<style>
-	.width-map {
-		width: 70%;
-	}
-</style>
+{#if selectedTerritory}
+	<Modal bind:showModal={showCountryModal}>
+		<Subtitle slot="header">{selectedTerritory.territory.name}</Subtitle>
+		<div class="flex gap-1 items-center">
+			<p>{$t('play.game.country-modal.owner')} :</p>
+			<InGamePlayer bind:game bind:player={selectedTerritoryOwner} />
+		</div>
+		<p>{$t('play.game.country-modal.value')} : {formatGameNumbers(selectedTerritory.value ?? 0)}</p>
+		<p>{$t('play.common.infantry')} : {selectedTerritory.power ? formatGameNumbers(selectedTerritory.power) : '???'}</p>
+		{#if selectedTerritory && selectedTerritoryOwner && selectedTerritory.territory.isCoastal}
+			<p>{$t('play.common.ships')} : {selectedTerritory.ships ? formatGameNumbers(selectedTerritory.ships) : '???'}</p>
+		{/if}
+		<div class="flex gap-5 justify-center">
+			{#if selectedTerritory && selectedTerritoryOwner?.user?.id !== checkedProfile.id}
+				<SpyTerritory bind:game bind:selectedTerritory />
+			{/if}
+		</div>
+	</Modal>
+{/if}

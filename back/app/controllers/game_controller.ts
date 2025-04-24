@@ -34,11 +34,11 @@ export default class GameController {
 
     public async spyTerritory({ response, user, player, gameTerritory, language }: HttpContext): Promise<void> {
         // TODO: make price depend on the map
-        if (player.gold < 200000) {
+        if (player.gold < 200) {
             return response.forbidden({ error: 'Not enough gold' });
         }
 
-        player.gold -= 200000;
+        player.gold -= 200;
         await player.save();
 
         return response.send(gameTerritory.apiSerialize(language, user, true));
