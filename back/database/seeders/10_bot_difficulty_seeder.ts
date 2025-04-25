@@ -21,7 +21,6 @@ export default class extends BaseSeeder {
                     frenchName: difficulty.french,
                     englishName: difficulty.english,
                 });
-                console.log(`Difficulty ${difficulty.english} created`);
             }
         }
     }

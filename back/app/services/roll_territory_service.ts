@@ -16,7 +16,6 @@ export function rollTerritoryPower(territory: Territory, value: number): number 
 
     const base: number = value / 40000;
 
-    // Boost des voisins, légèrement exponentiel
     const neighbourBoost: number = Math.pow(neighbourCount, 1.2) * 1500;
 
     const chaos: number = (Math.random() - 0.5) * 200000;

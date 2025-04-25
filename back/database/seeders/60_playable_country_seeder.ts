@@ -20,14 +20,14 @@ export default class extends BaseSeeder {
             english: string;
             color: string;
             flagFileName: string;
-            infantryAttack: number;
-            infantryDefense: number;
-            infantryPrice: number;
-            shipAttack: number;
-            shipDefense: number;
-            shipPrice: number;
-            landingAttack: number;
-            landingDefense: number;
+            infantryAttackFactor: number;
+            infantryDefenseFactor: number;
+            infantryPriceFactor: number;
+            shipAttackFactor: number;
+            shipDefenseFactor: number;
+            shipPriceFactor: number;
+            landingAttackFactor: number;
+            landingDefenseFactor: number;
             map: Map;
         }[] = [
             {
@@ -35,14 +35,14 @@ export default class extends BaseSeeder {
                 english: 'United States',
                 color: '#0dcfff',
                 flagFileName: 'us.svg',
-                infantryAttack: 50,
-                infantryDefense: 50,
-                infantryPrice: 40,
-                shipAttack: 50,
-                shipDefense: 50,
-                shipPrice: 40,
-                landingAttack: 60,
-                landingDefense: 50,
+                infantryAttackFactor: 0.5,
+                infantryDefenseFactor: 0.5,
+                infantryPriceFactor: 0.4,
+                shipAttackFactor: 0.5,
+                shipDefenseFactor: 0.5,
+                shipPriceFactor: 0.4,
+                landingAttackFactor: 0.6,
+                landingDefenseFactor: 0.5,
                 map: worldMap,
             },
             {
@@ -50,14 +50,14 @@ export default class extends BaseSeeder {
                 english: 'United Kingdom',
                 color: '#ff0d0d',
                 flagFileName: 'uk.svg',
-                infantryAttack: 35,
-                infantryDefense: 40,
-                infantryPrice: 45,
-                shipAttack: 60,
-                shipDefense: 70,
-                shipPrice: 30,
-                landingAttack: 80,
-                landingDefense: 55,
+                infantryAttackFactor: 0.35,
+                infantryDefenseFactor: 0.4,
+                infantryPriceFactor: 0.45,
+                shipAttackFactor: 0.6,
+                shipDefenseFactor: 0.7,
+                shipPriceFactor: 0.3,
+                landingAttackFactor: 0.8,
+                landingDefenseFactor: 0.55,
                 map: worldMap,
             },
             {
@@ -65,14 +65,14 @@ export default class extends BaseSeeder {
                 english: 'German Empire',
                 color: '#818181',
                 flagFileName: 'de.svg',
-                infantryAttack: 70,
-                infantryDefense: 30,
-                infantryPrice: 35,
-                shipAttack: 35,
-                shipDefense: 35,
-                shipPrice: 60,
-                landingAttack: 40,
-                landingDefense: 30,
+                infantryAttackFactor: 0.7,
+                infantryDefenseFactor: 0.3,
+                infantryPriceFactor: 0.35,
+                shipAttackFactor: 0.35,
+                shipDefenseFactor: 0.35,
+                shipPriceFactor: 0.6,
+                landingAttackFactor: 0.4,
+                landingDefenseFactor: 0.3,
                 map: worldMap,
             },
             {
@@ -80,14 +80,14 @@ export default class extends BaseSeeder {
                 english: 'France',
                 color: '#001fd6',
                 flagFileName: 'fr.svg',
-                infantryAttack: 50,
-                infantryDefense: 80,
-                infantryPrice: 30,
-                shipAttack: 50,
-                shipDefense: 60,
-                shipPrice: 40,
-                landingAttack: 50,
-                landingDefense: 60,
+                infantryAttackFactor: 0.5,
+                infantryDefenseFactor: 0.8,
+                infantryPriceFactor: 0.3,
+                shipAttackFactor: 0.5,
+                shipDefenseFactor: 0.6,
+                shipPriceFactor: 0.4,
+                landingAttackFactor: 0.5,
+                landingDefenseFactor: 0.6,
                 map: worldMap,
             },
             {
@@ -95,14 +95,14 @@ export default class extends BaseSeeder {
                 english: 'Russia',
                 color: '#0a7510',
                 flagFileName: 'ru.svg',
-                infantryAttack: 30,
-                infantryDefense: 45,
-                infantryPrice: 15,
-                shipAttack: 25,
-                shipDefense: 30,
-                shipPrice: 50,
-                landingAttack: 30,
-                landingDefense: 40,
+                infantryAttackFactor: 0.3,
+                infantryDefenseFactor: 0.45,
+                infantryPriceFactor: 0.15,
+                shipAttackFactor: 0.25,
+                shipDefenseFactor: 0.3,
+                shipPriceFactor: 0.5,
+                landingAttackFactor: 0.3,
+                landingDefenseFactor: 0.4,
                 map: worldMap,
             },
             {
@@ -110,14 +110,14 @@ export default class extends BaseSeeder {
                 english: 'Japan',
                 color: '#fdbb47',
                 flagFileName: 'jp.svg',
-                infantryAttack: 60,
-                infantryDefense: 50,
-                infantryPrice: 40,
-                shipAttack: 60,
-                shipDefense: 50,
-                shipPrice: 35,
-                landingAttack: 60,
-                landingDefense: 70,
+                infantryAttackFactor: 0.6,
+                infantryDefenseFactor: 0.5,
+                infantryPriceFactor: 0.4,
+                shipAttackFactor: 0.6,
+                shipDefenseFactor: 0.5,
+                shipPriceFactor: 0.35,
+                landingAttackFactor: 0.6,
+                landingDefenseFactor: 0.7,
                 map: worldMap,
             },
         ];
@@ -139,18 +139,17 @@ export default class extends BaseSeeder {
                     frenchName: country.french,
                     englishName: country.english,
                     color: country.color,
-                    infantryAttack: country.infantryAttack,
-                    infantryDefense: country.infantryDefense,
-                    infantryPrice: country.infantryPrice,
-                    shipAttack: country.shipAttack,
-                    shipDefense: country.shipDefense,
-                    shipPrice: country.shipPrice,
-                    landingAttack: country.landingAttack,
-                    landingDefense: country.landingDefense,
+                    infantryAttackFactor: country.infantryAttackFactor,
+                    infantryDefenseFactor: country.infantryDefenseFactor,
+                    infantryPriceFactor: country.infantryPriceFactor,
+                    shipAttackFactor: country.shipAttackFactor,
+                    shipDefenseFactor: country.shipDefenseFactor,
+                    shipPriceFactor: country.shipPriceFactor,
+                    landingAttackFactor: country.landingAttackFactor,
+                    landingDefenseFactor: country.landingDefenseFactor,
                     flagId: flag.id,
                     mapId: country.map.id,
                 });
-                console.log(`Playable country ${country.english} created`);
             }
         }
     }

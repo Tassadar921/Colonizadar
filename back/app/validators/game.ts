@@ -6,8 +6,21 @@ export const gameMiddlewareValidator = vine.compile(
     })
 );
 
-export const isForeignTerritoryValidator = vine.compile(
+export const gameTerritoryMiddlewareValidator = vine.compile(
     vine.object({
         territoryCode: vine.string().fixedLength(2).toUpperCase(),
+    })
+);
+
+export const financePlayerValidator = vine.compile(
+    vine.object({
+        amount: vine.number().min(1),
+        playerId: vine.number().positive(),
+    })
+);
+
+export const financeWildTerritoryValidator = vine.compile(
+    vine.object({
+        amount: vine.number().min(1),
     })
 );

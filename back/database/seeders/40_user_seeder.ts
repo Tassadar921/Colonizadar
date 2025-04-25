@@ -19,7 +19,6 @@ export default class extends BaseSeeder {
                     enabled: true,
                     acceptedTermsAndConditions: true,
                 });
-                console.log(`User ${email} created`);
             }
         }
     }

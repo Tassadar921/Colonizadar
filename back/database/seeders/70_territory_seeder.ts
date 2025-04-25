@@ -231,7 +231,6 @@ export default class extends BaseSeeder {
                     mapId: territory.map.id,
                     defaultBelongsToId: territory.defaultBelongsTo?.id,
                 });
-                console.log(`Territory ${territory.code} created for map ${territory.map.name}`);
             } else {
                 console.log(`Territory ${territory.code} already exists for map ${territory.map.name}`);
             }

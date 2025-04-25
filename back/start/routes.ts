@@ -128,7 +128,12 @@ router
 
                                 router
                                     .group((): void => {
-                                        router.get('/:territoryCode/spy', [GameController, 'spyTerritory']).use([middleware.isForeignTerritoryPlayer(), middleware.isValidSeason()]);
+                                        router
+                                            .group((): void => {
+                                                router.get('spy', [GameController, 'spyTerritory']).use([middleware.isForeignTerritoryPlayer(), middleware.isValidSeason()]);
+                                            })
+                                            .prefix(':territoryCode')
+                                            .use([middleware.gameTerritory()]);
                                     })
                                     .prefix('actions');
                             })

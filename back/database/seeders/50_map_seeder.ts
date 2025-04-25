@@ -34,6 +34,15 @@ export default class extends BaseSeeder {
                     name: map.name,
                     createdById: createdBy.id,
                     neutralFlagId: flag.id,
+                    wildInfantryCostFactor: 0.01,
+                    wildInfantryDefenseFactor: 0.02,
+                    wildLandingDefenseFactor: 0.25,
+                    baseInfantryCost: 0.01,
+                    baseShipCost: 0.000002,
+                    financePlayerCostFactor: 0.9,
+                    financeWildTerritoryCostFactor: 0.9,
+                    subversionCostFactor: 0.9,
+                    financeWildTerritoryEnforcementFactor: 2,
                 });
                 console.log(`Map ${map.name} created`);
             }

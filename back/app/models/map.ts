@@ -27,7 +27,34 @@ export default class Map extends BaseModel {
     declare mainSeason: number;
 
     @column()
+    declare wildInfantryCostFactor: number;
+
+    @column()
+    declare wildInfantryDefenseFactor: number;
+
+    @column()
+    declare wildLandingDefenseFactor: number;
+
+    @column()
+    declare baseInfantryCost: number;
+
+    @column()
+    declare baseShipCost: number;
+
+    @column()
     declare spyCost: number;
+
+    @column()
+    declare financePlayerCostFactor: number;
+
+    @column()
+    declare financeWildTerritoryCostFactor: number;
+
+    @column()
+    declare financeWildTerritoryEnforcementFactor: number;
+
+    @column()
+    declare subversionCostFactor: number;
 
     @belongsTo((): typeof File => File, {
         foreignKey: 'neutralFlagId',
