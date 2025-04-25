@@ -21,7 +21,6 @@
 	import Invite from '../icons/Invite.svelte';
 	import Loader from '../shared/Loader.svelte';
 	import Ready from '../room/Ready.svelte';
-	import { profile } from '../../stores/profileStore';
 	import PlayableCountriesInfo from '../room/PlayableCountriesInfo.svelte';
 
 	export let roomId: string;
@@ -43,8 +42,6 @@
 
 	let maps: SerializedMap[];
 	let heartbeat: NodeJS.Timeout;
-
-	const checkedProfile = $profile!;
 
 	async function fetchRoomData(): Promise<void> {
 		try {
@@ -91,7 +88,6 @@
 
 	onDestroy(async (): Promise<void> => {
 		await unloadCleanup();
-		await axios.delete(`/api/room/${roomId}/leave`);
 	});
 
 	$: if (roomId) {
