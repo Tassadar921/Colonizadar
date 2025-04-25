@@ -26,6 +26,9 @@ export default class Map extends BaseModel {
     @column()
     declare mainSeason: number;
 
+    @column()
+    declare spyCost: number;
+
     @belongsTo((): typeof File => File, {
         foreignKey: 'neutralFlagId',
     })

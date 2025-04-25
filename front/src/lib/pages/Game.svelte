@@ -20,7 +20,7 @@
 		try {
 			const { data: gameData } = await axios.get(`/api/game/${gameId}`);
 			game = gameData.game;
-			myPlayer = game.players.filter((player: SerializedRoomPlayer) => player.user?.id === $profile!.id)[0];
+			myPlayer = game.players.find((player: SerializedRoomPlayer) => player.user?.id === $profile!.id);
 		} catch (error: any) {
 			showToast(error.response.data.error, 'error');
 			navigate('/play');
@@ -46,7 +46,7 @@
 <Title title={game?.name} />
 
 {#if game}
-	<p>{$t('play.game.gold')}: {myPlayer?.gold}</p>
+	<p>{$t('play.game.gold')}: {formatSeasonFromNumber((myPlayer?.gold ? myPlayer.gold : 0) * 1000)}</p>
 	<p>{$t('play.game.year')}: {game.year}</p>
 	<p>{$t('play.game.season')}: {$t(`play.game.${formatSeasonFromNumber(game.season)}`)}</p>
 {/if}

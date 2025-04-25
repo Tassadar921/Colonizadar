@@ -10,6 +10,7 @@ export default class extends BaseSchema {
             table.specificType('front_id', 'serial').notNullable();
             table.string('name', 255).nullable();
             table.integer('main_season').notNullable().defaultTo(1);
+            table.integer('spy_cost').notNullable().defaultTo(200);
             table.uuid('neutral_flag_id').notNullable().references('id').inTable('files').onDelete('CASCADE');
             table.uuid('created_by_id').notNullable().references('id').inTable('users').onDelete('CASCADE');
             table.timestamp('created_at');
