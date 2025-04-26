@@ -2,7 +2,7 @@ import { HttpContext } from '@adonisjs/core/http';
 import RoomPlayer from '#models/room_player';
 import { setReadyValidator } from '#validators/room_player';
 import transmit from '@adonisjs/transmit/services/main';
-import { financePlayerValidator, financeWildTerritoryValidator } from '#validators/game';
+import { financePlayerValidator, financeWildTerritoryValidator, spyPlayerValidator } from '#validators/game';
 
 export default class GameController {
     public async get({ response, user, language, game }: HttpContext): Promise<void> {
@@ -34,14 +34,31 @@ export default class GameController {
     }
 
     public async spyTerritory({ response, user, player, game, gameTerritory, language }: HttpContext): Promise<void> {
-        if (player.gold < game.map.spyCost) {
+        if (player.gold < game.map.spyTerritoryCost) {
             return response.forbidden({ error: 'Not enough gold' });
         }
 
-        player.gold -= game.map.spyCost;
+        player.gold -= game.map.spyTerritoryCost;
         await player.save();
 
         return response.send(gameTerritory.apiSerialize(language, user, true));
+    }
+
+    public async spyPlayer({ request, response, user, player, game, language }: HttpContext): Promise<void> {
+        const { playerId } = await spyPlayerValidator.validate(request.params());
+        if (player.gold < game.map.spyPlayerCost) {
+            return response.forbidden({ error: 'Not enough gold' });
+        }
+
+        const targetPlayer: RoomPlayer | undefined = game.room.players.find((player: RoomPlayer): boolean => player.frontId === playerId);
+        if (!targetPlayer) {
+            return response.notFound({ error: 'Target player not found' });
+        }
+
+        player.gold -= game.map.spyPlayerCost;
+        await player.save();
+
+        return response.send(targetPlayer.apiSerialize(language, user, true));
     }
 
     public async financePlayer({ request, response, player, game }: HttpContext): Promise<void> {
@@ -53,7 +70,7 @@ export default class GameController {
 
         const targetPlayer: RoomPlayer | undefined = game.room.players.find((player: RoomPlayer): boolean => player.frontId === playerId);
         if (!targetPlayer) {
-            return response.notFound({ error: 'Player not found' });
+            return response.notFound({ error: 'Target player not found' });
         }
 
         player.gold -= amount;

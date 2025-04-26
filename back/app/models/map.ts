@@ -42,7 +42,10 @@ export default class Map extends BaseModel {
     declare baseShipCost: number;
 
     @column()
-    declare spyCost: number;
+    declare spyTerritoryCost: number;
+
+    @column()
+    declare spyPlayerCost: number;
 
     @column()
     declare financePlayerCostFactor: number;

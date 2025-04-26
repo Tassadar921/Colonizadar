@@ -15,7 +15,8 @@ export default class extends BaseSchema {
             table.decimal('wild_landing_defense_factor').notNullable();
             table.decimal('base_infantry_cost').notNullable();
             table.decimal('base_ship_cost').notNullable();
-            table.integer('spy_cost').notNullable().defaultTo(200);
+            table.integer('spy_territory_cost').notNullable();
+            table.integer('spy_player_cost').notNullable();
             table.decimal('finance_player_cost_factor').notNullable();
             table.decimal('finance_wild_territory_cost_factor').notNullable();
             table.decimal('finance_wild_territory_enforcement_factor').notNullable();
