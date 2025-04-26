@@ -39,6 +39,8 @@ export default class extends BaseSeeder {
                     wildLandingDefenseFactor: 0.25,
                     baseInfantryCost: 0.01,
                     baseShipCost: 0.000002,
+                    spyTerritoryCost: 200,
+                    spyPlayerCost: 500,
                     financePlayerCostFactor: 0.9,
                     financeWildTerritoryCostFactor: 0.9,
                     subversionCostFactor: 0.9,
