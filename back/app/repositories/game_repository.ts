@@ -53,14 +53,14 @@ export default class GameRepository extends BaseRepository<typeof Game> {
                 if (territory.defaultBelongsToId) {
                     owner = room.players.find((player: RoomPlayer): boolean => player.countryId === territory.defaultBelongsToId);
                 }
-                rollTerritoryPower(territory, rollTerritoryValue(territory));
+                const value: number = rollTerritoryValue(territory);
                 return await GameTerritory.create({
                     territoryId: territory.id,
                     gameId: game.id,
                     ownerId: owner?.id,
-                    power: territory.defaultPower ?? 1000,
+                    power: territory.defaultPower ?? rollTerritoryPower(territory, value),
                     ships: territory.defaultShips,
-                    value: rollTerritoryValue(territory),
+                    value,
                 });
             }),
             ...room.players.map(async (player: RoomPlayer): Promise<RoomPlayer> => {
