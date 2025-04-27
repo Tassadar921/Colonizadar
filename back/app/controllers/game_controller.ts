@@ -2,7 +2,11 @@ import { HttpContext } from '@adonisjs/core/http';
 import RoomPlayer from '#models/room_player';
 import { setReadyValidator } from '#validators/room_player';
 import transmit from '@adonisjs/transmit/services/main';
-import { financePlayerValidator, financeWildTerritoryValidator, spyPlayerValidator } from '#validators/game';
+import {
+    financePlayerValidator,
+    financeWildTerritoryValidator,
+    spyPlayerValidator,
+} from '#validators/game';
 
 export default class GameController {
     public async get({ response, user, language, game }: HttpContext): Promise<void> {
@@ -92,9 +96,23 @@ export default class GameController {
         player.gold -= amount;
         await player.save();
 
-        gameTerritory.power += Math.ceil((amount * 1000 * game.map.financeWildTerritoryEnforcementFactor * game.map.financeWildTerritoryCostFactor) / (game.map.wildInfantryCostFactor * 1000));
+        gameTerritory.power += Math.floor((amount * 1000 * game.map.financeWildTerritoryEnforcementFactor * game.map.financeWildTerritoryCostFactor) / (game.map.wildInfantryCostFactor * 1000));
         await gameTerritory.save();
 
-        return response.send({ message: 'Transaction done' });
+        return response.send({ message: 'Done' });
+    }
+
+    public async subverse({ response, player, gameTerritory, game }: HttpContext): Promise<void> {
+        if (player.gold < 1) {
+            return response.forbidden({ error: 'Not enough gold' });
+        }
+
+        player.gold--;
+        await player.save();
+
+        gameTerritory.power -= Math.ceil((1000 * game.map.wildTerritorySubversionFactor * game.map.financeWildTerritoryCostFactor) / (game.map.wildInfantryCostFactor * 1000));
+        await gameTerritory.save();
+
+        return response.send({ message: 'Done' });
     }
 }

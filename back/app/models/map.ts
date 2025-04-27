@@ -27,6 +27,9 @@ export default class Map extends BaseModel {
     declare mainSeason: number;
 
     @column()
+    declare startingPlayersGold: number;
+
+    @column()
     declare wildInfantryCostFactor: number;
 
     @column()
@@ -55,6 +58,9 @@ export default class Map extends BaseModel {
 
     @column()
     declare financeWildTerritoryEnforcementFactor: number;
+
+    @column()
+    declare wildTerritorySubversionFactor: number;
 
     @column()
     declare subversionCostFactor: number;

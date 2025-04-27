@@ -25,6 +25,9 @@ export default class GameTerritory extends BaseModel {
     declare value: number;
 
     @column()
+    declare isFortified: boolean;
+
+    @column()
     declare ownerId: string;
 
     @belongsTo((): typeof RoomPlayer => RoomPlayer, {

@@ -10,7 +10,8 @@ export default class extends BaseSchema {
             table.specificType('front_id', 'serial').notNullable();
             table.integer('power').notNullable();
             table.integer('ships').nullable();
-            table.integer('value').notNullable().defaultTo(0);
+            table.integer('value').notNullable();
+            table.boolean('is_fortified').notNullable();
             table.uuid('owner_id').nullable().references('id').inTable('room_players').onDelete('CASCADE');
             table.uuid('territory_id').notNullable().references('id').inTable('territories').onDelete('CASCADE');
             table.uuid('game_id').notNullable().references('id').inTable('games').onDelete('CASCADE');
