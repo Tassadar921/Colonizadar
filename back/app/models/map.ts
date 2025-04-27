@@ -65,6 +65,9 @@ export default class Map extends BaseModel {
     @column()
     declare subversionCostFactor: number;
 
+    @column()
+    declare fortifyCost: number;
+
     @belongsTo((): typeof File => File, {
         foreignKey: 'neutralFlagId',
     })

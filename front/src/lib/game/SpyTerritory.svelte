@@ -28,7 +28,7 @@
 		}
 	};
 
-	$: isButtonDisabled = !!selectedTerritory.power;
+	$: isButtonDisabled = !!selectedTerritory.infantry;
 </script>
 
 <button class="{isButtonDisabled ? 'cursor-disabled' : 'hover:bg-green-600'} bg-green-500 transition-colors duration-300 px-3 rounded-xl" on:click={handleSpyTerritory} disabled={isButtonDisabled}>

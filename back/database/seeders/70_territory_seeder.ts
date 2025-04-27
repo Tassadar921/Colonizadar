@@ -24,7 +24,7 @@ export default class extends BaseSeeder {
             return;
         }
 
-        const territories: { code: string; french: string; english: string; isCoastal: boolean; map: Map; defaultBelongsTo?: PlayableCountry; isFactory?: boolean; power?: number; ships?: number }[] =
+        const territories: { code: string; french: string; english: string; isCoastal: boolean; map: Map; defaultBelongsTo?: PlayableCountry; isFactory?: boolean; infantry?: number; ships?: number }[] =
             [
                 // ********** North America **********
                 { code: 'AL', french: 'Alaska', english: 'Alaska', isCoastal: true, map: worldMap },
@@ -34,10 +34,10 @@ export default class extends BaseSeeder {
                 { code: 'NX', french: 'Ontario du nord', english: 'Northern Ontario', isCoastal: true, map: worldMap },
                 { code: 'ON', french: 'Ontario du sud', english: 'Southern Ontario', isCoastal: false, map: worldMap },
                 { code: 'QC', french: 'Québec', english: 'Quebec', isCoastal: true, map: worldMap },
-                { code: 'FL', french: 'Floride', english: 'Florida', isCoastal: true, map: worldMap, defaultBelongsTo: worldMapPlayableCountries.us, isFactory: true, power: 110000, ships: 5 },
-                { code: 'TX', french: 'Texas', english: 'Texas', isCoastal: true, map: worldMap, defaultBelongsTo: worldMapPlayableCountries.us, isFactory: true, power: 25000, ships: 55 },
-                { code: 'CA', french: 'Californie', english: 'California', isCoastal: true, map: worldMap, defaultBelongsTo: worldMapPlayableCountries.us, power: 65000, ships: 15 },
-                { code: 'DA', french: 'Dakota', english: 'Dakota', isCoastal: false, map: worldMap, defaultBelongsTo: worldMapPlayableCountries.us, power: 55000 },
+                { code: 'FL', french: 'Floride', english: 'Florida', isCoastal: true, map: worldMap, defaultBelongsTo: worldMapPlayableCountries.us, isFactory: true, infantry: 110000, ships: 5 },
+                { code: 'TX', french: 'Texas', english: 'Texas', isCoastal: true, map: worldMap, defaultBelongsTo: worldMapPlayableCountries.us, isFactory: true, infantry: 25000, ships: 55 },
+                { code: 'CA', french: 'Californie', english: 'California', isCoastal: true, map: worldMap, defaultBelongsTo: worldMapPlayableCountries.us, infantry: 65000, ships: 15 },
+                { code: 'DA', french: 'Dakota', english: 'Dakota', isCoastal: false, map: worldMap, defaultBelongsTo: worldMapPlayableCountries.us, infantry: 55000 },
                 { code: 'MX', french: 'Mexique', english: 'Mexico', isCoastal: true, map: worldMap },
                 { code: 'GL', french: 'Groenland', english: 'Greenland', isCoastal: true, map: worldMap },
                 // ********** South America **********
@@ -68,10 +68,10 @@ export default class extends BaseSeeder {
                 // ********** Europe **********
                 { code: 'AC', french: 'Açores', english: 'Azores', isCoastal: true, map: worldMap },
                 { code: 'IS', french: 'Islande', english: 'Iceland', isCoastal: true, map: worldMap },
-                { code: 'SN', french: 'Écosse', english: 'Scotland', isCoastal: true, map: worldMap, defaultBelongsTo: worldMapPlayableCountries.gb, isFactory: true, power: 60000, ships: 85 },
-                { code: 'IL', french: 'Irlande', english: 'Ireland', isCoastal: true, map: worldMap, defaultBelongsTo: worldMapPlayableCountries.gb, isFactory: true, power: 120000, ships: 30 },
-                { code: 'GB', french: 'Grande-Bretagne', english: 'Great Britain', isCoastal: true, map: worldMap, defaultBelongsTo: worldMapPlayableCountries.gb, power: 45000, ships: 10 },
-                { code: 'NF', french: 'Nord de la France', english: 'Northern France', isCoastal: true, map: worldMap, defaultBelongsTo: worldMapPlayableCountries.fr, power: 110000, ships: 15 },
+                { code: 'SN', french: 'Écosse', english: 'Scotland', isCoastal: true, map: worldMap, defaultBelongsTo: worldMapPlayableCountries.gb, isFactory: true, infantry: 60000, ships: 85 },
+                { code: 'IL', french: 'Irlande', english: 'Ireland', isCoastal: true, map: worldMap, defaultBelongsTo: worldMapPlayableCountries.gb, isFactory: true, infantry: 120000, ships: 30 },
+                { code: 'GB', french: 'Grande-Bretagne', english: 'Great Britain', isCoastal: true, map: worldMap, defaultBelongsTo: worldMapPlayableCountries.gb, infantry: 45000, ships: 10 },
+                { code: 'NF', french: 'Nord de la France', english: 'Northern France', isCoastal: true, map: worldMap, defaultBelongsTo: worldMapPlayableCountries.fr, infantry: 110000, ships: 15 },
                 {
                     code: 'MF',
                     french: 'France centrale',
@@ -80,7 +80,7 @@ export default class extends BaseSeeder {
                     map: worldMap,
                     defaultBelongsTo: worldMapPlayableCountries.fr,
                     isFactory: true,
-                    power: 110000,
+                    infantry: 110000,
                     ships: 55,
                 },
                 {
@@ -91,7 +91,7 @@ export default class extends BaseSeeder {
                     map: worldMap,
                     defaultBelongsTo: worldMapPlayableCountries.fr,
                     isFactory: true,
-                    power: 75000,
+                    infantry: 75000,
                     ships: 25,
                 },
                 { code: 'ES', french: 'Espagne', english: 'Spain', isCoastal: true, map: worldMap },
@@ -101,9 +101,9 @@ export default class extends BaseSeeder {
                 { code: 'IT', french: 'Italie', english: 'Italia', isCoastal: true, map: worldMap },
                 { code: 'SL', french: 'Sicile', english: 'Sicily', isCoastal: true, map: worldMap },
                 { code: 'NL', french: 'Pays-Bas', english: 'Netherlands', isCoastal: true, map: worldMap },
-                { code: 'RH', french: 'Rhénanie', english: 'Rhine', isCoastal: false, map: worldMap, defaultBelongsTo: worldMapPlayableCountries.de, isFactory: true, power: 110000 },
-                { code: 'SX', french: 'Saxe', english: 'Saxony', isCoastal: true, map: worldMap, defaultBelongsTo: worldMapPlayableCountries.de, isFactory: true, power: 120000, ships: 10 },
-                { code: 'PS', french: 'Prusse', english: 'Prussia', isCoastal: true, map: worldMap, defaultBelongsTo: worldMapPlayableCountries.de, power: 65000, ships: 5 },
+                { code: 'RH', french: 'Rhénanie', english: 'Rhine', isCoastal: false, map: worldMap, defaultBelongsTo: worldMapPlayableCountries.de, isFactory: true, infantry: 110000 },
+                { code: 'SX', french: 'Saxe', english: 'Saxony', isCoastal: true, map: worldMap, defaultBelongsTo: worldMapPlayableCountries.de, isFactory: true, infantry: 120000, ships: 10 },
+                { code: 'PS', french: 'Prusse', english: 'Prussia', isCoastal: true, map: worldMap, defaultBelongsTo: worldMapPlayableCountries.de, infantry: 65000, ships: 5 },
                 { code: 'AT', french: 'Autriche', english: 'Austria', isCoastal: true, map: worldMap },
                 { code: 'RO', french: 'Roumanie', english: 'Romania', isCoastal: true, map: worldMap },
                 { code: 'BG', french: 'Bulgarie', english: 'Bulgaria', isCoastal: true, map: worldMap },
@@ -112,7 +112,7 @@ export default class extends BaseSeeder {
                 { code: 'NO', french: 'Norvège', english: 'Norway', isCoastal: true, map: worldMap },
                 { code: 'SE', french: 'Suède', english: 'Sweden', isCoastal: true, map: worldMap },
                 { code: 'FI', french: 'Finlande', english: 'Finland', isCoastal: true, map: worldMap },
-                { code: 'UR', french: 'Oural', english: 'Ural', isCoastal: true, map: worldMap, defaultBelongsTo: worldMapPlayableCountries.ru, power: 170000, ships: 15 },
+                { code: 'UR', french: 'Oural', english: 'Ural', isCoastal: true, map: worldMap, defaultBelongsTo: worldMapPlayableCountries.ru, infantry: 170000, ships: 15 },
                 // ********** Africa **********
                 { code: 'CN', french: 'Canaries', english: 'Canaries', isCoastal: true, map: worldMap },
                 { code: 'CV', french: 'Cap Vert', english: 'Cape Verde', isCoastal: true, map: worldMap },
@@ -165,11 +165,11 @@ export default class extends BaseSeeder {
                     map: worldMap,
                     defaultBelongsTo: worldMapPlayableCountries.ru,
                     isFactory: true,
-                    power: 150000,
+                    infantry: 150000,
                     ships: 25,
                 },
-                { code: 'CS', french: 'Sibérie centrale', english: 'Central Siberia', isCoastal: false, map: worldMap, defaultBelongsTo: worldMapPlayableCountries.ru, power: 70000 },
-                { code: 'SI', french: 'Sibérie orientale', english: 'Eastern Siberia', isCoastal: true, map: worldMap, defaultBelongsTo: worldMapPlayableCountries.ru, power: 75000, ships: 35 },
+                { code: 'CS', french: 'Sibérie centrale', english: 'Central Siberia', isCoastal: false, map: worldMap, defaultBelongsTo: worldMapPlayableCountries.ru, infantry: 70000 },
+                { code: 'SI', french: 'Sibérie orientale', english: 'Eastern Siberia', isCoastal: true, map: worldMap, defaultBelongsTo: worldMapPlayableCountries.ru, infantry: 75000, ships: 35 },
                 { code: 'IR', french: 'Perse', english: 'Persia', isCoastal: true, map: worldMap },
                 { code: 'AF', french: 'Afghanistan', english: 'Afghanistan', isCoastal: false, map: worldMap },
                 { code: 'WP', french: 'Pakistan occidental', english: 'Western Pakistan', isCoastal: true, map: worldMap },
@@ -199,9 +199,9 @@ export default class extends BaseSeeder {
                 { code: 'ZH', french: 'Zhili', english: 'Zhili', isCoastal: true, map: worldMap },
                 { code: 'TW', french: 'Taiwan', english: 'Taiwan', isCoastal: true, map: worldMap },
                 { code: 'KI', french: 'Îles Komandorski', english: 'Komandorski Islands', isCoastal: true, map: worldMap },
-                { code: 'HK', french: 'Hokkaido', english: 'Hokkaido', isCoastal: true, map: worldMap, defaultBelongsTo: worldMapPlayableCountries.jp, power: 130000, ships: 5 },
-                { code: 'HS', french: 'Honshu', english: 'Honshu', isCoastal: true, map: worldMap, defaultBelongsTo: worldMapPlayableCountries.jp, isFactory: true, power: 100000, ships: 50 },
-                { code: 'KU', french: 'Kyushu', english: 'Kyushu', isCoastal: true, map: worldMap, defaultBelongsTo: worldMapPlayableCountries.jp, isFactory: true, power: 70000, ships: 40 },
+                { code: 'HK', french: 'Hokkaido', english: 'Hokkaido', isCoastal: true, map: worldMap, defaultBelongsTo: worldMapPlayableCountries.jp, infantry: 130000, ships: 5 },
+                { code: 'HS', french: 'Honshu', english: 'Honshu', isCoastal: true, map: worldMap, defaultBelongsTo: worldMapPlayableCountries.jp, isFactory: true, infantry: 100000, ships: 50 },
+                { code: 'KU', french: 'Kyushu', english: 'Kyushu', isCoastal: true, map: worldMap, defaultBelongsTo: worldMapPlayableCountries.jp, isFactory: true, infantry: 70000, ships: 40 },
                 // ********** Oceania **********
                 { code: 'PH', french: 'Philippines', english: 'Philippines', isCoastal: true, map: worldMap },
                 { code: 'SM', french: 'Sumatra', english: 'Sumatra', isCoastal: true, map: worldMap },
@@ -226,7 +226,7 @@ export default class extends BaseSeeder {
                     code: territory.code,
                     isCoastal: territory.isCoastal,
                     isFactory: territory.isFactory,
-                    defaultPower: territory.power,
+                    defaultInfantry: territory.infantry,
                     defaultShips: territory.isCoastal ? territory.ships : 0,
                     mapId: territory.map.id,
                     defaultBelongsToId: territory.defaultBelongsTo?.id,

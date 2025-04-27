@@ -16,7 +16,7 @@ export default class GameTerritory extends BaseModel {
     declare frontId: number;
 
     @column()
-    declare power: number;
+    declare infantry: number;
 
     @column()
     declare ships: number;
@@ -56,7 +56,7 @@ export default class GameTerritory extends BaseModel {
     public apiSerialize(language: Language, user: User, isSpied: boolean = false): SerializedGameTerritory {
         return {
             id: this.frontId,
-            power: this.owner?.userId === user.id || isSpied ? this.power : undefined,
+            infantry: this.owner?.userId === user.id || isSpied ? this.infantry : undefined,
             ships: this.owner?.userId === user.id || isSpied ? this.ships : undefined,
             value: this.value,
             owner: this.owner?.apiSerialize(language, user),

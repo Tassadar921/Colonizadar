@@ -39,7 +39,7 @@ export default class extends BaseSeeder {
                     wildInfantryCostFactor: 0.01,
                     wildInfantryDefenseFactor: 0.02,
                     wildLandingDefenseFactor: 0.25,
-                    baseInfantryCost: 0.01,
+                    baseInfantryCost: 100,
                     baseShipCost: 0.000002,
                     spyTerritoryCost: 200,
                     spyPlayerCost: 500,
@@ -48,6 +48,7 @@ export default class extends BaseSeeder {
                     subversionCostFactor: 0.9,
                     financeWildTerritoryEnforcementFactor: 2,
                     wildTerritorySubversionFactor: 0.5,
+                    fortifyCost: 2000,
                 });
                 console.log(`Map ${map.name} created`);
             }

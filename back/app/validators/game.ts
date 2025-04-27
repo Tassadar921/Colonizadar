@@ -30,3 +30,9 @@ export const financeWildTerritoryValidator = vine.compile(
         amount: vine.number().min(1),
     })
 );
+
+export const buyInfantryValidator = vine.compile(
+    vine.object({
+        amount: vine.number().min(1),
+    })
+);

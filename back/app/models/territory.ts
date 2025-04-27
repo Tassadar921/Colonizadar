@@ -30,7 +30,7 @@ export default class Territory extends BaseModel {
     declare mapId: string;
 
     @column()
-    declare defaultPower: number;
+    declare defaultInfantry: number;
 
     @column()
     declare defaultShips: number;

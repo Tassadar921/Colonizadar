@@ -8,7 +8,7 @@ export default class extends BaseSchema {
         this.schema.createTable(this.tableName, (table: Knex.CreateTableBuilder): void => {
             table.uuid('id').primary().defaultTo(this.raw('uuid_generate_v4()'));
             table.specificType('front_id', 'serial').notNullable();
-            table.integer('power').notNullable();
+            table.integer('infantry').notNullable();
             table.integer('ships').nullable();
             table.integer('value').notNullable();
             table.boolean('is_fortified').notNullable();

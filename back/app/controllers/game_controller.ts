@@ -3,6 +3,7 @@ import RoomPlayer from '#models/room_player';
 import { setReadyValidator } from '#validators/room_player';
 import transmit from '@adonisjs/transmit/services/main';
 import {
+    buyInfantryValidator,
     financePlayerValidator,
     financeWildTerritoryValidator,
     spyPlayerValidator,
@@ -96,7 +97,7 @@ export default class GameController {
         player.gold -= amount;
         await player.save();
 
-        gameTerritory.power += Math.floor((amount * 1000 * game.map.financeWildTerritoryEnforcementFactor * game.map.financeWildTerritoryCostFactor) / (game.map.wildInfantryCostFactor * 1000));
+        gameTerritory.infantry += Math.floor((amount * 1000 * game.map.financeWildTerritoryEnforcementFactor * game.map.financeWildTerritoryCostFactor) / (game.map.wildInfantryCostFactor * 1000));
         await gameTerritory.save();
 
         return response.send({ message: 'Done' });
@@ -110,9 +111,45 @@ export default class GameController {
         player.gold--;
         await player.save();
 
-        gameTerritory.power -= Math.ceil((1000 * game.map.wildTerritorySubversionFactor * game.map.financeWildTerritoryCostFactor) / (game.map.wildInfantryCostFactor * 1000));
+        gameTerritory.infantry -= Math.ceil((1000 * game.map.wildTerritorySubversionFactor * game.map.financeWildTerritoryCostFactor) / (game.map.wildInfantryCostFactor * 1000));
         await gameTerritory.save();
 
         return response.send({ message: 'Done' });
+    }
+
+    public async fortify({ response, player, gameTerritory, game }: HttpContext): Promise<void> {
+        if (player.gold < game.map.fortifyCost) {
+            return response.forbidden({ error: 'Not enough gold' });
+        }
+
+        player.gold -= game.map.fortifyCost;
+        await player.save();
+
+        gameTerritory.isFortified = true;
+        await gameTerritory.save();
+
+        return response.send({ message: 'Done' });
+    }
+
+    public async buyInfantry({ request, response, user, player, gameTerritory, game, language }: HttpContext): Promise<void> {
+        const { amount } = await request.validateUsing(buyInfantryValidator);
+
+        if (!gameTerritory.territory.isFactory) {
+            return response.forbidden({ error: 'This territory is not a factory' });
+        }
+
+        const cost: number = Math.floor(game.map.baseInfantryCost * player.country.infantryPriceFactor * amount / 1000) * 1000;
+
+        if (player.gold < cost) {
+            throw new Error('Not enough gold');
+        }
+
+        player.gold -= cost;
+        await player.save();
+
+        gameTerritory.infantry += amount;
+        await gameTerritory.save();
+
+        return response.send(gameTerritory.apiSerialize(language, user));
     }
 }

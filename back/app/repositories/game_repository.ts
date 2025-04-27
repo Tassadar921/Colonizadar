@@ -58,7 +58,7 @@ export default class GameRepository extends BaseRepository<typeof Game> {
                     territoryId: territory.id,
                     gameId: game.id,
                     ownerId: owner?.id,
-                    power: territory.defaultPower ?? rollTerritoryPower(territory, value),
+                    infantry: territory.defaultInfantry ?? rollTerritoryPower(territory, value),
                     ships: territory.defaultShips,
                     isFortified: territory.isFactory,
                     value,
@@ -66,6 +66,7 @@ export default class GameRepository extends BaseRepository<typeof Game> {
             }),
             ...room.players.map(async (player: RoomPlayer): Promise<RoomPlayer> => {
                 player.isReady = false;
+                player.gold = game.map.startingPlayersGold;
                 return await player.save();
             }),
         ]);
