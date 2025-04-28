@@ -44,7 +44,7 @@ export const middleware = router.named({
     game: () => import('#middleware/game_middleware'),
     isGamePlayer: () => import('#middleware/is_game_player_middleware'),
     gameTerritory: () => import('#middleware/game_territory_middleware'),
-    isOwnedTerritoryPlayer: () => import('#middleware/is_owned_territory_middleware'),
-    isForeignTerritoryPlayer: () => import('#middleware/is_foreign_territory_middleware'),
+    isOwnedTerritory: () => import('#middleware/is_owned_territory_middleware'),
+    isForeignTerritory: () => import('#middleware/is_foreign_territory_middleware'),
     isValidSeason: () => import('#middleware/is_valid_season_middleware'),
 });

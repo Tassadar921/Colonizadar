@@ -12,7 +12,13 @@ export const gameTerritoryMiddlewareValidator = vine.compile(
     })
 );
 
-export const spyPlayerValidator = vine.compile(
+export const spyPlayerParamsValidator = vine.compile(
+    vine.object({
+        playerId: vine.number().positive(),
+    })
+);
+
+export const financePlayerParamsValidator = vine.compile(
     vine.object({
         playerId: vine.number().positive(),
     })
@@ -21,7 +27,6 @@ export const spyPlayerValidator = vine.compile(
 export const financePlayerValidator = vine.compile(
     vine.object({
         amount: vine.number().min(1),
-        playerId: vine.number().positive(),
     })
 );
 

@@ -48,6 +48,9 @@ export default class Map extends BaseModel {
     declare spyTerritoryCost: number;
 
     @column()
+    declare spyFortifiedTerritoryCost: number;
+
+    @column()
     declare spyPlayerCost: number;
 
     @column()

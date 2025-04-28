@@ -124,16 +124,35 @@ router
                         router
                             .group((): void => {
                                 router.get('/', [GameController, 'get']);
-                                router.get('/player/ready', [GameController, 'ready']);
+                                router.patch('/ready', [GameController, 'ready']);
 
                                 router
                                     .group((): void => {
                                         router
                                             .group((): void => {
-                                                router.get('spy', [GameController, 'spyTerritory']).use([middleware.isForeignTerritoryPlayer(), middleware.isValidSeason()]);
+                                                router
+                                                    .group((): void => {
+                                                        router.get('spy', [GameController, 'spyTerritory']).use([middleware.isForeignTerritory()]);
+                                                        router.patch('finance', [GameController, 'financeWildTerritory']).use([middleware.isForeignTerritory()]);
+                                                        router.patch('subverse', [GameController, 'subverse']).use([middleware.isForeignTerritory()]);
+                                                        router.patch('fortify', [GameController, 'fortify']).use([middleware.isOwnedTerritory()]);
+                                                        router.patch('buy/infantry', [GameController, 'buyInfantry']).use([middleware.isOwnedTerritory()]);
+                                                    })
+                                                    .use([middleware.isValidSeason()]);
                                             })
-                                            .prefix(':territoryCode')
+                                            .prefix('territory/:territoryCode')
                                             .use([middleware.gameTerritory()]);
+
+                                        router
+                                            .group((): void => {
+                                                router
+                                                    .group((): void => {
+                                                        router.get('spy', [GameController, 'spyPlayer']);
+                                                        router.patch('finance', [GameController, 'financePlayer']);
+                                                    })
+                                                    .use([middleware.isValidSeason()]);
+                                            })
+                                            .prefix('player/:playerId');
                                     })
                                     .prefix('actions');
                             })

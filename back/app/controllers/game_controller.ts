@@ -3,10 +3,10 @@ import RoomPlayer from '#models/room_player';
 import { setReadyValidator } from '#validators/room_player';
 import transmit from '@adonisjs/transmit/services/main';
 import {
-    buyInfantryValidator,
+    buyInfantryValidator, financePlayerParamsValidator,
     financePlayerValidator,
     financeWildTerritoryValidator,
-    spyPlayerValidator,
+    spyPlayerParamsValidator,
 } from '#validators/game';
 
 export default class GameController {
@@ -39,19 +39,22 @@ export default class GameController {
     }
 
     public async spyTerritory({ response, user, player, game, gameTerritory, language }: HttpContext): Promise<void> {
-        if (player.gold < game.map.spyTerritoryCost) {
+        const cost: number = gameTerritory.isFortified ? game.map.spyFortifiedTerritoryCost : game.map.spyTerritoryCost;
+        if (player.gold < cost) {
             return response.forbidden({ error: 'Not enough gold' });
         }
 
-        player.gold -= game.map.spyTerritoryCost;
+        player.gold -= cost;
         await player.save();
 
         return response.send(gameTerritory.apiSerialize(language, user, true));
     }
 
     public async spyPlayer({ request, response, user, player, game, language }: HttpContext): Promise<void> {
-        const { playerId } = await spyPlayerValidator.validate(request.params());
-        if (player.gold < game.map.spyPlayerCost) {
+        const { playerId } = await spyPlayerParamsValidator.validate(request.params());
+        if (player.frontId === playerId) {
+            return response.forbidden({ error: "You can't spy yourself" });
+        } else if (player.gold < game.map.spyPlayerCost) {
             return response.forbidden({ error: 'Not enough gold' });
         }
 
@@ -67,9 +70,12 @@ export default class GameController {
     }
 
     public async financePlayer({ request, response, player, game }: HttpContext): Promise<void> {
-        const { amount, playerId } = await request.validateUsing(financePlayerValidator);
+        const { playerId } = await financePlayerParamsValidator.validate(request.params());
+        const { amount } = await request.validateUsing(financePlayerValidator);
 
-        if (player.gold < amount) {
+        if (player.frontId === playerId) {
+            return response.forbidden({ error: "You can't finance yourself" });
+        } if (player.gold < amount) {
             return response.forbidden({ error: 'Not enough gold' });
         }
 
@@ -97,7 +103,7 @@ export default class GameController {
         player.gold -= amount;
         await player.save();
 
-        gameTerritory.infantry += Math.floor((amount * 1000 * game.map.financeWildTerritoryEnforcementFactor * game.map.financeWildTerritoryCostFactor) / (game.map.wildInfantryCostFactor * 1000));
+        gameTerritory.infantry += Math.floor((amount * game.map.financeWildTerritoryEnforcementFactor * game.map.financeWildTerritoryCostFactor) / (game.map.wildInfantryCostFactor * 1000));
         await gameTerritory.save();
 
         return response.send({ message: 'Done' });
@@ -112,6 +118,11 @@ export default class GameController {
         await player.save();
 
         gameTerritory.infantry -= Math.ceil((1000 * game.map.wildTerritorySubversionFactor * game.map.financeWildTerritoryCostFactor) / (game.map.wildInfantryCostFactor * 1000));
+        // TODO: manage the case where players subverse the same territory at the same time
+        if (gameTerritory.infantry <= 0) {
+            gameTerritory.infantry = 1000;
+            gameTerritory.ownerId = player.id;
+        }
         await gameTerritory.save();
 
         return response.send({ message: 'Done' });
@@ -138,7 +149,7 @@ export default class GameController {
             return response.forbidden({ error: 'This territory is not a factory' });
         }
 
-        const cost: number = Math.floor(game.map.baseInfantryCost * player.country.infantryPriceFactor * amount / 1000) * 1000;
+        const cost: number = Math.floor((game.map.baseInfantryCost * player.country.infantryPriceFactor * amount) / 1000) * 1000;
 
         if (player.gold < cost) {
             throw new Error('Not enough gold');
