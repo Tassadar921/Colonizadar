@@ -2,12 +2,8 @@ import { HttpContext } from '@adonisjs/core/http';
 import RoomPlayer from '#models/room_player';
 import { setReadyValidator } from '#validators/room_player';
 import transmit from '@adonisjs/transmit/services/main';
-import {
-    buyInfantryValidator, financePlayerParamsValidator,
-    financePlayerValidator,
-    financeWildTerritoryValidator,
-    spyPlayerParamsValidator,
-} from '#validators/game';
+import { buyInfantryValidator, buyShipsValidator, financePlayerParamsValidator, financePlayerValidator, financeWildTerritoryValidator, spyPlayerParamsValidator } from '#validators/game';
+import RoomStatusEnum from '#types/enum/room_status_enum';
 
 export default class GameController {
     public async get({ response, user, language, game }: HttpContext): Promise<void> {
@@ -34,6 +30,10 @@ export default class GameController {
                     break;
             }
             await game.save();
+
+            game.room.status = RoomStatusEnum.WAITING;
+            await game.room.save();
+
             transmit.broadcast(`notification/play/game/${game.frontId}/next-turn`);
         }
     }
@@ -75,7 +75,8 @@ export default class GameController {
 
         if (player.frontId === playerId) {
             return response.forbidden({ error: "You can't finance yourself" });
-        } if (player.gold < amount) {
+        }
+        if (player.gold < amount) {
             return response.forbidden({ error: 'Not enough gold' });
         }
 
@@ -159,6 +160,28 @@ export default class GameController {
         await player.save();
 
         gameTerritory.infantry += amount;
+        await gameTerritory.save();
+
+        return response.send(gameTerritory.apiSerialize(language, user));
+    }
+
+    public async buyShips({ request, response, user, player, gameTerritory, game, language }: HttpContext): Promise<void> {
+        const { amount } = await request.validateUsing(buyShipsValidator);
+
+        if (!gameTerritory.territory.isFactory) {
+            return response.forbidden({ error: 'This territory is not a factory' });
+        }
+
+        const cost: number = Math.floor((game.map.baseShipCost * player.country.shipPriceFactor * amount) / 5) * 5;
+
+        if (player.gold < cost) {
+            throw new Error('Not enough gold');
+        }
+
+        player.gold -= cost;
+        await player.save();
+
+        gameTerritory.ships += amount;
         await gameTerritory.save();
 
         return response.send(gameTerritory.apiSerialize(language, user));

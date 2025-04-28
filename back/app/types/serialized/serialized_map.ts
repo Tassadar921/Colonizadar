@@ -5,6 +5,12 @@ type SerializedMap = {
     id: number;
     name: string;
     mainSeason: number;
+    baseInfantryCost: number;
+    baseShipCost: number;
+    spyTerritoryCost: number;
+    spyFortifiedTerritoryCost: number;
+    spyPlayerCost: number;
+    financePlayerCostFactor: number;
     territories: SerializedTerritory[];
     createdBy: SerializedUser;
     createdAt?: string;

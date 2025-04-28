@@ -19,7 +19,7 @@ export default class QueryStringAuthMiddleware {
             }
 
             ctx.user = await this.userRepository.findOneByToken(decodedToken.identifier);
-            return await next();
+            await next();
         } catch (error) {
             console.error(error);
             return ctx.response.unauthorized({ error: 'Invalid or expired token' });

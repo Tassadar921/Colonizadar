@@ -35,23 +35,22 @@ export default class extends BaseSeeder {
                     createdById: createdBy.id,
                     neutralFlagId: flag.id,
                     mainSeason: 1,
-                    startingPlayersGold: 10000,
+                    startingPlayersGold: 10000000,
                     wildInfantryCostFactor: 0.01,
                     wildInfantryDefenseFactor: 0.02,
                     wildLandingDefenseFactor: 0.25,
-                    baseInfantryCost: 100,
+                    baseInfantryCost: 100000,
                     baseShipCost: 0.000002,
-                    spyTerritoryCost: 200,
-                    spyFortifiedTerritoryCost: 1000,
-                    spyPlayerCost: 500,
+                    spyTerritoryCost: 200000,
+                    spyFortifiedTerritoryCost: 1000000,
+                    spyPlayerCost: 500000,
                     financePlayerCostFactor: 0.9,
                     financeWildTerritoryCostFactor: 0.9,
                     subversionCostFactor: 0.9,
                     financeWildTerritoryEnforcementFactor: 2,
                     wildTerritorySubversionFactor: 0.5,
-                    fortifyCost: 2000,
+                    fortifyCost: 2000000,
                 });
-                console.log(`Map ${map.name} created`);
             }
         }
     }

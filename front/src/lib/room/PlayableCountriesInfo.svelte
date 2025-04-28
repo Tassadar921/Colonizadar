@@ -81,7 +81,7 @@
 								<h3 class="font-semibold">{$t('play.common.infantry')}</h3>
 								<p>{$t('play.common.attack')}: {playableCountries[currentIndex].infantryAttackFactor}</p>
 								<p>{$t('play.common.defense')}: {playableCountries[currentIndex].infantryDefenseFactor}</p>
-								<p>{$t('play.common.price')}: {formatGameNumbers(playableCountries[currentIndex].infantryPriceFactor * 1000)}</p>
+								<p>{$t('play.common.price')}: {formatGameNumbers(playableCountries[currentIndex].infantryPriceFactor)}</p>
 							</div>
 							<div>
 								<h3 class="font-semibold">{$t('play.common.landing')}</h3>
@@ -92,7 +92,7 @@
 								<h3 class="font-semibold">{$t('play.common.ships')}</h3>
 								<p>{$t('play.common.attack')}: {playableCountries[currentIndex].shipAttackFactor}</p>
 								<p>{$t('play.common.defense')}: {playableCountries[currentIndex].shipDefenseFactor}</p>
-								<p>{$t('play.common.price')}: {formatGameNumbers(playableCountries[currentIndex].shipPriceFactor * 1000)}</p>
+								<p>{$t('play.common.price')}: {formatGameNumbers(playableCountries[currentIndex].shipPriceFactor)}</p>
 							</div>
 						</div>
 					</div>
@@ -100,6 +100,4 @@
 			</div>
 		</div>
 	</div>
-{:else}
-	<p class="text-center text-gray-500 mt-8">No playable countries available.</p>
 {/if}

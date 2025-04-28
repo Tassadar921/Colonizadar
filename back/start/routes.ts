@@ -137,6 +137,7 @@ router
                                                         router.patch('subverse', [GameController, 'subverse']).use([middleware.isForeignTerritory()]);
                                                         router.patch('fortify', [GameController, 'fortify']).use([middleware.isOwnedTerritory()]);
                                                         router.patch('buy/infantry', [GameController, 'buyInfantry']).use([middleware.isOwnedTerritory()]);
+                                                        router.patch('buy/ships', [GameController, 'buyShips']).use([middleware.isOwnedTerritory()]);
                                                     })
                                                     .use([middleware.isValidSeason()]);
                                             })
@@ -154,7 +155,8 @@ router
                                             })
                                             .prefix('player/:playerId');
                                     })
-                                    .prefix('actions');
+                                    .prefix('actions')
+                                    .use([middleware.isGamePlaying()]);
                             })
                             .use([middleware.isGamePlayer()]);
                     })

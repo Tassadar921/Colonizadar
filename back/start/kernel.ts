@@ -42,6 +42,7 @@ export const middleware = router.named({
     isRoomOwner: () => import('#middleware/is_room_owner_middleware'),
     isRoomPlayer: () => import('#middleware/is_room_player_middleware'),
     game: () => import('#middleware/game_middleware'),
+    isGamePlaying: () => import('#middleware/is_game_playing_middleware'),
     isGamePlayer: () => import('#middleware/is_game_player_middleware'),
     gameTerritory: () => import('#middleware/game_territory_middleware'),
     isOwnedTerritory: () => import('#middleware/is_owned_territory_middleware'),

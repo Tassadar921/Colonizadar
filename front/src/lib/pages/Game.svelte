@@ -10,7 +10,7 @@
 	import { t } from 'svelte-i18n';
 	import type SerializedRoomPlayer from 'colonizadar-backend/app/types/serialized/serialized_room_player';
 	import { profile } from '../../stores/profileStore';
-    import {formatGameNumbers} from "../../services/stringService";
+	import { formatGameNumbers } from '../../services/stringService';
 
 	export let gameId: string;
 
@@ -47,7 +47,7 @@
 <Title title={game?.name} />
 
 {#if game}
-	<p>{$t('play.game.gold')}: {formatGameNumbers((myPlayer?.gold ? myPlayer.gold : 0) * 1000)}</p>
+	<p>{$t('play.game.gold')}: {formatGameNumbers(myPlayer?.gold ? myPlayer.gold : 0)}</p>
 	<p>{$t('play.game.year')}: {game.year}</p>
 	<p>{$t('play.game.season')}: {$t(`play.game.${formatSeasonFromNumber(game.season)}`)}</p>
 {/if}

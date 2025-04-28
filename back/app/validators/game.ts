@@ -26,18 +26,24 @@ export const financePlayerParamsValidator = vine.compile(
 
 export const financePlayerValidator = vine.compile(
     vine.object({
-        amount: vine.number().min(1),
+        amount: vine.number().min(1000),
     })
 );
 
 export const financeWildTerritoryValidator = vine.compile(
     vine.object({
-        amount: vine.number().min(1),
+        amount: vine.number().min(1000),
     })
 );
 
 export const buyInfantryValidator = vine.compile(
     vine.object({
-        amount: vine.number().min(1),
+        amount: vine.number().min(1000),
+    })
+);
+
+export const buyShipsValidator = vine.compile(
+    vine.object({
+        amount: vine.number().min(5),
     })
 );
