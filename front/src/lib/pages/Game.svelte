@@ -57,7 +57,7 @@
 <div class="flex gap-5 justify-center items-center">
 	<div class="flex flex-col">
 		{#each game?.players.slice(0, game?.players.length / 2) as player}
-			<SideGamePlayer {game} {player} />
+			<SideGamePlayer bind:game {player} />
 		{/each}
 	</div>
 	<div class="w-4/5 flex flex-col gap-3 items-center">
@@ -65,7 +65,7 @@
 	</div>
 	<div class="flex flex-col">
 		{#each game?.players.slice(game?.players.length / 2) as player}
-			<SideGamePlayer {game} {player} />
+			<SideGamePlayer bind:game {player} />
 		{/each}
 	</div>
 </div>

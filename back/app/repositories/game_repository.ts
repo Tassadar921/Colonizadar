@@ -66,7 +66,7 @@ export default class GameRepository extends BaseRepository<typeof Game> {
             }),
             ...room.players.map(async (player: RoomPlayer): Promise<RoomPlayer> => {
                 player.isReady = false;
-                player.gold = game.map.startingPlayersGold;
+                player.gold = room.map.startingPlayersGold;
                 return await player.save();
             }),
         ]);
