@@ -15,13 +15,13 @@
 	export let gameId: string;
 
 	let game: SerializedGame;
-	let myPlayer: SerializedRoomPlayer;
+	let currentPlayer: SerializedRoomPlayer;
 
 	onMount(async (): Promise<void> => {
 		try {
 			const { data: gameData } = await axios.get(`/api/game/${gameId}`);
 			game = gameData.game;
-			myPlayer = game.players.find((player: SerializedRoomPlayer) => player.user?.id === $profile!.id);
+			currentPlayer = game.players.find((player: SerializedRoomPlayer) => player.user?.id === $profile!.id);
 		} catch (error: any) {
 			showToast(error.response.data.error, 'error');
 			navigate('/play');
@@ -47,7 +47,7 @@
 <Title title={game?.name} />
 
 {#if game}
-	<p>{$t('play.game.gold')}: {formatGameNumbers(myPlayer?.gold ? myPlayer.gold : 0)}</p>
+	<p>{$t('play.game.gold')}: {formatGameNumbers(currentPlayer?.gold ? currentPlayer.gold : 0)}</p>
 	<p>{$t('play.game.year')}: {game.year}</p>
 	<p>{$t('play.game.season')}: {$t(`play.game.${formatSeasonFromNumber(game.season)}`)}</p>
 {/if}
