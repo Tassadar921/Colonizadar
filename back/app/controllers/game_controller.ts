@@ -66,10 +66,10 @@ export default class GameController {
         player.gold -= game.map.spyPlayerCost;
         await player.save();
 
-        return response.send(targetPlayer.apiSerialize(language, user, true));
+        return response.send({ player: player.apiSerialize(language, user), targetPlayer: targetPlayer.apiSerialize(language, user, true) });
     }
 
-    public async financePlayer({ request, response, player, game }: HttpContext): Promise<void> {
+    public async financePlayer({ request, response, player, game, language, user }: HttpContext): Promise<void> {
         const { playerId } = await financePlayerParamsValidator.validate(request.params());
         const { amount } = await request.validateUsing(financePlayerValidator);
 
@@ -91,10 +91,10 @@ export default class GameController {
         targetPlayer.gold += Math.floor((amount * game.map.financePlayerCostFactor) / 1000) * 1000;
         await targetPlayer.save();
 
-        return response.send({ message: 'Transaction done' });
+        return response.send(player.apiSerialize(language, user));
     }
 
-    public async financeWildTerritory({ request, response, player, game, gameTerritory }: HttpContext): Promise<void> {
+    public async financeWildTerritory({ request, response, player, game, gameTerritory, language, user }: HttpContext): Promise<void> {
         const { amount } = await request.validateUsing(financeWildTerritoryValidator);
 
         if (player.gold < amount) {
@@ -107,18 +107,18 @@ export default class GameController {
         gameTerritory.infantry += Math.floor((amount * game.map.financeWildTerritoryEnforcementFactor * game.map.financeWildTerritoryCostFactor) / (game.map.wildInfantryCostFactor * 1000));
         await gameTerritory.save();
 
-        return response.send({ message: 'Done' });
+        return response.send(player.apiSerialize(language, user));
     }
 
-    public async subverse({ response, player, gameTerritory, game }: HttpContext): Promise<void> {
-        if (player.gold < 1) {
+    public async subverse({ response, player, gameTerritory, game, language, user }: HttpContext): Promise<void> {
+        if (player.gold < game.map.baseSubversionCost) {
             return response.forbidden({ error: 'Not enough gold' });
         }
 
-        player.gold--;
+        player.gold -= game.map.baseSubversionCost;
         await player.save();
 
-        gameTerritory.infantry -= Math.ceil((1000 * game.map.wildTerritorySubversionFactor * game.map.financeWildTerritoryCostFactor) / (game.map.wildInfantryCostFactor * 1000));
+        gameTerritory.infantry -= Math.ceil((100 * 1000 * game.map.wildTerritorySubversionFactor * game.map.financeWildTerritoryCostFactor) / (game.map.wildInfantryCostFactor * 1000));
         // TODO: manage the case where players subverse the same territory at the same time
         if (gameTerritory.infantry <= 0) {
             gameTerritory.infantry = 1000;
@@ -126,10 +126,10 @@ export default class GameController {
         }
         await gameTerritory.save();
 
-        return response.send({ message: 'Done' });
+        return response.send({ conquered: !!gameTerritory.ownerId, player: player.apiSerialize(language, user) });
     }
 
-    public async fortify({ response, player, gameTerritory, game }: HttpContext): Promise<void> {
+    public async fortify({ response, user, language, player, gameTerritory, game }: HttpContext): Promise<void> {
         if (player.gold < game.map.fortifyCost) {
             return response.forbidden({ error: 'Not enough gold' });
         }
@@ -140,7 +140,7 @@ export default class GameController {
         gameTerritory.isFortified = true;
         await gameTerritory.save();
 
-        return response.send({ message: 'Done' });
+        return response.send({ territory: gameTerritory.apiSerialize(language, user), player: player.apiSerialize(language, user) });
     }
 
     public async buyInfantry({ request, response, user, player, gameTerritory, game, language }: HttpContext): Promise<void> {
@@ -153,7 +153,7 @@ export default class GameController {
         const cost: number = Math.floor((game.map.baseInfantryCost * player.country.infantryPriceFactor * amount) / 1000) * 1000;
 
         if (player.gold < cost) {
-            throw new Error('Not enough gold');
+            return response.forbidden({ error: 'Not enough gold' });
         }
 
         player.gold -= cost;
@@ -162,7 +162,7 @@ export default class GameController {
         gameTerritory.infantry += amount;
         await gameTerritory.save();
 
-        return response.send(gameTerritory.apiSerialize(language, user));
+        return response.send({ territory: gameTerritory.apiSerialize(language, user), player: player.apiSerialize(language, user) });
     }
 
     public async buyShips({ request, response, user, player, gameTerritory, game, language }: HttpContext): Promise<void> {
@@ -175,7 +175,7 @@ export default class GameController {
         const cost: number = Math.floor((game.map.baseShipCost * player.country.shipPriceFactor * amount) / 5) * 5;
 
         if (player.gold < cost) {
-            throw new Error('Not enough gold');
+            return response.forbidden({ error: 'Not enough gold' });
         }
 
         player.gold -= cost;
@@ -184,6 +184,6 @@ export default class GameController {
         gameTerritory.ships += amount;
         await gameTerritory.save();
 
-        return response.send(gameTerritory.apiSerialize(language, user));
+        return response.send({ territory: gameTerritory.apiSerialize(language, user), player: player.apiSerialize(language, user) });
     }
 }

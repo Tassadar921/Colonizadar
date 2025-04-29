@@ -132,12 +132,21 @@ router
                                             .group((): void => {
                                                 router
                                                     .group((): void => {
-                                                        router.get('spy', [GameController, 'spyTerritory']).use([middleware.isForeignTerritory()]);
-                                                        router.patch('finance', [GameController, 'financeWildTerritory']).use([middleware.isForeignTerritory()]);
-                                                        router.patch('subverse', [GameController, 'subverse']).use([middleware.isForeignTerritory()]);
-                                                        router.patch('fortify', [GameController, 'fortify']).use([middleware.isOwnedTerritory()]);
-                                                        router.patch('buy/infantry', [GameController, 'buyInfantry']).use([middleware.isOwnedTerritory()]);
-                                                        router.patch('buy/ships', [GameController, 'buyShips']).use([middleware.isOwnedTerritory()]);
+                                                        router
+                                                            .group((): void => {
+                                                                router.get('spy', [GameController, 'spyTerritory']);
+                                                                router.patch('finance', [GameController, 'financeWildTerritory']);
+                                                                router.patch('subverse', [GameController, 'subverse']);
+                                                            })
+                                                            .use([middleware.isForeignTerritory()]);
+
+                                                        router
+                                                            .group((): void => {
+                                                                router.patch('fortify', [GameController, 'fortify']);
+                                                                router.patch('buy/infantry', [GameController, 'buyInfantry']);
+                                                                router.patch('buy/ships', [GameController, 'buyShips']);
+                                                            })
+                                                            .use([middleware.isOwnedTerritory()]);
                                                     })
                                                     .use([middleware.isValidSeason()]);
                                             })
