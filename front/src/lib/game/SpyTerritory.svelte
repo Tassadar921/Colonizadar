@@ -12,13 +12,13 @@
 
 	const handleSpyTerritory = async (): Promise<void> => {
 		try {
-			const response = await axios.get(`/api/game/${game.id}/actions/territory/${selectedTerritory.territory.code}/spy`);
+			const { data } = await axios.get(`/api/game/${game.id}/actions/territory/${selectedTerritory.territory.code}/spy`);
 			game = {
 				...game,
 				territories: game.territories.map((gt: SerializedGameTerritory) => {
 					if (gt.territory.code === selectedTerritory.territory.code) {
-						selectedTerritory = response.data;
-						return response.data;
+						selectedTerritory = data;
+						return data;
 					}
 					return gt;
 				}),

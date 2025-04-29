@@ -12,8 +12,8 @@
 
 	const handleKick = async (player: SerializedRoomPlayer) => {
 		try {
-			const response = await axios.delete(`/api/room/${room.id}/player/kick/${player.id}`);
-			showToast(`${response.data.message}`);
+			const { data } = await axios.delete(`/api/room/${room.id}/player/kick/${player.id}`);
+			showToast(`${data.message}`);
 			room.players = room.players.filter((p) => p.id !== player.id);
 		} catch (error: any) {
 			showToast(error.response.data.error, 'error');

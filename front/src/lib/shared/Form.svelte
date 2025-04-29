@@ -33,20 +33,18 @@
 		});
 
 		try {
-			const response = await axios({
+			const { data } = await axios({
 				method,
 				url: `${axios.defaults.baseURL}${action}`,
 				data: method === 'GET' ? null : formData,
 				params: method === 'GET' ? formDataObj : null,
 				headers: method !== 'GET' ? { 'Content-Type': 'multipart/form-data', 'Accept-Language': `${$language}-${$language.toUpperCase()}` || 'en-US' } : {},
 			});
-			isLoading = false;
-			dispatch('success', response.data);
+			dispatch('success', data);
 		} catch (error: any) {
-			console.log(error.message);
-			isLoading = false;
-			dispatch('error', error.message);
+			dispatch('error', error.response.data.error);
 		}
+		isLoading = false;
 	};
 
 	$: isSendButtonDisabled = !isValid;

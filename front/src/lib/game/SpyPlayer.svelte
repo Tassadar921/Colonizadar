@@ -13,7 +13,6 @@
 	const handleSpyPlayer = async (): Promise<void> => {
 		try {
 			const { data } = await axios.get(`/api/game/${game.id}/actions/player/${player.id}/spy`);
-			console.log(data);
 			game = {
 				...game,
 				players: game.players.map((pl: SerializedRoomPlayer) => {
