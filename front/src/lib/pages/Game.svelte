@@ -46,8 +46,8 @@
 
 <Title title={game?.name} />
 
-{#if game}
-	<p>{$t('play.game.gold')}: {formatGameNumbers(currentPlayer?.gold ? currentPlayer.gold : 0)}</p>
+{#if game && currentPlayer}
+	<p>{$t('play.game.gold')}: {formatGameNumbers(currentPlayer.gold ?? 0)}</p>
 	<p>{$t('play.game.year')}: {game.year}</p>
 	<p>{$t('play.game.season')}: {$t(`play.game.${formatSeasonFromNumber(game.season)}`)}</p>
 {/if}
