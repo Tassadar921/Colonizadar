@@ -7,6 +7,7 @@
 	import { t } from 'svelte-i18n';
 	import type SerializedGameTerritory from 'colonizadar-backend/app/types/serialized/serialized_game_territory';
 	import SpyPlayer from './SpyPlayer.svelte';
+    import FinancePlayer from "./FinancePlayer.svelte";
 
 	export let game: SerializedGame;
 	export let player: SerializedRoomPlayer;
@@ -19,7 +20,7 @@
 	</div>
 
 	<!--    Player name & profile picture    -->
-	<div class="flex flex-col gap-5 flex-wrap items-center">
+	<div class="flex flex-col gap-3 flex-wrap items-center">
 		{#if player.user}
 			{#if player.user.profilePicture}
 				<img
@@ -54,7 +55,10 @@
 		<p>{$t('play.game.gold')}: {player.gold}</p>
 		<p>{$t('play.game.territories')}: {game.territories.reduce((accumulator, territory: SerializedGameTerritory) => accumulator + Number(territory.owner?.id === player.id), 0)}</p>
 		{#if player.user?.id !== $profile?.id}
-			<SpyPlayer bind:game {player} />
+			<div class="flex gap-3">
+                <SpyPlayer bind:game {player} />
+                <FinancePlayer bind:game {player} />
+            </div>
 		{/if}
 	</div>
 </div>
