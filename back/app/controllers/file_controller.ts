@@ -8,7 +8,13 @@ import Bot from '#models/bot';
 import PlayableCountry from '#models/playable_country';
 import PlayableCountryRepository from '#repositories/playable_country_repository';
 import Map from '#models/map';
-import { serveStaticBotPictureFileValidator, serveStaticCountryFlagFileValidator, serveStaticNeutralCountryFlagFileValidator, serveStaticProfilePictureFileValidator } from '#validators/file';
+import {
+    serveStaticBotPictureFileValidator,
+    serveStaticCountryFlagFileValidator, serveStaticFactoryIconFileValidator,
+    serveStaticFortifiedIconFileValidator,
+    serveStaticNeutralCountryFlagFileValidator,
+    serveStaticProfilePictureFileValidator,
+} from '#validators/file';
 import MapRepository from '#repositories/map_repository';
 import cache from '@adonisjs/cache/services/main';
 
@@ -121,6 +127,58 @@ export default class FileController {
         } catch (error: any) {
             if (error.message === 'NO_PICTURE') {
                 return response.notFound({ error: 'Neutral flag not found' });
+            }
+        }
+    }
+
+    public async serveStaticFortifiedIconFile({ request, response }: HttpContext): Promise<void> {
+        const { mapId } = await serveStaticFortifiedIconFileValidator.validate(request.params());
+
+        try {
+            const filePath: string = await cache.getOrSet({
+                key: `map-fortified-icon:${mapId}`,
+                ttl: '24h',
+                factory: async (): Promise<string> => {
+                    const map: Map = await this.mapRepository.firstOrFail({ frontId: mapId }, ['fortifiedIcon']);
+
+                    if (!map.fortifiedIcon) {
+                        throw new Error('NO_PICTURE');
+                    }
+
+                    return app.makePath(map.fortifiedIcon.path);
+                },
+            });
+
+            return response.download(filePath);
+        } catch (error: any) {
+            if (error.message === 'NO_PICTURE') {
+                return response.notFound({ error: 'Fortified icon not found' });
+            }
+        }
+    }
+
+    public async serveStaticFactoryIconFile({ request, response }: HttpContext): Promise<void> {
+        const { mapId } = await serveStaticFactoryIconFileValidator.validate(request.params());
+
+        try {
+            const filePath: string = await cache.getOrSet({
+                key: `map-factory-icon:${mapId}`,
+                ttl: '24h',
+                factory: async (): Promise<string> => {
+                    const map: Map = await this.mapRepository.firstOrFail({ frontId: mapId }, ['factoryIcon']);
+
+                    if (!map.factoryIcon) {
+                        throw new Error('NO_PICTURE');
+                    }
+
+                    return app.makePath(map.factoryIcon.path);
+                },
+            });
+
+            return response.download(filePath);
+        } catch (error: any) {
+            if (error.message === 'NO_PICTURE') {
+                return response.notFound({ error: 'Factory icon not found' });
             }
         }
     }

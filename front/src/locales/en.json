@@ -273,7 +273,7 @@
 			"fall": "Autumn",
 			"winter": "Winter",
 			"spy": "Spy",
-            "finance": "Finance",
+			"finance": "Finance",
 			"declare-war": "Declare a war",
 			"subversion": "Subversion",
 			"country-modal": {
@@ -281,9 +281,9 @@
 				"indigenous": "Indigenous",
 				"value": "Value"
 			},
-            "finance-player-modal": {
-                "title": "Finance player"
-            }
+			"finance-player-modal": {
+				"title": "Finance player"
+			}
 		}
 	}
 }

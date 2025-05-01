@@ -178,10 +178,12 @@ router
             .group((): void => {
                 router.get('/profile-picture/:userId', [FileController, 'serveStaticProfilePictureFile']);
                 router.get('/bot-picture/:botId', [FileController, 'serveStaticBotPictureFile']);
+                router.get('/:mapId/fortified-icon', [FileController, 'serveStaticFortifiedIconFile']);
+                router.get('/:mapId/factory-icon', [FileController, 'serveStaticFactoryIconFile']);
                 router
                     .group((): void => {
                         router.get('/:countryId', [FileController, 'serveStaticCountryFlagFile']);
-                        router.get('/:mapId/neutral', [FileController, 'serveStaticNeutralCountryFlagFile']);
+                        router.get('/:mapId/neutral-flag', [FileController, 'serveStaticNeutralCountryFlagFile']);
                     })
                     .prefix('country-flag');
             })

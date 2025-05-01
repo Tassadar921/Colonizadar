@@ -21,9 +21,6 @@ export default class Map extends BaseModel {
     declare name: string;
 
     @column()
-    declare neutralFlagId: string;
-
-    @column()
     declare mainSeason: number;
 
     @column()
@@ -74,10 +71,29 @@ export default class Map extends BaseModel {
     @column()
     declare fortifyCost: number;
 
+    @column()
+    declare neutralFlagId: string;
+
     @belongsTo((): typeof File => File, {
         foreignKey: 'neutralFlagId',
     })
     declare neutralFlag: BelongsTo<typeof File>;
+
+    @column()
+    declare fortifiedIconId: string;
+
+    @belongsTo((): typeof File => File, {
+        foreignKey: 'fortifiedIconId',
+    })
+    declare fortifiedIcon: BelongsTo<typeof File>;
+
+    @column()
+    declare factoryIconId: string;
+
+    @belongsTo((): typeof File => File, {
+        foreignKey: 'factoryIconId',
+    })
+    declare factoryIcon: BelongsTo<typeof File>;
 
     @column()
     declare createdById: string;

@@ -135,8 +135,8 @@
 
 	const handleClick = (territoryId: string): void => {
 		if (!hasDragged && territoryId) {
-			const filteredTerritories: SerializedGameTerritory[] = game.territories.filter((territoryObject): boolean => {
-				return territoryObject.territory.code.toLowerCase() === territoryId;
+			const filteredTerritories: SerializedGameTerritory[] = game.territories.filter((gameTerritory): boolean => {
+				return gameTerritory.territory.code.toLowerCase() === territoryId;
 			});
 			if (filteredTerritories.length > 0) {
 				selectedTerritory = filteredTerritories[0];
@@ -159,8 +159,8 @@
 	};
 
 	const resetTerritoryColor = (svgGroup: SVGGElement): void => {
-		const filteredTerritories = game.territories.filter((territoryObject): boolean => {
-			return territoryObject.territory.code.toLowerCase() === svgGroup.id;
+		const filteredTerritories = game.territories.filter((gameTerritory): boolean => {
+			return gameTerritory.territory.code.toLowerCase() === svgGroup.id;
 		});
 		if (filteredTerritories.length > 0) {
 			if (filteredTerritories[0].owner) {
@@ -185,8 +185,8 @@
 	$: if (game) {
 		svgElement?.querySelectorAll('.flag-icon').forEach((el) => el.remove());
 
-		for (const territoryObject of game.territories) {
-			const svgGroup: SVGGElement | null = document.getElementById(territoryObject.territory.code.toLowerCase()) as unknown as SVGGElement | null;
+		for (const gameTerritory of game.territories) {
+			const svgGroup: SVGGElement | null = document.getElementById(gameTerritory.territory.code.toLowerCase()) as unknown as SVGGElement | null;
 			const svgPath: SVGPathElement | null = svgGroup?.querySelector('.mainland') as SVGPathElement | null;
 
 			if (!svgGroup || !svgPath) {
@@ -208,10 +208,10 @@
 			const flag: SVGImageElement = document.createElementNS('http://www.w3.org/2000/svg', 'image');
 			flag.classList.add('flag-icon');
 
-			if (territoryObject.owner) {
-				flag.setAttribute('href', `${import.meta.env.VITE_API_BASE_URL}/api/static/country-flag/${territoryObject.owner.country.id}?token=${localStorage.getItem('apiToken')}`);
+			if (gameTerritory.owner) {
+				flag.setAttribute('href', `${import.meta.env.VITE_API_BASE_URL}/api/static/country-flag/${gameTerritory.owner.country.id}?token=${localStorage.getItem('apiToken')}`);
 			} else {
-				flag.setAttribute('href', `${import.meta.env.VITE_API_BASE_URL}/api/static/country-flag/${game.map.id}/neutral?token=${localStorage.getItem('apiToken')}`);
+				flag.setAttribute('href', `${import.meta.env.VITE_API_BASE_URL}/api/static/country-flag/${game.map.id}/neutral-flag?token=${localStorage.getItem('apiToken')}`);
 			}
 
 			const flagSize = 8;
@@ -223,6 +223,29 @@
 			flag.setAttribute('y', String(pointInGroup.y - flagSize / 2));
 
 			svgGroup.appendChild(flag);
+
+			if (gameTerritory.owner) {
+				if (gameTerritory.territory.isFactory) {
+					console.log(`${import.meta.env.VITE_API_BASE_URL}/api/static/${game.map.id}/factory-icon?token=${localStorage.getItem('apiToken')}`);
+					const factoryIcon: SVGImageElement = document.createElementNS('http://www.w3.org/2000/svg', 'image');
+					factoryIcon.classList.add('fortified-icon');
+					factoryIcon.setAttribute('href', `${import.meta.env.VITE_API_BASE_URL}/api/static/${game.map.id}/factory-icon?token=${localStorage.getItem('apiToken')}`);
+					factoryIcon.setAttribute('width', '4');
+					factoryIcon.setAttribute('height', '4');
+					factoryIcon.setAttribute('x', String(pointInGroup.x));
+					factoryIcon.setAttribute('y', String(pointInGroup.y - 1));
+					svgGroup.appendChild(factoryIcon);
+				} else if (gameTerritory.isFortified) {
+					const fortifiedIcon: SVGImageElement = document.createElementNS('http://www.w3.org/2000/svg', 'image');
+					fortifiedIcon.classList.add('fortified-icon');
+					fortifiedIcon.setAttribute('href', `${import.meta.env.VITE_API_BASE_URL}/api/static/${game.map.id}/fortified-icon?token=${localStorage.getItem('apiToken')}`);
+					fortifiedIcon.setAttribute('width', '4');
+					fortifiedIcon.setAttribute('height', '4');
+					fortifiedIcon.setAttribute('x', String(pointInGroup.x));
+					fortifiedIcon.setAttribute('y', String(pointInGroup.y - 1));
+					svgGroup.appendChild(fortifiedIcon);
+				}
+			}
 		}
 	}
 </script>

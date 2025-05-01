@@ -23,3 +23,15 @@ export const serveStaticNeutralCountryFlagFileValidator = vine.compile(
         mapId: vine.number().positive(),
     })
 );
+
+export const serveStaticFortifiedIconFileValidator = vine.compile(
+    vine.object({
+        mapId: vine.number().positive(),
+    })
+);
+
+export const serveStaticFactoryIconFileValidator = vine.compile(
+    vine.object({
+        mapId: vine.number().positive(),
+    })
+);

@@ -4,13 +4,13 @@
 	import axios from 'axios';
 	import { showToast } from '../../services/toastService';
 	import type SerializedRoomPlayer from 'colonizadar-backend/app/types/serialized/serialized_room_player';
-    import Modal from "../shared/Modal.svelte";
-    import Subtitle from "../shared/Subtitle.svelte";
+	import Modal from '../shared/Modal.svelte';
+	import Subtitle from '../shared/Subtitle.svelte';
 
 	export let game: SerializedGame;
 	export let player: SerializedRoomPlayer;
 
-    let showModal: boolean = false;
+	let showModal: boolean = false;
 
 	const handleFinancePlayer = async (amount: number): Promise<void> => {
 		try {
@@ -31,9 +31,9 @@
 </script>
 
 <button class="bg-green-500 hover:bg-green-600 transition-colors duration-300 px-3 rounded-xl" on:click={() => (showModal = true)}>
-    {$t('play.game.finance')}
+	{$t('play.game.finance')}
 </button>
 
 <Modal bind:showModal>
-    <Subtitle slot="header">{$t('play.game.finance-player-modal.title')}</Subtitle>
+	<Subtitle slot="header">{$t('play.game.finance-player-modal.title')}</Subtitle>
 </Modal>
