@@ -24,10 +24,6 @@
 		showToast($t('toast.reset-password.mail.success'));
 	};
 
-	const handleFailure = (): void => {
-		showToast($t('toast.reset-password.mail.error'), 'error');
-	};
-
 	$: isValid = !!email && isValidEmail(email);
 </script>
 
@@ -35,7 +31,7 @@
 
 <Breadcrumbs hasBackground items={[{ label: $t('home.title'), path: '/' }, { label: $t('reset-password.title') }]} />
 
-<Form action="/api/reset-password/send-mail" method="POST" on:success={handleSuccess} on:error={handleFailure} bind:isValid>
+<Form action="/api/reset-password/send-mail" method="POST" on:success={handleSuccess} bind:isValid>
 	<input type="hidden" name="frontUri" value={`${import.meta.env.VITE_FRONT_URI}/reset-password/confirm`} />
 	<Input label={$t('common.email.label')} placeholder={$t('common.email.placeholder')} type="email" name="email" bind:value={email} required {readonly} />
 </Form>

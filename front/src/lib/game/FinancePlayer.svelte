@@ -30,10 +30,6 @@
 		showToast(event.detail.message);
 	};
 
-	const handleError = async (event: CustomEvent): Promise<void> => {
-		showToast(event.detail, 'error');
-	};
-
 	$: isValid = amount >= game.map.financePlayerStep && amount <= (currentPlayer?.gold ?? 0);
 </script>
 
@@ -43,7 +39,7 @@
 
 <Modal bind:showModal>
 	<Subtitle slot="header">{$t('play.game.finance-player-modal.title')}</Subtitle>
-	<Form method="PATCH" action={`/api/game/${game.id}/actions/player/${targetPlayer.id}/finance`} hasBackground={false} {isValid} on:success={handleSuccess} on:error={handleError}>
+	<Form method="PATCH" action={`/api/game/${game.id}/actions/player/${targetPlayer.id}/finance`} hasBackground={false} {isValid} on:success={handleSuccess}>
 		<Range name="amount" bind:value={amount} min={game.map.financePlayerStep} max={currentPlayer?.gold ?? 0} step={game.map.financePlayerStep} />
 	</Form>
 </Modal>

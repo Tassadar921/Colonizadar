@@ -8,6 +8,7 @@
 	import FormBackground from './background/FormBackground.svelte';
 	import { language } from '../../stores/languageStore';
 	import Send from '../icons/Send.svelte';
+	import { showToast } from '../../services/toastService';
 
 	const dispatch = createEventDispatcher();
 
@@ -42,7 +43,8 @@
 			});
 			dispatch('success', data);
 		} catch (error: any) {
-			dispatch('error', error.response.data.error);
+			showToast(error.response.data.error, 'error');
+            dispatch('error');
 		}
 		isLoading = false;
 	};
