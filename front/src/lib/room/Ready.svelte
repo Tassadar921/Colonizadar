@@ -30,4 +30,4 @@
 	$: color = player.isReady ? 'green' : 'red';
 </script>
 
-<Fab ariaLabel="Ready toggle" {icon} {color} on:click={() => handleReady(player)} />
+<button class="bg-red-500 hover:bg-red-500 rounded-full px-3 py-2 text-white" on:click={() => handleReady(player)}>Ready ?</button>

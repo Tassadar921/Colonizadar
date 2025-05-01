@@ -80,14 +80,14 @@
 
 	<button
 		bind:this={buttonRef}
-		class="px-3 py-2 border border-gray-300 dark:border-gray-800 dark:bg-gray-700 dark:text-gray-300 rounded-xl shadow-xs flex justify-between items-center gap-5"
+		class="px-3 py-2 border border-gray-300 dark:border-gray-800 dark:bg-gray-700 dark:text-gray-300 rounded-xl shadow-xs flex justify-between items-center gap-2"
 		style="width: {dropdownWidth}; min-width: 8rem;"
 		on:click={() => {
 			isOpen = !isOpen;
 			setDropdownWidth();
 		}}
 	>
-		<span class="flex items-center">
+		<span class="flex items-center gap-2">
 			{#if selectedOption?.uri}
 				<img src={selectedOption.uri} alt={selectedOption.label} class="w-5 h-5 shrink-0" />
 			{/if}
