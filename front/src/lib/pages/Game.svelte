@@ -21,7 +21,6 @@
 		try {
 			const { data: gameData } = await axios.get(`/api/game/${gameId}`);
 			game = gameData.game;
-			currentPlayer = game.players.find((player: SerializedRoomPlayer) => player.user?.id === $profile!.id);
 		} catch (error: any) {
 			showToast(error.response.data.error, 'error');
 			navigate('/play');
@@ -42,6 +41,10 @@
 				return 'spring';
 		}
 	};
+
+	$: if (game) {
+		currentPlayer = game.players.find((player: SerializedRoomPlayer) => player.user?.id === $profile!.id);
+	}
 </script>
 
 <Title title={game?.name} />

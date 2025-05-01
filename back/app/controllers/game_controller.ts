@@ -4,8 +4,13 @@ import { setReadyValidator } from '#validators/room_player';
 import transmit from '@adonisjs/transmit/services/main';
 import { buyInfantryValidator, buyShipsValidator, financePlayerParamsValidator, financePlayerValidator, financeWildTerritoryValidator, spyPlayerParamsValidator } from '#validators/game';
 import RoomStatusEnum from '#types/enum/room_status_enum';
+import { inject } from '@adonisjs/core';
+import RegexService from '#services/regex_service';
 
+@inject()
 export default class GameController {
+    constructor(private readonly regexService: RegexService) {}
+
     public async get({ response, user, language, game }: HttpContext): Promise<void> {
         return response.send({ game: game.apiSerialize(language, user) });
     }
@@ -66,7 +71,11 @@ export default class GameController {
         player.gold -= game.map.spyPlayerCost;
         await player.save();
 
-        return response.send({ player: player.apiSerialize(language, user), targetPlayer: targetPlayer.apiSerialize(language, user, true) });
+        return response.send({
+            player: player.apiSerialize(language, user),
+            targetPlayer: targetPlayer.apiSerialize(language, user, true),
+            message: `Successfully spied ${targetPlayer.user?.username || targetPlayer.bot?.translate(language)}`,
+        });
     }
 
     public async financePlayer({ request, response, player, game, language, user }: HttpContext): Promise<void> {
@@ -91,7 +100,10 @@ export default class GameController {
         targetPlayer.gold += Math.floor((amount * game.map.financePlayerCostFactor) / 1000) * 1000;
         await targetPlayer.save();
 
-        return response.send({ player: player.apiSerialize(language, user), message: 'Successfully financed player' });
+        return response.send({
+            player: player.apiSerialize(language, user),
+            message: `Successfully sent ${this.regexService.formatGameNumbers(amount)} to ${targetPlayer.user?.username || targetPlayer.bot?.translate(language)}`,
+        });
     }
 
     public async financeWildTerritory({ request, response, player, game, gameTerritory, language, user }: HttpContext): Promise<void> {

@@ -28,6 +28,7 @@
 					return pl;
 				}),
 			};
+			showToast(data.message);
 		} catch (error: any) {
 			showToast(error.response.data.error, 'error');
 		}

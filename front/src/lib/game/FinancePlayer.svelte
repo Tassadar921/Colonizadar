@@ -15,6 +15,7 @@
 
 	let amount: number;
 	let showModal: boolean = false;
+	let isValid: boolean = false;
 
 	const handleSuccess = async (event: CustomEvent): Promise<void> => {
 		game = {
@@ -30,8 +31,10 @@
 	};
 
 	const handleError = async (event: CustomEvent): Promise<void> => {
-		console.log(event);
+		showToast(event.detail, 'error');
 	};
+
+	$: isValid = amount >= game.map.financePlayerStep && amount <= (currentPlayer?.gold ?? 0);
 </script>
 
 <button class="bg-green-500 hover:bg-green-600 transition-colors duration-300 px-3 rounded-xl" on:click={() => (showModal = true)}>
@@ -40,7 +43,7 @@
 
 <Modal bind:showModal>
 	<Subtitle slot="header">{$t('play.game.finance-player-modal.title')}</Subtitle>
-	<Form method="PATCH" action={`/api/game/${game.id}/actions/player/${targetPlayer.id}/finance`} hasBackground={false} isValid={true} on:success={handleSuccess} on:error={handleError}>
+	<Form method="PATCH" action={`/api/game/${game.id}/actions/player/${targetPlayer.id}/finance`} hasBackground={false} {isValid} on:success={handleSuccess} on:error={handleError}>
 		<Range name="amount" bind:value={amount} min={game.map.financePlayerStep} max={currentPlayer?.gold ?? 0} step={game.map.financePlayerStep} />
 	</Form>
 </Modal>
