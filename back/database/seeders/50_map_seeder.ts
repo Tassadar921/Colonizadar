@@ -76,6 +76,7 @@ export default class extends BaseSeeder {
                     spyFortifiedTerritoryCost: 1000000,
                     spyPlayerCost: 500000,
                     financePlayerCostFactor: 0.9,
+                    financePlayerStep: 100000,
                     financeWildTerritoryCostFactor: 0.9,
                     baseSubversionCost: 50000,
                     subversionCostFactor: 0.9,

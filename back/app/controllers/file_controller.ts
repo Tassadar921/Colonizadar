@@ -10,7 +10,8 @@ import PlayableCountryRepository from '#repositories/playable_country_repository
 import Map from '#models/map';
 import {
     serveStaticBotPictureFileValidator,
-    serveStaticCountryFlagFileValidator, serveStaticFactoryIconFileValidator,
+    serveStaticCountryFlagFileValidator,
+    serveStaticFactoryIconFileValidator,
     serveStaticFortifiedIconFileValidator,
     serveStaticNeutralCountryFlagFileValidator,
     serveStaticProfilePictureFileValidator,

@@ -20,6 +20,7 @@ export default class extends BaseSchema {
             table.integer('spy_fortified_territory_cost').notNullable();
             table.integer('spy_player_cost').notNullable();
             table.decimal('finance_player_cost_factor').notNullable();
+            table.integer('finance_player_step').notNullable();
             table.decimal('finance_wild_territory_cost_factor').notNullable();
             table.decimal('finance_wild_territory_enforcement_factor').notNullable();
             table.decimal('wild_territory_subversion_factor').notNullable();

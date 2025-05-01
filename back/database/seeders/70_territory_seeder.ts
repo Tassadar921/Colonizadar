@@ -78,7 +78,7 @@ export default class extends BaseSeeder {
             { code: 'AC', french: 'Açores', english: 'Azores', isCoastal: true, map: worldMap },
             { code: 'IS', french: 'Islande', english: 'Iceland', isCoastal: true, map: worldMap },
             { code: 'SN', french: 'Écosse', english: 'Scotland', isCoastal: true, map: worldMap, defaultBelongsTo: worldMapPlayableCountries.gb, isFactory: true, infantry: 60000, ships: 85 },
-            { code: 'IL', french: 'Irlande', english: 'Ireland', isCoastal: true, map: worldMap, defaultBelongsTo: worldMapPlayableCountries.gb, isFactory: false, infantry: 120000, ships: 30 },
+            { code: 'IL', french: 'Irlande', english: 'Ireland', isCoastal: true, map: worldMap, defaultBelongsTo: worldMapPlayableCountries.gb, infantry: 120000, ships: 30 },
             {
                 code: 'GB',
                 french: 'Grande-Bretagne',
@@ -86,7 +86,7 @@ export default class extends BaseSeeder {
                 isCoastal: true,
                 map: worldMap,
                 defaultBelongsTo: worldMapPlayableCountries.gb,
-                isFactory: false,
+                isFactory: true,
                 infantry: 45000,
                 ships: 10,
             },

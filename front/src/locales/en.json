@@ -276,6 +276,7 @@
 			"finance": "Finance",
 			"declare-war": "Declare a war",
 			"subversion": "Subversion",
+			"cost": "Cost",
 			"country-modal": {
 				"owner": "Owner",
 				"indigenous": "Indigenous",

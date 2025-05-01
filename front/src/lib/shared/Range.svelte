@@ -1,8 +1,11 @@
 <script lang="ts">
+	import { formatGameNumbers } from '../../services/stringService';
+
 	export let min: number = 0;
 	export let max: number = 100;
 	export let step: number = 1;
-	export let value: number = (min + max) / 2;
+	export let value: number = min;
+	export let name: string;
 
 	const id: string = `range-${Math.random().toString(36).slice(2, 9)}`;
 
@@ -14,9 +17,9 @@
 
 <div class="w-full">
 	<label for={id} class="text-gray-700 dark:text-white font-medium mb-1">
-		Value: <span class="text-primary-500 font-medium">{value}</span>
+		Value: <span class="text-primary-500 font-medium">{formatGameNumbers(value)}</span>
 	</label>
-	<input {id} type="range" {min} {max} {step} bind:value on:input={handleInput} class="custom-range w-full h-2 bg-gray-200 rounded-lg appearance-none" />
+	<input {name} {id} type="range" {min} {max} {step} bind:value on:input={handleInput} class="custom-range w-full h-2 bg-gray-200 rounded-lg appearance-none" />
 </div>
 
 <style>

@@ -91,7 +91,7 @@ export default class GameController {
         targetPlayer.gold += Math.floor((amount * game.map.financePlayerCostFactor) / 1000) * 1000;
         await targetPlayer.save();
 
-        return response.send(player.apiSerialize(language, user));
+        return response.send({ player: player.apiSerialize(language, user), message: 'Successfully financed player' });
     }
 
     public async financeWildTerritory({ request, response, player, game, gameTerritory, language, user }: HttpContext): Promise<void> {

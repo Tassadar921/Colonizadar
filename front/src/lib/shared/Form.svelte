@@ -11,7 +11,7 @@
 
 	const dispatch = createEventDispatcher();
 
-	export let method: 'GET' | 'POST' | 'get' | 'post' | undefined = 'GET';
+	export let method: 'GET' | 'POST' | 'get' | 'post' | 'PUT' | 'put' | 'PATCH' | 'patch' | undefined = 'GET';
 	export let action: string = '';
 	export let isValid: boolean = false;
 	export let submittable: boolean = true;
@@ -71,6 +71,7 @@
 				type="submit"
 				bind:disabled={isSendButtonDisabled}
 				customStyle
+				ariaLabel="Submit form"
 				additionalStyle="bg-green-700 {isSendButtonDisabled ? 'cursor-not-allowed' : 'hover:bg-green-800'} transition-all duration-300 py-2 px-4 rounded-xl text-2xl font-bold"
 			>
 				<div class="flex flex-row items-center gap-3">

@@ -226,7 +226,6 @@
 
 			if (gameTerritory.owner) {
 				if (gameTerritory.territory.isFactory) {
-					console.log(`${import.meta.env.VITE_API_BASE_URL}/api/static/${game.map.id}/factory-icon?token=${localStorage.getItem('apiToken')}`);
 					const factoryIcon: SVGImageElement = document.createElementNS('http://www.w3.org/2000/svg', 'image');
 					factoryIcon.classList.add('fortified-icon');
 					factoryIcon.setAttribute('href', `${import.meta.env.VITE_API_BASE_URL}/api/static/${game.map.id}/factory-icon?token=${localStorage.getItem('apiToken')}`);
@@ -261,14 +260,6 @@
 >
 	<WorldMap bind:svgElement bind:viewBox />
 </button>
-
-<div class="flex gap-3">
-	<div class="flex flex-row flex-wrap gap-5 justify-center">
-		<button class="bg-orange-500 hover:bg-orange-600 transition-colors duration-300 px-5 py-3 rounded-xl">
-			{$t('play.game.declare-war')}
-		</button>
-	</div>
-</div>
 
 {#if selectedTerritory}
 	<Modal bind:showModal={showCountryModal}>
