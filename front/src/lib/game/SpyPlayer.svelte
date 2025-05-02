@@ -51,5 +51,5 @@
 </button>
 
 <Popover target={buttonElement} show={showPopover}>
-	<span>{$t('play.game.cost')} : {formatGameNumbers(game?.map?.spyPlayerCost ?? 0)}</span>
+	<span>{$t('play.game.cost')} : {formatGameNumbers(game?.map.spyPlayerCost ?? 0)}</span>
 </Popover>

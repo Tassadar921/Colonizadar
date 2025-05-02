@@ -84,9 +84,10 @@ export default class GameController {
 
         if (player.frontId === playerId) {
             return response.forbidden({ error: "You can't finance yourself" });
-        }
-        if (player.gold < amount) {
+        } else if (player.gold < amount) {
             return response.forbidden({ error: 'Not enough gold' });
+        } else if (amount % game.map.financePlayerStep !== 0) {
+            return response.forbidden({ error: 'Invalid amount' });
         }
 
         const targetPlayer: RoomPlayer | undefined = game.room.players.find((player: RoomPlayer): boolean => player.frontId === playerId);
@@ -111,6 +112,8 @@ export default class GameController {
 
         if (player.gold < amount) {
             return response.forbidden({ error: 'Not enough gold' });
+        } else if (amount % game.map.financeWildTerritoryStep !== 0) {
+            return response.forbidden({ error: 'Invalid amount' });
         }
 
         player.gold -= amount;
@@ -119,7 +122,10 @@ export default class GameController {
         gameTerritory.infantry += Math.floor((amount * game.map.financeWildTerritoryEnforcementFactor * game.map.financeWildTerritoryCostFactor) / (game.map.wildInfantryCostFactor * 1000));
         await gameTerritory.save();
 
-        return response.send(player.apiSerialize(language, user));
+        return response.send({
+            player: player.apiSerialize(language, user),
+            message: `Successfully sent ${this.regexService.formatGameNumbers(amount)} to ${gameTerritory.territory.translate(language)}`,
+        });
     }
 
     public async subverse({ response, player, gameTerritory, game, language, user }: HttpContext): Promise<void> {
@@ -144,6 +150,8 @@ export default class GameController {
     public async fortify({ response, user, language, player, gameTerritory, game }: HttpContext): Promise<void> {
         if (player.gold < game.map.fortifyCost) {
             return response.forbidden({ error: 'Not enough gold' });
+        } else if (gameTerritory.isFortified) {
+            return response.forbidden({ error: 'Already fortified' });
         }
 
         player.gold -= game.map.fortifyCost;
@@ -152,7 +160,11 @@ export default class GameController {
         gameTerritory.isFortified = true;
         await gameTerritory.save();
 
-        return response.send({ territory: gameTerritory.apiSerialize(language, user), player: player.apiSerialize(language, user) });
+        return response.send({
+            territory: gameTerritory.apiSerialize(language, user),
+            player: player.apiSerialize(language, user),
+            message: `Fortified ${gameTerritory.territory.translate(language)}`,
+        });
     }
 
     public async buyInfantry({ request, response, user, player, gameTerritory, game, language }: HttpContext): Promise<void> {

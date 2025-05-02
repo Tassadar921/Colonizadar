@@ -64,7 +64,7 @@
 		{/each}
 	</div>
 	<div class="w-4/5 flex flex-col gap-3 items-center">
-		<Map bind:game />
+		<Map bind:game {currentPlayer} />
 	</div>
 	<div class="flex flex-col">
 		{#each game?.players.slice(game?.players.length / 2) as player}

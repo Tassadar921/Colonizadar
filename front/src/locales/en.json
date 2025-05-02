@@ -274,9 +274,12 @@
 			"winter": "Winter",
 			"spy": "Spy",
 			"finance": "Finance",
+			"will-receive": "will receive",
 			"declare-war": "Declare a war",
 			"subversion": "Subversion",
 			"cost": "Cost",
+			"fortified": "Fortified",
+			"fortify": "Fortify",
 			"country-modal": {
 				"owner": "Owner",
 				"indigenous": "Indigenous",

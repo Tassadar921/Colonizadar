@@ -12,8 +12,11 @@
 	import { getCentroidFromPath } from '../../services/gameGeometryService';
 	import SpyTerritory from './SpyTerritory.svelte';
 	import { profile } from '../../stores/profileStore';
+	import FinanceWildTerritory from './FinanceWildTerritory.svelte';
+	import FortifyTerritory from './FortifyTerritory.svelte';
 
 	export let game: SerializedGame;
+	export let currentPlayer: SerializedRoomPlayer;
 
 	let width: number = 500;
 	let height: number = 300;
@@ -273,9 +276,17 @@
 		{#if selectedTerritory && selectedTerritoryOwner && selectedTerritory.territory.isCoastal}
 			<p>{$t('play.common.ships')} : {selectedTerritory.ships ? formatGameNumbers(selectedTerritory.ships) : '???'}</p>
 		{/if}
+		<p>{$t('play.game.fortified')} : {selectedTerritory.isFortified}</p>
 		<div class="flex gap-5 justify-center">
-			{#if game.map.mainSeason === game.season && selectedTerritory && selectedTerritoryOwner?.user?.id !== checkedProfile.id}
-				<SpyTerritory bind:game bind:selectedTerritory />
+			{#if game.map.mainSeason === game.season && selectedTerritory}
+				{#if selectedTerritoryOwner?.user?.id !== checkedProfile.id}
+					<SpyTerritory bind:game bind:selectedTerritory />
+					{#if !selectedTerritoryOwner}
+						<FinanceWildTerritory bind:game {currentPlayer} gameTerritory={selectedTerritory} />
+					{/if}
+				{:else if !selectedTerritory.isFortified}
+					<FortifyTerritory bind:game gameTerritory={selectedTerritory} />
+				{/if}
 			{/if}
 		</div>
 	</Modal>

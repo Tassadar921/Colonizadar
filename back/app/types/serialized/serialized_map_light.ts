@@ -11,7 +11,9 @@ type SerializedMapLight = {
     spyPlayerCost: number;
     financePlayerCostFactor: number;
     financePlayerStep: number;
+    financeWildTerritoryStep: number;
     baseSubversionCost: number;
+    fortifyCost: number;
     createdBy: SerializedUser;
     createdAt?: string;
     updatedAt?: string;

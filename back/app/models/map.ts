@@ -63,6 +63,9 @@ export default class Map extends BaseModel {
     declare financeWildTerritoryEnforcementFactor: number;
 
     @column()
+    declare financeWildTerritoryStep: number;
+
+    @column()
     declare wildTerritorySubversionFactor: number;
 
     @column()
@@ -130,7 +133,9 @@ export default class Map extends BaseModel {
             spyPlayerCost: this.spyPlayerCost,
             financePlayerCostFactor: this.financePlayerCostFactor,
             financePlayerStep: this.financePlayerStep,
+            financeWildTerritoryStep: this.financeWildTerritoryStep,
             baseSubversionCost: this.baseSubversionCost,
+            fortifyCost: this.fortifyCost,
             territories: await Promise.all(this.territories.map(async (territory: Territory): Promise<SerializedTerritory> => territory.apiSerialize(language, true))),
             createdBy: this.createdBy.apiSerialize(),
             createdAt: this.createdAt?.toString(),
@@ -150,7 +155,9 @@ export default class Map extends BaseModel {
             spyPlayerCost: this.spyPlayerCost,
             financePlayerCostFactor: this.financePlayerCostFactor,
             financePlayerStep: this.financePlayerStep,
+            financeWildTerritoryStep: this.financeWildTerritoryStep,
             baseSubversionCost: this.baseSubversionCost,
+            fortifyCost: this.fortifyCost,
             createdBy: this.createdBy.apiSerialize(),
             createdAt: this.createdAt?.toString(),
             updatedAt: this.updatedAt?.toString(),

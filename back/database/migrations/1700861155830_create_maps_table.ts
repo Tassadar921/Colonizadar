@@ -23,6 +23,7 @@ export default class extends BaseSchema {
             table.integer('finance_player_step').notNullable();
             table.decimal('finance_wild_territory_cost_factor').notNullable();
             table.decimal('finance_wild_territory_enforcement_factor').notNullable();
+            table.integer('finance_wild_territory_step').notNullable();
             table.decimal('wild_territory_subversion_factor').notNullable();
             table.integer('base_subversion_cost').notNullable();
             table.decimal('subversion_cost_factor').notNullable();
