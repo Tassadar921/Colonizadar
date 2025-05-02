@@ -44,7 +44,7 @@
 			dispatch('success', data);
 		} catch (error: any) {
 			showToast(error.response.data.error, 'error');
-            dispatch('error');
+			dispatch('error');
 		}
 		isLoading = false;
 	};
