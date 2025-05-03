@@ -7,9 +7,11 @@
 	import { t } from 'svelte-i18n';
 	import type SerializedGameTerritory from 'colonizadar-backend/app/types/serialized/serialized_game_territory';
 	import SpyPlayer from './SpyPlayer.svelte';
-    import FinancePlayer from "./FinancePlayer.svelte";
+	import FinancePlayer from './FinancePlayer.svelte';
+	import { formatGameNumbers } from '../../services/stringService';
 
 	export let game: SerializedGame;
+	export let currentPlayer: SerializedRoomPlayer;
 	export let player: SerializedRoomPlayer;
 </script>
 
@@ -51,14 +53,14 @@
 				<p>({player.difficulty.name})</p>
 			</div>
 		{/if}
-		<p>{$t('play.game.score')}: {player.score}</p>
-		<p>{$t('play.game.gold')}: {player.gold}</p>
-		<p>{$t('play.game.territories')}: {game.territories.reduce((accumulator, territory: SerializedGameTerritory) => accumulator + Number(territory.owner?.id === player.id), 0)}</p>
+		<p>{$t('play.game.score')}: {formatGameNumbers(player.score)}</p>
+		<p>{$t('play.game.gold')}: {formatGameNumbers(player.gold ?? 0)}</p>
+		<p>{$t('play.game.territories')}: {formatGameNumbers(game.territories.reduce((accumulator, territory: SerializedGameTerritory) => accumulator + Number(territory.owner?.id === player.id), 0))}</p>
 		{#if player.user?.id !== $profile?.id}
 			<div class="flex gap-3">
-                <SpyPlayer bind:game {player} />
-                <FinancePlayer bind:game {player} />
-            </div>
+				<SpyPlayer bind:game {player} />
+				<FinancePlayer bind:game {currentPlayer} targetPlayer={player} />
+			</div>
 		{/if}
 	</div>
 </div>

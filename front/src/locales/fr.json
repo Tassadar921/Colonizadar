@@ -273,17 +273,21 @@
 			"fall": "Automne",
 			"winter": "Hiver",
 			"spy": "Espionner",
-            "finance": "Financer",
+			"finance": "Financer",
+			"will-receive": "recevra",
 			"declare-war": "Déclarer une guerre",
 			"subversion": "Subversion",
+			"cost": "Coût",
+			"fortified": "Fortifié",
+			"fortify": "Fortifier",
 			"country-modal": {
 				"owner": "Propriétaire",
 				"indigenous": "Indigènes",
 				"value": "Valeur"
 			},
-            "finance-player-modal": {
-                "title": "Financer un joueur"
-            }
+			"finance-player-modal": {
+				"title": "Financer un joueur"
+			}
 		}
 	}
 }

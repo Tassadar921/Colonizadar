@@ -21,7 +21,6 @@
 		try {
 			const { data: gameData } = await axios.get(`/api/game/${gameId}`);
 			game = gameData.game;
-			currentPlayer = game.players.find((player: SerializedRoomPlayer) => player.user?.id === $profile!.id);
 		} catch (error: any) {
 			showToast(error.response.data.error, 'error');
 			navigate('/play');
@@ -42,6 +41,10 @@
 				return 'spring';
 		}
 	};
+
+	$: if (game) {
+		currentPlayer = game.players.find((player: SerializedRoomPlayer) => player.user?.id === $profile!.id);
+	}
 </script>
 
 <Title title={game?.name} />
@@ -57,15 +60,15 @@
 <div class="flex gap-5 justify-center items-center">
 	<div class="flex flex-col">
 		{#each game?.players.slice(0, game?.players.length / 2) as player}
-			<SideGamePlayer bind:game {player} />
+			<SideGamePlayer bind:game {currentPlayer} {player} />
 		{/each}
 	</div>
 	<div class="w-4/5 flex flex-col gap-3 items-center">
-		<Map bind:game />
+		<Map bind:game {currentPlayer} />
 	</div>
 	<div class="flex flex-col">
 		{#each game?.players.slice(game?.players.length / 2) as player}
-			<SideGamePlayer bind:game {player} />
+			<SideGamePlayer bind:game {currentPlayer} {player} />
 		{/each}
 	</div>
 </div>

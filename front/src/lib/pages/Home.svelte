@@ -2,7 +2,7 @@
 	import Card from '../shared/Card.svelte';
 	import { t } from 'svelte-i18n';
 	import Title from '../shared/Title.svelte';
-    import Range from "../shared/Range.svelte";
+	import Range from '../shared/Range.svelte';
 
 	interface Page {
 		title: string;

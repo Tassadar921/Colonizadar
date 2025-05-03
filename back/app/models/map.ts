@@ -21,9 +21,6 @@ export default class Map extends BaseModel {
     declare name: string;
 
     @column()
-    declare neutralFlagId: string;
-
-    @column()
     declare mainSeason: number;
 
     @column()
@@ -57,10 +54,16 @@ export default class Map extends BaseModel {
     declare financePlayerCostFactor: number;
 
     @column()
+    declare financePlayerStep: number;
+
+    @column()
     declare financeWildTerritoryCostFactor: number;
 
     @column()
     declare financeWildTerritoryEnforcementFactor: number;
+
+    @column()
+    declare financeWildTerritoryStep: number;
 
     @column()
     declare wildTerritorySubversionFactor: number;
@@ -74,10 +77,29 @@ export default class Map extends BaseModel {
     @column()
     declare fortifyCost: number;
 
+    @column()
+    declare neutralFlagId: string;
+
     @belongsTo((): typeof File => File, {
         foreignKey: 'neutralFlagId',
     })
     declare neutralFlag: BelongsTo<typeof File>;
+
+    @column()
+    declare fortifiedIconId: string;
+
+    @belongsTo((): typeof File => File, {
+        foreignKey: 'fortifiedIconId',
+    })
+    declare fortifiedIcon: BelongsTo<typeof File>;
+
+    @column()
+    declare factoryIconId: string;
+
+    @belongsTo((): typeof File => File, {
+        foreignKey: 'factoryIconId',
+    })
+    declare factoryIcon: BelongsTo<typeof File>;
 
     @column()
     declare createdById: string;
@@ -110,7 +132,10 @@ export default class Map extends BaseModel {
             spyFortifiedTerritoryCost: this.spyFortifiedTerritoryCost,
             spyPlayerCost: this.spyPlayerCost,
             financePlayerCostFactor: this.financePlayerCostFactor,
+            financePlayerStep: this.financePlayerStep,
+            financeWildTerritoryStep: this.financeWildTerritoryStep,
             baseSubversionCost: this.baseSubversionCost,
+            fortifyCost: this.fortifyCost,
             territories: await Promise.all(this.territories.map(async (territory: Territory): Promise<SerializedTerritory> => territory.apiSerialize(language, true))),
             createdBy: this.createdBy.apiSerialize(),
             createdAt: this.createdAt?.toString(),
@@ -129,7 +154,10 @@ export default class Map extends BaseModel {
             spyFortifiedTerritoryCost: this.spyFortifiedTerritoryCost,
             spyPlayerCost: this.spyPlayerCost,
             financePlayerCostFactor: this.financePlayerCostFactor,
+            financePlayerStep: this.financePlayerStep,
+            financeWildTerritoryStep: this.financeWildTerritoryStep,
             baseSubversionCost: this.baseSubversionCost,
+            fortifyCost: this.fortifyCost,
             createdBy: this.createdBy.apiSerialize(),
             createdAt: this.createdAt?.toString(),
             updatedAt: this.updatedAt?.toString(),

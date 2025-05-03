@@ -11,7 +11,10 @@ type SerializedMap = {
     spyFortifiedTerritoryCost: number;
     spyPlayerCost: number;
     financePlayerCostFactor: number;
+    financePlayerStep: number;
+    financeWildTerritoryStep: number;
     baseSubversionCost: number;
+    fortifyCost: number;
     territories: SerializedTerritory[];
     createdBy: SerializedUser;
     createdAt?: string;

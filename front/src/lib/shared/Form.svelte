@@ -8,10 +8,11 @@
 	import FormBackground from './background/FormBackground.svelte';
 	import { language } from '../../stores/languageStore';
 	import Send from '../icons/Send.svelte';
+	import { showToast } from '../../services/toastService';
 
 	const dispatch = createEventDispatcher();
 
-	export let method: 'GET' | 'POST' | 'get' | 'post' | undefined = 'GET';
+	export let method: 'GET' | 'POST' | 'get' | 'post' | 'PUT' | 'put' | 'PATCH' | 'patch' | undefined = 'GET';
 	export let action: string = '';
 	export let isValid: boolean = false;
 	export let submittable: boolean = true;
@@ -42,7 +43,8 @@
 			});
 			dispatch('success', data);
 		} catch (error: any) {
-			dispatch('error', error.response.data.error);
+			showToast(error.response.data.error, 'error');
+			dispatch('error');
 		}
 		isLoading = false;
 	};
@@ -71,6 +73,7 @@
 				type="submit"
 				bind:disabled={isSendButtonDisabled}
 				customStyle
+				ariaLabel="Submit form"
 				additionalStyle="bg-green-700 {isSendButtonDisabled ? 'cursor-not-allowed' : 'hover:bg-green-800'} transition-all duration-300 py-2 px-4 rounded-xl text-2xl font-bold"
 			>
 				<div class="flex flex-row items-center gap-3">

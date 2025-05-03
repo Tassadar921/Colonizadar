@@ -6,6 +6,7 @@ type SerializedGameTerritory = {
     infantry?: number;
     ships?: number;
     value: number;
+    isFortified: boolean;
     owner?: SerializedRoomPlayer;
     territory: SerializedTerritory;
     createdAt?: string;

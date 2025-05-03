@@ -26,10 +26,6 @@
 		navigate('/');
 	};
 
-	const handleFailure = (): void => {
-		showToast($t('toast.login.error'), 'error');
-	};
-
 	$: isValid = !!email && !!password;
 </script>
 
@@ -37,7 +33,7 @@
 
 <Breadcrumbs hasBackground items={[{ label: $t('home.title'), path: '/' }, { label: $t('login.title') }]} />
 
-<Form action="/api/login" method="post" on:success={handleSuccess} on:error={handleFailure} bind:isValid>
+<Form action="/api/login" method="post" on:success={handleSuccess} bind:isValid>
 	<Input type="email" name="email" placeholder={$t('common.email.placeholder')} label={$t('common.email.label')} bind:value={email} />
 	<PasswordInput bind:value={password} />
 	<div class="w-full mb-3">

@@ -20,13 +20,17 @@ export default class extends BaseSchema {
             table.integer('spy_fortified_territory_cost').notNullable();
             table.integer('spy_player_cost').notNullable();
             table.decimal('finance_player_cost_factor').notNullable();
+            table.integer('finance_player_step').notNullable();
             table.decimal('finance_wild_territory_cost_factor').notNullable();
             table.decimal('finance_wild_territory_enforcement_factor').notNullable();
+            table.integer('finance_wild_territory_step').notNullable();
             table.decimal('wild_territory_subversion_factor').notNullable();
             table.integer('base_subversion_cost').notNullable();
             table.decimal('subversion_cost_factor').notNullable();
             table.integer('fortify_cost').notNullable();
             table.uuid('neutral_flag_id').notNullable().references('id').inTable('files').onDelete('CASCADE');
+            table.uuid('fortified_icon_id').notNullable().references('id').inTable('files').onDelete('CASCADE');
+            table.uuid('factory_icon_id').notNullable().references('id').inTable('files').onDelete('CASCADE');
             table.uuid('created_by_id').notNullable().references('id').inTable('users').onDelete('CASCADE');
             table.timestamp('created_at');
             table.timestamp('updated_at');
