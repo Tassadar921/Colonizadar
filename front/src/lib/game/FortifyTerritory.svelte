@@ -6,9 +6,30 @@
 	import type SerializedGameTerritory from 'colonizadar-backend/app/types/serialized/serialized_game_territory';
 	import axios from 'axios';
 	import { formatGameNumbers } from '../../services/stringService';
+	import { getCentroidFromPath, setFortifiedIcon } from '../../services/gameGeometryService';
 
 	export let game: SerializedGame;
 	export let gameTerritory: SerializedGameTerritory;
+	export let svgElement: SVGSVGElement;
+
+	const handleGraphicalUpdate = (): void => {
+		const svgGroup: SVGGElement | null = document.getElementById(gameTerritory.territory.code.toLowerCase()) as unknown as SVGGElement | null;
+		const svgPath: SVGPathElement | null = svgGroup?.querySelector('.mainland') as SVGPathElement | null;
+		if (!svgGroup || !svgPath) {
+			return;
+		}
+
+		const ctm: DOMMatrix | null = svgPath.getCTM();
+		const groupCTMInverse: DOMMatrix | undefined = svgGroup.getCTM()?.inverse();
+		if (!ctm || !groupCTMInverse) {
+			return;
+		}
+
+		const point: SVGPoint = getCentroidFromPath(svgPath, svgElement);
+		const pointInGroup: DOMPoint = point.matrixTransform(ctm).matrixTransform(groupCTMInverse);
+
+		setFortifiedIcon(game, pointInGroup, svgGroup);
+	};
 
 	const handleFortify = async (): Promise<void> => {
 		try {
@@ -28,6 +49,7 @@
 					return gameTerritory;
 				}),
 			};
+			handleGraphicalUpdate();
 			showToast(data.message);
 		} catch (error: any) {
 			showToast(error.response.data.error, 'error');

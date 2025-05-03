@@ -9,7 +9,7 @@
 	import type SerializedGame from 'colonizadar-backend/app/types/serialized/serialized_game';
 	import type SerializedGameTerritory from 'colonizadar-backend/app/types/serialized/serialized_game_territory';
 	import type SerializedRoomPlayer from 'colonizadar-backend/app/types/serialized/serialized_room_player';
-	import { getCentroidFromPath } from '../../services/gameGeometryService';
+	import { getCentroidFromPath, setFactoryIcon, setFortifiedIcon } from '../../services/gameGeometryService';
 	import SpyTerritory from './SpyTerritory.svelte';
 	import { profile } from '../../stores/profileStore';
 	import FinanceWildTerritory from './FinanceWildTerritory.svelte';
@@ -187,6 +187,8 @@
 
 	$: if (game) {
 		svgElement?.querySelectorAll('.flag-icon').forEach((el) => el.remove());
+		svgElement?.querySelectorAll('.factory-icon').forEach((el) => el.remove());
+		svgElement?.querySelectorAll('.fortified-icon').forEach((el) => el.remove());
 
 		for (const gameTerritory of game.territories) {
 			const svgGroup: SVGGElement | null = document.getElementById(gameTerritory.territory.code.toLowerCase()) as unknown as SVGGElement | null;
@@ -198,14 +200,13 @@
 
 			resetTerritoryColor(svgGroup);
 
-			const point: SVGPoint = getCentroidFromPath(svgPath, svgElement);
-
 			const ctm: DOMMatrix | null = svgPath.getCTM();
 			const groupCTMInverse: DOMMatrix | undefined = svgGroup.getCTM()?.inverse();
 			if (!ctm || !groupCTMInverse) {
 				continue;
 			}
 
+			const point: SVGPoint = getCentroidFromPath(svgPath, svgElement);
 			const pointInGroup: DOMPoint = point.matrixTransform(ctm).matrixTransform(groupCTMInverse);
 
 			const flag: SVGImageElement = document.createElementNS('http://www.w3.org/2000/svg', 'image');
@@ -229,23 +230,9 @@
 
 			if (gameTerritory.owner) {
 				if (gameTerritory.territory.isFactory) {
-					const factoryIcon: SVGImageElement = document.createElementNS('http://www.w3.org/2000/svg', 'image');
-					factoryIcon.classList.add('fortified-icon');
-					factoryIcon.setAttribute('href', `${import.meta.env.VITE_API_BASE_URL}/api/static/${game.map.id}/factory-icon?token=${localStorage.getItem('apiToken')}`);
-					factoryIcon.setAttribute('width', '4');
-					factoryIcon.setAttribute('height', '4');
-					factoryIcon.setAttribute('x', String(pointInGroup.x));
-					factoryIcon.setAttribute('y', String(pointInGroup.y - 1));
-					svgGroup.appendChild(factoryIcon);
+					setFactoryIcon(game, pointInGroup, svgGroup);
 				} else if (gameTerritory.isFortified) {
-					const fortifiedIcon: SVGImageElement = document.createElementNS('http://www.w3.org/2000/svg', 'image');
-					fortifiedIcon.classList.add('fortified-icon');
-					fortifiedIcon.setAttribute('href', `${import.meta.env.VITE_API_BASE_URL}/api/static/${game.map.id}/fortified-icon?token=${localStorage.getItem('apiToken')}`);
-					fortifiedIcon.setAttribute('width', '4');
-					fortifiedIcon.setAttribute('height', '4');
-					fortifiedIcon.setAttribute('x', String(pointInGroup.x));
-					fortifiedIcon.setAttribute('y', String(pointInGroup.y - 1));
-					svgGroup.appendChild(fortifiedIcon);
+					setFortifiedIcon(game, pointInGroup, svgGroup);
 				}
 			}
 		}
@@ -285,7 +272,7 @@
 						<FinanceWildTerritory bind:game {currentPlayer} gameTerritory={selectedTerritory} />
 					{/if}
 				{:else if !selectedTerritory.isFortified}
-					<FortifyTerritory bind:game gameTerritory={selectedTerritory} />
+					<FortifyTerritory bind:game gameTerritory={selectedTerritory} {svgElement} />
 				{/if}
 			{/if}
 		</div>
