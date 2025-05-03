@@ -17,14 +17,15 @@ export const resetPasswordValidator = vine.compile(
     })
 );
 
-export const updateProfileValidator = vine.compile(
+export const resetPasswordParamsValidator = vine.compile(
     vine.object({
-        username: vine.string().trim().minLength(3).maxLength(50).alphaNumeric(),
+        token: vine.string().trim().uuid(),
     })
 );
 
-export const uploadProfilePictureValidator = vine.compile(
+export const updateProfileValidator = vine.compile(
     vine.object({
+        username: vine.string().trim().minLength(3).maxLength(50).alphaNumeric(),
         profilePicture: vine
             .file({
                 size: '2mb',

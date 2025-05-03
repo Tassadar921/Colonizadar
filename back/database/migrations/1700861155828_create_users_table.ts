@@ -12,7 +12,7 @@ export default class extends BaseSchema {
             table.string('username', 50).notNullable();
             table.string('email', 255).notNullable().unique();
             table.string('password', 255).notNullable();
-            table.string('creation_token', 255).nullable();
+            table.uuid('creation_token').nullable();
             table.boolean('enabled').defaultTo(false);
             table.boolean('accepted_terms_and_conditions').defaultTo(false);
             table.enum('role', Object.values(UserRoleEnum)).notNullable().defaultTo(UserRoleEnum.USER);

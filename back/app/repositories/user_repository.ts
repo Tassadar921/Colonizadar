@@ -10,6 +10,10 @@ export default class UserRepository extends BaseRepository<typeof User> {
         super(User);
     }
 
+    public async findOneByToken(tokenId: string): Promise<User> {
+        return await this.Model.query().select('users.*').leftJoin('auth_access_tokens', 'auth_access_tokens.tokenable_id', 'users.id').where('auth_access_tokens.id', tokenId).firstOrFail();
+    }
+
     public async searchNotFriends(query: string, page: number, perPage: number, user: User): Promise<PaginatedUsers> {
         const users: ModelPaginatorContract<User> = await this.Model.query()
             .select('users.*', 'received_pending_friends.id AS receivedPendingFriendId', 'sent_pending_friends.id AS sentPendingFriendId')

@@ -88,7 +88,6 @@ export default class extends BaseSeeder {
                     englishName: bot.english,
                     pictureId: file.id,
                 });
-                console.log(`Bot ${bot.english} created`);
             }
         }
     }

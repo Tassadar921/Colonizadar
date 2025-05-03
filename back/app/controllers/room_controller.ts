@@ -1,5 +1,5 @@
 import { inject } from '@adonisjs/core';
-import { HttpContext, Response } from '@adonisjs/core/http';
+import { HttpContext } from '@adonisjs/core/http';
 import { createRoomValidator, inviteRoomValidator, kickValidator } from '#validators/room';
 import Room from '#models/room';
 import RoomRepository from '#repositories/room_repository';
@@ -9,22 +9,19 @@ import User from '#models/user';
 import FriendRepository from '#repositories/friend_repository';
 import UserRepository from '#repositories/user_repository';
 import transmit from '@adonisjs/transmit/services/main';
-import Friend from '#models/friend';
 import { DateTime } from 'luxon';
-import Bot from '#models/bot';
-import BotRepository from '#repositories/bot_repository';
 import Language from '#models/language';
 import PlayableCountryRepository from '#repositories/playable_country_repository';
 import PlayableCountry from '#models/playable_country';
-import { selectBotDifficultyParamValidator, selectBotDifficultyValidator, selectCountryParamValidator, selectCountryValidator, setReadyValidator } from '#validators/room_player';
+import { selectBotDifficultyParamsValidator, selectBotDifficultyValidator, selectCountryParamsValidator, selectCountryValidator, setReadyValidator } from '#validators/room_player';
 import BotDifficultyRepository from '#repositories/bot_difficulty_repository';
 import BotDifficulty from '#models/bot_difficulty';
-import SerializedBotDifficulty from '#types/serialized/serialized_bot_difficulty';
 import sleep from '../utils/sleep.js';
 import GameRepository from '#repositories/game_repository';
 import Map from '#models/map';
 import MapRepository from '#repositories/map_repository';
 import Game from '#models/game';
+import RoomPlayerRepository from '#repositories/room_player_repository';
 
 @inject()
 export default class RoomController {
@@ -32,11 +29,11 @@ export default class RoomController {
         private readonly roomRepository: RoomRepository,
         private readonly userRepository: UserRepository,
         private readonly friendRepository: FriendRepository,
-        private readonly botRepository: BotRepository,
         private readonly playableCountryRepository: PlayableCountryRepository,
         private readonly botDifficultyRepository: BotDifficultyRepository,
         private readonly mapRepository: MapRepository,
-        private readonly gameRepository: GameRepository
+        private readonly gameRepository: GameRepository,
+        private readonly roomPlayerRepository: RoomPlayerRepository
     ) {}
 
     public async create({ request, response, user }: HttpContext): Promise<void> {
@@ -49,7 +46,7 @@ export default class RoomController {
             await activeRoom.save();
         }
 
-        const { name, password } = await createRoomValidator.validate(request.all());
+        const { name, password } = await request.validateUsing(createRoomValidator);
 
         const map: Map = await this.mapRepository.firstOrFail({ name: 'World Map' });
 
@@ -62,7 +59,7 @@ export default class RoomController {
         });
         await room.refresh();
 
-        const country: PlayableCountry = await this.playableCountryRepository.getFirst();
+        const country: PlayableCountry = await this.playableCountryRepository.firstOrFail();
         await RoomPlayer.create({
             userId: user.id,
             isUserConnected: true,
@@ -74,16 +71,10 @@ export default class RoomController {
     }
 
     public async invite({ request, response, user, room }: HttpContext): Promise<void> {
-        const { userId } = await inviteRoomValidator.validate(request.all());
-        const friend: User | null = await this.userRepository.findOneBy({ frontId: Number(userId) });
-        if (!friend) {
-            return response.notFound({ error: 'User not found' });
-        }
+        const { userId } = await request.validateUsing(inviteRoomValidator);
 
-        const friendRelationship: Friend | null = await this.friendRepository.findOneFromUsers(user, friend);
-        if (!friendRelationship) {
-            return response.notFound({ error: 'You are not friend with this user' });
-        }
+        const friend: User | null = await this.userRepository.firstOrFail({ frontId: userId });
+        await this.friendRepository.findOneFromUsers(user, friend);
 
         transmit.broadcast(`notification/play/invite/${userId}`, { roomId: room.frontId, from: user.apiSerialize() });
         return response.send({ message: 'Invitation sent' });
@@ -105,7 +96,7 @@ export default class RoomController {
     public async join({ response, user, room, language }: HttpContext): Promise<void> {
         if (!room.players.some((player: RoomPlayer): boolean => player.userId === user.id)) {
             if (room.players.length < 6) {
-                const country: PlayableCountry = await this.playableCountryRepository.getFirst();
+                const country: PlayableCountry = await this.playableCountryRepository.firstOrFail();
                 await RoomPlayer.create({
                     userId: user.id,
                     roomId: room.id,
@@ -128,18 +119,13 @@ export default class RoomController {
         return response.send({ room: await room.apiSerialize(language, user) });
     }
 
-    public async leave({ response, user, room, language }: HttpContext): Promise<void> {
-        await this.disconnect(user, room, language, response);
+    public async leave({ response, user, room, language, player }: HttpContext): Promise<void> {
+        await this.disconnect(user, player, room, language);
 
         return response.send({ message: 'Room left' });
     }
 
-    public async heartbeat({ response, user, room }: HttpContext): Promise<void> {
-        const player: RoomPlayer | undefined = room.players.find((player: RoomPlayer): boolean => player.userId === user.id);
-        if (!player) {
-            return response.notFound({ error: 'You are not into this room' });
-        }
-
+    public async heartbeat({ response, player }: HttpContext): Promise<void> {
         player.lastHeartbeat = DateTime.now();
         await player.save();
 
@@ -147,25 +133,8 @@ export default class RoomController {
     }
 
     public async addBot({ response, user, room, language }: HttpContext): Promise<void> {
-        if (room.ownerId !== user.id) {
-            return response.forbidden({ error: 'You are not the owner of this room' });
-        }
-
         if (room.players.length < 6) {
-            let bot: Bot = await this.botRepository.getOneForRoom(room);
-            const country: PlayableCountry = await this.playableCountryRepository.getFirst();
-            const difficulty: BotDifficulty = await this.botDifficultyRepository.getDefaultDifficulty();
-            const player: RoomPlayer = await RoomPlayer.create({
-                roomId: room.id,
-                difficultyId: difficulty.id,
-                botId: bot?.id,
-                countryId: country.id,
-            });
-
-            await player.load('bot');
-            await player.load('country');
-            await player.load('difficulty');
-            await player.refresh();
+            const player: RoomPlayer = await this.roomPlayerRepository.createBot(room);
 
             transmit.broadcast(`notification/play/room/${room.frontId}/player/joined`, { player: player.apiSerialize(language, user) });
 
@@ -175,16 +144,7 @@ export default class RoomController {
         }
     }
 
-    public async getBotDifficulties({ response, language }: HttpContext): Promise<void> {
-        const difficulties: BotDifficulty[] = await this.botDifficultyRepository.all();
-        return response.send({ difficulties: difficulties.map((difficulty: BotDifficulty): SerializedBotDifficulty => difficulty.apiSerialize(language)) });
-    }
-
     public async kick({ request, response, user, room, language }: HttpContext): Promise<void> {
-        if (room.ownerId !== user.id) {
-            return response.forbidden({ error: 'You are not the owner of this room' });
-        }
-
         const { playerId } = await kickValidator.validate(request.params());
 
         const player: RoomPlayer | undefined = room.players.find((player: RoomPlayer): boolean => player.frontId === playerId);
@@ -200,7 +160,8 @@ export default class RoomController {
     }
 
     public async selectCountry({ request, response, user, room, language }: HttpContext): Promise<void> {
-        const { playerId } = await selectCountryParamValidator.validate(request.params());
+        const { playerId } = await selectCountryParamsValidator.validate(request.params());
+        const { countryId } = await request.validateUsing(selectCountryValidator);
 
         const player: RoomPlayer | undefined = room.players.find((player: RoomPlayer): boolean => player.frontId === playerId);
         if (!player) {
@@ -211,11 +172,7 @@ export default class RoomController {
             return response.forbidden({ error: "You can't change the country of a bot if you're not the owner" });
         }
 
-        const { countryId } = await selectCountryValidator.validate(request.all());
-        const country: PlayableCountry | null = await this.playableCountryRepository.findOneBy({ frontId: countryId });
-        if (!country) {
-            return response.notFound({ error: 'Country not found' });
-        }
+        const country: PlayableCountry | null = await this.playableCountryRepository.firstOrFail({ frontId: countryId });
 
         player.countryId = country.id;
         await player.save();
@@ -230,24 +187,19 @@ export default class RoomController {
     }
 
     public async selectBotDifficulty({ request, response, user, room, language }: HttpContext): Promise<void> {
-        const { playerId } = await selectBotDifficultyParamValidator.validate(request.params());
+        const { playerId } = await selectBotDifficultyParamsValidator.validate(request.params());
+        const { difficultyId } = await request.validateUsing(selectBotDifficultyValidator);
 
         const player: RoomPlayer | undefined = room.players.find((player: RoomPlayer): boolean => player.frontId === playerId);
         if (!player) {
             return response.notFound({ error: 'Player is not into this room' });
-        } else if (room.ownerId !== user.id) {
-            return response.forbidden({ error: 'You are not the owner of this room' });
         } else if (player.userId) {
             return response.forbidden({ error: 'Players have no difficulty' });
         } else if (player.botId && room.ownerId !== user.id) {
             return response.forbidden({ error: "You can't change the country of a bot if you're not the owner" });
         }
 
-        const { difficultyId } = await selectBotDifficultyValidator.validate(request.all());
-        const difficulty: BotDifficulty | null = await this.botDifficultyRepository.findOneBy({ frontId: difficultyId });
-        if (!difficulty) {
-            return response.notFound({ error: 'Difficulty not found' });
-        }
+        const difficulty: BotDifficulty | null = await this.botDifficultyRepository.firstOrFail({ frontId: difficultyId });
 
         player.difficultyId = difficulty.id;
         await player.save();
@@ -261,13 +213,8 @@ export default class RoomController {
         return response.send({ message: 'Difficulty selected' });
     }
 
-    public async ready({ request, response, user, room, language }: HttpContext): Promise<void> {
-        const player: RoomPlayer | undefined = room.players.find((player: RoomPlayer): boolean => player.userId === user.id);
-        if (!player) {
-            return response.notFound({ error: 'You are not the owner of this room' });
-        }
-
-        const { isReady } = await setReadyValidator.validate(request.all());
+    public async ready({ request, response, user, room, language, player }: HttpContext): Promise<void> {
+        const { isReady } = await request.validateUsing(setReadyValidator);
 
         if (isReady) {
             const isValidReady: boolean = room.players.every((loopPlayer: RoomPlayer): boolean => {
@@ -278,11 +225,17 @@ export default class RoomController {
                     return loopPlayer.countryId !== player.countryId;
                 }
 
-                const botPlayers: RoomPlayer[] = room.players.filter((p: RoomPlayer): boolean => !p.userId);
-
-                const isUniqueAmongPlayers: boolean = !room.players.some((p: RoomPlayer): boolean => !!p.userId && p.countryId === loopPlayer.countryId);
-
-                const uniqueBotCountries = new Set(botPlayers.map((bot: RoomPlayer): string => bot.countryId));
+                const botPlayers: RoomPlayer[] = room.players.filter((p: RoomPlayer): boolean => {
+                    return !p.userId;
+                });
+                const isUniqueAmongPlayers: boolean = !room.players.some((p: RoomPlayer): boolean => {
+                    return !!p.userId && p.countryId === loopPlayer.countryId;
+                });
+                const uniqueBotCountries = new Set(
+                    botPlayers.map((bot: RoomPlayer): string => {
+                        return bot.countryId;
+                    })
+                );
                 const areBotsUnique: boolean = uniqueBotCountries.size === botPlayers.length;
 
                 return isUniqueAmongPlayers && areBotsUnique;
@@ -334,18 +287,13 @@ export default class RoomController {
         transmit.broadcast(`notification/play/room/${room.frontId}/game/start`, { message: 'Game is starting', gameId: game.frontId });
     }
 
-    private async disconnect(user: User, room: Room, language: Language, response: Response): Promise<void> {
+    private async disconnect(user: User, player: RoomPlayer, room: Room, language: Language): Promise<void> {
         if (room.ownerId === user.id) {
             room.status = RoomStatusEnum.CLOSED;
             await room.save();
 
             transmit.broadcast(`notification/play/room/${room.frontId}/closed`);
         } else {
-            const player: RoomPlayer | undefined = room.players.find((player: RoomPlayer): boolean => player.userId === user.id);
-            if (!player) {
-                return response.notFound({ error: 'You are not into this room' });
-            }
-
             await player.delete();
 
             transmit.broadcast(`notification/play/room/${room.frontId}/player/leave`, { player: player.apiSerialize(language, user) });

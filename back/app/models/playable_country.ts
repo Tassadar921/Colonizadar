@@ -23,28 +23,28 @@ export default class PlayableCountry extends BaseModel {
     declare color: string;
 
     @column()
-    declare infantryAttack: number;
+    declare infantryAttackFactor: number;
 
     @column()
-    declare infantryDefense: number;
+    declare infantryDefenseFactor: number;
 
     @column()
-    declare infantryPrice: number;
+    declare infantryPriceFactor: number;
 
     @column()
-    declare shipAttack: number;
+    declare shipAttackFactor: number;
 
     @column()
-    declare shipDefense: number;
+    declare shipDefenseFactor: number;
 
     @column()
-    declare shipPrice: number;
+    declare shipPriceFactor: number;
 
     @column()
-    declare landingAttack: number;
+    declare landingAttackFactor: number;
 
     @column()
-    declare landingDefense: number;
+    declare landingDefenseFactor: number;
 
     @column()
     declare flagId: string | null;
@@ -82,14 +82,14 @@ export default class PlayableCountry extends BaseModel {
             id: this.frontId,
             name: this.translate(language),
             color: this.color,
-            infantryAttack: this.infantryAttack,
-            infantryDefense: this.infantryDefense,
-            infantryPrice: this.infantryPrice,
-            shipAttack: this.shipAttack,
-            shipDefense: this.shipDefense,
-            shipPrice: this.shipPrice,
-            landingAttack: this.landingAttack,
-            landingDefense: this.landingDefense,
+            infantryAttackFactor: this.infantryAttackFactor,
+            infantryDefenseFactor: this.infantryDefenseFactor,
+            infantryPriceFactor: this.infantryPriceFactor,
+            shipAttackFactor: this.shipAttackFactor,
+            shipDefenseFactor: this.shipDefenseFactor,
+            shipPriceFactor: this.shipPriceFactor,
+            landingAttackFactor: this.landingAttackFactor,
+            landingDefenseFactor: this.landingDefenseFactor,
             createdAt: this.createdAt?.toString(),
             updatedAt: this.updatedAt?.toString(),
         };

@@ -17,6 +17,7 @@ const RoomController = () => import('#controllers/room_controller');
 const PlayableCountryController = () => import('#controllers/playable_country_controller');
 const MapController = () => import('#controllers/map_controller');
 const GameController = () => import('#controllers/game_controller');
+const BotDifficultyController = () => import('#controllers/bot_difficulty_controller');
 
 // API requests
 router
@@ -87,21 +88,31 @@ router
                 router
                     .group((): void => {
                         router.post('/create', [RoomController, 'create']);
-                        router.get('/bot-difficulties', [RoomController, 'getBotDifficulties']);
-                        router.get('/:mapId/playable-countries', [PlayableCountryController, 'getAll']);
+                        router.get('/bot-difficulties', [BotDifficultyController, 'getAll']);
                         router.get('/maps', [MapController, 'getAll']);
+                        router.get('/:mapId/playable-countries', [PlayableCountryController, 'getAll']);
                         router.post('/join', [RoomController, 'checkWithToken']).use([middleware.room()]);
                         router
                             .group((): void => {
                                 router.post('/invite', [RoomController, 'invite']);
                                 router.put('/join', [RoomController, 'join']);
-                                router.delete('/leave', [RoomController, 'leave']);
-                                router.patch('/heartbeat', [RoomController, 'heartbeat']);
-                                router.post('add-bot', [RoomController, 'addBot']);
-                                router.delete('kick/:playerId', [RoomController, 'kick']);
                                 router.patch('/player/:playerId/select-country', [RoomController, 'selectCountry']);
-                                router.patch('/player/:playerId/select-difficulty', [RoomController, 'selectBotDifficulty']);
-                                router.patch('/player/:playerId/ready', [RoomController, 'ready']);
+
+                                router
+                                    .group((): void => {
+                                        router.post('/add-bot', [RoomController, 'addBot']);
+                                        router.delete('/player/kick/:playerId', [RoomController, 'kick']);
+                                        router.patch('/player/:playerId/select-difficulty', [RoomController, 'selectBotDifficulty']);
+                                    })
+                                    .middleware([middleware.isRoomOwner()]);
+
+                                router
+                                    .group((): void => {
+                                        router.delete('/leave', [RoomController, 'leave']);
+                                        router.patch('/heartbeat', [RoomController, 'heartbeat']);
+                                        router.patch('/player/ready', [RoomController, 'ready']);
+                                    })
+                                    .middleware([middleware.isRoomPlayer()]);
                             })
                             .prefix(':roomId')
                             .use([middleware.room()]);
@@ -110,7 +121,53 @@ router
 
                 router
                     .group((): void => {
-                        router.get('/', [GameController, 'get']);
+                        router
+                            .group((): void => {
+                                router.get('/', [GameController, 'get']);
+                                router.patch('/ready', [GameController, 'ready']);
+
+                                router
+                                    .group((): void => {
+                                        router
+                                            .group((): void => {
+                                                router
+                                                    .group((): void => {
+                                                        router
+                                                            .group((): void => {
+                                                                router.get('spy', [GameController, 'spyTerritory']);
+                                                                router.patch('finance', [GameController, 'financeWildTerritory']);
+                                                                router.patch('subverse', [GameController, 'subverse']);
+                                                            })
+                                                            .use([middleware.isForeignTerritory()]);
+
+                                                        router
+                                                            .group((): void => {
+                                                                router.patch('fortify', [GameController, 'fortify']);
+                                                                router.patch('buy/infantry', [GameController, 'buyInfantry']);
+                                                                router.patch('buy/ships', [GameController, 'buyShips']);
+                                                            })
+                                                            .use([middleware.isOwnedTerritory()]);
+                                                    })
+                                                    .use([middleware.isValidSeason()]);
+                                            })
+                                            .prefix('territory/:territoryCode')
+                                            .use([middleware.gameTerritory()]);
+
+                                        router
+                                            .group((): void => {
+                                                router
+                                                    .group((): void => {
+                                                        router.get('spy', [GameController, 'spyPlayer']);
+                                                        router.patch('finance', [GameController, 'financePlayer']);
+                                                    })
+                                                    .use([middleware.isValidSeason()]);
+                                            })
+                                            .prefix('player/:playerId');
+                                    })
+                                    .prefix('actions')
+                                    .use([middleware.isGamePlaying()]);
+                            })
+                            .use([middleware.isGamePlayer()]);
                     })
                     .prefix('game/:gameId')
                     .use([middleware.game()]);
@@ -121,10 +178,12 @@ router
             .group((): void => {
                 router.get('/profile-picture/:userId', [FileController, 'serveStaticProfilePictureFile']);
                 router.get('/bot-picture/:botId', [FileController, 'serveStaticBotPictureFile']);
+                router.get('/:mapId/fortified-icon', [FileController, 'serveStaticFortifiedIconFile']);
+                router.get('/:mapId/factory-icon', [FileController, 'serveStaticFactoryIconFile']);
                 router
                     .group((): void => {
                         router.get('/:countryId', [FileController, 'serveStaticCountryFlagFile']);
-                        router.get('/:mapId/neutral', [FileController, 'serveStaticNeutralCountryFlagFile']);
+                        router.get('/:mapId/neutral-flag', [FileController, 'serveStaticNeutralCountryFlagFile']);
                     })
                     .prefix('country-flag');
             })

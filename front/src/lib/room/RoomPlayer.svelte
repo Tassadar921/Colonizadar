@@ -18,7 +18,6 @@
 	export let botDifficulties: Option[] = [];
 	export let room: SerializedRoom;
 	export let player: SerializedRoomPlayer;
-	export let isLoading: boolean;
 
 	interface Option {
 		label: string;
@@ -73,7 +72,7 @@
 </script>
 
 <div
-	class="grid grid-cols-4 border {invalidCountry ? 'shadow-md shadow-red-500' : ''} {player.user && checkedProfile.id === player.user.id
+	class="grid grid-cols-4 border {invalidCountry ? 'shadow-main' : ''} {player.user && checkedProfile.id === player.user.id
 		? 'border-gray-400 dark:border-gray-700'
 		: 'border-gray-300 dark:border-gray-800'} rounded-xl hover:bg-gray-300 dark:hover:bg-gray-800 transition-colors duration-300 px-3 py-1"
 >

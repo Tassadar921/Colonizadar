@@ -38,10 +38,7 @@ export default class RoomProvider {
             return;
         }
 
-        const english: Language | null = await this.languageRepository.findOneBy({ code: Language.LANGUAGE_ENGLISH.code });
-        if (!english) {
-            throw new Error('English language not found');
-        }
+        const english: Language = await this.languageRepository.firstOrFail({ code: Language.LANGUAGE_ENGLISH.code });
 
         setInterval(async (): Promise<void> => {
             const rooms = await this.roomRepository.getPaginatedForHeartbeatChecks(1);

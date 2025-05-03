@@ -27,27 +27,26 @@
 
 	const handleSearch = async (): Promise<void> => {
 		searchBaseUrl = `/api/friends?${query ? `query=${query}` : ''}`;
-		const { data } = await axios.get(searchBaseUrl);
-		paginatedFriends = data.friends;
+		await updateFriends();
 	};
 
 	const updateFriends = async (): Promise<void> => {
-		const { data } = await axios.get(searchBaseUrl);
-		paginatedFriends = data.friends;
+		try {
+			const { data } = await axios.get(searchBaseUrl);
+			paginatedFriends = data.friends;
+		} catch (error: any) {
+			showToast(error.response.data.error, 'error');
+		}
 	};
 
 	const handleInviteFriend = async (user: SerializedUser): Promise<void> => {
 		try {
-			const response = await axios.post(`/api/room/${room.id}/invite`, {
+			await axios.post(`/api/room/${room.id}/invite`, {
 				userId: user.id,
 			});
-			if (response.status === 200) {
-				showToast($t(`${user.username} ${$t('toast.invite.success')}`));
-			} else {
-				showToast($t('toast.invite.error'));
-			}
-		} catch (e) {
-			showToast($t('toast.invite.error'));
+			showToast($t(`${user.username} ${$t('toast.invite.success')}`));
+		} catch (error: any) {
+			showToast(error.response.data.error, 'error');
 		}
 	};
 

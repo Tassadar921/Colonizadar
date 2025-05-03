@@ -1,11 +1,9 @@
-import { inject } from '@adonisjs/core';
 import File from '#models/file';
 import fs from 'fs';
 import fsPromises from 'fs/promises';
 import path from 'path';
 import mime from 'mime-types';
 
-@inject()
 export default class FileService {
     public delete(file: File): void {
         fs.unlink(`public/${file.path}`, (error): void => {

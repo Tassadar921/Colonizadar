@@ -1,17 +1,17 @@
 import { HttpContext, Request } from '@adonisjs/core/http';
 import { inject } from '@adonisjs/core';
 import RequestLanguagesEnum from '#types/enum/request_languages_enum';
-import Language from '#models/language';
 import LanguageRepository from '#repositories/language_repository';
+import type { NextFn } from '@adonisjs/core/types/http';
 
 @inject()
 export default class LanguageMiddleware {
     constructor(private readonly languageRepository: LanguageRepository) {}
 
-    public async handle(ctx: HttpContext, next: () => Promise<void>): Promise<void> {
-        const { request } = ctx;
-
-        ctx.language = await this.getLanguage(request);
+    public async handle(ctx: HttpContext, next: NextFn): Promise<void> {
+        ctx.language = await this.languageRepository.firstOrFail({
+            code: this.getLanguageCode(ctx.request).toLowerCase(),
+        });
 
         await next();
     }
@@ -24,17 +24,5 @@ export default class LanguageMiddleware {
         } catch (e) {
             return RequestLanguagesEnum.EN;
         }
-    }
-
-    private async getLanguage(request: Request): Promise<Language> {
-        let language: Language | null = await this.languageRepository.findOneBy({
-            code: this.getLanguageCode(request).toLowerCase(),
-        });
-
-        if (!language) {
-            throw new Error('Language not found');
-        }
-
-        return language;
     }
 }

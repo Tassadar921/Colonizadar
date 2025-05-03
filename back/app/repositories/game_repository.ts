@@ -12,7 +12,7 @@ export default class GameRepository extends BaseRepository<typeof Game> {
         super(Game);
     }
 
-    public async getFromFrontId(gameId: number): Promise<Game | null> {
+    public async getFromFrontId(gameId: number): Promise<Game> {
         return this.Model.query()
             .select('games.*')
             .leftJoin('rooms', 'rooms.id', 'games.room_id')
@@ -37,7 +37,7 @@ export default class GameRepository extends BaseRepository<typeof Game> {
             .preload('map', (mapQuery): void => {
                 mapQuery.preload('createdBy');
             })
-            .first();
+            .firstOrFail();
     }
 
     public async create(room: Room): Promise<Game> {
@@ -47,23 +47,29 @@ export default class GameRepository extends BaseRepository<typeof Game> {
         });
         await game.refresh();
 
-        await Promise.all(
-            room.map.territories.map(async (territory: Territory): Promise<GameTerritory> => {
+        await Promise.all([
+            ...room.map.territories.map(async (territory: Territory): Promise<GameTerritory> => {
                 let owner: RoomPlayer | undefined = undefined;
                 if (territory.defaultBelongsToId) {
                     owner = room.players.find((player: RoomPlayer): boolean => player.countryId === territory.defaultBelongsToId);
                 }
-                rollTerritoryPower(territory, rollTerritoryValue(territory));
+                const value: number = rollTerritoryValue(territory);
                 return await GameTerritory.create({
                     territoryId: territory.id,
                     gameId: game.id,
                     ownerId: owner?.id,
-                    power: territory.defaultPower ?? 1000,
+                    infantry: territory.defaultInfantry ?? rollTerritoryPower(territory, value),
                     ships: territory.defaultShips,
-                    value: rollTerritoryValue(territory),
+                    isFortified: territory.isFactory,
+                    value,
                 });
-            })
-        );
+            }),
+            ...room.players.map(async (player: RoomPlayer): Promise<RoomPlayer> => {
+                player.isReady = false;
+                player.gold = room.map.startingPlayersGold;
+                return await player.save();
+            }),
+        ]);
 
         await game.refresh();
 

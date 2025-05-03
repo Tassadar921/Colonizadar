@@ -13,4 +13,8 @@ export default class RegexService {
         const isValidEmailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return isValidEmailRegex.test(email);
     }
+
+    public formatGameNumbers(number: number): string {
+        return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+    }
 }

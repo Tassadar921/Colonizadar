@@ -263,10 +263,30 @@
 			"add-bot": "Ajouter un bot"
 		},
 		"game": {
+			"score": "Score",
+			"territories": "Territoires",
+			"gold": "Or",
+			"year": "Year",
+			"season": "Saison",
+			"spring": "Printemps",
+			"summer": "Été",
+			"fall": "Automne",
+			"winter": "Hiver",
+			"spy": "Espionner",
+			"finance": "Financer",
+			"will-receive": "recevra",
+			"declare-war": "Déclarer une guerre",
+			"subversion": "Subversion",
+			"cost": "Coût",
+			"fortified": "Fortifié",
+			"fortify": "Fortifier",
 			"country-modal": {
 				"owner": "Propriétaire",
 				"indigenous": "Indigènes",
 				"value": "Valeur"
+			},
+			"finance-player-modal": {
+				"title": "Financer un joueur"
 			}
 		}
 	}

@@ -12,7 +12,6 @@ export default class extends BaseSeeder {
                     name: language.name,
                     code: language.code,
                 });
-                console.log(`Language ${language.name} created`);
             }
         }
     }

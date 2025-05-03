@@ -11,6 +11,9 @@ export default class BotDifficulty extends BaseModel {
     declare frontId: number;
 
     @column()
+    declare isDefault: boolean;
+
+    @column()
     declare frenchName: string;
 
     @column()

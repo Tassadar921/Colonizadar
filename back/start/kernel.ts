@@ -39,5 +39,13 @@ export const middleware = router.named({
     language: () => import('#middleware/language_middleware'),
     queryStringAuth: () => import('#middleware/query_string_auth_middleware'),
     room: () => import('#middleware/room_middleware'),
+    isRoomOwner: () => import('#middleware/is_room_owner_middleware'),
+    isRoomPlayer: () => import('#middleware/is_room_player_middleware'),
     game: () => import('#middleware/game_middleware'),
+    isGamePlaying: () => import('#middleware/is_game_playing_middleware'),
+    isGamePlayer: () => import('#middleware/is_game_player_middleware'),
+    gameTerritory: () => import('#middleware/game_territory_middleware'),
+    isOwnedTerritory: () => import('#middleware/is_owned_territory_middleware'),
+    isForeignTerritory: () => import('#middleware/is_foreign_territory_middleware'),
+    isValidSeason: () => import('#middleware/is_valid_season_middleware'),
 });

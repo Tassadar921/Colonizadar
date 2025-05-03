@@ -2,6 +2,7 @@
 	import Card from '../shared/Card.svelte';
 	import { t } from 'svelte-i18n';
 	import Title from '../shared/Title.svelte';
+	import Range from '../shared/Range.svelte';
 
 	interface Page {
 		title: string;
@@ -35,3 +36,5 @@
 		<Card title={page.title} icon={page.icon} href={page.href} description={page.description} />
 	{/each}
 </div>
+
+<Range min={4} max={12} step={1} />

@@ -71,7 +71,7 @@ export default class RoomPlayer extends BaseModel {
     @column.dateTime({ autoCreate: true, autoUpdate: true })
     declare updatedAt: DateTime;
 
-    public apiSerialize(language: Language, user: User): SerializedRoomPlayer {
+    public apiSerialize(language: Language, user?: User, isSpied = false): SerializedRoomPlayer {
         return {
             id: this.frontId,
             score: this.score,
@@ -80,7 +80,7 @@ export default class RoomPlayer extends BaseModel {
             country: this.country.apiSerialize(language),
             isUserConnected: this.isUserConnected,
             isReady: this.isReady,
-            gold: this.userId === user.id ? this.gold : undefined,
+            gold: this.userId === user?.id || isSpied ? this.gold : undefined,
             difficulty: this.difficulty?.apiSerialize(language),
             createdAt: this.createdAt?.toString(),
             updatedAt: this.updatedAt?.toString(),

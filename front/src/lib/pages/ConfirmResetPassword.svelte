@@ -25,10 +25,6 @@
 		}
 	};
 
-	const handleFailure = (): void => {
-		showToast($t('toast.reset-password.confirm.error'), 'error');
-	};
-
 	$: {
 		if (password && confirmPassword) {
 			message = $t(checkPassword(password, confirmPassword));
@@ -41,7 +37,7 @@
 
 <Breadcrumbs hasBackground items={[{ label: $t('home.title'), path: '/' }, { label: $t('reset-password.confirm.title') }]} />
 
-<Form action={`/api/reset-password/confirm/${token}`} method="POST" on:success={handleSuccess} on:error={handleFailure} bind:isValid={canSubmit}>
+<Form action={`/api/reset-password/confirm/${token}`} method="POST" on:success={handleSuccess} bind:isValid={canSubmit}>
 	<PasswordInput name="password" bind:value={password} />
 	<PasswordInput name="confirmPassword" label={$t('common.confirm-password.label')} bind:value={confirmPassword} />
 </Form>

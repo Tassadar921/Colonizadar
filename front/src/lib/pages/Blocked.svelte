@@ -23,29 +23,32 @@
 	let showModal: boolean = false;
 
 	onMount(async (): Promise<void> => {
-		const { data } = await axios.get(searchBaseUrl);
-		paginatedBlockedUsers = data.blockedUsers;
+		await updateBlockedUsers();
 	});
 
 	const handleSearch = async (): Promise<void> => {
 		searchBaseUrl = `/api/blocked?${query ? `query=${query}` : ''}`;
-		const response = await axios.get(searchBaseUrl);
-		if (response.status === 200) {
-			paginatedBlockedUsers = response.data.blockedUsers;
-		} else {
-			showToast($t('toast.blocked.search.error'), 'error');
+		await updateBlockedUsers();
+	};
+
+	const updateBlockedUsers = async () => {
+		try {
+			const { data } = await axios.get(searchBaseUrl);
+			paginatedBlockedUsers = data.blockedUsers;
+		} catch (error: any) {
+			showToast(error.response.data.error, 'error');
 		}
 	};
 
 	const handleUnblockUser = async (): Promise<void> => {
-		const response = await axios.delete(`/api/blocked/cancel/${selectedBlockedUser.id}`);
-		if (response.status === 200) {
+		try {
+			await axios.delete(`/api/blocked/cancel/${selectedBlockedUser.id}`);
 			paginatedBlockedUsers.blockedUsers = paginatedBlockedUsers.blockedUsers.filter((currentUser) => {
 				return currentUser.user.id !== selectedBlockedUser.id;
 			});
 			showToast($t('toast.unblock.success'));
-		} else {
-			showToast($t('toast.unblock.error'), 'error');
+		} catch (error: any) {
+			showToast(error.response.data.error, 'error');
 		}
 		showModal = false;
 	};

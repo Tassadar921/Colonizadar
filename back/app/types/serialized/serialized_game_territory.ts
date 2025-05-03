@@ -3,9 +3,10 @@ import SerializedTerritory from '#types/serialized/serialized_territory';
 
 type SerializedGameTerritory = {
     id: number;
-    power?: number;
+    infantry?: number;
     ships?: number;
     value: number;
+    isFortified: boolean;
     owner?: SerializedRoomPlayer;
     territory: SerializedTerritory;
     createdAt?: string;

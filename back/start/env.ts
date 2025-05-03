@@ -19,16 +19,20 @@ export default await Env.create(new URL('../', import.meta.url), {
     LOG_LEVEL: Env.schema.enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace']),
 
     /*
-  |----------------------------------------------------------
-  | Variables for configuring database connection
-  |----------------------------------------------------------
-  */
+|----------------------------------------------------------
+| Variables for configuring database connection
+|----------------------------------------------------------
+*/
     DB_CONNECTION: Env.schema.enum(['pg', 'mysql']),
     DB_HOST: Env.schema.string({ format: 'host' }),
     DB_PORT: Env.schema.number(),
     DB_USER: Env.schema.string(),
     DB_PASSWORD: Env.schema.string.optional(),
     DB_DATABASE: Env.schema.string(),
+
+    REDIS_HOST: Env.schema.string({ format: 'host' }),
+    REDIS_PORT: Env.schema.number(),
+    REDIS_PASSWORD: Env.schema.string.optional(),
 
     FRONT_URI: Env.schema.string(),
     API_URI: Env.schema.string(),

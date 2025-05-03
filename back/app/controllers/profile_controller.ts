@@ -12,7 +12,7 @@ import app from '@adonisjs/core/services/app';
 import { cuid } from '@adonisjs/core/helpers';
 import FileService from '#services/file_service';
 import SlugifyService from '#services/slugify_service';
-import { resetPasswordValidator, sendResetPasswordEmailValidator, updateProfileValidator, uploadProfilePictureValidator } from '#validators/profile';
+import { resetPasswordParamsValidator, resetPasswordValidator, sendResetPasswordEmailValidator, updateProfileValidator } from '#validators/profile';
 import path from 'node:path';
 
 @inject()
@@ -31,14 +31,9 @@ export default class ProfileController {
     }
 
     public async sendResetPasswordEmail({ request, response }: HttpContext): Promise<void> {
-        const { email, frontUri } = await sendResetPasswordEmailValidator.validate(request.all());
+        const { email, frontUri } = await request.validateUsing(sendResetPasswordEmailValidator);
 
-        const user: User | null = await this.userRepository.findOneBy({
-            email,
-        });
-        if (!user) {
-            return response.badRequest({ error: 'User not found' });
-        }
+        const user: User = await this.userRepository.firstOrFail({ email });
 
         const previousResetPassword: ResetPassword | null = await this.resetPasswordRepository.findOneBy({ userId: user.id });
         if (previousResetPassword) {
@@ -62,7 +57,7 @@ export default class ProfileController {
         });
         try {
             await this.mailService.sendResetPasswordEmail(user, `${frontUri}/${token}`);
-        } catch (error) {
+        } catch (error: any) {
             response.notFound({ error: 'Error while sending email' });
         }
 
@@ -70,20 +65,15 @@ export default class ProfileController {
     }
 
     public async resetPassword({ request, response }: HttpContext): Promise<void> {
-        const { password } = await resetPasswordValidator.validate(request.all());
-        const { token } = request.params();
+        const { token } = await resetPasswordParamsValidator.validate(request.params());
 
-        const resetPassword: ResetPassword | null = await this.resetPasswordRepository.findOneBy({
+        const resetPassword: ResetPassword = await this.resetPasswordRepository.firstOrFail({
             token,
         });
-        if (!resetPassword) {
-            return response.notFound({ error: 'Token not found' });
-        }
 
-        const user: User | null = await this.userRepository.find(resetPassword.userId);
-        if (!user) {
-            return response.notFound({ error: 'User not found' });
-        }
+        const user: User = await this.userRepository.firstOrFail({ id: resetPassword.userId });
+
+        const { password } = await request.validateUsing(resetPasswordValidator);
 
         await resetPassword.delete();
 
@@ -94,19 +84,21 @@ export default class ProfileController {
     }
 
     public async updateProfile({ request, response, user }: HttpContext): Promise<void> {
-        const { username } = await updateProfileValidator.validate(request.all());
-        const { profilePicture } = await request.validateUsing(uploadProfilePictureValidator);
+        const { username, profilePicture } = await request.validateUsing(updateProfileValidator);
 
         user.username = username;
         await user.load('profilePicture');
 
         if (profilePicture) {
             if (user.profilePictureId) {
-                user.profilePictureId = null;
-                await user.save();
+                // Physically delete the file
                 this.fileService.delete(user.profilePicture);
+
+                // Database file clear
+                user.profilePictureId = null;
                 await user.profilePicture.delete();
             }
+
             profilePicture.clientName = `${cuid()}-${this.slugifyService.slugify(profilePicture.clientName)}`;
             const profilePicturePath = `static/profile-picture`;
             await profilePicture.move(app.makePath(profilePicturePath));

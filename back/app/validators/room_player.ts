@@ -1,6 +1,6 @@
 import vine from '@vinejs/vine';
 
-export const selectCountryParamValidator = vine.compile(
+export const selectCountryParamsValidator = vine.compile(
     vine.object({
         playerId: vine.number().positive(),
     })
@@ -12,7 +12,7 @@ export const selectCountryValidator = vine.compile(
     })
 );
 
-export const selectBotDifficultyParamValidator = vine.compile(
+export const selectBotDifficultyParamsValidator = vine.compile(
     vine.object({
         playerId: vine.number().positive(),
     })

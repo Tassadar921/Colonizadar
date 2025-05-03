@@ -21,6 +21,7 @@
 	let dropdownRef: HTMLDivElement;
 	let buttonRef: HTMLButtonElement;
 	let dropdownWidth: string = 'auto';
+	let measureContainer: HTMLDivElement;
 
 	const handleSelect = (option: Option): void => {
 		selectedOption = option;
@@ -34,9 +35,12 @@
 		}
 	};
 
-	const setDropdownWidth = (): void => {
-		if (buttonRef) {
-			dropdownWidth = `${buttonRef.offsetWidth}px`;
+	const setDropdownWidth = () => {
+		if (measureContainer) {
+			const widths = Array.from(measureContainer.children).map((el) => (el as HTMLElement).offsetWidth);
+			const maxWidth = Math.max(...widths);
+
+			dropdownWidth = `clamp(8rem, ${maxWidth + 50}px, 20rem)`;
 		}
 	};
 
@@ -48,9 +52,21 @@
 			window.removeEventListener('click', handleClickOutside);
 		};
 	});
+
+	$: options, setDropdownWidth();
 </script>
 
 <div class="w-full relative" bind:this={dropdownRef}>
+	<div bind:this={measureContainer} class="fixed opacity-0 pointer-events-none whitespace-nowrap -z-50 flex flex-col" style="visibility: hidden;">
+		{#each options as option}
+			<div class="flex items-center px-3 py-2 font-sans text-sm space-x-2">
+				{#if option.uri}
+					<img src={option.uri} alt={option.label} class="w-5 h-5" />
+				{/if}
+				<span>{option.label}</span>
+			</div>
+		{/each}
+	</div>
 	{#if label}
 		<label for={name} class="block font-medium dark:text-primary-500 mb-1">
 			{label}
@@ -64,15 +80,16 @@
 
 	<button
 		bind:this={buttonRef}
-		class="w-full px-3 py-2 border border-gray-300 dark:border-gray-800 dark:bg-gray-700 dark:text-gray-300 rounded-xl shadow-sm flex justify-between items-center flex-wrap gap-5"
+		class="px-3 py-2 border border-gray-300 dark:border-gray-800 dark:bg-gray-700 dark:text-gray-300 rounded-xl shadow-xs flex justify-between items-center gap-2"
+		style="width: {dropdownWidth}; min-width: 8rem;"
 		on:click={() => {
 			isOpen = !isOpen;
 			setDropdownWidth();
 		}}
 	>
-		<span class="flex items-center">
+		<span class="flex items-center gap-2">
 			{#if selectedOption?.uri}
-				<img src={selectedOption.uri} alt={selectedOption.label} class="mr-2" />
+				<img src={selectedOption.uri} alt={selectedOption.label} class="w-5 h-5 shrink-0" />
 			{/if}
 			{selectedOption?.label || 'Select an option'}
 		</span>

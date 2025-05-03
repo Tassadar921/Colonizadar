@@ -4,14 +4,19 @@
 	import Modal from '../shared/Modal.svelte';
 	import Subtitle from '../shared/Subtitle.svelte';
 	import { t } from 'svelte-i18n';
-	import GamePlayer from './GamePlayer.svelte';
+	import InGamePlayer from './InGamePlayer.svelte';
 	import { formatGameNumbers } from '../../services/stringService';
 	import type SerializedGame from 'colonizadar-backend/app/types/serialized/serialized_game';
 	import type SerializedGameTerritory from 'colonizadar-backend/app/types/serialized/serialized_game_territory';
 	import type SerializedRoomPlayer from 'colonizadar-backend/app/types/serialized/serialized_room_player';
-	import { getCentroidFromPath } from '../../services/gameGeometryService';
+	import { getCentroidFromPath, setFactoryIcon, setFortifiedIcon } from '../../services/gameGeometryService';
+	import SpyTerritory from './SpyTerritory.svelte';
+	import { profile } from '../../stores/profileStore';
+	import FinanceWildTerritory from './FinanceWildTerritory.svelte';
+	import FortifyTerritory from './FortifyTerritory.svelte';
 
 	export let game: SerializedGame;
+	export let currentPlayer: SerializedRoomPlayer;
 
 	let width: number = 500;
 	let height: number = 300;
@@ -37,6 +42,8 @@
 
 	let hoverColor: string = '#ffffac';
 	let mountainColor: string = '#653a06';
+
+	const checkedProfile = $profile!;
 
 	onMount(() => {
 		svgElement.classList.add('rounded-lg', 'bg-blue-950', 'border', 'border-black', 'dark:border-white', 'box-content');
@@ -131,8 +138,8 @@
 
 	const handleClick = (territoryId: string): void => {
 		if (!hasDragged && territoryId) {
-			const filteredTerritories: SerializedGameTerritory[] = game.territories.filter((territoryObject): boolean => {
-				return territoryObject.territory.code.toLowerCase() === territoryId;
+			const filteredTerritories: SerializedGameTerritory[] = game.territories.filter((gameTerritory): boolean => {
+				return gameTerritory.territory.code.toLowerCase() === territoryId;
 			});
 			if (filteredTerritories.length > 0) {
 				selectedTerritory = filteredTerritories[0];
@@ -155,8 +162,8 @@
 	};
 
 	const resetTerritoryColor = (svgGroup: SVGGElement): void => {
-		const filteredTerritories = game.territories.filter((territoryObject): boolean => {
-			return territoryObject.territory.code.toLowerCase() === svgGroup.id;
+		const filteredTerritories = game.territories.filter((gameTerritory): boolean => {
+			return gameTerritory.territory.code.toLowerCase() === svgGroup.id;
 		});
 		if (filteredTerritories.length > 0) {
 			if (filteredTerritories[0].owner) {
@@ -179,15 +186,19 @@
 	}
 
 	$: if (game) {
-		svgElement.querySelectorAll('.flag-icon').forEach((el) => el.remove());
+		svgElement?.querySelectorAll('.flag-icon').forEach((el) => el.remove());
+		svgElement?.querySelectorAll('.factory-icon').forEach((el) => el.remove());
+		svgElement?.querySelectorAll('.fortified-icon').forEach((el) => el.remove());
 
-		for (const territoryObject of game.territories) {
-			const svgGroup: SVGGElement = document.getElementById(territoryObject.territory.code.toLowerCase()) as unknown as SVGGElement;
-			const svgPath: SVGPathElement = svgGroup.querySelector('.mainland') as SVGPathElement;
+		for (const gameTerritory of game.territories) {
+			const svgGroup: SVGGElement | null = document.getElementById(gameTerritory.territory.code.toLowerCase()) as unknown as SVGGElement | null;
+			const svgPath: SVGPathElement | null = svgGroup?.querySelector('.mainland') as SVGPathElement | null;
+
+			if (!svgGroup || !svgPath) {
+				continue;
+			}
 
 			resetTerritoryColor(svgGroup);
-
-			const point: SVGPoint = getCentroidFromPath(svgPath, svgElement);
 
 			const ctm: DOMMatrix | null = svgPath.getCTM();
 			const groupCTMInverse: DOMMatrix | undefined = svgGroup.getCTM()?.inverse();
@@ -195,15 +206,16 @@
 				continue;
 			}
 
+			const point: SVGPoint = getCentroidFromPath(svgPath, svgElement);
 			const pointInGroup: DOMPoint = point.matrixTransform(ctm).matrixTransform(groupCTMInverse);
 
 			const flag: SVGImageElement = document.createElementNS('http://www.w3.org/2000/svg', 'image');
 			flag.classList.add('flag-icon');
 
-			if (territoryObject.owner) {
-				flag.setAttribute('href', `${import.meta.env.VITE_API_BASE_URL}/api/static/country-flag/${territoryObject.owner.country.id}?token=${localStorage.getItem('apiToken')}`);
+			if (gameTerritory.owner) {
+				flag.setAttribute('href', `${import.meta.env.VITE_API_BASE_URL}/api/static/country-flag/${gameTerritory.owner.country.id}?token=${localStorage.getItem('apiToken')}`);
 			} else {
-				flag.setAttribute('href', `${import.meta.env.VITE_API_BASE_URL}/api/static/country-flag/${game.map.id}/neutral?token=${localStorage.getItem('apiToken')}`);
+				flag.setAttribute('href', `${import.meta.env.VITE_API_BASE_URL}/api/static/country-flag/${game.map.id}/neutral-flag?token=${localStorage.getItem('apiToken')}`);
 			}
 
 			const flagSize = 8;
@@ -215,12 +227,20 @@
 			flag.setAttribute('y', String(pointInGroup.y - flagSize / 2));
 
 			svgGroup.appendChild(flag);
+
+			if (gameTerritory.owner) {
+				if (gameTerritory.territory.isFactory) {
+					setFactoryIcon(game, pointInGroup, svgGroup);
+				} else if (gameTerritory.isFortified) {
+					setFortifiedIcon(game, pointInGroup, svgGroup);
+				}
+			}
 		}
 	}
 </script>
 
 <button
-	class="width-map overflow-hidden {isDragging ? 'cursor-grabbing' : 'cursor-pointer'}"
+	class="w-4/5 overflow-hidden {isDragging ? 'cursor-grabbing' : 'cursor-pointer'}"
 	on:wheel={handleWheel}
 	on:mousedown={startDrag}
 	on:mousemove={onDrag}
@@ -231,21 +251,30 @@
 	<WorldMap bind:svgElement bind:viewBox />
 </button>
 
-<Modal bind:showModal={showCountryModal}>
-	<Subtitle slot="header">{selectedTerritory?.territory.name}</Subtitle>
-	<div class="flex gap-1 items-center">
-		<p>{$t('play.game.country-modal.owner')} :</p>
-		<GamePlayer bind:game bind:player={selectedTerritoryOwner} />
-	</div>
-	<p>{$t('play.game.country-modal.value')} : {formatGameNumbers(selectedTerritory?.value ?? 0)}</p>
-	<p>{$t('play.common.infantry')} : {selectedTerritory?.power ? formatGameNumbers(selectedTerritory.power) : '???'}</p>
-	{#if selectedTerritory && selectedTerritoryOwner && selectedTerritory.territory.isCoastal}
-		<p>{$t('play.common.ships')} : {selectedTerritory?.ships ? formatGameNumbers(selectedTerritory.ships) : '???'}</p>
-	{/if}
-</Modal>
-
-<style>
-	.width-map {
-		width: 79%;
-	}
-</style>
+{#if selectedTerritory}
+	<Modal bind:showModal={showCountryModal}>
+		<Subtitle slot="header">{selectedTerritory.territory.name}</Subtitle>
+		<div class="flex gap-1 items-center">
+			<p>{$t('play.game.country-modal.owner')} :</p>
+			<InGamePlayer bind:game bind:player={selectedTerritoryOwner} />
+		</div>
+		<p>{$t('play.game.country-modal.value')} : {formatGameNumbers(selectedTerritory.value ?? 0)}</p>
+		<p>{$t('play.common.infantry')} : {selectedTerritory.infantry ? formatGameNumbers(selectedTerritory.infantry) : '???'}</p>
+		{#if selectedTerritory && selectedTerritoryOwner && selectedTerritory.territory.isCoastal}
+			<p>{$t('play.common.ships')} : {selectedTerritory.ships ? formatGameNumbers(selectedTerritory.ships) : '???'}</p>
+		{/if}
+		<p>{$t('play.game.fortified')} : {selectedTerritory.isFortified}</p>
+		<div class="flex gap-5 justify-center">
+			{#if game.map.mainSeason === game.season && selectedTerritory}
+				{#if selectedTerritoryOwner?.user?.id !== checkedProfile.id}
+					<SpyTerritory bind:game bind:selectedTerritory />
+					{#if !selectedTerritoryOwner}
+						<FinanceWildTerritory bind:game {currentPlayer} gameTerritory={selectedTerritory} />
+					{/if}
+				{:else if !selectedTerritory.isFortified}
+					<FortifyTerritory bind:game gameTerritory={selectedTerritory} {svgElement} />
+				{/if}
+			{/if}
+		</div>
+	</Modal>
+{/if}

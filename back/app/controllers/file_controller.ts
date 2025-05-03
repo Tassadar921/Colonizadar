@@ -8,8 +8,16 @@ import Bot from '#models/bot';
 import PlayableCountry from '#models/playable_country';
 import PlayableCountryRepository from '#repositories/playable_country_repository';
 import Map from '#models/map';
-import { serveStaticBotPictureFileValidator, serveStaticCountryFlagFileValidator, serveStaticNeutralCountryFlagFileValidator, serveStaticProfilePictureFileValidator } from '#validators/file';
+import {
+    serveStaticBotPictureFileValidator,
+    serveStaticCountryFlagFileValidator,
+    serveStaticFactoryIconFileValidator,
+    serveStaticFortifiedIconFileValidator,
+    serveStaticNeutralCountryFlagFileValidator,
+    serveStaticProfilePictureFileValidator,
+} from '#validators/file';
 import MapRepository from '#repositories/map_repository';
+import cache from '@adonisjs/cache/services/main';
 
 @inject()
 export default class FileController {
@@ -23,52 +31,156 @@ export default class FileController {
     public async serveStaticProfilePictureFile({ request, response }: HttpContext): Promise<void> {
         const { userId } = await serveStaticProfilePictureFileValidator.validate(request.params());
 
-        const user: User | null = await this.userRepository.firstOrFail({ frontId: userId });
+        try {
+            const filePath: string = await cache.getOrSet({
+                key: `user-profile-picture:${userId}`,
+                ttl: '1h',
+                factory: async (): Promise<string> => {
+                    const otherUser: User = await this.userRepository.firstOrFail({ frontId: userId }, ['profilePicture']);
 
-        if (!user.profilePictureId) {
-            return response.notFound({ error: "User's profile picture not found" });
+                    if (!otherUser.profilePicture) {
+                        throw new Error('NO_PICTURE');
+                    }
+
+                    return app.makePath(otherUser.profilePicture.path);
+                },
+            });
+
+            return response.download(filePath);
+        } catch (error: any) {
+            if (error.message === 'NO_PICTURE') {
+                return response.notFound({ error: "User's profile picture not found" });
+            }
         }
-
-        await user.load('profilePicture');
-        return response.download(app.makePath(user.profilePicture.path));
     }
 
     public async serveStaticBotPictureFile({ request, response }: HttpContext): Promise<void> {
         const { botId } = await serveStaticBotPictureFileValidator.validate(request.params());
 
-        const bot: Bot | null = await this.botRepository.firstOrFail({ frontId: botId });
+        try {
+            const filePath: string = await cache.getOrSet({
+                key: `bot-picture:${botId}`,
+                ttl: '24h',
+                factory: async (): Promise<string> => {
+                    const bot: Bot = await this.botRepository.firstOrFail({ frontId: botId }, ['picture']);
 
-        if (!bot.pictureId) {
-            return response.notFound({ error: "Bot's picture not found" });
+                    if (!bot.picture) {
+                        throw new Error('NO_PICTURE');
+                    }
+
+                    return app.makePath(bot.picture.path);
+                },
+            });
+
+            return response.download(filePath);
+        } catch (error: any) {
+            if (error.message === 'NO_PICTURE') {
+                return response.notFound({ error: "Bot's picture not found" });
+            }
         }
-
-        await bot.load('picture');
-        return response.download(app.makePath(bot.picture.path));
     }
 
     public async serveStaticCountryFlagFile({ request, response }: HttpContext): Promise<void> {
         const { countryId } = await serveStaticCountryFlagFileValidator.validate(request.params());
 
-        const country: PlayableCountry | null = await this.playableCountryRepository.firstOrFail({ frontId: countryId });
+        try {
+            const filePath: string = await cache.getOrSet({
+                key: `country-flag:${countryId}`,
+                ttl: '24h',
+                factory: async (): Promise<string> => {
+                    const country: PlayableCountry = await this.playableCountryRepository.firstOrFail({ frontId: countryId }, ['flag']);
 
-        if (!country.flagId) {
-            return response.notFound({ error: 'Country flag not found' });
+                    if (!country.flag) {
+                        throw new Error('NO_PICTURE');
+                    }
+
+                    return app.makePath(country.flag.path);
+                },
+            });
+
+            return response.download(filePath);
+        } catch (error: any) {
+            if (error.message === 'NO_PICTURE') {
+                return response.notFound({ error: 'Country flag not found' });
+            }
         }
-
-        await country.load('flag');
-        return response.download(app.makePath(country.flag.path));
     }
 
     public async serveStaticNeutralCountryFlagFile({ request, response }: HttpContext): Promise<void> {
         const { mapId } = await serveStaticNeutralCountryFlagFileValidator.validate(request.params());
 
-        const map: Map | null = await this.mapRepository.firstOrFail({ frontId: mapId });
+        try {
+            const filePath: string = await cache.getOrSet({
+                key: `map-neutral-flag:${mapId}`,
+                ttl: '24h',
+                factory: async (): Promise<string> => {
+                    const map: Map = await this.mapRepository.firstOrFail({ frontId: mapId }, ['neutralFlag']);
 
-        if (!map.neutralFlagId) {
-            return response.notFound({ error: 'Neutral flag not found' });
+                    if (!map.neutralFlag) {
+                        throw new Error('NO_PICTURE');
+                    }
+
+                    return app.makePath(map.neutralFlag.path);
+                },
+            });
+
+            return response.download(filePath);
+        } catch (error: any) {
+            if (error.message === 'NO_PICTURE') {
+                return response.notFound({ error: 'Neutral flag not found' });
+            }
         }
+    }
 
-        await map.load('neutralFlag');
-        return response.download(app.makePath(map.neutralFlag.path));
+    public async serveStaticFortifiedIconFile({ request, response }: HttpContext): Promise<void> {
+        const { mapId } = await serveStaticFortifiedIconFileValidator.validate(request.params());
+
+        try {
+            const filePath: string = await cache.getOrSet({
+                key: `map-fortified-icon:${mapId}`,
+                ttl: '24h',
+                factory: async (): Promise<string> => {
+                    const map: Map = await this.mapRepository.firstOrFail({ frontId: mapId }, ['fortifiedIcon']);
+
+                    if (!map.fortifiedIcon) {
+                        throw new Error('NO_PICTURE');
+                    }
+
+                    return app.makePath(map.fortifiedIcon.path);
+                },
+            });
+
+            return response.download(filePath);
+        } catch (error: any) {
+            if (error.message === 'NO_PICTURE') {
+                return response.notFound({ error: 'Fortified icon not found' });
+            }
+        }
+    }
+
+    public async serveStaticFactoryIconFile({ request, response }: HttpContext): Promise<void> {
+        const { mapId } = await serveStaticFactoryIconFileValidator.validate(request.params());
+
+        try {
+            const filePath: string = await cache.getOrSet({
+                key: `map-factory-icon:${mapId}`,
+                ttl: '24h',
+                factory: async (): Promise<string> => {
+                    const map: Map = await this.mapRepository.firstOrFail({ frontId: mapId }, ['factoryIcon']);
+
+                    if (!map.factoryIcon) {
+                        throw new Error('NO_PICTURE');
+                    }
+
+                    return app.makePath(map.factoryIcon.path);
+                },
+            });
+
+            return response.download(filePath);
+        } catch (error: any) {
+            if (error.message === 'NO_PICTURE') {
+                return response.notFound({ error: 'Factory icon not found' });
+            }
+        }
     }
 }

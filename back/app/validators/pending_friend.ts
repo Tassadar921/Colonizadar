@@ -1,6 +1,6 @@
 import vine from '@vinejs/vine';
 
-export const getPendingFriendsValidator = vine.compile(
+export const searchPendingFriendsValidator = vine.compile(
     vine.object({
         query: vine.string().trim().optional(),
         page: vine.number().positive().optional(),
@@ -9,6 +9,12 @@ export const getPendingFriendsValidator = vine.compile(
 );
 
 export const addPendingFriendValidator = vine.compile(
+    vine.object({
+        userId: vine.number().positive(),
+    })
+);
+
+export const cancelPendingFriendValidator = vine.compile(
     vine.object({
         userId: vine.number().positive(),
     })

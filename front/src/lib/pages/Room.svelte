@@ -21,7 +21,6 @@
 	import Invite from '../icons/Invite.svelte';
 	import Loader from '../shared/Loader.svelte';
 	import Ready from '../room/Ready.svelte';
-	import { profile } from '../../stores/profileStore';
 	import PlayableCountriesInfo from '../room/PlayableCountriesInfo.svelte';
 
 	export let roomId: string;
@@ -43,8 +42,6 @@
 
 	let maps: SerializedMap[];
 	let heartbeat: NodeJS.Timeout;
-
-	const checkedProfile = $profile!;
 
 	async function fetchRoomData(): Promise<void> {
 		try {
@@ -75,7 +72,6 @@
 	const unloadCleanup = async (): Promise<void> => {
 		try {
 			clearInterval(heartbeat);
-			await axios.delete(`/api/room/${roomId}/leave`);
 		} catch (e) {}
 	};
 
@@ -117,7 +113,7 @@
 				</div>
 			</Button>
 		</div>
-		<div class="flex justify-center mt-3">
+		<div class="flex justify-center mt-3 gap-x-4">
 			<Button
 				ariaLabel="Invite a user"
 				customStyle
@@ -127,6 +123,7 @@
 				<span>{$t('play.room.invite.title')}</span>
 				<Invite />
 			</Button>
+			<Ready bind:room bind:isLoading />
 		</div>
 	</div>
 
@@ -137,10 +134,7 @@
 	<div class="flex flex-row flex-wrap gap-5 justify-center my-10">
 		<div class="flex flex-col gap-1 w-full">
 			{#each room.players as player}
-				<RoomPlayer bind:room bind:player bind:playableCountries={playableCountriesOptions} bind:botDifficulties bind:isLoading />
-				{#if player.user && player.user.id === checkedProfile.id}
-					<Ready bind:room bind:player bind:isLoading />
-				{/if}
+				<RoomPlayer bind:room bind:player bind:playableCountries={playableCountriesOptions} bind:botDifficulties />
 			{/each}
 			<div class="w-full flex mt-5 px-5">
 				<AddBot bind:room bind:difficulties={botDifficulties} />

@@ -14,16 +14,16 @@
 
 <Link
 	href={notClickable ? undefined : href}
-	className={`${!notClickable ? (footer ? 'hover:bg-gray-300' : 'hover:bg-gray-600') : ''} ${footer ? 'flex justify-center' : ''} px-2 flex flex-row transition-colors duration-300 rounded ${notClickable ? 'cursor-not-allowed opacity-50' : 'cursor-pointer dark:hover:bg-gray-700'}`}
+	className={`${!notClickable ? (footer ? 'hover:bg-gray-400' : 'hover:bg-gray-600') : 'cursor-not-allowed opacity-50'} ${footer ? 'flex justify-center' : ''} px-2 flex flex-row transition-colors duration-300 rounded ${notClickable ? '' : 'cursor-pointer dark:hover:bg-gray-700'}`}
 	{target}
 	on:click
 >
 	<div class="text-primary-500 left">
 		<slot name="iconLeft" />
 	</div>
-	<p class="{footer ? '' : 'text-white text-xl'} text-nowrap p-2">
+	<span class="{footer ? 'text-black dark:text-white' : 'text-white text-xl'} text-nowrap p-2">
 		<slot />
-	</p>
+	</span>
 	<div class="dark:text-white right">
 		<ChevronRight />
 	</div>

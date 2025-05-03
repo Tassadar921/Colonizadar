@@ -33,18 +33,10 @@
 		navigate(`/play/room/${event.detail.roomId}`);
 	};
 
-	const handleJoinFailure = (event: CustomEvent): void => {
-		showToast(event.detail, 'error');
-	};
-
 	const handleCreateSuccess = (event: CustomEvent): void => {
 		showCreateModal = false;
 		showToast($t('toast.room.create.success'));
 		navigate(`/play/room/${event.detail.roomId}`);
-	};
-
-	const handleCreateFailure = (): void => {
-		showToast($t('toast.room.create.error'), 'error');
 	};
 
 	$: isJoinSubmittable = !!token && isValidUuid(token);
@@ -70,7 +62,7 @@
 
 <Modal bind:showModal={showJoinModal}>
 	<Subtitle slot="header">{$t('play.room.join.title')}</Subtitle>
-	<Form action="/api/room/join" method="POST" showBackground={false} bind:isValid={isJoinSubmittable} on:success={handleJoinSuccess} on:error={handleJoinFailure}>
+	<Form action="/api/room/join" method="POST" hasBackground={false} bind:isValid={isJoinSubmittable} on:success={handleJoinSuccess}>
 		<Input name="token" label={$t('play.room.join.modal.token.label')} placeholder={$t('play.room.join.modal.token.placeholder')} bind:value={token} required />
 		<PasswordInput min={3} bind:value={password} required={false} />
 	</Form>
@@ -78,7 +70,7 @@
 
 <Modal bind:showModal={showCreateModal}>
 	<Subtitle slot="header">{$t('play.room.create.title')}</Subtitle>
-	<Form action="/api/room/create" method="POST" showBackground={false} bind:isValid={isCreateSubmittable} on:success={handleCreateSuccess} on:error={handleCreateFailure}>
+	<Form action="/api/room/create" method="POST" hasBackground={false} bind:isValid={isCreateSubmittable} on:success={handleCreateSuccess}>
 		<Input name="name" label={$t('play.room.create.modal.name.label')} placeholder={$t('play.room.create.modal.name.placeholder')} bind:value={name} min={3} required />
 		<div class="flex flex-col">
 			<div class="flex items-center mt-10 mb-5">

@@ -16,13 +16,16 @@ export default class GameTerritory extends BaseModel {
     declare frontId: number;
 
     @column()
-    declare power: number;
+    declare infantry: number;
 
     @column()
     declare ships: number;
 
     @column()
     declare value: number;
+
+    @column()
+    declare isFortified: boolean;
 
     @column()
     declare ownerId: string;
@@ -50,14 +53,15 @@ export default class GameTerritory extends BaseModel {
     @column.dateTime({ autoCreate: true, autoUpdate: true })
     declare updatedAt: DateTime;
 
-    public apiSerialize(language: Language, user: User): SerializedGameTerritory {
+    public apiSerialize(language: Language, user: User, isSpied: boolean = false): SerializedGameTerritory {
         return {
             id: this.frontId,
-            power: this.owner?.userId === user.id ? this.power : undefined,
-            ships: this.owner?.userId === user.id ? this.ships : undefined,
+            infantry: this.owner?.userId === user.id || isSpied ? this.infantry : undefined,
+            ships: this.owner?.userId === user.id || isSpied ? this.ships : undefined,
             value: this.value,
+            isFortified: this.isFortified,
             owner: this.owner?.apiSerialize(language, user),
-            territory: this.territory.apiSerialize(language),
+            territory: this.territory.apiSerialize(language, true),
             createdAt: this.createdAt?.toString(),
             updatedAt: this.updatedAt?.toString(),
         };
