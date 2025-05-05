@@ -70,7 +70,7 @@ export default class extends BaseSeeder {
                     wildInfantryCostFactor: 0.01,
                     wildInfantryDefenseFactor: 0.02,
                     wildLandingDefenseFactor: 0.25,
-                    baseInfantryCost: 100000,
+                    baseInfantryCost: 100,
                     baseShipCost: 0.000002,
                     spyTerritoryCost: 200000,
                     spyFortifiedTerritoryCost: 1000000,

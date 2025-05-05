@@ -7,12 +7,14 @@
 	export let customStyle: boolean = false;
 	export let ariaLabel: string = 'This is a button';
 	export let style: string = '';
+	export let title: string = '';
 </script>
 
 <button
 	{disabled}
 	id={idName}
 	{type}
+	{title}
 	aria-label={ariaLabel}
 	on:click
 	on:mouseover

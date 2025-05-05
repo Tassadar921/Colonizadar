@@ -275,11 +275,16 @@
 			"spy": "Espionner",
 			"finance": "Financer",
 			"will-receive": "recevra",
+			"will-cost": "Coûtera",
 			"declare-war": "Déclarer une guerre",
 			"subversion": "Subversion",
 			"cost": "Coût",
 			"fortified": "Fortifié",
 			"fortify": "Fortifier",
+			"buy-infantry": "Acheter de l'infanterie",
+			"buy-infantry-modal": {
+				"title": "Acheter de l'infanterie en"
+			},
 			"country-modal": {
 				"owner": "Propriétaire",
 				"indigenous": "Indigènes",

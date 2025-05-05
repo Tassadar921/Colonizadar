@@ -2,7 +2,7 @@
 	import Card from '../shared/Card.svelte';
 	import { t } from 'svelte-i18n';
 	import Title from '../shared/Title.svelte';
-	import Range from '../shared/Range.svelte';
+	import Incrementation from '../shared/Incrementation.svelte';
 
 	interface Page {
 		title: string;
@@ -37,4 +37,4 @@
 	{/each}
 </div>
 
-<Range min={4} max={12} step={1} />
+<Incrementation value={1000} smallStep={1000} smallShiftStep={10000} largeStep={100000} largeShiftStep={1000000} canDecrement={true} canIncrement={true} />

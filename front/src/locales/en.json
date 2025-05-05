@@ -275,11 +275,16 @@
 			"spy": "Spy",
 			"finance": "Finance",
 			"will-receive": "will receive",
+			"will-cost": "Will cost",
 			"declare-war": "Declare a war",
 			"subversion": "Subversion",
 			"cost": "Cost",
 			"fortified": "Fortified",
 			"fortify": "Fortify",
+			"buy-infantry": "Buy infantry",
+			"buy-infantry-modal": {
+				"title": "Buy infantry into"
+			},
 			"country-modal": {
 				"owner": "Owner",
 				"indigenous": "Indigenous",
