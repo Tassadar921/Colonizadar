@@ -26,6 +26,8 @@
 	}
 </script>
 
+<input type="hidden" {value} />
+
 <div class="my-2 flex flex-row gap-3 justify-center items-center">
 	<!-- Large Decrement -->
 	<Button disabled={!canDecrement} on:click={(e) => handleClick(e, largeStep, largeShiftStep, 'dec')}>
