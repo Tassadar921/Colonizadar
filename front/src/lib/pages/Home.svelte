@@ -2,7 +2,6 @@
 	import Card from '../shared/Card.svelte';
 	import { t } from 'svelte-i18n';
 	import Title from '../shared/Title.svelte';
-	import Incrementation from '../shared/Incrementation.svelte';
 
 	interface Page {
 		title: string;
@@ -36,5 +35,3 @@
 		<Card title={page.title} icon={page.icon} href={page.href} description={page.description} />
 	{/each}
 </div>
-
-<Incrementation value={1000} smallStep={1000} smallShiftStep={10000} largeStep={100000} largeShiftStep={1000000} canDecrement={true} canIncrement={true} />

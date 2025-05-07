@@ -6,4 +6,11 @@ const formatGameNumbers: (number: number) => string = (number: number): string =
 	return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
 };
 
-export { raw, formatGameNumbers };
+const toCamelCase = (str: string): string => {
+	if (str.length === 0) {
+		return '';
+	}
+	return str[0].toUpperCase() + str.slice(1);
+};
+
+export { raw, formatGameNumbers, toCamelCase };

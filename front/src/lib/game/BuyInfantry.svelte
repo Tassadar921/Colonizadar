@@ -50,9 +50,18 @@
 
 	$: {
 		cost = Math.ceil((game.map.baseInfantryCost * currentPlayer.country.infantryPriceFactor * amount) / 1000) * 1000;
+		const maxAffordableAmount = getInfantryFromCost(currentPlayer.gold ?? 0);
+        console.log(amount, maxAffordableAmount);
+
+		if (amount > maxAffordableAmount) {
+			amount = maxAffordableAmount;
+			canIncrement = false;
+		} else {
+			canIncrement = amount + 1000 <= maxAffordableAmount;
+		}
+
 		isValid = amount >= 1000 && amount % 1000 === 0;
 		canDecrement = amount > 1000;
-		canIncrement = amount + 1000 <= getInfantryFromCost(currentPlayer.gold ?? 0);
 	}
 </script>
 

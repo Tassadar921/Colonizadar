@@ -1,96 +1,85 @@
 <script lang="ts">
 	import type { SvelteComponent } from 'svelte';
+	import { toCamelCase } from '../../services/stringService';
 
-	export let name: string = '';
+    const iconNames = [
+        'Book',
+        'Camera',
+        'Moon',
+        'Sun',
+        'Burger',
+        'Close',
+        'Settings',
+        'ChevronLeft',
+        'ChevronRight',
+        'DoubleArrowLeft',
+        'DoubleArrowRight',
+        'Home',
+        'User',
+        'UserRemove',
+        'Eye',
+        'EyeSlash',
+        'Trash',
+        'Undo',
+        'ArrowDown',
+        'ArrowUp',
+        'Euro',
+        'Dollar',
+        'Upload',
+        'Search',
+        'Pen',
+        'Plus',
+        'Minus',
+        'Save',
+        'Check',
+        'Exchange',
+        'PaperClip',
+        'Send',
+        'Download',
+        'Help',
+        'Clear',
+        'ArrowLeft',
+        'ArrowRight',
+        'OpenSource',
+        'ChevronDown',
+        'ChevronUp',
+        'EnglishFlag',
+        'FrenchFlag',
+        'People',
+        'Game',
+        'Stop',
+        'Bell',
+        'RemoveUser',
+        'AddUser',
+        'Unblock',
+        'Confirm',
+        'Crown',
+        'Invite',
+        'Copy',
+        'Bot',
+        'Spinner',
+    ] as const;
+
+    type PascalCase = typeof iconNames[number];
+    type CamelCase<S extends string> = S extends `${infer First}${infer Rest}` ? `${Lowercase<First>}${Rest}` : S;
+
+	export let name: PascalCase | CamelCase<PascalCase>
 	export let size: number = 24;
 
-	let currentName = '';
+	let currentName: string = '';
 
 	let IconComponent: typeof SvelteComponent | null = null;
 
-	const validIcons: string[] = [
-		'Book',
-		'Camera',
-		'Moon',
-		'Sun',
-		'Burger',
-		'Close',
-		'Settings',
-		'ChevronLeft',
-		'ChevronRight',
-		'DoubleArrowLeft',
-		'DoubleArrowRight',
-		'Home',
-		'User',
-		'UserRemove',
-		'Eye',
-		'EyeSlash',
-		'Trash',
-		'Undo',
-		'ArrowDown',
-		'ArrowUp',
-		'Euro',
-		'Dollar',
-		'Upload',
-		'Search',
-		'Pen',
-		'Plus',
-		'Minus',
-		'Save',
-		'Check',
-		'Exchange',
-		'PaperClip',
-		'Send',
-		'Download',
-		'Help',
-		'Clear',
-		'ArrowLeft',
-		'ArrowRight',
-		'OpenSource',
-		'ChevronDown',
-		'ChevronUp',
-		'EnglishFlag',
-		'FrenchFlag',
-		'People',
-		'Game',
-		'Stop',
-		'Bell',
-		'RemoveUser',
-		'AddUser',
-		'Unblock',
-		'Confirm',
-		'Crown',
-		'Invite',
-		'Copy',
-		'Bot',
-		'Spinner',
-	];
-
-	const toCamelCase = (str: string): string => {
-		if (str.length === 0) {
-			return '';
-		}
-		return str[0].toUpperCase() + str.slice(1);
-	};
-
 	const setIcon = async (name: string): Promise<void> => {
 		const camelCaseName = toCamelCase(name);
-		if (validIcons.includes(camelCaseName)) {
-			const module = await import(`../icons/${camelCaseName}.svelte`);
-			IconComponent = module.default;
-		} else {
-			throw new Error(`Invalid icon name: ${name}`);
-		}
+		const module = await import(`../icons/${camelCaseName}.svelte`);
+		IconComponent = module.default;
 	};
 
 	$: if (name && name !== currentName) {
 		currentName = name;
 		(async () => {
-			try {
-				await setIcon(name);
-			} catch (err) {
-				console.error(err);
-			}
+            await setIcon(name);
 		})();
 	}
 </script>
