@@ -21,7 +21,6 @@
 | Backend  | http://localhost:3333 |
 | Frontend | http://localhost:5173 |
 
-
 ### Development Adminer connection
 
 | Field    | Value       |
@@ -36,8 +35,9 @@
 
 | Command             | Description                                                                                                                         |
 |---------------------|-------------------------------------------------------------------------------------------------------------------------------------|
-| `make format-front` | Format code in the `front` directory using Prettier.                                                                                |
-| `make format-back`  | Format code in the `back` directory using Prettier.                                                                                 |
+| `make format`       | Format code both in `front` and `back` directories using Prettier.                                                                  |
+| `make format-front` | Format code only in the `front` directory using Prettier.                                                                           |
+| `make format-back`  | Format code only in the `back` directory using Prettier.                                                                            |
 | `make list-routes`  | List all routes defined in the backend using `node ace list:routes`.                                                                |
 | `make db-fresh`     | Run a fresh migration on the database. **/!\\** **This call clear the previous database**.                                          |
 | `make db-migrate`   | Run pending migrations on the database.                                                                                             |
@@ -75,10 +75,9 @@
 
 ### Development frontend .env (front/.env)
 
-
-| Variable                 | Value                                        |
-|--------------------------|----------------------------------------------|
-| `VITE_API_BASE_URL`      | http://localhost:3333                        |
-| `VITE_FRONT_URI`         | http://localhost:5173                        |
-| `VITE_GITHUB_REPOSITORY` | https://github.com/Tassadar921/Colonizadar   |
-| `VITE_DEFAULT_IMAGE`     | /assets/default/image.png                    |
+| Variable                 | Value                                      |
+|--------------------------|--------------------------------------------|
+| `VITE_API_BASE_URL`      | http://localhost:3333                      |
+| `VITE_FRONT_URI`         | http://localhost:5173                      |
+| `VITE_GITHUB_REPOSITORY` | https://github.com/Tassadar921/Colonizadar |
+| `VITE_DEFAULT_IMAGE`     | /assets/default/image.png                  |
