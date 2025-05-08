@@ -1,8 +1,8 @@
 # Colonizadar
 
-### Front : Svelte 5, TailwindCSS
+### Front : Svelte 5, Tailwind 4
 
-### Back : Adonisjs 6.14.1
+### Back : Adonisjs 6, Redis, VineJS
 
 ### Database : PostgreSQL
 
