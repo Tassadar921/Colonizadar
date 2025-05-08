@@ -15,7 +15,7 @@
 	export let gameTerritory: SerializedGameTerritory;
 	export let currentPlayer: SerializedRoomPlayer;
 
-	let amount: number = 1000;
+	let amount: number = 5;
 	let cost: number = 0;
 	let showModal: boolean = false;
 	let isValid: boolean = true;
@@ -45,7 +45,7 @@
 				return territory;
 			}),
 		};
-		amount = 1000;
+		amount = 5;
 		showToast(event.detail.message);
 	};
 
@@ -56,13 +56,17 @@
 			amount = maxAffordableAmount;
 			canIncrement = false;
 		} else {
-			canIncrement = amount + 1000 <= maxAffordableAmount;
+			canIncrement = amount + 5 <= maxAffordableAmount;
 		}
 
+		console.log(Math.ceil((game.map.baseShipCost * currentPlayer.country.shipPriceFactor * amount) / 5) * 5);
+		console.log(game.map.baseShipCost, currentPlayer.country.shipPriceFactor);
 		cost = Math.ceil((game.map.baseShipCost * currentPlayer.country.shipPriceFactor * amount) / 5) * 5;
-		isValid = amount >= 1000 && amount % 1000 === 0;
-		canDecrement = amount > 1000;
+		isValid = amount >= 5 && amount % 5 === 0;
+		canDecrement = amount > 5;
 	}
+
+	$: console.log(cost);
 </script>
 
 <button class="bg-green-500 hover:bg-green-600 transition-colors duration-300 px-3 py-1 rounded-xl text-white" on:click={() => (showModal = true)}>

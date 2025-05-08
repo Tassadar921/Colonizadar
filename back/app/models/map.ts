@@ -26,19 +26,39 @@ export default class Map extends BaseModel {
     @column()
     declare startingPlayersGold: number;
 
-    @column()
+    @column({
+        consume: (value: string | number): string => {
+            return Number(value).toString();
+        },
+    })
     declare wildInfantryCostFactor: number;
 
-    @column()
+    @column({
+        consume: (value: string | number): string => {
+            return Number(value).toString();
+        },
+    })
     declare wildInfantryDefenseFactor: number;
 
-    @column()
+    @column({
+        consume: (value: string | number): string => {
+            return Number(value).toString();
+        },
+    })
     declare wildLandingDefenseFactor: number;
 
-    @column()
+    @column({
+        consume: (value: string | number): string => {
+            return Number(value).toString();
+        },
+    })
     declare baseInfantryCost: number;
 
-    @column()
+    @column({
+        consume: (value: string | number): string => {
+            return Number(value).toString();
+        },
+    })
     declare baseShipCost: number;
 
     @column()
@@ -50,28 +70,48 @@ export default class Map extends BaseModel {
     @column()
     declare spyPlayerCost: number;
 
-    @column()
+    @column({
+        consume: (value: string | number): string => {
+            return Number(value).toString();
+        },
+    })
     declare financePlayerCostFactor: number;
 
     @column()
     declare financePlayerStep: number;
 
-    @column()
+    @column({
+        consume: (value: string | number): string => {
+            return Number(value).toString();
+        },
+    })
     declare financeWildTerritoryCostFactor: number;
 
-    @column()
+    @column({
+        consume: (value: string | number): string => {
+            return Number(value).toString();
+        },
+    })
     declare financeWildTerritoryEnforcementFactor: number;
 
     @column()
     declare financeWildTerritoryStep: number;
 
-    @column()
+    @column({
+        consume: (value: string | number): string => {
+            return Number(value).toString();
+        },
+    })
     declare wildTerritorySubversionFactor: number;
 
     @column()
     declare baseSubversionCost: number;
 
-    @column()
+    @column({
+        consume: (value: string | number): string => {
+            return Number(value).toString();
+        },
+    })
     declare subversionCostFactor: number;
 
     @column()

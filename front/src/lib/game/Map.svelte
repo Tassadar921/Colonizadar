@@ -15,6 +15,7 @@
 	import FinanceWildTerritory from './FinanceWildTerritory.svelte';
 	import FortifyTerritory from './FortifyTerritory.svelte';
 	import BuyInfantry from './BuyInfantry.svelte';
+	import BuyShips from './BuyShips.svelte';
 
 	export let game: SerializedGame;
 	export let currentPlayer: SerializedRoomPlayer;
@@ -276,6 +277,7 @@
 					<FortifyTerritory bind:game gameTerritory={selectedTerritory} {svgElement} />
 				{:else if selectedTerritory.territory.isFactory}
 					<BuyInfantry bind:game bind:gameTerritory={selectedTerritory} {currentPlayer} />
+					<BuyShips bind:game bind:gameTerritory={selectedTerritory} {currentPlayer} />
 				{/if}
 			{/if}
 		</div>

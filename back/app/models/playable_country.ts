@@ -22,28 +22,60 @@ export default class PlayableCountry extends BaseModel {
     @column()
     declare color: string;
 
-    @column()
+    @column({
+        consume: (value: string | number): string => {
+            return Number(value).toString();
+        },
+    })
     declare infantryAttackFactor: number;
 
-    @column()
+    @column({
+        consume: (value: string | number): string => {
+            return Number(value).toString();
+        },
+    })
     declare infantryDefenseFactor: number;
 
-    @column()
+    @column({
+        consume: (value: string | number): string => {
+            return Number(value).toString();
+        },
+    })
     declare infantryPriceFactor: number;
 
-    @column()
+    @column({
+        consume: (value: string | number): string => {
+            return Number(value).toString();
+        },
+    })
     declare shipAttackFactor: number;
 
-    @column()
+    @column({
+        consume: (value: string | number): string => {
+            return Number(value).toString();
+        },
+    })
     declare shipDefenseFactor: number;
 
-    @column()
+    @column({
+        consume: (value: string | number): string => {
+            return Number(value).toString();
+        },
+    })
     declare shipPriceFactor: number;
 
-    @column()
+    @column({
+        consume: (value: string | number): string => {
+            return Number(value).toString();
+        },
+    })
     declare landingAttackFactor: number;
 
-    @column()
+    @column({
+        consume: (value: string | number): string => {
+            return Number(value).toString();
+        },
+    })
     declare landingDefenseFactor: number;
 
     @column()
