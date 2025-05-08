@@ -175,10 +175,10 @@ export default class GameController {
         if (!gameTerritory.territory.isFactory) {
             return response.forbidden({ error: 'This territory is not a factory' });
         } else if (amount < 1000 || amount % 1000 !== 0) {
-            return response.badRequest({ error: 'Invalid amount' });
+            return response.badRequest({ error: 'Invalid infantry amount' });
         }
 
-        const cost: number = Math.ceil((game.map.baseInfantryCost * player.country.infantryPriceFactor * amount) / 1000) * 1000;
+        const cost: number = game.map.baseInfantryCost * player.country.infantryPriceFactor * amount;
 
         if (player.gold < cost) {
             return response.forbidden({ error: 'Not enough gold' });
@@ -202,9 +202,11 @@ export default class GameController {
 
         if (!gameTerritory.territory.isFactory) {
             return response.forbidden({ error: 'This territory is not a factory' });
+        } else if (amount < 5 || amount % 5 !== 0) {
+            return response.badRequest({ error: 'Invalid ships amount' });
         }
 
-        const cost: number = Math.floor((game.map.baseShipCost * player.country.shipPriceFactor * amount) / 5) * 5;
+        const cost: number = game.map.baseShipCost * player.country.shipPriceFactor * amount;
 
         if (player.gold < cost) {
             return response.forbidden({ error: 'Not enough gold' });
@@ -216,6 +218,10 @@ export default class GameController {
         gameTerritory.ships += amount;
         await gameTerritory.save();
 
-        return response.send({ territory: gameTerritory.apiSerialize(language, user), player: player.apiSerialize(language, user) });
+        return response.send({
+            territory: gameTerritory.apiSerialize(language, user),
+            player: player.apiSerialize(language, user),
+            message: `Bought ${this.regexService.formatGameNumbers(amount)} ships for ${this.regexService.formatGameNumbers(cost)}`,
+        });
     }
 }

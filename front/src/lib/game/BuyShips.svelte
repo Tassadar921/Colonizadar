@@ -24,8 +24,9 @@
 	let canIncrement: boolean = true;
 
 	const getShipsFromCost = (cost: number): number => {
-		const rawAmount = Math.floor((cost * 5) / (game.map.baseShipCost * currentPlayer.country.shipPriceFactor));
-		return Math.floor(rawAmount / (5 * 1000)) * 5;
+		const rawAmount = cost / (game.map.baseShipCost * currentPlayer.country.shipPriceFactor);
+
+		return Math.floor(rawAmount / 5) * 5;
 	};
 
 	const handleSuccess = async (event: CustomEvent): Promise<void> => {
@@ -59,14 +60,10 @@
 			canIncrement = amount + 5 <= maxAffordableAmount;
 		}
 
-		console.log(Math.ceil((game.map.baseShipCost * currentPlayer.country.shipPriceFactor * amount) / 5) * 5);
-		console.log(game.map.baseShipCost, currentPlayer.country.shipPriceFactor);
-		cost = Math.ceil((game.map.baseShipCost * currentPlayer.country.shipPriceFactor * amount) / 5) * 5;
+		cost = game.map.baseShipCost * currentPlayer.country.shipPriceFactor * amount;
 		isValid = amount >= 5 && amount % 5 === 0;
 		canDecrement = amount > 5;
 	}
-
-	$: console.log(cost);
 </script>
 
 <button class="bg-green-500 hover:bg-green-600 transition-colors duration-300 px-3 py-1 rounded-xl text-white" on:click={() => (showModal = true)}>

@@ -24,8 +24,8 @@
 	let canIncrement: boolean = true;
 
 	const getInfantryFromCost = (cost: number): number => {
-		const rawAmount = Math.floor((cost * 1000) / (game.map.baseInfantryCost * currentPlayer.country.infantryPriceFactor));
-		return Math.floor(rawAmount / (1000 * 1000)) * 1000;
+		const rawAmount = (cost * 1000) / (game.map.baseInfantryCost * currentPlayer.country.infantryPriceFactor);
+		return Math.floor(rawAmount / 1000);
 	};
 
 	const handleSuccess = async (event: CustomEvent): Promise<void> => {
@@ -59,7 +59,7 @@
 			canIncrement = amount + 1000 <= maxAffordableAmount;
 		}
 
-		cost = Math.ceil((game.map.baseInfantryCost * currentPlayer.country.infantryPriceFactor * amount) / 1000) * 1000;
+		cost = game.map.baseInfantryCost * currentPlayer.country.infantryPriceFactor * amount;
 		isValid = amount >= 1000 && amount % 1000 === 0;
 		canDecrement = amount > 1000;
 	}
