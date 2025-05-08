@@ -10,6 +10,7 @@
 	export let largeShiftStep: number;
 	export let canDecrement: boolean;
 	export let canIncrement: boolean;
+	export let name = '';
 
 	const applyStep = (step: number, shiftStep: number, direction: 'inc' | 'dec', shiftKey: boolean) => {
 		const appliedStep = shiftKey ? shiftStep : step;
@@ -69,7 +70,7 @@
 	});
 </script>
 
-<input type="hidden" {value} />
+<input type="hidden" {name} {value} />
 
 <div class="my-2 flex flex-row gap-3 justify-center items-center">
 	<!-- Large Decrement -->
@@ -79,7 +80,7 @@
 
 	<!-- Small Decrement -->
 	<Button disabled={!canDecrement} on:click={(e) => handleClick(e, smallStep, smallShiftStep, 'dec')}>
-        <Icon name="chevronLeft" />
+		<Icon name="chevronLeft" />
 	</Button>
 
 	<!-- Value -->
@@ -89,11 +90,11 @@
 
 	<!-- Small Increment -->
 	<Button disabled={!canIncrement} on:click={(e) => handleClick(e, smallStep, smallShiftStep, 'inc')}>
-        <Icon name="chevronRight" />
+		<Icon name="chevronRight" />
 	</Button>
 
 	<!-- Large Increment -->
 	<Button disabled={!canIncrement} on:click={(e) => handleClick(e, largeStep, largeShiftStep, 'inc')}>
-        <Icon name="doubleArrowRight" />
+		<Icon name="doubleArrowRight" />
 	</Button>
 </div>

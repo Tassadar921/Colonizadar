@@ -101,6 +101,8 @@ export default class GameController {
         targetPlayer.gold += Math.floor((amount * game.map.financePlayerCostFactor) / 1000) * 1000;
         await targetPlayer.save();
 
+        // TODO: send notification to target player
+
         return response.send({
             player: player.apiSerialize(language, user),
             message: `Successfully sent ${this.regexService.formatGameNumbers(amount)} to ${targetPlayer.user?.username || targetPlayer.bot?.translate(language)}`,

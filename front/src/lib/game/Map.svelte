@@ -275,7 +275,7 @@
 				{:else if !selectedTerritory.isFortified}
 					<FortifyTerritory bind:game gameTerritory={selectedTerritory} {svgElement} />
 				{:else if selectedTerritory.territory.isFactory}
-					<BuyInfantry bind:game gameTerritory={selectedTerritory} {currentPlayer} />
+					<BuyInfantry bind:game bind:gameTerritory={selectedTerritory} {currentPlayer} />
 				{/if}
 			{/if}
 		</div>

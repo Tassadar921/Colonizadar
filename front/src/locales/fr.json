@@ -282,8 +282,14 @@
 			"fortified": "Fortifié",
 			"fortify": "Fortifier",
 			"buy-infantry": "Acheter de l'infanterie",
+			"buy-ships": "Acheter des navires",
+			"total-infantry": "Total d'infanterie",
+			"total-ships": "Total de navires",
 			"buy-infantry-modal": {
-				"title": "Acheter de l'infanterie en"
+				"title": "Acheter de l'infanterie en/au"
+			},
+			"buy-ships-modal": {
+				"title": "Acheter des navires en/au"
 			},
 			"country-modal": {
 				"owner": "Propriétaire",

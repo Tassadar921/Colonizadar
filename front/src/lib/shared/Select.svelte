@@ -17,9 +17,8 @@
 	export let required: boolean = false;
 
 	let isOpen: boolean = false;
-	let chevronIcon: string = 'chevronDown';
+	let chevronIcon: 'chevronUp' | 'chevronDown' = 'chevronDown';
 	let dropdownRef: HTMLDivElement;
-	let buttonRef: HTMLButtonElement;
 	let dropdownWidth: string = 'auto';
 	let measureContainer: HTMLDivElement;
 
@@ -79,7 +78,6 @@
 	<input type="hidden" {name} value={selectedOption?.value} />
 
 	<button
-		bind:this={buttonRef}
 		class="px-3 py-2 border border-gray-300 dark:border-gray-800 dark:bg-gray-700 dark:text-gray-300 rounded-xl shadow-xs flex justify-between items-center gap-2"
 		style="width: {dropdownWidth}; min-width: 8rem;"
 		on:click={() => {
@@ -89,18 +87,18 @@
 	>
 		<span class="flex items-center gap-2">
 			{#if selectedOption?.uri}
-				<img src={selectedOption.uri} alt={selectedOption.label} class="w-5 h-5 shrink-0" />
+				<img src={selectedOption.uri} alt={selectedOption.label} class="size-5 shrink-0" />
 			{/if}
 			{selectedOption?.label || 'Select an option'}
 		</span>
-		<span class="dark:text-primary-500 transform transition-transform duration-300" class:rotate-180={isOpen}>
+		<span class="text-primary-500 transform transition-transform duration-300" class:rotate-180={isOpen}>
 			<Icon bind:name={chevronIcon} />
 		</span>
 	</button>
 
 	{#if isOpen}
 		<ul
-			class="absolute left-0 mt-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg shadow-lg z-10 max-h-60 overflow-auto min-w-max whitespace-nowrap"
+			class="absolute left-0 mt-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg shadow-lg z-10 max-h-72 overflow-auto min-w-max whitespace-nowrap"
 			style="width: {dropdownWidth};"
 		>
 			{#each options as option}

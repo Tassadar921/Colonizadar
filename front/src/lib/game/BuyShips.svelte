@@ -23,9 +23,9 @@
 	let canDecrement: boolean = true;
 	let canIncrement: boolean = true;
 
-	const getInfantryFromCost = (cost: number): number => {
-		const rawAmount = Math.floor((cost * 1000) / (game.map.baseInfantryCost * currentPlayer.country.infantryPriceFactor));
-		return Math.floor(rawAmount / (1000 * 1000)) * 1000;
+	const getShipsFromCost = (cost: number): number => {
+		const rawAmount = Math.floor((cost * 5) / (game.map.baseShipCost * currentPlayer.country.shipPriceFactor));
+		return Math.floor(rawAmount / (5 * 1000)) * 5;
 	};
 
 	const handleSuccess = async (event: CustomEvent): Promise<void> => {
@@ -50,7 +50,7 @@
 	};
 
 	$: {
-		const maxAffordableAmount = getInfantryFromCost(currentPlayer.gold ?? 0);
+		const maxAffordableAmount = getShipsFromCost(currentPlayer.gold ?? 0);
 
 		if (amount > maxAffordableAmount) {
 			amount = maxAffordableAmount;
@@ -59,19 +59,19 @@
 			canIncrement = amount + 1000 <= maxAffordableAmount;
 		}
 
-		cost = Math.ceil((game.map.baseInfantryCost * currentPlayer.country.infantryPriceFactor * amount) / 1000) * 1000;
+		cost = Math.ceil((game.map.baseShipCost * currentPlayer.country.shipPriceFactor * amount) / 5) * 5;
 		isValid = amount >= 1000 && amount % 1000 === 0;
 		canDecrement = amount > 1000;
 	}
 </script>
 
 <button class="bg-green-500 hover:bg-green-600 transition-colors duration-300 px-3 py-1 rounded-xl text-white" on:click={() => (showModal = true)}>
-	{$t('play.game.buy-infantry')}
+	{$t('play.game.buy-ships')}
 </button>
 
 <Modal bind:showModal>
 	<Subtitle slot="header">
-		{$t('play.game.buy-infantry-modal.title')}
+		{$t('play.game.buy-ships-modal.title')}
 		{gameTerritory.territory.name}
 	</Subtitle>
 
@@ -79,8 +79,8 @@
 		<p>{$t('play.game.total-infantry')}: {gameTerritory.infantry}</p>
 		<p>{$t('play.game.total-ships')}: {gameTerritory.ships}</p>
 	</div>
-	<Form method="PATCH" action={`/api/game/${game.id}/actions/territory/${gameTerritory.territory.code}/buy/infantry`} hasBackground={false} {isValid} on:success={handleSuccess}>
-		<Incrementation bind:value={amount} smallStep={1000} smallShiftStep={10000} largeStep={100000} largeShiftStep={1000000} {canDecrement} {canIncrement} name="amount" />
+	<Form method="PATCH" action={`/api/game/${game.id}/actions/territory/${gameTerritory.territory.code}/buy/ships`} hasBackground={false} {isValid} on:success={handleSuccess}>
+		<Incrementation bind:value={amount} smallStep={5} smallShiftStep={10} largeStep={100} largeShiftStep={1000} {canDecrement} {canIncrement} name="amount" />
 
 		<p class="text-center mt-4">
 			{$t('play.game.will-cost')}
