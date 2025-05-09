@@ -12,6 +12,7 @@ type SerializedRoomPlayer = {
     isUserConnected: boolean;
     isReady: boolean;
     gold?: number;
+    wars?: SerializedRoomPlayer[];
     difficulty: SerializedBotDifficulty;
     createdAt?: string;
     updatedAt?: string;

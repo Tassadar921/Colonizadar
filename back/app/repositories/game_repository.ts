@@ -20,7 +20,17 @@ export default class GameRepository extends BaseRepository<typeof Game> {
             .andWhere('games.front_id', gameId)
             .preload('room', (roomQuery): void => {
                 roomQuery.preload('owner').preload('players', (playersQuery): void => {
-                    playersQuery.preload('user').preload('bot').preload('country').preload('difficulty').orderBy('frontId');
+                    playersQuery
+                        .preload('user')
+                        .preload('bot')
+                        .preload('country')
+                        .preload('difficulty')
+                        .preload('wars', (warsQuery): void => {
+                            warsQuery.preload('enemy', (enemyQuery): void => {
+                                enemyQuery.preload('user').preload('bot').preload('country').preload('difficulty');
+                            });
+                        })
+                        .orderBy('frontId');
                 });
             })
             .preload('territories', (territoriesQuery): void => {
