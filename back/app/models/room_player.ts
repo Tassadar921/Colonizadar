@@ -1,13 +1,14 @@
 import { DateTime } from 'luxon';
-import { BaseModel, belongsTo, column } from '@adonisjs/lucid/orm';
+import { BaseModel, belongsTo, column, hasMany } from '@adonisjs/lucid/orm';
 import User from '#models/user';
-import type { BelongsTo } from '@adonisjs/lucid/types/relations';
+import type { BelongsTo, HasMany } from '@adonisjs/lucid/types/relations';
 import Room from '#models/room';
 import SerializedRoomPlayer from '#types/serialized/serialized_room_player';
 import Language from '#models/language';
 import Bot from '#models/bot';
 import PlayableCountry from '#models/playable_country';
 import BotDifficulty from '#models/bot_difficulty';
+import RoomPlayerWar from '#models/room_player_war';
 
 export default class RoomPlayer extends BaseModel {
     @column({ isPrimary: true })
@@ -62,6 +63,9 @@ export default class RoomPlayer extends BaseModel {
     @belongsTo((): typeof Room => Room)
     declare room: BelongsTo<typeof Room>;
 
+    @hasMany((): typeof RoomPlayerWar => RoomPlayerWar)
+    declare wars: HasMany<typeof RoomPlayerWar>;
+
     @column.dateTime({ autoCreate: true })
     declare lastHeartbeat: DateTime;
 
@@ -81,6 +85,7 @@ export default class RoomPlayer extends BaseModel {
             isUserConnected: this.isUserConnected,
             isReady: this.isReady,
             gold: this.userId === user?.id || isSpied ? this.gold : undefined,
+            wars: this.wars.length ? this.wars.map((war: RoomPlayerWar): SerializedRoomPlayer => war.enemy.apiSerialize(language)) : undefined,
             difficulty: this.difficulty?.apiSerialize(language),
             createdAt: this.createdAt?.toString(),
             updatedAt: this.updatedAt?.toString(),
