@@ -9,6 +9,9 @@ import Bot from '#models/bot';
 import PlayableCountry from '#models/playable_country';
 import BotDifficulty from '#models/bot_difficulty';
 import RoomPlayerWar from '#models/room_player_war';
+import Peace from '#models/peace';
+import PendingPeace from '#models/pending_peace';
+import SerializedPeace from '#types/serialized/serialized_peace';
 
 export default class RoomPlayer extends BaseModel {
     @column({ isPrimary: true })
@@ -66,6 +69,12 @@ export default class RoomPlayer extends BaseModel {
     @hasMany((): typeof RoomPlayerWar => RoomPlayerWar)
     declare wars: HasMany<typeof RoomPlayerWar>;
 
+    @hasMany((): typeof Peace => Peace)
+    declare peaces: HasMany<typeof Peace>;
+
+    @hasMany((): typeof PendingPeace => PendingPeace)
+    declare pendingPeaces: HasMany<typeof PendingPeace>;
+
     @column.dateTime({ autoCreate: true })
     declare lastHeartbeat: DateTime;
 
@@ -86,6 +95,8 @@ export default class RoomPlayer extends BaseModel {
             isReady: this.isReady,
             gold: this.userId === user?.id || isSpied ? this.gold : undefined,
             wars: this.wars.length ? this.wars.map((war: RoomPlayerWar): SerializedRoomPlayer => war.enemy.apiSerialize(language)) : undefined,
+            peaces: this.peaces.length ? this.peaces.map((peace: Peace): SerializedPeace => peace.apiSerialize(language)) : undefined,
+            pendingPeaces: this.pendingPeaces.length ? this.pendingPeaces.map((pendingPeace: PendingPeace): SerializedRoomPlayer => pendingPeace.enemy.apiSerialize(language)) : undefined,
             difficulty: this.difficulty?.apiSerialize(language),
             createdAt: this.createdAt?.toString(),
             updatedAt: this.updatedAt?.toString(),
