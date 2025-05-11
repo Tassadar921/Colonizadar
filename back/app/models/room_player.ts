@@ -66,13 +66,19 @@ export default class RoomPlayer extends BaseModel {
     @belongsTo((): typeof Room => Room)
     declare room: BelongsTo<typeof Room>;
 
-    @hasMany((): typeof RoomPlayerWar => RoomPlayerWar)
+    @hasMany((): typeof RoomPlayerWar => RoomPlayerWar, {
+        foreignKey: 'playerId',
+    })
     declare wars: HasMany<typeof RoomPlayerWar>;
 
-    @hasMany((): typeof Peace => Peace)
+    @hasMany((): typeof Peace => Peace, {
+        foreignKey: 'playerId',
+    })
     declare peaces: HasMany<typeof Peace>;
 
-    @hasMany((): typeof PendingPeace => PendingPeace)
+    @hasMany((): typeof PendingPeace => PendingPeace, {
+        foreignKey: 'playerId',
+    })
     declare pendingPeaces: HasMany<typeof PendingPeace>;
 
     @column.dateTime({ autoCreate: true })
@@ -94,9 +100,9 @@ export default class RoomPlayer extends BaseModel {
             isUserConnected: this.isUserConnected,
             isReady: this.isReady,
             gold: this.userId === user?.id || isSpied ? this.gold : undefined,
-            wars: this.wars.length ? this.wars.map((war: RoomPlayerWar): SerializedRoomPlayer => war.enemy.apiSerialize(language)) : undefined,
-            peaces: this.peaces.length ? this.peaces.map((peace: Peace): SerializedPeace => peace.apiSerialize(language)) : undefined,
-            pendingPeaces: this.pendingPeaces.length ? this.pendingPeaces.map((pendingPeace: PendingPeace): SerializedRoomPlayer => pendingPeace.enemy.apiSerialize(language)) : undefined,
+            wars: this.wars?.map((war: RoomPlayerWar): SerializedRoomPlayer => war.enemy.apiSerialize(language)),
+            peaces: this.peaces?.map((peace: Peace): SerializedPeace => peace.apiSerialize(language)),
+            pendingPeaces: this.pendingPeaces?.map((pendingPeace: PendingPeace): SerializedRoomPlayer => pendingPeace.enemy.apiSerialize(language)),
             difficulty: this.difficulty?.apiSerialize(language),
             createdAt: this.createdAt?.toString(),
             updatedAt: this.updatedAt?.toString(),

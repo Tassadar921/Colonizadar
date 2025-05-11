@@ -30,6 +30,16 @@ export default class GameRepository extends BaseRepository<typeof Game> {
                                 enemyQuery.preload('user').preload('bot').preload('country').preload('difficulty');
                             });
                         })
+                        .preload('pendingPeaces', (pendingPeacesQuery): void => {
+                            pendingPeacesQuery.preload('enemy', (enemyQuery): void => {
+                                enemyQuery.preload('user').preload('bot').preload('country').preload('difficulty');
+                            });
+                        })
+                        .preload('peaces', (peacesQuery): void => {
+                            peacesQuery.preload('enemy', (enemyQuery): void => {
+                                enemyQuery.preload('user').preload('bot').preload('country').preload('difficulty');
+                            });
+                        })
                         .orderBy('frontId');
                 });
             })
