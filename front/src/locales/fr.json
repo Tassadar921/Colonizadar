@@ -275,6 +275,7 @@
 			"spy": "Espionner",
 			"finance": "Financer",
 			"will-receive": "recevra",
+			"received-by": "reçus de",
 			"will-cost": "Coûtera",
 			"declare-war": "Déclarer une guerre",
 			"subversion": "Subversion",
@@ -298,7 +299,12 @@
 			},
 			"finance-player-modal": {
 				"title": "Financer un joueur"
-			}
+			},
+			"declared-war": "a déclaré la guerre à",
+			"you-declared-war": "Vous avez déclaré la guerre à",
+			"declared-war-on-you": "vous a déclaré la guerre",
+			"made-peace": "a fait la paix avec",
+			"you-made-peace": "Vous avez fait la paix avec"
 		}
 	}
 }

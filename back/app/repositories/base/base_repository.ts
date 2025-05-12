@@ -47,26 +47,37 @@ export default class BaseRepository<T extends LucidModel> {
 
     public async firstOrCreate(
         searchPayload: Partial<ModelAttributes<InstanceType<T>>>,
-        savePayload: Partial<ModelAttributes<InstanceType<T>>>,
+        savePayload?: Partial<ModelAttributes<InstanceType<T>>>,
         trx?: TransactionClientContract
     ): Promise<InstanceType<T>> {
-        return trx
-            ? await this.Model.firstOrCreate(searchPayload, savePayload, {
-                  client: trx,
-              })
-            : await this.Model.firstOrCreate(searchPayload, savePayload);
+        const finalSavePayload = savePayload ?? searchPayload;
+
+        return trx ? await this.Model.firstOrCreate(searchPayload, finalSavePayload, { client: trx }) : await this.Model.firstOrCreate(searchPayload, finalSavePayload);
+    }
+
+    public async findOrCreateMany(
+        payloads: {
+            searchPayload: Partial<ModelAttributes<InstanceType<T>>>;
+            savePayload?: Partial<ModelAttributes<InstanceType<T>>>;
+        }[],
+        trx?: TransactionClientContract
+    ): Promise<InstanceType<T>[]> {
+        return await Promise.all(
+            payloads.map(({ searchPayload, savePayload }) => {
+                const finalSavePayload = savePayload ?? searchPayload;
+                return trx ? this.Model.firstOrCreate(searchPayload, finalSavePayload, { client: trx }) : this.Model.firstOrCreate(searchPayload, finalSavePayload);
+            })
+        );
     }
 
     public async firstOrNew(
         searchPayload: Partial<ModelAttributes<InstanceType<T>>>,
-        savePayload: Partial<ModelAttributes<InstanceType<T>>>,
+        savePayload?: Partial<ModelAttributes<InstanceType<T>>>,
         trx?: TransactionClientContract
     ): Promise<InstanceType<T>> {
-        return trx
-            ? await this.Model.firstOrNew(searchPayload, savePayload, {
-                  client: trx,
-              })
-            : await this.Model.firstOrNew(searchPayload, savePayload);
+        const finalSavePayload = savePayload ?? searchPayload;
+
+        return trx ? await this.Model.firstOrNew(searchPayload, finalSavePayload, { client: trx }) : await this.Model.firstOrNew(searchPayload, finalSavePayload);
     }
 
     public async firstOrFail(

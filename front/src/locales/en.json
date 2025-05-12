@@ -275,6 +275,7 @@
 			"spy": "Spy",
 			"finance": "Finance",
 			"will-receive": "will receive",
+			"received-by": "received from",
 			"will-cost": "Will cost",
 			"declare-war": "Declare a war",
 			"subversion": "Subversion",
@@ -298,7 +299,12 @@
 			},
 			"finance-player-modal": {
 				"title": "Finance player"
-			}
+			},
+			"declared-war": "declared war on",
+			"you-declared-war": "You declared war on",
+			"declared-war-on-you": "declared war on you",
+			"made-peace": "made peace with",
+			"you-made-peace-with": "You made peace with"
 		}
 	}
 }

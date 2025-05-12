@@ -77,9 +77,14 @@ export default class RoomPlayer extends BaseModel {
     declare peaces: HasMany<typeof Peace>;
 
     @hasMany((): typeof PendingPeace => PendingPeace, {
+        foreignKey: 'enemyId',
+    })
+    declare receivedPendingPeaces: HasMany<typeof PendingPeace>;
+
+    @hasMany((): typeof PendingPeace => PendingPeace, {
         foreignKey: 'playerId',
     })
-    declare pendingPeaces: HasMany<typeof PendingPeace>;
+    declare sentPendingPeaces: HasMany<typeof PendingPeace>;
 
     @column.dateTime({ autoCreate: true })
     declare lastHeartbeat: DateTime;
@@ -102,7 +107,8 @@ export default class RoomPlayer extends BaseModel {
             gold: this.userId === user?.id || isSpied ? this.gold : undefined,
             wars: this.wars?.map((war: RoomPlayerWar): SerializedRoomPlayer => war.enemy.apiSerialize(language)),
             peaces: this.peaces?.map((peace: Peace): SerializedPeace => peace.apiSerialize(language)),
-            pendingPeaces: this.pendingPeaces?.map((pendingPeace: PendingPeace): SerializedRoomPlayer => pendingPeace.enemy.apiSerialize(language)),
+            receivedPendingPeaces: this.receivedPendingPeaces?.map((pendingPeace: PendingPeace): SerializedRoomPlayer => pendingPeace.enemy.apiSerialize(language)),
+            sentPendingPeaces: this.sentPendingPeaces?.map((pendingPeace: PendingPeace): SerializedRoomPlayer => pendingPeace.enemy.apiSerialize(language)),
             difficulty: this.difficulty?.apiSerialize(language),
             createdAt: this.createdAt?.toString(),
             updatedAt: this.updatedAt?.toString(),

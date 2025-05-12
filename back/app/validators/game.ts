@@ -47,3 +47,21 @@ export const buyShipsValidator = vine.compile(
         amount: vine.number().min(5),
     })
 );
+
+export const declareWarParamsValidator = vine.compile(
+    vine.object({
+        playerId: vine.number().positive(),
+    })
+);
+
+export const askPeaceParamsValidator = vine.compile(
+    vine.object({
+        playerId: vine.number().positive(),
+    })
+);
+
+export const makePeaceParamsValidator = vine.compile(
+    vine.object({
+        playerId: vine.number().positive(),
+    })
+);

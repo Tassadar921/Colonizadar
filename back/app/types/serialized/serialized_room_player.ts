@@ -15,7 +15,8 @@ type SerializedRoomPlayer = {
     gold?: number;
     wars?: SerializedRoomPlayer[];
     peaces?: SerializedPeace[];
-    pendingPeaces?: SerializedRoomPlayer[];
+    receivedPendingPeaces?: SerializedRoomPlayer[];
+    sentPendingPeaces?: SerializedRoomPlayer[];
     difficulty: SerializedBotDifficulty;
     createdAt?: string;
     updatedAt?: string;

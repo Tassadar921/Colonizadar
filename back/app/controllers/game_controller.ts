@@ -2,14 +2,35 @@ import { HttpContext } from '@adonisjs/core/http';
 import RoomPlayer from '#models/room_player';
 import { setReadyValidator } from '#validators/room_player';
 import transmit from '@adonisjs/transmit/services/main';
-import { buyInfantryValidator, buyShipsValidator, financePlayerParamsValidator, financePlayerValidator, financeWildTerritoryValidator, spyPlayerParamsValidator } from '#validators/game';
+import {
+    askPeaceParamsValidator,
+    buyInfantryValidator,
+    buyShipsValidator,
+    declareWarParamsValidator,
+    financePlayerParamsValidator,
+    financePlayerValidator,
+    financeWildTerritoryValidator,
+    makePeaceParamsValidator,
+    spyPlayerParamsValidator,
+} from '#validators/game';
 import RoomStatusEnum from '#types/enum/room_status_enum';
 import { inject } from '@adonisjs/core';
 import RegexService from '#services/regex_service';
+import RoomPlayerWar from '#models/room_player_war';
+import RoomPlayerWarRepository from '#repositories/room_player_war_repository';
+import PendingPeaceRepository from '#repositories/pending_peace_repository';
+import PeaceRepository from '#repositories/peace_repository';
+import PendingPeace from '#models/pending_peace';
+import PeaceStatusEnum from '#types/enum/peace_status_enum';
 
 @inject()
 export default class GameController {
-    constructor(private readonly regexService: RegexService) {}
+    constructor(
+        private readonly regexService: RegexService,
+        private readonly roomPlayerWarRepository: RoomPlayerWarRepository,
+        private readonly pendingPeaceRepository: PendingPeaceRepository,
+        private readonly peaceRepository: PeaceRepository
+    ) {}
 
     public async get({ response, user, language, game }: HttpContext): Promise<void> {
         return response.send({ game: game.apiSerialize(language, user) });
@@ -71,6 +92,8 @@ export default class GameController {
         player.gold -= game.map.spyPlayerCost;
         await player.save();
 
+        // TODO: send notification to target player
+
         return response.send({
             player: player.apiSerialize(language, user),
             targetPlayer: targetPlayer.apiSerialize(language, user, true),
@@ -96,12 +119,16 @@ export default class GameController {
         }
 
         player.gold -= amount;
-        await player.save();
+        const givenAmount: number = Math.floor((amount * game.map.financePlayerCostFactor) / 1000) * 1000;
+        targetPlayer.gold += givenAmount;
 
-        targetPlayer.gold += Math.floor((amount * game.map.financePlayerCostFactor) / 1000) * 1000;
-        await targetPlayer.save();
+        await Promise.all([player.save(), targetPlayer.save()]);
 
-        // TODO: send notification to target player
+        transmit.broadcast(`notification/play/game/${game.id}/${targetPlayer.id}/financed`, {
+            player: player.apiSerialize(language, user),
+            targetPlayer: targetPlayer.apiSerialize(language, user),
+            amount: givenAmount,
+        });
 
         return response.send({
             player: player.apiSerialize(language, user),
@@ -119,10 +146,9 @@ export default class GameController {
         }
 
         player.gold -= amount;
-        await player.save();
-
         gameTerritory.infantry += Math.floor((amount * game.map.financeWildTerritoryEnforcementFactor * game.map.financeWildTerritoryCostFactor) / (game.map.wildInfantryCostFactor * 1000));
-        await gameTerritory.save();
+
+        await Promise.all([player.save(), gameTerritory.save()]);
 
         return response.send({
             player: player.apiSerialize(language, user),
@@ -136,7 +162,6 @@ export default class GameController {
         }
 
         player.gold -= game.map.baseSubversionCost;
-        await player.save();
 
         gameTerritory.infantry -= Math.ceil((100 * 1000 * game.map.wildTerritorySubversionFactor * game.map.financeWildTerritoryCostFactor) / (game.map.wildInfantryCostFactor * 1000));
         // TODO: manage the case where players subverse the same territory at the same time
@@ -144,7 +169,8 @@ export default class GameController {
             gameTerritory.infantry = 1000;
             gameTerritory.ownerId = player.id;
         }
-        await gameTerritory.save();
+
+        await Promise.all([player.save(), gameTerritory.save()]);
 
         return response.send({ conquered: !!gameTerritory.ownerId, player: player.apiSerialize(language, user) });
     }
@@ -157,10 +183,9 @@ export default class GameController {
         }
 
         player.gold -= game.map.fortifyCost;
-        await player.save();
-
         gameTerritory.isFortified = true;
-        await gameTerritory.save();
+
+        await Promise.all([player.save(), gameTerritory.save()]);
 
         return response.send({
             territory: gameTerritory.apiSerialize(language, user),
@@ -185,10 +210,9 @@ export default class GameController {
         }
 
         player.gold -= cost;
-        await player.save();
-
         gameTerritory.infantry += amount;
-        await gameTerritory.save();
+
+        await Promise.all([player.save(), gameTerritory.save()]);
 
         return response.send({
             territory: gameTerritory.apiSerialize(language, user),
@@ -213,15 +237,135 @@ export default class GameController {
         }
 
         player.gold -= cost;
-        await player.save();
-
         gameTerritory.ships += amount;
-        await gameTerritory.save();
+
+        await Promise.all([player.save(), gameTerritory.save()]);
 
         return response.send({
             territory: gameTerritory.apiSerialize(language, user),
             player: player.apiSerialize(language, user),
             message: `Bought ${this.regexService.formatGameNumbers(amount)} ships for ${this.regexService.formatGameNumbers(cost)}`,
+        });
+    }
+
+    public async declareWar({ request, response, user, player, game, language }: HttpContext): Promise<void> {
+        const { playerId } = await declareWarParamsValidator.validate(request.params());
+
+        if (player.frontId === playerId) {
+            return response.forbidden({ error: "You can't declare war on yourself" });
+        }
+
+        const targetPlayer: RoomPlayer | undefined = game.room.players.find((loopPlayer: RoomPlayer): boolean => loopPlayer.frontId === playerId);
+        if (!targetPlayer) {
+            return response.notFound({ error: 'Target player not found' });
+        } else if (player.wars.find((war: RoomPlayerWar): boolean => war.enemyId === targetPlayer.id)) {
+            return response.forbidden({ error: 'You are already at war' });
+        }
+
+        await Promise.all([
+            this.roomPlayerWarRepository.findOrCreateMany([
+                {
+                    searchPayload: {
+                        playerId: player.id,
+                        enemyId: targetPlayer.id,
+                    },
+                },
+                {
+                    searchPayload: {
+                        playerId: targetPlayer.id,
+                        enemyId: player.id,
+                    },
+                },
+            ]),
+            player.load('wars'),
+            targetPlayer.load('wars'),
+        ]);
+
+        transmit.broadcast(`notification/play/game/${game.id}/war`, { player: player.apiSerialize(language, user), targetPlayer: targetPlayer.apiSerialize(language, user) });
+
+        return response.send({
+            message: `Declared war on ${targetPlayer.user?.username || targetPlayer.bot?.translate(language)}`,
+        });
+    }
+
+    public async askPeace({ request, response, user, player, game, language }: HttpContext): Promise<void> {
+        const { playerId } = await askPeaceParamsValidator.validate(request.params());
+
+        if (player.frontId === playerId) {
+            return response.forbidden({ error: "You can't ask peace to yourself" });
+        }
+
+        const targetPlayer: RoomPlayer | undefined = game.room.players.find((loopPlayer: RoomPlayer): boolean => loopPlayer.frontId === playerId);
+        if (!targetPlayer) {
+            return response.notFound({ error: 'Target player not found' });
+        } else if (!player.wars.find((war: RoomPlayerWar): boolean => war.enemyId === targetPlayer.id)) {
+            return response.forbidden({ error: 'You are not at war' });
+        }
+
+        await this.pendingPeaceRepository.firstOrNew({
+            playerId: player.id,
+            enemyId: targetPlayer.id,
+        });
+
+        await Promise.all([player.load('sentPendingPeaces'), targetPlayer.load('receivedPendingPeaces')]);
+
+        transmit.broadcast(`notification/play/game/${game.id}/${player.id}/ask-peace`, {
+            player: player.apiSerialize(language, user),
+            targetPlayer: targetPlayer.apiSerialize(language, user),
+        });
+
+        return response.send({
+            message: `Asked peace with ${targetPlayer.user?.username || targetPlayer.bot?.translate(language)}`,
+        });
+    }
+
+    public async makePeace({ request, response, user, player, game, language }: HttpContext): Promise<void> {
+        const { playerId } = await makePeaceParamsValidator.validate(request.params());
+
+        if (player.frontId === playerId) {
+            return response.forbidden({ error: "You can't make peace with yourself" });
+        }
+
+        const targetPlayer: RoomPlayer | undefined = game.room.players.find((loopPlayer: RoomPlayer): boolean => loopPlayer.frontId === playerId);
+        if (!targetPlayer) {
+            return response.notFound({ error: 'Target player not found' });
+        } else if (!player.wars.find((war: RoomPlayerWar): boolean => war.enemyId === targetPlayer.id)) {
+            return response.forbidden({ error: 'You are not at war' });
+        }
+
+        await Promise.all([
+            this.pendingPeaceRepository.removeByPlayers(player, targetPlayer),
+            this.peaceRepository.findOrCreateMany([
+                {
+                    searchPayload: {
+                        playerId: player.id,
+                        enemyId: targetPlayer.id,
+                        expirationSeason: game.season,
+                        expirationYear: game.year + 3,
+                        status: PeaceStatusEnum.IN_PROGRESS,
+                    },
+                },
+                {
+                    searchPayload: {
+                        playerId: targetPlayer.id,
+                        enemyId: player.id,
+                        expirationSeason: game.season,
+                        expirationYear: game.year + 3,
+                        status: PeaceStatusEnum.IN_PROGRESS,
+                    },
+                },
+            ]),
+            player.load('peaces'),
+            targetPlayer.load('peaces'),
+        ]);
+
+        player.receivedPendingPeaces.filter((pendingPeace: PendingPeace): boolean => pendingPeace.enemyId !== targetPlayer.id);
+        targetPlayer.sentPendingPeaces.filter((pendingPeace: PendingPeace): boolean => pendingPeace.playerId !== player.id);
+
+        transmit.broadcast(`notification/play/game/${game.id}/peace`, { player: player.apiSerialize(language, user), targetPlayer: targetPlayer.apiSerialize(language, user) });
+
+        return response.send({
+            message: `Declared war on ${targetPlayer.user?.username || targetPlayer.bot?.translate(language)}`,
         });
     }
 }

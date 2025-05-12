@@ -4,6 +4,7 @@ import type { BelongsTo } from '@adonisjs/lucid/types/relations';
 import RoomPlayer from '#models/room_player';
 import Language from '#models/language';
 import SerializedPeace from '#types/serialized/serialized_peace';
+import PeaceStatusEnum from '#types/enum/peace_status_enum';
 
 export default class Peace extends BaseModel {
     @column({ isPrimary: true })
@@ -11,6 +12,9 @@ export default class Peace extends BaseModel {
 
     @column()
     declare frontId: number;
+
+    @column()
+    declare status: PeaceStatusEnum;
 
     @column()
     declare expirationSeason: number;
@@ -41,6 +45,7 @@ export default class Peace extends BaseModel {
     public apiSerialize(language: Language): SerializedPeace {
         return {
             id: this.frontId,
+            status: this.status,
             expirationSeason: this.expirationSeason,
             expirationYear: this.expirationYear,
             enemy: this.enemy.apiSerialize(language),
