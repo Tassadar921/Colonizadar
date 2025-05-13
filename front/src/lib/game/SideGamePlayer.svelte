@@ -9,6 +9,11 @@
 	import SpyPlayer from './SpyPlayer.svelte';
 	import FinancePlayer from './FinancePlayer.svelte';
 	import { formatGameNumbers } from '../../services/stringService';
+    import AcceptPeace from "./AcceptPeace.svelte";
+    import RefusePeace from "./RefusePeace.svelte";
+    import CancelPendingPeace from "./CancelPendingPeace.svelte";
+    import DeclareWar from "./DeclareWar.svelte";
+    import AskPeace from "./AskPeace.svelte";
 
 	export let game: SerializedGame;
 	export let currentPlayer: SerializedRoomPlayer;
@@ -57,10 +62,28 @@
 		<p>{$t('play.game.gold')}: {formatGameNumbers(player.gold ?? 0)}</p>
 		<p>{$t('play.game.territories')}: {formatGameNumbers(game.territories.reduce((accumulator, territory: SerializedGameTerritory) => accumulator + Number(territory.owner?.id === player.id), 0))}</p>
 		{#if player.user?.id !== $profile?.id}
-			<div class="flex gap-3">
-				<SpyPlayer bind:game {player} />
-				<FinancePlayer bind:game {currentPlayer} targetPlayer={player} />
-			</div>
+            <div class="flex flex-col gap-3">
+                <div class="flex gap-3">
+                    <SpyPlayer bind:game {player} />
+                    <FinancePlayer bind:game {currentPlayer} targetPlayer={player} />
+                </div>
+                <div class="flex gap-3">
+                    {#if player.wars?.find((enemy: SerializedRoomPlayer) => enemy.id === currentPlayer.id)}
+                        {#if player.receivedPendingPeaces?.find((enemy: SerializedRoomPlayer) => enemy.id === currentPlayer.id)}
+                            <AcceptPeace bind:game targetPlayer={currentPlayer} />
+                            <RefusePeace bind:game targetPlayer={currentPlayer} />
+                        {:else if player.sentPendingPeaces?.find((enemy: SerializedRoomPlayer) => enemy.id === currentPlayer.id)}
+                            <CancelPendingPeace bind:game targetPlayer={currentPlayer} />
+                        {:else}
+                            <AskPeace bind:game targetPlayer={currentPlayer} />
+                        {/if}
+                    {:else if !player.peaces?.find((enemy: SerializedRoomPlayer) => enemy.id === currentPlayer.id)}
+                        <DeclareWar bind:game targetPlayer={currentPlayer} />
+                    {:else}
+                        <p></p>
+                    {/if}
+                </div>
+            </div>
 		{/if}
 	</div>
 </div>

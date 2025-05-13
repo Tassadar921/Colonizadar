@@ -5,12 +5,12 @@ import transmit from '@adonisjs/transmit/services/main';
 import {
     askPeaceParamsValidator,
     buyInfantryValidator,
-    buyShipsValidator,
+    buyShipsValidator, cancelPendingPeaceParamsValidator,
     declareWarParamsValidator,
     financePlayerParamsValidator,
     financePlayerValidator,
     financeWildTerritoryValidator,
-    makePeaceParamsValidator,
+    makePeaceParamsValidator, refusePeaceParamsValidator,
     spyPlayerParamsValidator,
 } from '#validators/game';
 import RoomStatusEnum from '#types/enum/room_status_enum';
@@ -92,7 +92,9 @@ export default class GameController {
         player.gold -= game.map.spyPlayerCost;
         await player.save();
 
-        // TODO: send notification to target player
+        transmit.broadcast(`notification/play/game/${game.id}/${targetPlayer.id}/spied`, {
+            player: player.apiSerialize(language, user),
+        });
 
         return response.send({
             player: player.apiSerialize(language, user),
@@ -159,12 +161,13 @@ export default class GameController {
     public async subverse({ response, player, gameTerritory, game, language, user }: HttpContext): Promise<void> {
         if (player.gold < game.map.baseSubversionCost) {
             return response.forbidden({ error: 'Not enough gold' });
+        } else if (gameTerritory.ownerId) {
+            return response.forbidden({ error: 'This territory is already owned' });
         }
 
         player.gold -= game.map.baseSubversionCost;
 
         gameTerritory.infantry -= Math.ceil((100 * 1000 * game.map.wildTerritorySubversionFactor * game.map.financeWildTerritoryCostFactor) / (game.map.wildInfantryCostFactor * 1000));
-        // TODO: manage the case where players subverse the same territory at the same time
         if (gameTerritory.infantry <= 0) {
             gameTerritory.infantry = 1000;
             gameTerritory.ownerId = player.id;
@@ -309,7 +312,12 @@ export default class GameController {
 
         await Promise.all([player.load('sentPendingPeaces'), targetPlayer.load('receivedPendingPeaces')]);
 
-        transmit.broadcast(`notification/play/game/${game.id}/${player.id}/ask-peace`, {
+        transmit.broadcast(`notification/play/game/${game.id}/${player.id}/peace/ask`, {
+            player: player.apiSerialize(language, user),
+            targetPlayer: targetPlayer.apiSerialize(language, user),
+        });
+
+        transmit.broadcast(`notification/play/game/${game.id}/${targetPlayer.id}/peace/ask`, {
             player: player.apiSerialize(language, user),
             targetPlayer: targetPlayer.apiSerialize(language, user),
         });
@@ -319,7 +327,7 @@ export default class GameController {
         });
     }
 
-    public async makePeace({ request, response, user, player, game, language }: HttpContext): Promise<void> {
+    public async acceptPeace({ request, response, user, player, game, language }: HttpContext): Promise<void> {
         const { playerId } = await makePeaceParamsValidator.validate(request.params());
 
         if (player.frontId === playerId) {
@@ -331,6 +339,8 @@ export default class GameController {
             return response.notFound({ error: 'Target player not found' });
         } else if (!player.wars.find((war: RoomPlayerWar): boolean => war.enemyId === targetPlayer.id)) {
             return response.forbidden({ error: 'You are not at war' });
+        } else if (!player.receivedPendingPeaces.find((pendingPeace: PendingPeace): boolean => pendingPeace.playerId === targetPlayer.id)) {
+            return response.forbidden({ error: 'This player has not asked you for a peace' });
         }
 
         await Promise.all([
@@ -365,7 +375,79 @@ export default class GameController {
         transmit.broadcast(`notification/play/game/${game.id}/peace`, { player: player.apiSerialize(language, user), targetPlayer: targetPlayer.apiSerialize(language, user) });
 
         return response.send({
-            message: `Declared war on ${targetPlayer.user?.username || targetPlayer.bot?.translate(language)}`,
+            message: `Made peace with ${targetPlayer.user?.username || targetPlayer.bot?.translate(language)}`,
+        });
+    }
+
+    public async refusePeace({ request, response, user, player, game, language }: HttpContext): Promise<void> {
+        const { playerId } = await refusePeaceParamsValidator.validate(request.params());
+
+        if (player.frontId === playerId) {
+            return response.forbidden({ error: "You can't make peace with yourself" });
+        }
+
+        const targetPlayer: RoomPlayer | undefined = game.room.players.find((loopPlayer: RoomPlayer): boolean => loopPlayer.frontId === playerId);
+        if (!targetPlayer) {
+            return response.notFound({ error: 'Target player not found' });
+        } else if (!player.wars.find((war: RoomPlayerWar): boolean => war.enemyId === targetPlayer.id)) {
+            return response.forbidden({ error: 'You are not at war' });
+        } else if (!player.receivedPendingPeaces.find((pendingPeace: PendingPeace): boolean => pendingPeace.playerId === targetPlayer.id)) {
+            return response.forbidden({ error: 'This player has not asked you for a peace' });
+        }
+
+        await this.pendingPeaceRepository.removeByPlayers(player, targetPlayer);
+
+        player.receivedPendingPeaces.filter((pendingPeace: PendingPeace): boolean => pendingPeace.enemyId !== targetPlayer.id);
+        targetPlayer.sentPendingPeaces.filter((pendingPeace: PendingPeace): boolean => pendingPeace.playerId !== player.id);
+
+        transmit.broadcast(`notification/play/game/${game.id}/${player.id}/peace/refuse`, {
+            player: player.apiSerialize(language, user),
+            targetPlayer: targetPlayer.apiSerialize(language, user),
+        });
+
+        transmit.broadcast(`notification/play/game/${game.id}/${targetPlayer.id}/peace/refuse`, {
+            player: player.apiSerialize(language, user),
+            targetPlayer: targetPlayer.apiSerialize(language, user),
+        });
+
+        return response.send({
+            message: `Peace proposal from ${targetPlayer.user?.username || targetPlayer.bot?.translate(language)} refused`,
+        });
+    }
+
+    public async cancelPendingPeace({ request, response, user, player, game, language }: HttpContext): Promise<void> {
+        const { playerId } = await cancelPendingPeaceParamsValidator.validate(request.params());
+
+        if (player.frontId === playerId) {
+            return response.forbidden({ error: "You can't cancel a peace with yourself" });
+        }
+
+        const targetPlayer: RoomPlayer | undefined = game.room.players.find((loopPlayer: RoomPlayer): boolean => loopPlayer.frontId === playerId);
+        if (!targetPlayer) {
+            return response.notFound({ error: 'Target player not found' });
+        } else if (!player.wars.find((war: RoomPlayerWar): boolean => war.enemyId === targetPlayer.id)) {
+            return response.forbidden({ error: 'You are not at war' });
+        } else if (!player.receivedPendingPeaces.find((pendingPeace: PendingPeace): boolean => pendingPeace.playerId === targetPlayer.id)) {
+            return response.forbidden({ error: 'You did not asked peace with this player' });
+        }
+
+        await this.pendingPeaceRepository.removeByPlayers(player, targetPlayer);
+
+        player.receivedPendingPeaces.filter((pendingPeace: PendingPeace): boolean => pendingPeace.enemyId !== targetPlayer.id);
+        targetPlayer.sentPendingPeaces.filter((pendingPeace: PendingPeace): boolean => pendingPeace.playerId !== player.id);
+
+        transmit.broadcast(`notification/play/game/${game.id}/${player.id}/peace/cancel`, {
+            player: player.apiSerialize(language, user),
+            targetPlayer: targetPlayer.apiSerialize(language, user),
+        });
+
+        transmit.broadcast(`notification/play/game/${game.id}/${targetPlayer.id}/peace/cancel`, {
+            player: player.apiSerialize(language, user),
+            targetPlayer: targetPlayer.apiSerialize(language, user),
+        });
+
+        return response.send({
+            message: `Peace proposal from ${targetPlayer.user?.username || targetPlayer.bot?.translate(language)} cancelled`,
         });
     }
 }

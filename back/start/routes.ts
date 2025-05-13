@@ -161,6 +161,11 @@ router
                                                         router.patch('finance', [GameController, 'financePlayer']);
                                                     })
                                                     .use([middleware.isValidSeason()]);
+                                                router.put('war/declare', [GameController, 'declareWar']);
+                                                router.put('peace/ask', [GameController, 'askPeace']);
+                                                router.put('peace/accept', [GameController, 'acceptPeace']);
+                                                router.delete('peace/refuse', [GameController, 'refusePeace']);
+                                                router.delete('peace/cancel', [GameController, 'cancelPendingPeace']);
                                             })
                                             .prefix('player/:playerId');
                                     })

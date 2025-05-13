@@ -65,3 +65,15 @@ export const makePeaceParamsValidator = vine.compile(
         playerId: vine.number().positive(),
     })
 );
+
+export const refusePeaceParamsValidator = vine.compile(
+    vine.object({
+        playerId: vine.number().positive(),
+    })
+);
+
+export const cancelPendingPeaceParamsValidator = vine.compile(
+    vine.object({
+        playerId: vine.number().positive(),
+    })
+);
