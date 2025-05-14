@@ -2,12 +2,11 @@ import { DateTime } from 'luxon';
 import { BaseModel, belongsTo, column } from '@adonisjs/lucid/orm';
 import type { BelongsTo } from '@adonisjs/lucid/types/relations';
 import RoomPlayer from '#models/room_player';
+import WarStatusEnum from '#types/enum/war_status_enum';
+import SerializedWar from '#types/serialized/serialized_war';
 import Language from '#models/language';
-import SerializedPeace from '#types/serialized/serialized_peace';
-import PeaceStatusEnum from '#types/enum/peace_status_enum';
-import War from '#models/war';
 
-export default class Peace extends BaseModel {
+export default class War extends BaseModel {
     @column({ isPrimary: true })
     declare id: string;
 
@@ -15,18 +14,26 @@ export default class Peace extends BaseModel {
     declare frontId: number;
 
     @column()
-    declare status: PeaceStatusEnum;
+    declare status: WarStatusEnum;
 
     @column()
-    declare expirationSeason: number;
+    declare startSeason: number;
 
     @column()
-    declare expirationYear: number;
+    declare startYear: number;
+
+    @column()
+    declare endSeason: number;
+
+    @column()
+    declare endYear: number;
 
     @column()
     declare playerId: string;
 
-    @belongsTo((): typeof RoomPlayer => RoomPlayer)
+    @belongsTo((): typeof RoomPlayer => RoomPlayer, {
+        foreignKey: 'playerId',
+    })
     declare player: BelongsTo<typeof RoomPlayer>;
 
     @column()
@@ -37,28 +44,23 @@ export default class Peace extends BaseModel {
     })
     declare enemy: BelongsTo<typeof RoomPlayer>;
 
-    @column()
-    declare warId: string;
-
-    @belongsTo((): typeof War => War)
-    declare war: BelongsTo<typeof War>;
-
     @column.dateTime({ autoCreate: true })
     declare createdAt: DateTime;
 
     @column.dateTime({ autoCreate: true, autoUpdate: true })
     declare updatedAt: DateTime;
 
-    public apiSerialize(language: Language): SerializedPeace {
+    public apiSerialize(language: Language): SerializedWar {
         return {
             id: this.frontId,
             status: this.status,
-            expirationSeason: this.expirationSeason,
-            expirationYear: this.expirationYear,
+            startSeason: this.startSeason,
+            startYear: this.startYear,
+            endSeason: this.endSeason,
+            endYear: this.endYear,
             enemy: this.enemy.apiSerialize(language),
-            war: this.war.apiSerialize(language),
-            updatedAt: this.updatedAt?.toString(),
             createdAt: this.createdAt?.toString(),
+            updatedAt: this.updatedAt?.toString(),
         };
     }
 }

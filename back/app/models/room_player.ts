@@ -8,10 +8,11 @@ import Language from '#models/language';
 import Bot from '#models/bot';
 import PlayableCountry from '#models/playable_country';
 import BotDifficulty from '#models/bot_difficulty';
-import RoomPlayerWar from '#models/room_player_war';
+import War from '#models/war';
 import Peace from '#models/peace';
 import PendingPeace from '#models/pending_peace';
 import SerializedPeace from '#types/serialized/serialized_peace';
+import SerializedWar from '#types/serialized/serialized_war';
 
 export default class RoomPlayer extends BaseModel {
     @column({ isPrimary: true })
@@ -66,10 +67,10 @@ export default class RoomPlayer extends BaseModel {
     @belongsTo((): typeof Room => Room)
     declare room: BelongsTo<typeof Room>;
 
-    @hasMany((): typeof RoomPlayerWar => RoomPlayerWar, {
+    @hasMany((): typeof War => War, {
         foreignKey: 'playerId',
     })
-    declare wars: HasMany<typeof RoomPlayerWar>;
+    declare wars: HasMany<typeof War>;
 
     @hasMany((): typeof Peace => Peace, {
         foreignKey: 'playerId',
@@ -105,9 +106,9 @@ export default class RoomPlayer extends BaseModel {
             isUserConnected: this.isUserConnected,
             isReady: this.isReady,
             gold: this.userId === user?.id || isSpied ? this.gold : undefined,
-            wars: this.wars?.map((war: RoomPlayerWar): SerializedRoomPlayer => war.enemy.apiSerialize(language)),
+            wars: this.wars.map((war: War): SerializedWar => war.apiSerialize(language)),
             peaces: this.peaces?.map((peace: Peace): SerializedPeace => peace.apiSerialize(language)),
-            receivedPendingPeaces: this.receivedPendingPeaces?.map((pendingPeace: PendingPeace): SerializedRoomPlayer => pendingPeace.enemy.apiSerialize(language)),
+            receivedPendingPeaces: this.receivedPendingPeaces?.map((pendingPeace: PendingPeace): SerializedRoomPlayer => pendingPeace.player.apiSerialize(language)),
             sentPendingPeaces: this.sentPendingPeaces?.map((pendingPeace: PendingPeace): SerializedRoomPlayer => pendingPeace.enemy.apiSerialize(language)),
             difficulty: this.difficulty?.apiSerialize(language),
             createdAt: this.createdAt?.toString(),

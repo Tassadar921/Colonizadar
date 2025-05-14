@@ -10,8 +10,8 @@
 	import { t } from 'svelte-i18n';
 	import type SerializedRoomPlayer from 'colonizadar-backend/app/types/serialized/serialized_room_player';
 	import { profile } from '../../stores/profileStore';
-	import { formatGameNumbers } from '../../services/stringService';
-    import GameNotifications from "../game/GameNotifications.svelte";
+	import { formatGameNumbers, formatSeasonFromNumber } from '../../services/stringService';
+	import GameNotifications from '../game/GameNotifications.svelte';
 
 	export let gameId: string;
 
@@ -28,21 +28,6 @@
 		}
 	});
 
-	const formatSeasonFromNumber = (seasonNumber: number): string => {
-		switch (seasonNumber) {
-			case 1:
-				return 'spring';
-			case 2:
-				return 'summer';
-			case 3:
-				return 'fall';
-			case 4:
-				return 'winter';
-			default:
-				return 'spring';
-		}
-	};
-
 	$: if (game) {
 		currentPlayer = game.players.find((player: SerializedRoomPlayer) => player.user?.id === $profile!.id);
 	}
@@ -51,7 +36,7 @@
 <Title title={game?.name} />
 
 {#if game && currentPlayer}
-    <GameNotifications bind:game bind:currentPlayer />
+	<GameNotifications bind:game bind:currentPlayer />
 	<p>{$t('play.game.gold')}: {formatGameNumbers(currentPlayer.gold ?? 0)}</p>
 	<p>{$t('play.game.year')}: {game.year}</p>
 	<p>{$t('play.game.season')}: {$t(`play.game.${formatSeasonFromNumber(game.season)}`)}</p>
@@ -61,7 +46,7 @@
 <!-- Ne pas inclure dans le if game, pour charger le svg en parallèle de la requête au back pour récupérer la data -->
 <div class="flex gap-5 justify-center items-center">
 	<div class="flex flex-col">
-		{#each game?.players.slice(0, game?.players.length / 2) as player}
+		{#each game?.players.slice(0, game?.players.length / 2) as player (player.id)}
 			<SideGamePlayer bind:game {currentPlayer} {player} />
 		{/each}
 	</div>
@@ -69,7 +54,7 @@
 		<Map bind:game {currentPlayer} />
 	</div>
 	<div class="flex flex-col">
-		{#each game?.players.slice(game?.players.length / 2) as player}
+		{#each game?.players.slice(game?.players.length / 2) as player (player.id)}
 			<SideGamePlayer bind:game {currentPlayer} {player} />
 		{/each}
 	</div>

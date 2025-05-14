@@ -23,31 +23,45 @@
 	let financedNotification: Subscription;
 	let nextTurnNotification: Subscription;
 
-	const setup = async (): Promise<void> => {
-		if (isInitialized) {
-			return;
-		}
+	const updatePlayersInGame = (updateFn: (p: SerializedRoomPlayer) => SerializedRoomPlayer): void => {
+		game = {
+			...game,
+			players: game.players.map(updateFn),
+		};
+	};
 
-        await cleanupTransmits();
+	const setup = async (): Promise<void> => {
+		if (isInitialized) return;
+		await cleanupTransmits();
 		await setupTransmits();
 		setupHandlers();
-
 		isInitialized = true;
 	};
 
 	const setupTransmits = async () => {
 		gameUpdateNotification = $transmit.subscription(`notification/play/game/${game.id}/update`);
 		playerUpdateNotification = $transmit.subscription(`notification/play/game/${game.id}/player/update`);
-        spiedNotification = $transmit.subscription(`notification/play/game/${game.id}/${currentPlayer.id}/spied`);
+		spiedNotification = $transmit.subscription(`notification/play/game/${game.id}/${currentPlayer.id}/spied`);
 		warNotification = $transmit.subscription(`notification/play/game/${game.id}/war`);
 		askPeaceNotification = $transmit.subscription(`notification/play/game/${game.id}/${currentPlayer.id}/peace/ask`);
-        refusePeaceNotification = $transmit.subscription(`notification/play/game/${game.id}/${currentPlayer.id}/peace/refuse`);
-        cancelPendingPeaceNotification = $transmit.subscription(`notification/play/game/${game.id}/${currentPlayer.id}/peace/cancel`);
+		refusePeaceNotification = $transmit.subscription(`notification/play/game/${game.id}/${currentPlayer.id}/peace/refuse`);
+		cancelPendingPeaceNotification = $transmit.subscription(`notification/play/game/${game.id}/${currentPlayer.id}/peace/cancel`);
 		peaceNotification = $transmit.subscription(`notification/play/game/${game.id}/peace`);
 		financedNotification = $transmit.subscription(`notification/play/game/${game.id}/${currentPlayer.id}/financed`);
 		nextTurnNotification = $transmit.subscription(`notification/play/game/${game.id}/next-turn`);
 
-		await Promise.all([gameUpdateNotification.create(), playerUpdateNotification.create(), nextTurnNotification.create()]);
+		await Promise.all([
+			gameUpdateNotification.create(),
+			playerUpdateNotification.create(),
+			spiedNotification.create(),
+			warNotification.create(),
+			askPeaceNotification.create(),
+			refusePeaceNotification.create(),
+			cancelPendingPeaceNotification.create(),
+			peaceNotification.create(),
+			financedNotification.create(),
+			nextTurnNotification.create(),
+		]);
 	};
 
 	const setupHandlers = (): void => {
@@ -56,32 +70,23 @@
 		});
 
 		playerUpdateNotification.onMessage(({ player }: { player: SerializedRoomPlayer }): void => {
-			game.players = game.players.map((p: SerializedRoomPlayer) => (p.id === player.id ? { ...p, ...player } : p));
-            if (currentPlayer.id === player.id) {
-                currentPlayer = player;
-            }
+			updatePlayersInGame((p) => (p.id === player.id ? { ...p, ...player } : p));
+			if (currentPlayer.id === player.id) currentPlayer = player;
 		});
 
-        spiedNotification.onMessage(({ player }: { player: SerializedRoomPlayer }): void => {
-            showToast(`${$t('play.game.spied-by')} ${player.user?.username || player.bot.name}`, 'warning');
-        });
+		spiedNotification.onMessage(({ player }: { player: SerializedRoomPlayer }): void => {
+			showToast(`${$t('play.game.spied-by')} ${player.user?.username || player.bot.name}`, 'warning');
+		});
 
 		warNotification.onMessage(({ player, targetPlayer }: { player: SerializedRoomPlayer; targetPlayer: SerializedRoomPlayer }): void => {
-			game.players = game.players.map((p: SerializedRoomPlayer) => {
-				if (p.id === player.id) {
-                    if (p.id === currentPlayer.id) {
-                        currentPlayer = player;
-                    }
-					return player;
-				}
-				if (p.id === targetPlayer.id) {
-                    if (p.id === currentPlayer.id) {
-                        currentPlayer = targetPlayer;
-                    }
-					return targetPlayer;
-				}
+			updatePlayersInGame((p) => {
+				if (p.id === player.id) return player;
+				if (p.id === targetPlayer.id) return targetPlayer;
 				return p;
 			});
+			if (player.id === currentPlayer.id) currentPlayer = player;
+			if (targetPlayer.id === currentPlayer.id) currentPlayer = targetPlayer;
+
 			if (currentPlayer.id === player.id) {
 				showToast(`${$t('play.game.you-declared-war')} ${targetPlayer.user?.username || targetPlayer.bot.name}`);
 			} else if (currentPlayer.id === targetPlayer.id) {
@@ -92,102 +97,68 @@
 		});
 
 		askPeaceNotification.onMessage(({ player, targetPlayer }: { player: SerializedRoomPlayer; targetPlayer: SerializedRoomPlayer }): void => {
-			game.players = game.players.map((p: SerializedRoomPlayer) => {
-                if (p.id === player.id) {
-                    if (p.id === currentPlayer.id) {
-                        currentPlayer = player;
-                    }
-                    return player;
-                }
-                if (p.id === targetPlayer.id) {
-                    if (p.id === currentPlayer.id) {
-                        currentPlayer = targetPlayer;
-                        showToast(`${player.user?.username || player.bot.name} ${$t('play.game.asked-peace')}`);
-                    }
-                    return targetPlayer;
-                }
+			updatePlayersInGame((p) => {
+				if (p.id === player.id) return player;
+				if (p.id === targetPlayer.id) return targetPlayer;
 				return p;
 			});
+			if (player.id === currentPlayer.id) currentPlayer = player;
+			if (targetPlayer.id === currentPlayer.id) {
+				currentPlayer = targetPlayer;
+				showToast(`${player.user?.username || player.bot.name} ${$t('play.game.peace.asked')}`);
+			}
 		});
 
-        refusePeaceNotification.onMessage(({ player, targetPlayer }: { player: SerializedRoomPlayer; targetPlayer: SerializedRoomPlayer }): void => {
-            game.players = game.players.map((p: SerializedRoomPlayer) => {
-                if (p.id === player.id) {
-                    if (p.id === currentPlayer.id) {
-                        currentPlayer = player;
-                    }
-                    return player;
-                }
-                if (p.id === targetPlayer.id) {
-                    if (p.id === currentPlayer.id) {
-                        currentPlayer = targetPlayer;
-                        showToast(`${player.user?.username || player.bot.name} ${$t('play.game.refused-peace')}`);
-                    }
-                    return targetPlayer;
-                }
-                return p;
-            });
-        });
-
-        cancelPendingPeaceNotification.onMessage(({ player, targetPlayer }: { player: SerializedRoomPlayer; targetPlayer: SerializedRoomPlayer }): void => {
-            game.players = game.players.map((p: SerializedRoomPlayer) => {
-                if (p.id === player.id) {
-                    if (p.id === currentPlayer.id) {
-                        currentPlayer = player;
-                    }
-                    return player;
-                }
-                if (p.id === targetPlayer.id) {
-                    if (p.id === currentPlayer.id) {
-                        currentPlayer = targetPlayer;
-                        showToast(`${player.user?.username || player.bot.name} ${$t('play.game.canceled-pending-peace')}`);
-                    }
-                    return targetPlayer;
-                }
-                return p;
-            });
-        });
-
-		peaceNotification.onMessage(({ player, targetPlayer }: { player: SerializedRoomPlayer; targetPlayer: SerializedRoomPlayer }): void => {
-			game.players = game.players.map((p: SerializedRoomPlayer) => {
-                if (p.id === player.id) {
-                    if (p.id === currentPlayer.id) {
-                        currentPlayer = player;
-                    }
-                    return player;
-                }
-                if (p.id === targetPlayer.id) {
-                    if (p.id === currentPlayer.id) {
-                        currentPlayer = targetPlayer;
-                    }
-                    return targetPlayer;
-                }
+		refusePeaceNotification.onMessage(({ player, targetPlayer }: { player: SerializedRoomPlayer; targetPlayer: SerializedRoomPlayer }): void => {
+			updatePlayersInGame((p) => {
+				if (p.id === player.id) return player;
+				if (p.id === targetPlayer.id) return targetPlayer;
 				return p;
 			});
+			if (player.id === currentPlayer.id) currentPlayer = player;
+			if (targetPlayer.id === currentPlayer.id) {
+				currentPlayer = targetPlayer;
+				showToast(`${player.user?.username || player.bot.name} ${$t('play.game.peace.refused')}`);
+			}
+		});
+
+		cancelPendingPeaceNotification.onMessage(({ player, targetPlayer }: { player: SerializedRoomPlayer; targetPlayer: SerializedRoomPlayer }): void => {
+			updatePlayersInGame((p) => {
+				if (p.id === player.id) return player;
+				if (p.id === targetPlayer.id) return targetPlayer;
+				return p;
+			});
+			if (player.id === currentPlayer.id) currentPlayer = player;
+			if (targetPlayer.id === currentPlayer.id) {
+				currentPlayer = targetPlayer;
+				showToast(`${player.user?.username || player.bot.name} ${$t('play.game.peace.cancelled')}`);
+			}
+		});
+
+		peaceNotification.onMessage(({ player, targetPlayer }: { player: SerializedRoomPlayer; targetPlayer: SerializedRoomPlayer }): void => {
+			updatePlayersInGame((p) => {
+				if (p.id === player.id) return player;
+				if (p.id === targetPlayer.id) return targetPlayer;
+				return p;
+			});
+			if (player.id === currentPlayer.id) currentPlayer = player;
+			if (targetPlayer.id === currentPlayer.id) currentPlayer = targetPlayer;
 			if (currentPlayer.id === player.id || currentPlayer.id === targetPlayer.id) {
-				const otherPlayer = currentPlayer.id === player.id ? targetPlayer : player;
-				showToast(`${$t('play.game.you-made-peace-with')} ${otherPlayer.user?.username || otherPlayer.bot.name}`);
+				// Toast message comes into API response
 			} else {
-				showToast(`${player.user?.username || player.bot.name} ${$t('play.game.made-peace')} ${targetPlayer.user?.username || targetPlayer.bot.name}`, 'warning');
+				showToast(`${player.user?.username || player.bot.name} ${$t('play.game.peace.made')} ${targetPlayer.user?.username || targetPlayer.bot.name}`, 'warning');
 			}
 		});
 
 		financedNotification.onMessage(({ player, targetPlayer, amount }: { player: SerializedRoomPlayer; targetPlayer: SerializedRoomPlayer; amount: number }): void => {
-			game.players = game.players.map((p: SerializedRoomPlayer) => {
-				if (p.id === player.id) {
-                    if (p.id === currentPlayer.id) {
-                        currentPlayer = player;
-                    }
-					return player;
-				} else if (p.id === targetPlayer.id) {
-                    if (p.id === currentPlayer.id) {
-                        currentPlayer = targetPlayer;
-                    }
-					showToast(`${amount} ${$t('play.game.received-from')} ${targetPlayer.user?.username || targetPlayer.bot.name}`);
-					return targetPlayer;
-				}
+			updatePlayersInGame((p) => {
+				if (p.id === player.id) return player;
+				if (p.id === targetPlayer.id) return targetPlayer;
 				return p;
 			});
+			if (player.id === currentPlayer.id) currentPlayer = player;
+			if (targetPlayer.id === currentPlayer.id) currentPlayer = targetPlayer;
+			showToast(`${amount} ${$t('play.game.received-from')} ${targetPlayer.user?.username || targetPlayer.bot.name}`);
 		});
 
 		nextTurnNotification.onMessage((): void => {
@@ -202,8 +173,8 @@
 				playerUpdateNotification?.delete().then(() => console.log('playerUpdateNotification deleted')),
 				warNotification?.delete().then(() => console.log('warNotification deleted')),
 				askPeaceNotification?.delete().then(() => console.log('askPeaceNotification deleted')),
-                refusePeaceNotification?.delete().then(() => console.log('refusePeaceNotification deleted')),
-                cancelPendingPeaceNotification?.delete().then(() => console.log('cancelPendingPeaceNotification deleted')),
+				refusePeaceNotification?.delete().then(() => console.log('refusePeaceNotification deleted')),
+				cancelPendingPeaceNotification?.delete().then(() => console.log('cancelPendingPeaceNotification deleted')),
 				peaceNotification?.delete().then(() => console.log('peaceNotification deleted')),
 				financedNotification?.delete().then(() => console.log('financedNotification deleted')),
 				nextTurnNotification?.delete().then(() => console.log('nextTurnNotification deleted')),

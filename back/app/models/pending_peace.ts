@@ -13,7 +13,9 @@ export default class PendingPeace extends BaseModel {
     @column()
     declare playerId: string;
 
-    @belongsTo((): typeof RoomPlayer => RoomPlayer)
+    @belongsTo((): typeof RoomPlayer => RoomPlayer, {
+        foreignKey: 'playerId',
+    })
     declare player: BelongsTo<typeof RoomPlayer>;
 
     @column()

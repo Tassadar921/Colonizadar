@@ -277,15 +277,19 @@
 			"will-receive": "recevra",
 			"received-by": "reçus de",
 			"will-cost": "Coûtera",
-            "spied-by": "Vous avez été espionné par",
+			"spied-by": "Vous avez été espionné par",
 			"declare-war": "Déclarer la guerre",
-            "ask-peace": "Demander la paix",
-            "asked-peace": "a demandé la paix",
-            "accept-peace": "Accepter la paix",
-            "refuse-peace": "Refuser la paix",
-            "refused-peace": "a refusé la paix",
-            "cancel-pending-peace": "Annuler la demande de paix",
-            "canceled-pending-peace": "a annulé la demande de paix",
+			"peace": {
+				"ask": "Demander la paix",
+				"asked": "a demandé la paix",
+				"accept": "Accepter la paix",
+				"refuse": "Refuser la paix",
+				"refused": "a refusé la paix",
+				"cancel": "Annuler la demande de paix",
+				"cancelled": "a annulé la demande de paix",
+				"made": "a fait la paix avec",
+				"expires-on": "La paix expire en"
+			},
 			"subversion": "Subversion",
 			"cost": "Coût",
 			"fortified": "Fortifié",
@@ -310,9 +314,7 @@
 			},
 			"declared-war": "a déclaré la guerre à",
 			"you-declared-war": "Vous avez déclaré la guerre à",
-			"declared-war-on-you": "vous a déclaré la guerre",
-			"made-peace": "a fait la paix avec",
-			"you-made-peace": "Vous avez fait la paix avec"
+			"declared-war-on-you": "vous a déclaré la guerre"
 		}
 	}
 }

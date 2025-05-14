@@ -14,6 +14,7 @@ export default class extends BaseSchema {
             table.integer('expiration_year').notNullable();
             table.uuid('player_id').notNullable().references('id').inTable('room_players').onDelete('CASCADE');
             table.uuid('enemy_id').notNullable().references('id').inTable('room_players').onDelete('CASCADE');
+            table.uuid('war_id').notNullable().references('id').inTable('wars').onDelete('CASCADE');
             table.timestamp('created_at', { useTz: true });
             table.timestamp('updated_at', { useTz: true });
         });

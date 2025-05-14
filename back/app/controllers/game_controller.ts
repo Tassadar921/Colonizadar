@@ -5,29 +5,32 @@ import transmit from '@adonisjs/transmit/services/main';
 import {
     askPeaceParamsValidator,
     buyInfantryValidator,
-    buyShipsValidator, cancelPendingPeaceParamsValidator,
+    buyShipsValidator,
+    cancelPendingPeaceParamsValidator,
     declareWarParamsValidator,
     financePlayerParamsValidator,
     financePlayerValidator,
     financeWildTerritoryValidator,
-    makePeaceParamsValidator, refusePeaceParamsValidator,
+    makePeaceParamsValidator,
+    refusePeaceParamsValidator,
     spyPlayerParamsValidator,
 } from '#validators/game';
 import RoomStatusEnum from '#types/enum/room_status_enum';
 import { inject } from '@adonisjs/core';
 import RegexService from '#services/regex_service';
-import RoomPlayerWar from '#models/room_player_war';
-import RoomPlayerWarRepository from '#repositories/room_player_war_repository';
+import War from '#models/war';
+import WarRepository from '#repositories/war_repository';
 import PendingPeaceRepository from '#repositories/pending_peace_repository';
 import PeaceRepository from '#repositories/peace_repository';
 import PendingPeace from '#models/pending_peace';
 import PeaceStatusEnum from '#types/enum/peace_status_enum';
+import WarStatusEnum from '#types/enum/war_status_enum';
 
 @inject()
 export default class GameController {
     constructor(
         private readonly regexService: RegexService,
-        private readonly roomPlayerWarRepository: RoomPlayerWarRepository,
+        private readonly warRepository: WarRepository,
         private readonly pendingPeaceRepository: PendingPeaceRepository,
         private readonly peaceRepository: PeaceRepository
     ) {}
@@ -56,6 +59,8 @@ export default class GameController {
                     break;
             }
             await game.save();
+
+            // TODO: after end of turn, check peaces and update statuses if needed
 
             game.room.status = RoomStatusEnum.WAITING;
             await game.room.save();
@@ -92,7 +97,7 @@ export default class GameController {
         player.gold -= game.map.spyPlayerCost;
         await player.save();
 
-        transmit.broadcast(`notification/play/game/${game.id}/${targetPlayer.id}/spied`, {
+        transmit.broadcast(`notification/play/game/${game.frontId}/${targetPlayer.frontId}/spied`, {
             player: player.apiSerialize(language, user),
         });
 
@@ -126,7 +131,7 @@ export default class GameController {
 
         await Promise.all([player.save(), targetPlayer.save()]);
 
-        transmit.broadcast(`notification/play/game/${game.id}/${targetPlayer.id}/financed`, {
+        transmit.broadcast(`notification/play/game/${game.frontId}/${targetPlayer.frontId}/financed`, {
             player: player.apiSerialize(language, user),
             targetPlayer: targetPlayer.apiSerialize(language, user),
             amount: givenAmount,
@@ -261,30 +266,43 @@ export default class GameController {
         const targetPlayer: RoomPlayer | undefined = game.room.players.find((loopPlayer: RoomPlayer): boolean => loopPlayer.frontId === playerId);
         if (!targetPlayer) {
             return response.notFound({ error: 'Target player not found' });
-        } else if (player.wars.find((war: RoomPlayerWar): boolean => war.enemyId === targetPlayer.id)) {
+        } else if (player.wars.find((war: War): boolean => war.enemyId === targetPlayer.id)) {
             return response.forbidden({ error: 'You are already at war' });
         }
 
-        await Promise.all([
-            this.roomPlayerWarRepository.findOrCreateMany([
-                {
-                    searchPayload: {
-                        playerId: player.id,
-                        enemyId: targetPlayer.id,
-                    },
+        await this.warRepository.findOrCreateMany([
+            {
+                searchPayload: {
+                    playerId: player.id,
+                    enemyId: targetPlayer.id,
+                    startSeason: game.season,
+                    startYear: game.year,
                 },
-                {
-                    searchPayload: {
-                        playerId: targetPlayer.id,
-                        enemyId: player.id,
-                    },
+            },
+            {
+                searchPayload: {
+                    playerId: targetPlayer.id,
+                    enemyId: player.id,
+                    startSeason: game.season,
+                    startYear: game.year,
                 },
-            ]),
-            player.load('wars'),
-            targetPlayer.load('wars'),
+            },
         ]);
 
-        transmit.broadcast(`notification/play/game/${game.id}/war`, { player: player.apiSerialize(language, user), targetPlayer: targetPlayer.apiSerialize(language, user) });
+        await Promise.all([
+            player.load('wars', (warsQuery): void => {
+                warsQuery.preload('enemy', (enemyQuery): void => {
+                    enemyQuery.preload('user').preload('bot').preload('country').preload('difficulty');
+                });
+            }),
+            targetPlayer.load('wars', (warsQuery): void => {
+                warsQuery.preload('enemy', (enemyQuery): void => {
+                    enemyQuery.preload('user').preload('bot').preload('country').preload('difficulty');
+                });
+            }),
+        ]);
+
+        transmit.broadcast(`notification/play/game/${game.frontId}/war`, { player: player.apiSerialize(language, user), targetPlayer: targetPlayer.apiSerialize(language, user) });
 
         return response.send({
             message: `Declared war on ${targetPlayer.user?.username || targetPlayer.bot?.translate(language)}`,
@@ -301,29 +319,40 @@ export default class GameController {
         const targetPlayer: RoomPlayer | undefined = game.room.players.find((loopPlayer: RoomPlayer): boolean => loopPlayer.frontId === playerId);
         if (!targetPlayer) {
             return response.notFound({ error: 'Target player not found' });
-        } else if (!player.wars.find((war: RoomPlayerWar): boolean => war.enemyId === targetPlayer.id)) {
+        } else if (!player.wars.find((war: War): boolean => war.enemyId === targetPlayer.id)) {
             return response.forbidden({ error: 'You are not at war' });
         }
 
-        await this.pendingPeaceRepository.firstOrNew({
+        await this.pendingPeaceRepository.firstOrCreate({
             playerId: player.id,
             enemyId: targetPlayer.id,
         });
 
-        await Promise.all([player.load('sentPendingPeaces'), targetPlayer.load('receivedPendingPeaces')]);
+        await Promise.all([
+            player.load('sentPendingPeaces', (sentPendingPeacesQuery): void => {
+                sentPendingPeacesQuery.preload('enemy', (enemyQuery): void => {
+                    enemyQuery.preload('user').preload('bot').preload('country').preload('difficulty');
+                });
+            }),
+            targetPlayer.load('receivedPendingPeaces', (receivedPendingPeacesQuery): void => {
+                receivedPendingPeacesQuery.preload('player', (enemyQuery): void => {
+                    enemyQuery.preload('user').preload('bot').preload('country').preload('difficulty');
+                });
+            }),
+        ]);
 
-        transmit.broadcast(`notification/play/game/${game.id}/${player.id}/peace/ask`, {
+        transmit.broadcast(`notification/play/game/${game.frontId}/${player.frontId}/peace/ask`, {
             player: player.apiSerialize(language, user),
             targetPlayer: targetPlayer.apiSerialize(language, user),
         });
 
-        transmit.broadcast(`notification/play/game/${game.id}/${targetPlayer.id}/peace/ask`, {
+        transmit.broadcast(`notification/play/game/${game.frontId}/${targetPlayer.frontId}/peace/ask`, {
             player: player.apiSerialize(language, user),
             targetPlayer: targetPlayer.apiSerialize(language, user),
         });
 
         return response.send({
-            message: `Asked peace with ${targetPlayer.user?.username || targetPlayer.bot?.translate(language)}`,
+            message: `Asked peace to ${targetPlayer.user?.username || targetPlayer.bot?.translate(language)}`,
         });
     }
 
@@ -337,13 +366,14 @@ export default class GameController {
         const targetPlayer: RoomPlayer | undefined = game.room.players.find((loopPlayer: RoomPlayer): boolean => loopPlayer.frontId === playerId);
         if (!targetPlayer) {
             return response.notFound({ error: 'Target player not found' });
-        } else if (!player.wars.find((war: RoomPlayerWar): boolean => war.enemyId === targetPlayer.id)) {
+        } else if (!player.wars.find((war: War): boolean => war.enemyId === targetPlayer.id)) {
             return response.forbidden({ error: 'You are not at war' });
         } else if (!player.receivedPendingPeaces.find((pendingPeace: PendingPeace): boolean => pendingPeace.playerId === targetPlayer.id)) {
             return response.forbidden({ error: 'This player has not asked you for a peace' });
         }
 
         await Promise.all([
+            this.warRepository.endWar(player, targetPlayer, game),
             this.pendingPeaceRepository.removeByPlayers(player, targetPlayer),
             this.peaceRepository.findOrCreateMany([
                 {
@@ -365,14 +395,38 @@ export default class GameController {
                     },
                 },
             ]),
-            player.load('peaces'),
-            targetPlayer.load('peaces'),
+            player.load('peaces', (peacesQuery): void => {
+                peacesQuery
+                    .preload('enemy', (enemyQuery): void => {
+                        enemyQuery.preload('user').preload('bot').preload('country').preload('difficulty');
+                    })
+                    .preload('war', (warQuery): void => {
+                        warQuery
+                            .preload('enemy', (enemyQuery): void => {
+                                enemyQuery.preload('user').preload('bot').preload('country').preload('difficulty');
+                            })
+                            .where('status', WarStatusEnum.IN_PROGRESS);
+                    });
+            }),
+            targetPlayer.load('peaces', (peacesQuery): void => {
+                peacesQuery
+                    .preload('enemy', (enemyQuery): void => {
+                        enemyQuery.preload('user').preload('bot').preload('country').preload('difficulty');
+                    })
+                    .preload('war', (warQuery): void => {
+                        warQuery
+                            .preload('enemy', (enemyQuery): void => {
+                                enemyQuery.preload('user').preload('bot').preload('country').preload('difficulty');
+                            })
+                            .where('status', WarStatusEnum.IN_PROGRESS);
+                    });
+            }),
         ]);
 
-        player.receivedPendingPeaces.filter((pendingPeace: PendingPeace): boolean => pendingPeace.enemyId !== targetPlayer.id);
-        targetPlayer.sentPendingPeaces.filter((pendingPeace: PendingPeace): boolean => pendingPeace.playerId !== player.id);
+        player.receivedPendingPeaces.filter((pendingPeace: PendingPeace): boolean => pendingPeace.playerId !== targetPlayer.id);
+        targetPlayer.sentPendingPeaces.filter((pendingPeace: PendingPeace): boolean => pendingPeace.enemyId !== player.id);
 
-        transmit.broadcast(`notification/play/game/${game.id}/peace`, { player: player.apiSerialize(language, user), targetPlayer: targetPlayer.apiSerialize(language, user) });
+        transmit.broadcast(`notification/play/game/${game.frontId}/peace`, { player: player.apiSerialize(language, user), targetPlayer: targetPlayer.apiSerialize(language, user) });
 
         return response.send({
             message: `Made peace with ${targetPlayer.user?.username || targetPlayer.bot?.translate(language)}`,
@@ -389,7 +443,7 @@ export default class GameController {
         const targetPlayer: RoomPlayer | undefined = game.room.players.find((loopPlayer: RoomPlayer): boolean => loopPlayer.frontId === playerId);
         if (!targetPlayer) {
             return response.notFound({ error: 'Target player not found' });
-        } else if (!player.wars.find((war: RoomPlayerWar): boolean => war.enemyId === targetPlayer.id)) {
+        } else if (!player.wars.find((war: War): boolean => war.enemyId === targetPlayer.id)) {
             return response.forbidden({ error: 'You are not at war' });
         } else if (!player.receivedPendingPeaces.find((pendingPeace: PendingPeace): boolean => pendingPeace.playerId === targetPlayer.id)) {
             return response.forbidden({ error: 'This player has not asked you for a peace' });
@@ -397,15 +451,15 @@ export default class GameController {
 
         await this.pendingPeaceRepository.removeByPlayers(player, targetPlayer);
 
-        player.receivedPendingPeaces.filter((pendingPeace: PendingPeace): boolean => pendingPeace.enemyId !== targetPlayer.id);
-        targetPlayer.sentPendingPeaces.filter((pendingPeace: PendingPeace): boolean => pendingPeace.playerId !== player.id);
+        (player.receivedPendingPeaces as unknown as PendingPeace[]) = targetPlayer.receivedPendingPeaces.filter((pendingPeace: PendingPeace): boolean => pendingPeace.playerId !== targetPlayer.id);
+        (targetPlayer.sentPendingPeaces as unknown as PendingPeace[]) = player.sentPendingPeaces.filter((pendingPeace: PendingPeace): boolean => pendingPeace.enemyId !== player.id);
 
-        transmit.broadcast(`notification/play/game/${game.id}/${player.id}/peace/refuse`, {
+        transmit.broadcast(`notification/play/game/${game.frontId}/${player.frontId}/peace/refuse`, {
             player: player.apiSerialize(language, user),
             targetPlayer: targetPlayer.apiSerialize(language, user),
         });
 
-        transmit.broadcast(`notification/play/game/${game.id}/${targetPlayer.id}/peace/refuse`, {
+        transmit.broadcast(`notification/play/game/${game.frontId}/${targetPlayer.frontId}/peace/refuse`, {
             player: player.apiSerialize(language, user),
             targetPlayer: targetPlayer.apiSerialize(language, user),
         });
@@ -425,23 +479,23 @@ export default class GameController {
         const targetPlayer: RoomPlayer | undefined = game.room.players.find((loopPlayer: RoomPlayer): boolean => loopPlayer.frontId === playerId);
         if (!targetPlayer) {
             return response.notFound({ error: 'Target player not found' });
-        } else if (!player.wars.find((war: RoomPlayerWar): boolean => war.enemyId === targetPlayer.id)) {
+        } else if (!player.wars.find((war: War): boolean => war.enemyId === targetPlayer.id)) {
             return response.forbidden({ error: 'You are not at war' });
-        } else if (!player.receivedPendingPeaces.find((pendingPeace: PendingPeace): boolean => pendingPeace.playerId === targetPlayer.id)) {
+        } else if (!player.sentPendingPeaces.find((pendingPeace: PendingPeace): boolean => pendingPeace.enemyId === targetPlayer.id)) {
             return response.forbidden({ error: 'You did not asked peace with this player' });
         }
 
         await this.pendingPeaceRepository.removeByPlayers(player, targetPlayer);
 
-        player.receivedPendingPeaces.filter((pendingPeace: PendingPeace): boolean => pendingPeace.enemyId !== targetPlayer.id);
-        targetPlayer.sentPendingPeaces.filter((pendingPeace: PendingPeace): boolean => pendingPeace.playerId !== player.id);
+        (player.sentPendingPeaces as unknown as PendingPeace[]) = player.sentPendingPeaces.filter((pendingPeace: PendingPeace): boolean => pendingPeace.enemyId !== targetPlayer.id);
+        (targetPlayer.receivedPendingPeaces as unknown as PendingPeace[]) = targetPlayer.receivedPendingPeaces.filter((pendingPeace: PendingPeace): boolean => pendingPeace.playerId !== player.id);
 
-        transmit.broadcast(`notification/play/game/${game.id}/${player.id}/peace/cancel`, {
+        transmit.broadcast(`notification/play/game/${game.frontId}/${player.frontId}/peace/cancel`, {
             player: player.apiSerialize(language, user),
             targetPlayer: targetPlayer.apiSerialize(language, user),
         });
 
-        transmit.broadcast(`notification/play/game/${game.id}/${targetPlayer.id}/peace/cancel`, {
+        transmit.broadcast(`notification/play/game/${game.frontId}/${targetPlayer.frontId}/peace/cancel`, {
             player: player.apiSerialize(language, user),
             targetPlayer: targetPlayer.apiSerialize(language, user),
         });

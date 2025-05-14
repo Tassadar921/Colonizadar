@@ -277,15 +277,19 @@
 			"will-receive": "will receive",
 			"received-by": "received from",
 			"will-cost": "Will cost",
-            "spied-by": "You have been spied by",
+			"spied-by": "You have been spied by",
 			"declare-war": "Declare war",
-			"ask-peace": "Ask for peace",
-			"asked-peace": "asked for peace",
-			"accept-peace": "Accept peace",
-            "refuse-peace": "Refuse peace",
-            "refused-peace": "refused peace",
-            "cancel-pending-peace": "Cancel pending peace",
-            "canceled-pending-peace": "canceled pending peace",
+			"peace": {
+				"ask": "Ask for peace",
+				"asked": "asked for peace",
+				"accept": "Accept peace",
+				"refuse": "Refuse peace",
+				"refused": "refused peace",
+				"cancel": "Cancel pending peace",
+				"cancelled": "cancelled pending peace",
+				"made": "made peace with",
+				"expires-on": "Peace expires on"
+			},
 			"subversion": "Subversion",
 			"cost": "Cost",
 			"fortified": "Fortified",
@@ -310,9 +314,7 @@
 			},
 			"declared-war": "declared war on",
 			"you-declared-war": "You declared war on",
-			"declared-war-on-you": "declared war on you",
-			"made-peace": "made peace with",
-			"you-made-peace-with": "You made peace with"
+			"declared-war-on-you": "declared war on you"
 		}
 	}
 }

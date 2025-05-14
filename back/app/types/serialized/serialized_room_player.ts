@@ -3,6 +3,7 @@ import SerializedBot from '#types/serialized/serialized_bot';
 import SerializedPlayableCountry from '#types/serialized/serialized_playable_country';
 import SerializedBotDifficulty from '#types/serialized/serialized_bot_difficulty';
 import SerializedPeace from '#types/serialized/serialized_peace';
+import SerializedWar from '#types/serialized/serialized_war';
 
 type SerializedRoomPlayer = {
     id: number;
@@ -13,7 +14,7 @@ type SerializedRoomPlayer = {
     isUserConnected: boolean;
     isReady: boolean;
     gold?: number;
-    wars?: SerializedRoomPlayer[];
+    wars?: SerializedWar[];
     peaces?: SerializedPeace[];
     receivedPendingPeaces?: SerializedRoomPlayer[];
     sentPendingPeaces?: SerializedRoomPlayer[];
