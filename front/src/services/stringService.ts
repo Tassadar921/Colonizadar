@@ -13,4 +13,19 @@ const toCamelCase = (str: string): string => {
 	return str[0].toUpperCase() + str.slice(1);
 };
 
-export { raw, formatGameNumbers, toCamelCase };
+const formatSeasonFromNumber = (seasonNumber: number): string => {
+	switch (seasonNumber) {
+		case 1:
+			return 'spring';
+		case 2:
+			return 'summer';
+		case 3:
+			return 'fall';
+		case 4:
+			return 'winter';
+		default:
+			return 'spring';
+	}
+};
+
+export { raw, formatGameNumbers, toCamelCase, formatSeasonFromNumber };

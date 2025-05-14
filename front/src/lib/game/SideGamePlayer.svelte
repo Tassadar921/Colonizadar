@@ -8,11 +8,22 @@
 	import type SerializedGameTerritory from 'colonizadar-backend/app/types/serialized/serialized_game_territory';
 	import SpyPlayer from './SpyPlayer.svelte';
 	import FinancePlayer from './FinancePlayer.svelte';
-	import { formatGameNumbers } from '../../services/stringService';
+	import { formatGameNumbers, formatSeasonFromNumber } from '../../services/stringService';
+	import AcceptPeace from './AcceptPeace.svelte';
+	import RefusePeace from './RefusePeace.svelte';
+	import CancelPendingPeace from './CancelPendingPeace.svelte';
+	import DeclareWar from './DeclareWar.svelte';
+	import AskPeace from './AskPeace.svelte';
+	import type SerializedWar from 'colonizadar-backend/app/types/serialized/serialized_war';
+	import type SerializedPeace from 'colonizadar-backend/app/types/serialized/serialized_peace';
 
 	export let game: SerializedGame;
 	export let currentPlayer: SerializedRoomPlayer;
 	export let player: SerializedRoomPlayer;
+
+	let currentPeace: SerializedPeace | undefined;
+
+	$: currentPeace = currentPlayer.peaces?.find(({ enemy }: { enemy: SerializedRoomPlayer }) => enemy.id === player.id);
 </script>
 
 <div class="ml-3 flex gap-5">
@@ -54,12 +65,31 @@
 			</div>
 		{/if}
 		<p>{$t('play.game.score')}: {formatGameNumbers(player.score)}</p>
-		<p>{$t('play.game.gold')}: {formatGameNumbers(player.gold ?? 0)}</p>
+		<p>{$t('play.game.gold')}: {player.gold ? formatGameNumbers(player.gold) : '?'}</p>
 		<p>{$t('play.game.territories')}: {formatGameNumbers(game.territories.reduce((accumulator, territory: SerializedGameTerritory) => accumulator + Number(territory.owner?.id === player.id), 0))}</p>
 		{#if player.user?.id !== $profile?.id}
-			<div class="flex gap-3">
-				<SpyPlayer bind:game {player} />
-				<FinancePlayer bind:game {currentPlayer} targetPlayer={player} />
+			<div class="flex flex-col gap-3">
+				<div class="flex gap-3">
+					<SpyPlayer bind:game {player} />
+					<FinancePlayer bind:game {currentPlayer} targetPlayer={player} />
+				</div>
+				<div class="flex gap-3">
+					{#if currentPlayer.wars?.find((war: SerializedWar) => war.enemy.id === player.id)}
+						{#if currentPlayer.receivedPendingPeaces?.find((enemy: SerializedRoomPlayer) => enemy.id === player.id)}
+							<p>{currentPlayer.receivedPendingPeaces?.length}</p>
+							<AcceptPeace bind:game targetPlayer={player} />
+							<RefusePeace bind:game targetPlayer={player} />
+						{:else if currentPlayer.sentPendingPeaces?.find((enemy: SerializedRoomPlayer) => enemy.id === player.id)}
+							<CancelPendingPeace bind:game targetPlayer={player} />
+						{:else}
+							<AskPeace bind:game targetPlayer={player} />
+						{/if}
+					{:else if !currentPeace}
+						<DeclareWar bind:game targetPlayer={player} />
+					{:else}
+						<p>{$t('play.game.peace.expires-on')} {$t(`play.game.${formatSeasonFromNumber(currentPeace.expirationSeason)}`)} {currentPeace.expirationYear}</p>
+					{/if}
+				</div>
 			</div>
 		{/if}
 	</div>

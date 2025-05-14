@@ -84,6 +84,7 @@ export default class extends BaseSeeder {
                     financeWildTerritoryEnforcementFactor: 2,
                     wildTerritorySubversionFactor: 0.5,
                     fortifyCost: 2000000,
+                    peaceSeasonsInterval: 12,
                 });
             }
         }

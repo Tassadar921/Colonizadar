@@ -275,8 +275,21 @@
 			"spy": "Spy",
 			"finance": "Finance",
 			"will-receive": "will receive",
+			"received-from": "received from",
 			"will-cost": "Will cost",
-			"declare-war": "Declare a war",
+			"spied-by": "You have been spied by",
+			"declare-war": "Declare war",
+			"peace": {
+				"ask": "Ask for peace",
+				"asked": "asked for peace",
+				"accept": "Accept peace",
+				"refuse": "Refuse peace",
+				"refused": "refused peace",
+				"cancel": "Cancel pending peace",
+				"cancelled": "cancelled pending peace",
+				"made": "made peace with",
+				"expires-on": "Peace expires on"
+			},
 			"subversion": "Subversion",
 			"cost": "Cost",
 			"fortified": "Fortified",
@@ -298,7 +311,9 @@
 			},
 			"finance-player-modal": {
 				"title": "Finance player"
-			}
+			},
+			"declared-war": "declared war on",
+			"declared-war-on-you": "declared war on you"
 		}
 	}
 }

@@ -116,7 +116,7 @@
 			updateUser(pendingFriendRequest.notification.from.id, { receivedFriendRequest: true });
 		});
 
-		// receiver updated when his request is canceled by sender
+		// receiver updated when his request is cancelled by sender
 		const cancelFriendRequest = $transmit.subscription(`notification/add-friend/cancel/${$profile!.id}`);
 		await cancelFriendRequest.create();
 		cancelFriendRequest.onMessage((pendingFriendRequest: SerializedPendingFriend) => {

@@ -125,6 +125,7 @@ router
                             .group((): void => {
                                 router.get('/', [GameController, 'get']);
                                 router.patch('/ready', [GameController, 'ready']);
+                                router.get('player', [GameController, 'getPlayer']);
 
                                 router
                                     .group((): void => {
@@ -161,6 +162,11 @@ router
                                                         router.patch('finance', [GameController, 'financePlayer']);
                                                     })
                                                     .use([middleware.isValidSeason()]);
+                                                router.put('war/declare', [GameController, 'declareWar']);
+                                                router.put('peace/ask', [GameController, 'askPeace']);
+                                                router.put('peace/accept', [GameController, 'acceptPeace']);
+                                                router.delete('peace/refuse', [GameController, 'refusePeace']);
+                                                router.delete('peace/cancel', [GameController, 'cancelPendingPeace']);
                                             })
                                             .prefix('player/:playerId');
                                     })

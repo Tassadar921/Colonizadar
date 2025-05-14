@@ -6,6 +6,8 @@ import GameTerritory from '#models/game_territory';
 import RoomStatusEnum from '#types/enum/room_status_enum';
 import RoomPlayer from '#models/room_player';
 import { rollTerritoryPower, rollTerritoryValue } from '#services/roll_territory_service';
+import PeaceStatusEnum from '#types/enum/peace_status_enum';
+import WarStatusEnum from '#types/enum/war_status_enum';
 
 export default class GameRepository extends BaseRepository<typeof Game> {
     constructor() {
@@ -20,7 +22,41 @@ export default class GameRepository extends BaseRepository<typeof Game> {
             .andWhere('games.front_id', gameId)
             .preload('room', (roomQuery): void => {
                 roomQuery.preload('owner').preload('players', (playersQuery): void => {
-                    playersQuery.preload('user').preload('bot').preload('country').preload('difficulty').orderBy('frontId');
+                    playersQuery
+                        .preload('user')
+                        .preload('bot')
+                        .preload('country')
+                        .preload('difficulty')
+                        .preload('wars', (warsQuery): void => {
+                            warsQuery
+                                .preload('enemy', (enemyQuery): void => {
+                                    enemyQuery.preload('user').preload('bot').preload('country').preload('difficulty');
+                                })
+                                .where('status', WarStatusEnum.IN_PROGRESS);
+                        })
+                        .preload('sentPendingPeaces', (sentPendingPeacesQuery): void => {
+                            sentPendingPeacesQuery.preload('enemy', (enemyQuery): void => {
+                                enemyQuery.preload('user').preload('bot').preload('country').preload('difficulty');
+                            });
+                        })
+                        .preload('receivedPendingPeaces', (receivedPendingPeacesQuery): void => {
+                            receivedPendingPeacesQuery.preload('player', (enemyQuery): void => {
+                                enemyQuery.preload('user').preload('bot').preload('country').preload('difficulty');
+                            });
+                        })
+                        .preload('peaces', (peacesQuery): void => {
+                            peacesQuery
+                                .preload('enemy', (enemyQuery): void => {
+                                    enemyQuery.preload('user').preload('bot').preload('country').preload('difficulty');
+                                })
+                                .preload('war', (warQuery): void => {
+                                    warQuery.preload('enemy', (enemyQuery): void => {
+                                        enemyQuery.preload('user').preload('bot').preload('country').preload('difficulty');
+                                    });
+                                })
+                                .where('status', PeaceStatusEnum.IN_PROGRESS);
+                        })
+                        .orderBy('frontId');
                 });
             })
             .preload('territories', (territoriesQuery): void => {
