@@ -106,7 +106,7 @@ export default class RoomPlayer extends BaseModel {
             isUserConnected: this.isUserConnected,
             isReady: this.isReady,
             gold: this.userId === user?.id || isSpied ? this.gold : undefined,
-            wars: this.wars.map((war: War): SerializedWar => war.apiSerialize(language)),
+            wars: this.wars?.map((war: War): SerializedWar => war.apiSerialize(language)),
             peaces: this.peaces?.map((peace: Peace): SerializedPeace => peace.apiSerialize(language)),
             receivedPendingPeaces: this.receivedPendingPeaces?.map((pendingPeace: PendingPeace): SerializedRoomPlayer => pendingPeace.player.apiSerialize(language)),
             sentPendingPeaces: this.sentPendingPeaces?.map((pendingPeace: PendingPeace): SerializedRoomPlayer => pendingPeace.enemy.apiSerialize(language)),

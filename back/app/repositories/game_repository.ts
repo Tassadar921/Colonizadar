@@ -50,11 +50,9 @@ export default class GameRepository extends BaseRepository<typeof Game> {
                                     enemyQuery.preload('user').preload('bot').preload('country').preload('difficulty');
                                 })
                                 .preload('war', (warQuery): void => {
-                                    warQuery
-                                        .preload('enemy', (enemyQuery): void => {
-                                            enemyQuery.preload('user').preload('bot').preload('country').preload('difficulty');
-                                        })
-                                        .where('status', WarStatusEnum.IN_PROGRESS);
+                                    warQuery.preload('enemy', (enemyQuery): void => {
+                                        enemyQuery.preload('user').preload('bot').preload('country').preload('difficulty');
+                                    });
                                 })
                                 .where('status', PeaceStatusEnum.IN_PROGRESS);
                         })

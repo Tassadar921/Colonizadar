@@ -125,6 +125,7 @@ router
                             .group((): void => {
                                 router.get('/', [GameController, 'get']);
                                 router.patch('/ready', [GameController, 'ready']);
+                                router.get('player', [GameController, 'getPlayer']);
 
                                 router
                                     .group((): void => {

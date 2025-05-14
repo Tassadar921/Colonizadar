@@ -6,6 +6,8 @@
 	import type SerializedGame from 'colonizadar-backend/app/types/serialized/serialized_game';
 	import { showToast } from '../../services/toastService';
 	import { t } from 'svelte-i18n';
+	import { formatGameNumbers } from '../../services/stringService';
+	import axios from 'axios';
 
 	export let game: SerializedGame;
 	export let currentPlayer: SerializedRoomPlayer;
@@ -23,22 +25,54 @@
 	let financedNotification: Subscription;
 	let nextTurnNotification: Subscription;
 
-	const updatePlayersInGame = (updateFn: (p: SerializedRoomPlayer) => SerializedRoomPlayer): void => {
+	const getCurrentPlayer = async (): Promise<SerializedRoomPlayer> => {
+		try {
+			const { data } = await axios.get(`/api/game/${game.id}/player`);
+			return data;
+		} catch (error: any) {
+			showToast(error.response.data.error, 'error');
+			return currentPlayer;
+		}
+	};
+
+	const updatePlayersInGame = async (playersToUpdate: SerializedRoomPlayer[]): Promise<void> => {
+		const shouldRefreshCurrent = playersToUpdate.some((p) => p.id === currentPlayer.id);
+
+		const updatedPlayers = await Promise.all(
+			game.players.map(async (p) => {
+				const updated = playersToUpdate.find((u) => u.id === p.id);
+
+				if (updated === undefined) {
+					return p;
+				}
+
+				if (p.id === currentPlayer.id && shouldRefreshCurrent) {
+					currentPlayer = await getCurrentPlayer();
+					return currentPlayer;
+				}
+
+				return updated;
+			})
+		);
+
 		game = {
 			...game,
-			players: game.players.map(updateFn),
+			players: updatedPlayers,
 		};
 	};
 
 	const setup = async (): Promise<void> => {
-		if (isInitialized) return;
+		if (isInitialized === true) {
+			return;
+		}
+
 		await cleanupTransmits();
 		await setupTransmits();
 		setupHandlers();
 		isInitialized = true;
 	};
 
-	const setupTransmits = async () => {
+	const setupTransmits = async (): Promise<void> => {
 		gameUpdateNotification = $transmit.subscription(`notification/play/game/${game.id}/update`);
 		playerUpdateNotification = $transmit.subscription(`notification/play/game/${game.id}/player/update`);
 		spiedNotification = $transmit.subscription(`notification/play/game/${game.id}/${currentPlayer.id}/spied`);
@@ -69,96 +103,77 @@
 			game = newGame;
 		});
 
-		playerUpdateNotification.onMessage(({ player }: { player: SerializedRoomPlayer }): void => {
-			updatePlayersInGame((p) => (p.id === player.id ? { ...p, ...player } : p));
-			if (currentPlayer.id === player.id) currentPlayer = player;
+		playerUpdateNotification.onMessage(async ({ player }: { player: SerializedRoomPlayer }): Promise<void> => {
+			await updatePlayersInGame([player]);
 		});
 
 		spiedNotification.onMessage(({ player }: { player: SerializedRoomPlayer }): void => {
-			showToast(`${$t('play.game.spied-by')} ${player.user?.username || player.bot.name}`, 'warning');
+			const name = player.user?.username ?? player.bot.name;
+			showToast(`${$t('play.game.spied-by')} ${name}`, 'warning');
 		});
 
-		warNotification.onMessage(({ player, targetPlayer }: { player: SerializedRoomPlayer; targetPlayer: SerializedRoomPlayer }): void => {
-			updatePlayersInGame((p) => {
-				if (p.id === player.id) return player;
-				if (p.id === targetPlayer.id) return targetPlayer;
-				return p;
-			});
-			if (player.id === currentPlayer.id) currentPlayer = player;
-			if (targetPlayer.id === currentPlayer.id) currentPlayer = targetPlayer;
+		warNotification.onMessage(async ({ player, targetPlayer }: { player: SerializedRoomPlayer; targetPlayer: SerializedRoomPlayer }): Promise<void> => {
+			await updatePlayersInGame([player, targetPlayer]);
 
 			if (currentPlayer.id === player.id) {
-                // Toast message comes into API response
-			} else if (currentPlayer.id === targetPlayer.id) {
-				showToast(`${player.user?.username || player.bot.name} ${$t('play.game.declared-war-on-you')}`, 'warning');
-			} else {
-				showToast(`${player.user?.username || player.bot.name} ${$t('play.game.declared-war')} ${targetPlayer.user?.username || targetPlayer.bot.name}`);
+				return;
 			}
+
+			if (currentPlayer.id === targetPlayer.id) {
+				const name = player.user?.username ?? player.bot.name;
+				showToast(`${name} ${$t('play.game.declared-war-on-you')}`, 'warning');
+				return;
+			}
+
+			const name1 = player.user?.username ?? player.bot.name;
+			const name2 = targetPlayer.user?.username ?? targetPlayer.bot.name;
+			showToast(`${name1} ${$t('play.game.declared-war')} ${name2}`);
 		});
 
-		askPeaceNotification.onMessage(({ player, targetPlayer }: { player: SerializedRoomPlayer; targetPlayer: SerializedRoomPlayer }): void => {
-			updatePlayersInGame((p) => {
-				if (p.id === player.id) return player;
-				if (p.id === targetPlayer.id) return targetPlayer;
-				return p;
-			});
-			if (player.id === currentPlayer.id) currentPlayer = player;
+		askPeaceNotification.onMessage(async ({ player, targetPlayer }: { player: SerializedRoomPlayer; targetPlayer: SerializedRoomPlayer }): Promise<void> => {
+			await updatePlayersInGame([player, targetPlayer]);
+
 			if (targetPlayer.id === currentPlayer.id) {
-				currentPlayer = targetPlayer;
-				showToast(`${player.user?.username || player.bot.name} ${$t('play.game.peace.asked')}`);
+				const name = player.user?.username ?? player.bot.name;
+				showToast(`${name} ${$t('play.game.peace.asked')}`);
 			}
 		});
 
-		refusePeaceNotification.onMessage(({ player, targetPlayer }: { player: SerializedRoomPlayer; targetPlayer: SerializedRoomPlayer }): void => {
-			updatePlayersInGame((p) => {
-				if (p.id === player.id) return player;
-				if (p.id === targetPlayer.id) return targetPlayer;
-				return p;
-			});
-			if (player.id === currentPlayer.id) currentPlayer = player;
+		refusePeaceNotification.onMessage(async ({ player, targetPlayer }: { player: SerializedRoomPlayer; targetPlayer: SerializedRoomPlayer }): Promise<void> => {
+			await updatePlayersInGame([player, targetPlayer]);
+
 			if (targetPlayer.id === currentPlayer.id) {
-				currentPlayer = targetPlayer;
-				showToast(`${player.user?.username || player.bot.name} ${$t('play.game.peace.refused')}`);
+				const name = player.user?.username ?? player.bot.name;
+				showToast(`${name} ${$t('play.game.peace.refused')}`, 'warning');
 			}
 		});
 
-		cancelPendingPeaceNotification.onMessage(({ player, targetPlayer }: { player: SerializedRoomPlayer; targetPlayer: SerializedRoomPlayer }): void => {
-			updatePlayersInGame((p) => {
-				if (p.id === player.id) return player;
-				if (p.id === targetPlayer.id) return targetPlayer;
-				return p;
-			});
-			if (player.id === currentPlayer.id) currentPlayer = player;
+		cancelPendingPeaceNotification.onMessage(async ({ player, targetPlayer }: { player: SerializedRoomPlayer; targetPlayer: SerializedRoomPlayer }): Promise<void> => {
+			await updatePlayersInGame([player, targetPlayer]);
+
 			if (targetPlayer.id === currentPlayer.id) {
-				currentPlayer = targetPlayer;
-				showToast(`${player.user?.username || player.bot.name} ${$t('play.game.peace.cancelled')}`);
+				const name = player.user?.username ?? player.bot.name;
+				showToast(`${name} ${$t('play.game.peace.cancelled')}`);
 			}
 		});
 
-		peaceNotification.onMessage(({ player, targetPlayer }: { player: SerializedRoomPlayer; targetPlayer: SerializedRoomPlayer }): void => {
-			updatePlayersInGame((p) => {
-				if (p.id === player.id) return player;
-				if (p.id === targetPlayer.id) return targetPlayer;
-				return p;
-			});
-			if (player.id === currentPlayer.id) currentPlayer = player;
-			if (targetPlayer.id === currentPlayer.id) currentPlayer = targetPlayer;
-			if (currentPlayer.id === player.id || currentPlayer.id === targetPlayer.id) {
-				// Toast message comes into API response
-			} else {
-				showToast(`${player.user?.username || player.bot.name} ${$t('play.game.peace.made')} ${targetPlayer.user?.username || targetPlayer.bot.name}`, 'warning');
+		peaceNotification.onMessage(async ({ player, targetPlayer }: { player: SerializedRoomPlayer; targetPlayer: SerializedRoomPlayer }): Promise<void> => {
+			await updatePlayersInGame([player, targetPlayer]);
+
+			const isCurrent = currentPlayer.id === player.id || currentPlayer.id === targetPlayer.id;
+
+			if (isCurrent === false) {
+				const name1 = player.user?.username ?? player.bot.name;
+				const name2 = targetPlayer.user?.username ?? targetPlayer.bot.name;
+				showToast(`${name1} ${$t('play.game.peace.made')} ${name2}`, 'warning');
 			}
 		});
 
-		financedNotification.onMessage(({ player, targetPlayer, amount }: { player: SerializedRoomPlayer; targetPlayer: SerializedRoomPlayer; amount: number }): void => {
-			updatePlayersInGame((p) => {
-				if (p.id === player.id) return player;
-				if (p.id === targetPlayer.id) return targetPlayer;
-				return p;
-			});
-			if (player.id === currentPlayer.id) currentPlayer = player;
-			if (targetPlayer.id === currentPlayer.id) currentPlayer = targetPlayer;
-			showToast(`${amount} ${$t('play.game.received-from')} ${targetPlayer.user?.username || targetPlayer.bot.name}`);
+		financedNotification.onMessage(async ({ player, targetPlayer, amount }: { player: SerializedRoomPlayer; targetPlayer: SerializedRoomPlayer; amount: number }): Promise<void> => {
+			await updatePlayersInGame([player, targetPlayer]);
+
+			const name = targetPlayer.user?.username ?? targetPlayer.bot.name;
+			showToast(`${formatGameNumbers(amount)} ${$t('play.game.received-from')} ${name}`);
 		});
 
 		nextTurnNotification.onMessage((): void => {
@@ -184,8 +199,10 @@
 		}
 	};
 
-	$: if (game.id) {
-		setup();
+	$: {
+		if (game.id !== undefined) {
+			setup();
+		}
 	}
 
 	onDestroy(() => {

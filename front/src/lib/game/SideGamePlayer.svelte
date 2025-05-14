@@ -15,10 +15,15 @@
 	import DeclareWar from './DeclareWar.svelte';
 	import AskPeace from './AskPeace.svelte';
 	import type SerializedWar from 'colonizadar-backend/app/types/serialized/serialized_war';
+	import type SerializedPeace from 'colonizadar-backend/app/types/serialized/serialized_peace';
 
 	export let game: SerializedGame;
 	export let currentPlayer: SerializedRoomPlayer;
 	export let player: SerializedRoomPlayer;
+
+	let currentPeace: SerializedPeace | undefined;
+
+	$: currentPeace = currentPlayer.peaces?.find(({ enemy }: { enemy: SerializedRoomPlayer }) => enemy.id === player.id);
 </script>
 
 <div class="ml-3 flex gap-5">
@@ -79,10 +84,10 @@
 						{:else}
 							<AskPeace bind:game targetPlayer={player} />
 						{/if}
-					{:else if !currentPlayer.peaces?.find(({ enemy }: { enemy: SerializedRoomPlayer }) => enemy.id === player.id)}
+					{:else if !currentPeace}
 						<DeclareWar bind:game targetPlayer={player} />
 					{:else}
-						<p>{$t('play.game.peace.expires-on')} {$t(`play.game.${formatSeasonFromNumber(game.season)}`)} {game.year}</p>
+						<p>{$t('play.game.peace.expires-on')} {$t(`play.game.${formatSeasonFromNumber(currentPeace.expirationSeason)}`)} {currentPeace.expirationYear}</p>
 					{/if}
 				</div>
 			</div>

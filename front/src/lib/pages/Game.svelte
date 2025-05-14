@@ -20,8 +20,8 @@
 
 	onMount(async (): Promise<void> => {
 		try {
-			const { data: gameData } = await axios.get(`/api/game/${gameId}`);
-			game = gameData.game;
+			const { data } = await axios.get(`/api/game/${gameId}`);
+			game = data;
 		} catch (error: any) {
 			showToast(error.response.data.error, 'error');
 			navigate('/play');

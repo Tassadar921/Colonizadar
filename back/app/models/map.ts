@@ -118,6 +118,9 @@ export default class Map extends BaseModel {
     declare fortifyCost: number;
 
     @column()
+    declare peaceSeasonsInterval: number;
+
+    @column()
     declare neutralFlagId: string;
 
     @belongsTo((): typeof File => File, {
@@ -160,6 +163,10 @@ export default class Map extends BaseModel {
 
     @column.dateTime({ autoCreate: true, autoUpdate: true })
     declare updatedAt: DateTime;
+
+    public getFormatedPeaceSeasonsInterval(): { years: number; seasons: number } {
+        return { years: Math.floor(this.peaceSeasonsInterval / 4), seasons: this.peaceSeasonsInterval % 4 };
+    }
 
     public async apiSerialize(language: Language): Promise<SerializedMap> {
         return {

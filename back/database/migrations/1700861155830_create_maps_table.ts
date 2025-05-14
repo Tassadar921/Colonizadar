@@ -28,6 +28,7 @@ export default class extends BaseSchema {
             table.integer('base_subversion_cost').notNullable();
             table.decimal('subversion_cost_factor', 16, 10).notNullable();
             table.integer('fortify_cost').notNullable();
+            table.integer('peace_seasons_interval').notNullable();
             table.uuid('neutral_flag_id').notNullable().references('id').inTable('files').onDelete('CASCADE');
             table.uuid('fortified_icon_id').notNullable().references('id').inTable('files').onDelete('CASCADE');
             table.uuid('factory_icon_id').notNullable().references('id').inTable('files').onDelete('CASCADE');
