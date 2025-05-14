@@ -11,6 +11,7 @@
 	const handleDeclareWar = async (): Promise<void> => {
 		try {
 			await axios.put(`/api/game/${game.id}/actions/player/${targetPlayer.id}/war/declare`);
+            showToast(data.message);
 		} catch (error: any) {
 			showToast(error.response.data.error, 'error');
 		}

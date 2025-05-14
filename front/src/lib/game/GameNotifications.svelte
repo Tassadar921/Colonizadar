@@ -88,7 +88,7 @@
 			if (targetPlayer.id === currentPlayer.id) currentPlayer = targetPlayer;
 
 			if (currentPlayer.id === player.id) {
-				showToast(`${$t('play.game.you-declared-war')} ${targetPlayer.user?.username || targetPlayer.bot.name}`);
+                // Toast message comes into API response
 			} else if (currentPlayer.id === targetPlayer.id) {
 				showToast(`${player.user?.username || player.bot.name} ${$t('play.game.declared-war-on-you')}`, 'warning');
 			} else {
