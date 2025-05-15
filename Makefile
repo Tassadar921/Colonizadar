@@ -23,14 +23,19 @@ list-routes:
 
 db-fresh:
 	docker compose exec -T backend node ace migration:fresh
+	docker compose exec -T backend node ace migration:fresh --connection=logs
 
 db-migrate:
 	docker compose exec -T backend node ace migration:run
+	docker compose exec -T backend node ace migration:run --connection=logs
 
 db-seed:
 	docker compose exec -T backend node ace db:seed
 
-db: db-fresh db-seed
+init-logs-db:
+	./init-logs-db.sh
+
+db: init-logs-db db-fresh db-seed
 
 stop:
 	docker compose down --remove-orphans
@@ -41,8 +46,7 @@ up:
 rm:
 	docker compose down --volumes --remove-orphans
 
-start:
-	make install && make rm && make up && make db
+start: install rm up db
 
 make prune:
 	docker system prune -f

@@ -24,11 +24,18 @@ export default await Env.create(new URL('../', import.meta.url), {
 |----------------------------------------------------------
 */
     DB_CONNECTION: Env.schema.enum(['pg', 'mysql']),
+
     DB_HOST: Env.schema.string({ format: 'host' }),
     DB_PORT: Env.schema.number(),
     DB_USER: Env.schema.string(),
     DB_PASSWORD: Env.schema.string.optional(),
     DB_DATABASE: Env.schema.string(),
+
+    LOGS_HOST: Env.schema.string({ format: 'host' }),
+    LOGS_PORT: Env.schema.number(),
+    LOGS_USER: Env.schema.string(),
+    LOGS_PASSWORD: Env.schema.string.optional(),
+    LOGS_DATABASE: Env.schema.string(),
 
     REDIS_HOST: Env.schema.string({ format: 'host' }),
     REDIS_PORT: Env.schema.number(),
