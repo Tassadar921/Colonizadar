@@ -197,7 +197,7 @@ router
             .use([middleware.queryStringAuth()]);
     })
     .prefix('api')
-    .use([middleware.language()]);
+    .use([middleware.log(), middleware.language()]);
 
 router.get('/__transmit/events', [EventStreamController]);
 router.post('/__transmit/subscribe', [SubscribeController]);

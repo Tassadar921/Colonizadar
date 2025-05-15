@@ -48,4 +48,5 @@ export const middleware = router.named({
     isOwnedTerritory: () => import('#middleware/is_owned_territory_middleware'),
     isForeignTerritory: () => import('#middleware/is_foreign_territory_middleware'),
     isValidSeason: () => import('#middleware/is_valid_season_middleware'),
+    log: () => import('#middleware/log_middleware'),
 });

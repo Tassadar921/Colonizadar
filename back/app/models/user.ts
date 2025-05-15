@@ -1,7 +1,7 @@
 import { DateTime } from 'luxon';
 import hash from '@adonisjs/core/services/hash';
 import { compose } from '@adonisjs/core/helpers';
-import { BaseModel, belongsTo, column, hasMany } from '@adonisjs/lucid/orm';
+import { afterCreate, BaseModel, belongsTo, column, hasMany } from '@adonisjs/lucid/orm';
 import { withAuthFinder } from '@adonisjs/auth/mixins/lucid';
 import type { BelongsTo, HasMany } from '@adonisjs/lucid/types/relations';
 import SerializedUser from '#types/serialized/serialized_user';
@@ -11,6 +11,7 @@ import UserRoleEnum from '#types/enum/user_role_enum';
 import Friend from '#models/friend';
 import BlockedUser from '#models/blocked_user';
 import PendingFriend from '#models/pending_friend';
+import LogUser from '#models/log_user';
 
 const AuthFinder = withAuthFinder(() => hash.use('scrypt'), {
     uids: ['email'],
@@ -67,6 +68,13 @@ export default class User extends compose(BaseModel, AuthFinder) {
 
     @column.dateTime({ autoCreate: true, autoUpdate: true })
     declare updatedAt: DateTime;
+
+    @afterCreate()
+    static async createLogUser(user: User): Promise<void> {
+        await LogUser.create({
+            email: user.email,
+        });
+    }
 
     static accessTokens = DbAccessTokensProvider.forModel(User, {
         expiresIn: '30 days',
