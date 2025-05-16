@@ -1,13 +1,10 @@
 <script lang="ts">
 	import axios from 'axios';
-	import Button from './Button.svelte';
-	import Loader from './Loader.svelte';
 	import Icon from './Icon.svelte';
 	import { t } from 'svelte-i18n';
-	import { createEventDispatcher } from 'svelte';
+	import { createEventDispatcher, tick } from 'svelte';
 	import FormBackground from './background/FormBackground.svelte';
 	import { language } from '../../stores/languageStore';
-	import Send from '../icons/Send.svelte';
 	import { showToast } from '../../services/toastService';
 
 	const dispatch = createEventDispatcher();
@@ -17,9 +14,11 @@
 	export let isValid: boolean = false;
 	export let submittable: boolean = true;
 	export let hasBackground: boolean = true;
+	export let isFormVisible: boolean = true;
 
 	let isLoading: boolean = false;
 	let isSendButtonDisabled: boolean = false;
+	let buttonElement: HTMLButtonElement;
 
 	const handleSubmit = async (event: SubmitEvent) => {
 		event.preventDefault();
@@ -49,7 +48,16 @@
 		isLoading = false;
 	};
 
-	$: isSendButtonDisabled = !isValid;
+	$: if (isFormVisible && buttonElement) {
+		tick().then(() => {
+			const { width, height } = buttonElement.getBoundingClientRect();
+			if (width && height) {
+				buttonElement.style.setProperty('width', `${width}px`);
+				buttonElement.style.setProperty('height', `${height}px`);
+			}
+		});
+	}
+	$: isSendButtonDisabled = isLoading || !isValid;
 </script>
 
 {#if hasBackground}
@@ -69,21 +77,24 @@
 			<div>
 				<slot name="other-option" />
 			</div>
-			<Button
+			<button
+				bind:this={buttonElement}
 				type="submit"
-				bind:disabled={isSendButtonDisabled}
-				customStyle
-				ariaLabel="Submit form"
-				additionalStyle="bg-green-700 {isSendButtonDisabled ? 'cursor-not-allowed' : 'hover:bg-green-800'} transition-all duration-300 py-2 px-4 rounded-xl text-2xl font-bold"
+				disabled={isSendButtonDisabled}
+				aria-label="Submit form"
+				class="bg-green-700 {isSendButtonDisabled
+					? 'cursor-not-allowed'
+					: 'hover:bg-green-800'} transition-all duration-300 px-3 py-1.5 rounded-xl text-2xl font-bold flex justify-center items-center gap-3"
 			>
-				<div class="flex flex-row items-center gap-3">
+				{#if isLoading}
+					<Icon name="spinner" size={40} />
+				{:else}
 					<p class="text-white">{$t('common.submit')}</p>
-					<div class="text-primary-500">
-						<Send />
-					</div>
-				</div>
-			</Button>
+					<span class="text-primary-500">
+						<Icon name="send" />
+					</span>
+				{/if}
+			</button>
 		</div>
 	{/if}
-	<Loader bind:isLoading />
 </form>

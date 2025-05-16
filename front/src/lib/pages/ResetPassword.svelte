@@ -11,7 +11,7 @@
 
 	let email: string = '';
 	let readonly: boolean = false;
-	let isValid: boolean = false;
+	let canSubmit: boolean = false;
 
 	onMount(async (): Promise<void> => {
 		if ($profile && $profile.email) {
@@ -24,14 +24,14 @@
 		showToast($t('toast.reset-password.mail.success'));
 	};
 
-	$: isValid = !!email && isValidEmail(email);
+	$: canSubmit = !!email && isValidEmail(email);
 </script>
 
 <Title title={$t('reset-password.title')} hasBackground />
 
 <Breadcrumbs hasBackground items={[{ label: $t('home.title'), path: '/' }, { label: $t('reset-password.title') }]} />
 
-<Form action="/api/reset-password/send-mail" method="POST" on:success={handleSuccess} bind:isValid>
+<Form action="/api/reset-password/send-mail" method="POST" on:success={handleSuccess} isValid={canSubmit}>
 	<input type="hidden" name="frontUri" value={`${import.meta.env.VITE_FRONT_URI}/reset-password/confirm`} />
 	<Input label={$t('common.email.label')} placeholder={$t('common.email.placeholder')} type="email" name="email" bind:value={email} required {readonly} />
 </Form>

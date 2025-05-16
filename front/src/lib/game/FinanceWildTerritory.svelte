@@ -11,11 +11,11 @@
 
 	export let game: SerializedGame;
 	export let currentPlayer: SerializedRoomPlayer;
-	export let gameTerritory: SerializedGameTerritory;
+	export let selectedTerritory: SerializedGameTerritory;
 
 	let amount: number;
 	let showModal: boolean = false;
-	let isValid: boolean = false;
+	let canSubmit: boolean = false;
 
 	const handleSuccess = async (event: CustomEvent): Promise<void> => {
 		game = {
@@ -28,19 +28,27 @@
 				return player;
 			}),
 		};
+		selectedTerritory.infantry = undefined;
 		showToast(event.detail.message);
 	};
 
-	$: isValid = amount >= game.map.financeWildTerritoryStep && amount % game.map.financeWildTerritoryStep === 0 && amount <= (currentPlayer?.gold ?? 0);
+	$: canSubmit = amount >= game.map.financeWildTerritoryStep && amount % game.map.financeWildTerritoryStep === 0 && amount <= (currentPlayer?.gold ?? 0);
 </script>
 
-<button class="bg-green-500 hover:bg-green-600 transition-colors duration-300 px-3 rounded-xl" on:click={() => (showModal = true)}>
+<button class="bg-green-500 hover:bg-green-600 transition-colors duration-300 px-3 py-1 rounded-xl" on:click={() => (showModal = true)}>
 	{$t('play.game.finance')}
 </button>
 
 <Modal bind:showModal>
 	<Subtitle slot="header">{$t('play.game.finance-player-modal.title')}</Subtitle>
-	<Form method="PATCH" action={`/api/game/${game.id}/actions/territory/${gameTerritory.territory.code}/finance`} hasBackground={false} {isValid} on:success={handleSuccess}>
+	<Form
+		method="PATCH"
+		action={`/api/game/${game.id}/actions/territory/${selectedTerritory.territory.code}/finance`}
+		hasBackground={false}
+		isValid={canSubmit}
+		isFormVisible={showModal}
+		on:success={handleSuccess}
+	>
 		<Range name="amount" bind:value={amount} min={game.map.financeWildTerritoryStep} max={currentPlayer?.gold ?? 0} step={game.map.financeWildTerritoryStep} />
 	</Form>
 </Modal>

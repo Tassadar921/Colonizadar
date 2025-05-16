@@ -25,7 +25,7 @@
 		isLoading = false;
 	};
 
-	$: player = room.players.find((player) => player.user.id === $profile!.id);
+	$: player = room.players.find((player: SerializedRoomPlayer): boolean => player.user?.id === $profile!.id);
 
 	$: color = player.isReady ? 'green' : 'red';
 </script>

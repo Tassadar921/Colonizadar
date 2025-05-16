@@ -1,8 +1,6 @@
 <script lang="ts">
 	import type SerializedGame from 'colonizadar-backend/app/types/serialized/serialized_game';
 	import type SerializedRoomPlayer from 'colonizadar-backend/app/types/serialized/serialized_room_player';
-	import Bot from '../icons/Bot.svelte';
-	import Crown from '../icons/Crown.svelte';
 	import { profile } from '../../stores/profileStore';
 	import { t } from 'svelte-i18n';
 	import type SerializedGameTerritory from 'colonizadar-backend/app/types/serialized/serialized_game_territory';
@@ -16,6 +14,7 @@
 	import AskPeace from './AskPeace.svelte';
 	import type SerializedWar from 'colonizadar-backend/app/types/serialized/serialized_war';
 	import type SerializedPeace from 'colonizadar-backend/app/types/serialized/serialized_peace';
+	import Icon from '../shared/Icon.svelte';
 
 	export let game: SerializedGame;
 	export let currentPlayer: SerializedRoomPlayer;
@@ -47,7 +46,7 @@
 			<p class="flex gap-1 {player.user.id === $profile?.id ? 'font-bold' : ''}">
 				{#if game.owner.id === player.user.id}
 					<span class="text-orange-500">
-						<Crown />
+						<Icon name="crown" />
 					</span>
 				{/if}
 				{player.user.username}
@@ -57,7 +56,7 @@
 			<div class="flex flex-col">
 				<p class="flex gap-1">
 					<span class="text-green-500">
-						<Bot />
+						<Icon name="bot" />
 					</span>
 					{player.bot.name}
 				</p>
@@ -66,7 +65,11 @@
 		{/if}
 		<p>{$t('play.game.score')}: {formatGameNumbers(player.score)}</p>
 		<p>{$t('play.game.gold')}: {player.gold ? formatGameNumbers(player.gold) : '?'}</p>
-		<p>{$t('play.game.territories')}: {formatGameNumbers(game.territories.reduce((accumulator, territory: SerializedGameTerritory) => accumulator + Number(territory.owner?.id === player.id), 0))}</p>
+		<p>
+			{$t('play.game.territories')}: {formatGameNumbers(
+				game.territories.reduce((accumulator, gameTerritory: SerializedGameTerritory) => accumulator + Number(gameTerritory.owner?.id === player.id), 0)
+			)}
+		</p>
 		{#if player.user?.id !== $profile?.id}
 			<div class="flex flex-col gap-3">
 				<div class="flex gap-3">

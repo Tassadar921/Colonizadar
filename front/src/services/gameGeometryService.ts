@@ -1,4 +1,8 @@
 import type SerializedGame from 'colonizadar-backend/app/types/serialized/serialized_game';
+import type SerializedGameTerritory from 'colonizadar-backend/app/types/serialized/serialized_game_territory';
+
+const hoverColor: string = '#ffffac';
+const mountainColor: string = '#653a06';
 
 const getCentroidFromPath = (path: SVGPathElement, svgElement: SVGSVGElement, samples = 100): SVGPoint => {
 	const totalLength: number = path.getTotalLength();
@@ -15,6 +19,46 @@ const getCentroidFromPath = (path: SVGPathElement, svgElement: SVGSVGElement, sa
 	svgPoint.x = sumX / (samples + 1);
 	svgPoint.y = sumY / (samples + 1);
 	return svgPoint;
+};
+
+const setIcons = (game: SerializedGame, gameTerritory: SerializedGameTerritory, svgGroup: SVGGElement, mainSvgPath: SVGPathElement, svgElement: SVGSVGElement) => {
+	resetTerritoryColor(game, svgGroup);
+
+	const ctm: DOMMatrix | null = mainSvgPath.getCTM();
+	const groupCTMInverse: DOMMatrix | undefined = svgGroup.getCTM()?.inverse();
+	if (!ctm || !groupCTMInverse) {
+		return;
+	}
+
+	const point: SVGPoint = getCentroidFromPath(mainSvgPath, svgElement);
+	const pointInGroup: DOMPoint = point.matrixTransform(ctm).matrixTransform(groupCTMInverse);
+
+	const flag: SVGImageElement = document.createElementNS('http://www.w3.org/2000/svg', 'image');
+	flag.classList.add('flag-icon');
+
+	if (gameTerritory.owner) {
+		flag.setAttribute('href', `${import.meta.env.VITE_API_BASE_URL}/api/static/country-flag/${gameTerritory.owner.country.id}?token=${localStorage.getItem('apiToken')}`);
+	} else {
+		flag.setAttribute('href', `${import.meta.env.VITE_API_BASE_URL}/api/static/country-flag/${game.map.id}/neutral-flag?token=${localStorage.getItem('apiToken')}`);
+	}
+
+	const flagSize = 8;
+
+	flag.setAttribute('width', String(flagSize));
+	flag.setAttribute('height', String(flagSize));
+
+	flag.setAttribute('x', String(pointInGroup.x - flagSize / 2));
+	flag.setAttribute('y', String(pointInGroup.y - flagSize / 2));
+
+	svgGroup.appendChild(flag);
+
+	if (gameTerritory.owner) {
+		if (gameTerritory.territory.isFactory) {
+			setFactoryIcon(game, pointInGroup, svgGroup);
+		} else if (gameTerritory.isFortified) {
+			setFortifiedIcon(game, pointInGroup, svgGroup);
+		}
+	}
 };
 
 const setFactoryIcon = (game: SerializedGame, pointInGroup: SVGPoint, svgGroup: SVGGElement): void => {
@@ -39,4 +83,26 @@ const setFortifiedIcon = (game: SerializedGame, pointInGroup: SVGPoint, svgGroup
 	svgGroup.appendChild(fortifiedIcon);
 };
 
-export { getCentroidFromPath, setFactoryIcon, setFortifiedIcon };
+const resetTerritoryColor = (game: SerializedGame, svgGroup: SVGGElement): void => {
+	const gameTerritory: SerializedGameTerritory | undefined = game.territories.find((gameTerritory: SerializedGameTerritory): boolean => {
+		return gameTerritory.territory.code.toLowerCase() === svgGroup.id;
+	});
+
+	if (gameTerritory) {
+		if (gameTerritory.owner) {
+			svgGroup.setAttribute('fill', gameTerritory.owner.country.color);
+		} else {
+			svgGroup.setAttribute('fill', 'black');
+		}
+	}
+};
+
+const setMountainColor = (svgGroup: SVGGElement): void => {
+	svgGroup.setAttribute('fill', mountainColor);
+};
+
+const setHoverColor = (svgGroup: SVGGElement): void => {
+	svgGroup.setAttribute('fill', hoverColor);
+};
+
+export { getCentroidFromPath, setIcons, setFactoryIcon, setFortifiedIcon, resetTerritoryColor, setMountainColor, setHoverColor };

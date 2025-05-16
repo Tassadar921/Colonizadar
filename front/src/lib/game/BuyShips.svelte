@@ -12,13 +12,13 @@
 	import type SerializedGameTerritory from 'colonizadar-backend/app/types/serialized/serialized_game_territory';
 
 	export let game: SerializedGame;
-	export let gameTerritory: SerializedGameTerritory;
+	export let selectedTerritory: SerializedGameTerritory;
 	export let currentPlayer: SerializedRoomPlayer;
 
 	let amount: number = 5;
 	let cost: number = 0;
 	let showModal: boolean = false;
-	let isValid: boolean = true;
+	let canSubmit: boolean = true;
 
 	let canDecrement: boolean = true;
 	let canIncrement: boolean = true;
@@ -34,13 +34,14 @@
 			...game,
 			players: game.players.map((player: SerializedRoomPlayer) => {
 				if (event.detail.player.id === player.id) {
+					amount = 5;
 					return event.detail.player;
 				}
 				return player;
 			}),
 			territories: game.territories.map((territory: SerializedGameTerritory) => {
 				if (event.detail.territory.id === territory.id) {
-					gameTerritory = event.detail.territory;
+					selectedTerritory = event.detail.territory;
 					return event.detail.territory;
 				}
 				return territory;
@@ -61,26 +62,33 @@
 		}
 
 		cost = game.map.baseShipCost * currentPlayer.country.shipPriceFactor * amount;
-		isValid = amount >= 5 && amount % 5 === 0;
+		canSubmit = amount >= 5 && amount % 5 === 0;
 		canDecrement = amount > 5;
 	}
 </script>
 
-<button class="bg-green-500 hover:bg-green-600 transition-colors duration-300 px-3 py-1 rounded-xl text-white" on:click={() => (showModal = true)}>
+<button class="bg-green-500 hover:bg-green-600 transition-colors duration-300 px-3 py-1 rounded-xl" on:click={() => (showModal = true)}>
 	{$t('play.game.buy-ships')}
 </button>
 
 <Modal bind:showModal>
 	<Subtitle slot="header">
 		{$t('play.game.buy-ships-modal.title')}
-		{gameTerritory.territory.name}
+		{selectedTerritory.territory.name}
 	</Subtitle>
 
 	<div class="flex flex-col gap-3">
-		<p>{$t('play.game.total-infantry')}: {gameTerritory.infantry}</p>
-		<p>{$t('play.game.total-ships')}: {gameTerritory.ships}</p>
+		<p>{$t('play.game.total-infantry')}: {selectedTerritory.infantry}</p>
+		<p>{$t('play.game.total-ships')}: {selectedTerritory.ships}</p>
 	</div>
-	<Form method="PATCH" action={`/api/game/${game.id}/actions/territory/${gameTerritory.territory.code}/buy/ships`} hasBackground={false} {isValid} on:success={handleSuccess}>
+	<Form
+		method="PATCH"
+		action={`/api/game/${game.id}/actions/territory/${selectedTerritory.territory.code}/buy/ships`}
+		hasBackground={false}
+		isValid={canSubmit}
+		isFormVisible={showModal}
+		on:success={handleSuccess}
+	>
 		<Incrementation bind:value={amount} smallStep={5} smallShiftStep={10} largeStep={100} largeShiftStep={1000} {canDecrement} {canIncrement} name="amount" />
 
 		<p class="text-center mt-4">

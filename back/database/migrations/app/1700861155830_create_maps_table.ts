@@ -18,15 +18,15 @@ export default class extends BaseSchema {
             table.decimal('base_ship_cost', 16, 10).notNullable();
             table.integer('spy_territory_cost').notNullable();
             table.integer('spy_fortified_territory_cost').notNullable();
+            table.integer('spy_factory_cost').notNullable();
             table.integer('spy_player_cost').notNullable();
             table.decimal('finance_player_cost_factor', 16, 10).notNullable();
             table.integer('finance_player_step').notNullable();
             table.decimal('finance_wild_territory_cost_factor', 16, 10).notNullable();
             table.decimal('finance_wild_territory_enforcement_factor', 16, 10).notNullable();
             table.integer('finance_wild_territory_step').notNullable();
-            table.decimal('wild_territory_subversion_factor', 16, 10).notNullable();
-            table.integer('base_subversion_cost').notNullable();
-            table.decimal('subversion_cost_factor', 16, 10).notNullable();
+            table.decimal('wild_territory_subvert_factor', 16, 10).notNullable();
+            table.integer('subvert_cost').notNullable();
             table.integer('fortify_cost').notNullable();
             table.integer('peace_seasons_interval').notNullable();
             table.uuid('neutral_flag_id').notNullable().references('id').inTable('files').onDelete('CASCADE');

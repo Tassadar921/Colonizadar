@@ -1,8 +1,7 @@
 <script lang="ts">
 	import Button from './Button.svelte';
 	import { createEventDispatcher } from 'svelte';
-	import Eye from '../icons/Eye.svelte';
-	import EyeSlash from '../icons/EyeSlash.svelte';
+	import Icon from './Icon.svelte';
 
 	const dispatch = createEventDispatcher();
 
@@ -103,7 +102,7 @@
 			{...inputAttributes}
 		/>
 		<Button additionalStyle="absolute top-2 right-2 cursor-pointer" on:click={switchType}>
-			<Eye />
+			<Icon name="eye" />
 		</Button>
 	{:else}
 		<input
@@ -120,7 +119,7 @@
 			{...inputAttributes}
 		/>
 		<Button additionalStyle="absolute top-2 right-2 cursor-pointer" on:click={switchType}>
-			<EyeSlash />
+			<Icon name="eyeSlash" />
 		</Button>
 	{/if}
 </div>

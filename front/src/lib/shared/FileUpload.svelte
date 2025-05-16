@@ -3,7 +3,7 @@
 	import { onMount } from 'svelte';
 	import { raw } from '../../services/stringService';
 	import Loader from './Loader.svelte';
-	import Upload from '../icons/Upload.svelte';
+	import Icon from './Icon.svelte';
 
 	export let name: string = '';
 	export let description: string = '';
@@ -117,7 +117,7 @@
 	>
 		<input bind:this={inputRef} type="file" class="hidden" {name} accept={acceptedFormats} on:change={handleFileChange} {disabled} />
 		<span class="text-primary-500">
-			<Upload size={35} />
+			<Icon name="upload" size={35} />
 		</span>
 		<span class="text-center text-sm text-gray-500 my-3">
 			{#if fileName}

@@ -75,7 +75,7 @@
 <div class="my-2 flex flex-row gap-3 justify-center items-center">
 	<!-- Large Decrement -->
 	<Button disabled={!canDecrement} on:click={(e) => handleClick(e, largeStep, largeShiftStep, 'dec')}>
-		<Icon name="doubleArrowLeft" />
+		<Icon name="doubleChevronLeft" />
 	</Button>
 
 	<!-- Small Decrement -->
@@ -95,6 +95,6 @@
 
 	<!-- Large Increment -->
 	<Button disabled={!canIncrement} on:click={(e) => handleClick(e, largeStep, largeShiftStep, 'inc')}>
-		<Icon name="doubleArrowRight" />
+		<Icon name="doubleChevronRight" />
 	</Button>
 </div>

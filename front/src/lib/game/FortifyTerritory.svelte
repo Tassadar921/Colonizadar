@@ -3,17 +3,31 @@
 	import type SerializedGame from 'colonizadar-backend/app/types/serialized/serialized_game';
 	import { showToast } from '../../services/toastService';
 	import type SerializedRoomPlayer from 'colonizadar-backend/app/types/serialized/serialized_room_player';
-	import type SerializedGameTerritory from 'colonizadar-backend/app/types/serialized/serialized_game_territory';
+	import type SerializedselectedTerritory from 'colonizadar-backend/app/types/serialized/serialized_game_territory';
 	import axios from 'axios';
 	import { formatGameNumbers } from '../../services/stringService';
 	import { getCentroidFromPath, setFortifiedIcon } from '../../services/gameGeometryService';
+	import { onMount, tick } from 'svelte';
+	import Icon from '../shared/Icon.svelte';
 
 	export let game: SerializedGame;
-	export let gameTerritory: SerializedGameTerritory;
+	export let selectedTerritory: SerializedselectedTerritory;
+	export let currentPlayer: SerializedRoomPlayer;
 	export let svgElement: SVGSVGElement;
 
+	let isButtonDisabled: boolean = false;
+	let isLoading: boolean = false;
+	let buttonElement: HTMLButtonElement;
+
+	onMount(async (): Promise<void> => {
+		await tick();
+		const { width, height } = buttonElement.getBoundingClientRect();
+		buttonElement.style.setProperty('width', `${width}px`);
+		buttonElement.style.setProperty('height', `${height}px`);
+	});
+
 	const handleGraphicalUpdate = (): void => {
-		const svgGroup: SVGGElement | null = document.getElementById(gameTerritory.territory.code.toLowerCase()) as unknown as SVGGElement | null;
+		const svgGroup: SVGGElement | null = document.getElementById(selectedTerritory.territory.code.toLowerCase()) as unknown as SVGGElement | null;
 		const svgPath: SVGPathElement | null = svgGroup?.querySelector('.mainland') as SVGPathElement | null;
 		if (!svgGroup || !svgPath) {
 			return;
@@ -32,8 +46,9 @@
 	};
 
 	const handleFortify = async (): Promise<void> => {
+		isLoading = true;
 		try {
-			const { data } = await axios.patch(`/api/game/${game.id}/actions/territory/${gameTerritory.territory.code}/fortify`);
+			const { data } = await axios.patch(`/api/game/${game.id}/actions/territory/${selectedTerritory.territory.code}/fortify`);
 			game = {
 				...game,
 				players: game.players.map((player: SerializedRoomPlayer) => {
@@ -42,11 +57,11 @@
 					}
 					return player;
 				}),
-				territories: game.territories.map((gameTerritory: SerializedGameTerritory) => {
-					if (data.territory.id === gameTerritory.id) {
+				territories: game.territories.map((selectedTerritory: SerializedselectedTerritory) => {
+					if (data.territory.id === selectedTerritory.id) {
 						return data.territory;
 					}
-					return gameTerritory;
+					return selectedTerritory;
 				}),
 			};
 			handleGraphicalUpdate();
@@ -54,11 +69,20 @@
 		} catch (error: any) {
 			showToast(error.response.data.error, 'error');
 		}
+		isLoading = false;
 	};
+
+	$: isButtonDisabled = isLoading || (currentPlayer?.gold ?? 0) < game.map.fortifyCost;
 </script>
 
-<button class="bg-green-500 hover:bg-green-600 transition-colors duration-300 px-3 rounded-xl" on:click={handleFortify}>
-	{$t('play.game.fortify')}
-</button>
+<div class="flex gap-1 flex-col justify-center items-center">
+	<button bind:this={buttonElement} disabled={isButtonDisabled} class="bg-green-500 hover:bg-green-600 transition-colors duration-300 px-3 py-1 rounded-xl" on:click={handleFortify}>
+		{#if isLoading}
+			<Icon name="spinner" />
+		{:else}
+			{$t('play.game.fortify')}
+		{/if}
+	</button>
 
-<span>{$t('play.game.cost')} : {formatGameNumbers(game?.map.fortifyCost ?? 0)}</span>
+	<p>{$t('play.game.cost')} : {formatGameNumbers(game?.map.fortifyCost ?? 0)}</p>
+</div>

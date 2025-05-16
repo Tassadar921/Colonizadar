@@ -18,6 +18,6 @@
 	};
 </script>
 
-<button class="bg-green-500 hover:bg-green-600 transition-colors duration-300 px-3 rounded-xl" on:click={handleAskPeace}>
+<button class="bg-green-500 hover:bg-green-600 transition-colors duration-300 px-3 py-1 rounded-xl" on:click={handleAskPeace}>
 	{$t('play.game.peace.ask')}
 </button>

@@ -15,11 +15,8 @@
 	import type SerializedUser from 'colonizadar-backend/app/types/serialized/serialized_user';
 	import type PaginatedUsers from 'colonizadar-backend/app/types/paginated/paginated_users';
 	import type SerializedPendingFriend from 'colonizadar-backend/app/types/serialized/serialized_pending_friend';
-	import Close from '../icons/Close.svelte';
-	import Confirm from '../icons/Confirm.svelte';
-	import AddUser from '../icons/AddUser.svelte';
-	import Stop from '../icons/Stop.svelte';
 	import Loader from '../shared/Loader.svelte';
+	import Icon from '../shared/Icon.svelte';
 
 	const dispatch = createEventDispatcher();
 
@@ -208,7 +205,7 @@
 									className="transition-all duration-300 hover:scale-110 transform text-red-600 hover:text-red-500"
 									on:click={() => handleCancelFriendRequest(user)}
 								>
-									<Close />
+									<Icon name="close" />
 								</Button>
 							{:else if user.receivedFriendRequest}
 								<div class="flex gap-5">
@@ -218,7 +215,7 @@
 										className="transition-all duration-300 hover:scale-110 transform text-green-600 hover:text-green-400"
 										on:click={() => handleAcceptPendingRequest(user)}
 									>
-										<Confirm />
+										<Icon name="confirm" />
 									</Button>
 									<Button
 										ariaLabel="Refuse friend request"
@@ -226,7 +223,7 @@
 										className="transition-all duration-300 hover:scale-110 transform text-red-600 hover:text-red-400"
 										on:click={() => handleRefusePendingRequest(user)}
 									>
-										<Close />
+										<Icon name="close" />
 									</Button>
 								</div>
 							{:else}
@@ -236,7 +233,7 @@
 									className="transition-all duration-300 hover:scale-110 transform text-green-600 hover:text-green-400 flex gap-1"
 									on:click={() => handleAddFriend(user)}
 								>
-									<AddUser />
+									<Icon name="addUser" />
 								</Button>
 							{/if}
 							<Button
@@ -245,7 +242,7 @@
 								className="transition-all duration-300 hover:scale-110 transform text-red-600 hover:text-red-400"
 								on:click={() => handleShowBlockingModal(user)}
 							>
-								<Stop />
+								<Icon name="stop" />
 							</Button>
 						</div>
 					</div>

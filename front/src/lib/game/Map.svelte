@@ -9,16 +9,21 @@
 	import type SerializedGame from 'colonizadar-backend/app/types/serialized/serialized_game';
 	import type SerializedGameTerritory from 'colonizadar-backend/app/types/serialized/serialized_game_territory';
 	import type SerializedRoomPlayer from 'colonizadar-backend/app/types/serialized/serialized_room_player';
-	import { getCentroidFromPath, setFactoryIcon, setFortifiedIcon } from '../../services/gameGeometryService';
+	import { setHoverColor, resetTerritoryColor, setMountainColor, setIcons } from '../../services/gameGeometryService';
 	import SpyTerritory from './SpyTerritory.svelte';
 	import { profile } from '../../stores/profileStore';
 	import FinanceWildTerritory from './FinanceWildTerritory.svelte';
 	import FortifyTerritory from './FortifyTerritory.svelte';
 	import BuyInfantry from './BuyInfantry.svelte';
 	import BuyShips from './BuyShips.svelte';
+	import SubvertWildTerritory from './SubvertWildTerritory.svelte';
 
 	export let game: SerializedGame;
 	export let currentPlayer: SerializedRoomPlayer;
+	export let selectedTerritoryOwner: SerializedRoomPlayer;
+	export let selectedTerritory: SerializedGameTerritory;
+
+	let showCountryModal: boolean = false;
 
 	let width: number = 500;
 	let height: number = 300;
@@ -37,14 +42,6 @@
 
 	const dragSensitivity: number = 1.3;
 
-	let selectedTerritoryOwner: SerializedRoomPlayer;
-	let selectedTerritory: SerializedGameTerritory;
-
-	let showCountryModal: boolean = false;
-
-	let hoverColor: string = '#ffffac';
-	let mountainColor: string = '#653a06';
-
 	const checkedProfile = $profile!;
 
 	onMount(() => {
@@ -55,12 +52,12 @@
 		document.querySelectorAll('.mainland').forEach((path): void => {
 			const svgGroup = path.parentElement! as unknown as SVGGElement;
 			if (svgGroup.classList.contains('mountain')) {
-				svgGroup.setAttribute('fill', mountainColor);
+				setMountainColor(svgGroup);
 				return;
 			}
 
 			svgGroup.addEventListener('click', () => handleClick(svgGroup.id));
-			svgGroup.addEventListener('mouseover', () => handleHover(svgGroup));
+			svgGroup.addEventListener('mouseover', () => setHoverColor(svgGroup));
 			svgGroup.addEventListener('mouseout', () => handleBlur(svgGroup));
 		});
 
@@ -71,7 +68,7 @@
 				const svgGroup = path.parentElement! as unknown as SVGGElement;
 
 				path.removeEventListener('click', () => handleClick(svgGroup.id));
-				path.removeEventListener('mouseover', () => handleHover(svgGroup));
+				path.removeEventListener('mouseover', () => setHoverColor(svgGroup));
 				path.removeEventListener('mouseout', () => handleBlur(svgGroup));
 			});
 		};
@@ -140,49 +137,32 @@
 
 	const handleClick = (territoryId: string): void => {
 		if (!hasDragged && territoryId) {
-			const filteredTerritories: SerializedGameTerritory[] = game.territories.filter((gameTerritory): boolean => {
+			const gameTerritory: SerializedGameTerritory | undefined = game.territories.find((gameTerritory): boolean => {
 				return gameTerritory.territory.code.toLowerCase() === territoryId;
 			});
-			if (filteredTerritories.length > 0) {
-				selectedTerritory = filteredTerritories[0];
+			if (gameTerritory) {
+				selectedTerritory = gameTerritory;
 				selectedTerritoryOwner = selectedTerritory.owner;
 				showCountryModal = true;
 			}
 		}
 	};
 
-	const handleHover = (svgGroup: SVGGElement): void => {
-		svgGroup.setAttribute('fill', hoverColor);
-	};
-
 	const handleBlur = (svgGroup: SVGGElement): void => {
-		if (showCountryModal) {
+		if (!game || showCountryModal) {
 			return;
 		}
 
-		resetTerritoryColor(svgGroup!);
-	};
-
-	const resetTerritoryColor = (svgGroup: SVGGElement): void => {
-		const filteredTerritories = game.territories.filter((gameTerritory): boolean => {
-			return gameTerritory.territory.code.toLowerCase() === svgGroup.id;
-		});
-		if (filteredTerritories.length > 0) {
-			if (filteredTerritories[0].owner) {
-				svgGroup.setAttribute('fill', filteredTerritories[0].owner.country.color);
-			} else {
-				svgGroup.setAttribute('fill', 'black');
-			}
-		}
+		resetTerritoryColor(game, svgGroup!);
 	};
 
 	$: if (selectedTerritory) {
 		const svgGroup = document.getElementById(selectedTerritory.territory.code.toLowerCase()) as unknown as SVGGElement;
 		if (svgGroup) {
 			if (showCountryModal) {
-				svgGroup.setAttribute('fill', hoverColor);
+				setHoverColor(svgGroup);
 			} else {
-				resetTerritoryColor(svgGroup);
+				resetTerritoryColor(game, svgGroup);
 			}
 		}
 	}
@@ -194,49 +174,13 @@
 
 		for (const gameTerritory of game.territories) {
 			const svgGroup: SVGGElement | null = document.getElementById(gameTerritory.territory.code.toLowerCase()) as unknown as SVGGElement | null;
-			const svgPath: SVGPathElement | null = svgGroup?.querySelector('.mainland') as SVGPathElement | null;
+			const mainSvgPath: SVGPathElement | null = svgGroup?.querySelector('.mainland') as SVGPathElement | null;
 
-			if (!svgGroup || !svgPath) {
+			if (!svgGroup || !mainSvgPath) {
 				continue;
 			}
 
-			resetTerritoryColor(svgGroup);
-
-			const ctm: DOMMatrix | null = svgPath.getCTM();
-			const groupCTMInverse: DOMMatrix | undefined = svgGroup.getCTM()?.inverse();
-			if (!ctm || !groupCTMInverse) {
-				continue;
-			}
-
-			const point: SVGPoint = getCentroidFromPath(svgPath, svgElement);
-			const pointInGroup: DOMPoint = point.matrixTransform(ctm).matrixTransform(groupCTMInverse);
-
-			const flag: SVGImageElement = document.createElementNS('http://www.w3.org/2000/svg', 'image');
-			flag.classList.add('flag-icon');
-
-			if (gameTerritory.owner) {
-				flag.setAttribute('href', `${import.meta.env.VITE_API_BASE_URL}/api/static/country-flag/${gameTerritory.owner.country.id}?token=${localStorage.getItem('apiToken')}`);
-			} else {
-				flag.setAttribute('href', `${import.meta.env.VITE_API_BASE_URL}/api/static/country-flag/${game.map.id}/neutral-flag?token=${localStorage.getItem('apiToken')}`);
-			}
-
-			const flagSize = 8;
-
-			flag.setAttribute('width', String(flagSize));
-			flag.setAttribute('height', String(flagSize));
-
-			flag.setAttribute('x', String(pointInGroup.x - flagSize / 2));
-			flag.setAttribute('y', String(pointInGroup.y - flagSize / 2));
-
-			svgGroup.appendChild(flag);
-
-			if (gameTerritory.owner) {
-				if (gameTerritory.territory.isFactory) {
-					setFactoryIcon(game, pointInGroup, svgGroup);
-				} else if (gameTerritory.isFortified) {
-					setFortifiedIcon(game, pointInGroup, svgGroup);
-				}
-			}
+			setIcons(game, gameTerritory, svgGroup, mainSvgPath, svgElement);
 		}
 	}
 </script>
@@ -263,21 +207,22 @@
 		<p>{$t('play.game.country-modal.value')} : {formatGameNumbers(selectedTerritory.value ?? 0)}</p>
 		<p>{$t('play.common.infantry')} : {selectedTerritory.infantry ? formatGameNumbers(selectedTerritory.infantry) : '???'}</p>
 		{#if selectedTerritory && selectedTerritoryOwner && selectedTerritory.territory.isCoastal}
-			<p>{$t('play.common.ships')} : {selectedTerritory.ships ? formatGameNumbers(selectedTerritory.ships) : '???'}</p>
+			<p>{$t('play.common.ships')} : {typeof selectedTerritory.ships === 'number' ? formatGameNumbers(selectedTerritory.ships) : '???'}</p>
 		{/if}
 		<p>{$t('play.game.fortified')} : {selectedTerritory.isFortified}</p>
 		<div class="flex gap-5 justify-center">
 			{#if game.map.mainSeason === game.season && selectedTerritory}
 				{#if selectedTerritoryOwner?.user?.id !== checkedProfile.id}
-					<SpyTerritory bind:game bind:selectedTerritory />
+					<SpyTerritory bind:game bind:selectedTerritory {currentPlayer} />
 					{#if !selectedTerritoryOwner}
-						<FinanceWildTerritory bind:game {currentPlayer} gameTerritory={selectedTerritory} />
+						<FinanceWildTerritory bind:game bind:selectedTerritory {currentPlayer} />
+						<SubvertWildTerritory bind:game bind:selectedTerritory {currentPlayer} />
 					{/if}
 				{:else if !selectedTerritory.isFortified}
-					<FortifyTerritory bind:game gameTerritory={selectedTerritory} {svgElement} />
+					<FortifyTerritory bind:game bind:selectedTerritory {currentPlayer} {svgElement} />
 				{:else if selectedTerritory.territory.isFactory}
-					<BuyInfantry bind:game bind:gameTerritory={selectedTerritory} {currentPlayer} />
-					<BuyShips bind:game bind:gameTerritory={selectedTerritory} {currentPlayer} />
+					<BuyInfantry bind:game bind:selectedTerritory {currentPlayer} />
+					<BuyShips bind:game bind:selectedTerritory {currentPlayer} />
 				{/if}
 			{/if}
 		</div>

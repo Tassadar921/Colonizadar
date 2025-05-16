@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { t } from 'svelte-i18n';
 	import type SerializedGame from 'colonizadar-backend/app/types/serialized/serialized_game';
-	import type SerializedGameTerritory from 'colonizadar-backend/app/types/serialized/serialized_game_territory';
-	import axios from 'axios';
 	import { showToast } from '../../services/toastService';
+	import axios from 'axios';
+	import type SerializedGameTerritory from 'colonizadar-backend/app/types/serialized/serialized_game_territory';
 	import type SerializedRoomPlayer from 'colonizadar-backend/app/types/serialized/serialized_room_player';
 	import Icon from '../shared/Icon.svelte';
 	import { onMount, tick } from 'svelte';
@@ -16,60 +16,53 @@
 	let isButtonDisabled: boolean = false;
 	let isLoading: boolean = false;
 	let buttonElement: HTMLButtonElement;
-	let cost: number = 0;
 
 	onMount(async (): Promise<void> => {
 		await tick();
 		const { width, height } = buttonElement.getBoundingClientRect();
 		buttonElement.style.setProperty('width', `${width}px`);
 		buttonElement.style.setProperty('height', `${height}px`);
-
-		cost = selectedTerritory.isFortified ? (selectedTerritory.territory.isFactory ? game.map.spyFactoryCost : game.map.spyFortifiedTerritoryCost) : game.map.spyTerritoryCost;
 	});
 
-	const handleSpyTerritory = async (): Promise<void> => {
+	const handleSubvert = async (): Promise<void> => {
 		isLoading = true;
 		try {
-			const { data } = await axios.get(`/api/game/${game.id}/actions/territory/${selectedTerritory.territory.code}/spy`);
+			const { data } = await axios.patch(`/api/game/${game.id}/actions/territory/${selectedTerritory.territory.code}/subvert`);
 			game = {
 				...game,
-				territories: game.territories.map((gt: SerializedGameTerritory) => {
-					if (gt.territory.code === selectedTerritory.territory.code) {
-						selectedTerritory = data.territory;
-						return data.territory;
-					}
-					return gt;
-				}),
-				players: game.players.map((player: SerializedGameTerritory) => {
+				players: game.players.map((player: SerializedRoomPlayer) => {
 					if (data.player.id === player.id) {
 						return data.player;
 					}
 					return player;
 				}),
 			};
-			showToast(data.message);
+			selectedTerritory.infantry = undefined;
+			if (data.message) {
+				showToast(data.message);
+			}
 		} catch (error: any) {
 			showToast(error.response.data.error, 'error');
 		}
 		isLoading = false;
 	};
 
-	$: isButtonDisabled = isLoading || (currentPlayer?.gold ?? 0) < game.map.spyCost || !!selectedTerritory.infantry;
+	$: isButtonDisabled = isLoading || (currentPlayer?.gold ?? 0) < game.map.subvertCost;
 </script>
 
 <div class="flex gap-1 flex-col justify-center items-center">
 	<button
 		bind:this={buttonElement}
-		class="{isButtonDisabled ? 'cursor-not-allowed' : 'hover:bg-green-600'} flex justify-center items-center bg-green-500 transition-colors duration-300 px-3 py-1 rounded-xl"
-		on:click={handleSpyTerritory}
 		disabled={isButtonDisabled}
+		class="flex justify-center items-center bg-green-500 hover:bg-green-600 transition-colors duration-300 px-3 py-1 rounded-xl"
+		on:click={handleSubvert}
 	>
 		{#if isLoading}
 			<Icon name="spinner" />
 		{:else}
-			{$t('play.game.spy')}
+			{$t('play.game.subvert')}
 		{/if}
 	</button>
 
-	<p>{$t('play.game.cost')} : {formatGameNumbers(cost)}</p>
+	<p>{$t('play.game.cost')} : {formatGameNumbers(game.map.subvertCost)}</p>
 </div>

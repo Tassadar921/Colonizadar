@@ -68,6 +68,9 @@ export default class Map extends BaseModel {
     declare spyFortifiedTerritoryCost: number;
 
     @column()
+    declare spyFactoryCost: number;
+
+    @column()
     declare spyPlayerCost: number;
 
     @column({
@@ -102,17 +105,10 @@ export default class Map extends BaseModel {
             return Number(value).toString();
         },
     })
-    declare wildTerritorySubversionFactor: number;
+    declare wildTerritorySubvertFactor: number;
 
     @column()
-    declare baseSubversionCost: number;
-
-    @column({
-        consume: (value: string | number): string => {
-            return Number(value).toString();
-        },
-    })
-    declare subversionCostFactor: number;
+    declare subvertCost: number;
 
     @column()
     declare fortifyCost: number;
@@ -177,11 +173,12 @@ export default class Map extends BaseModel {
             baseShipCost: this.baseShipCost,
             spyTerritoryCost: this.spyTerritoryCost,
             spyFortifiedTerritoryCost: this.spyFortifiedTerritoryCost,
+            spyFactoryCost: this.spyFactoryCost,
             spyPlayerCost: this.spyPlayerCost,
             financePlayerCostFactor: this.financePlayerCostFactor,
             financePlayerStep: this.financePlayerStep,
             financeWildTerritoryStep: this.financeWildTerritoryStep,
-            baseSubversionCost: this.baseSubversionCost,
+            subvertCost: this.subvertCost,
             fortifyCost: this.fortifyCost,
             territories: await Promise.all(this.territories.map(async (territory: Territory): Promise<SerializedTerritory> => territory.apiSerialize(language, true))),
             createdBy: this.createdBy.apiSerialize(),
@@ -199,11 +196,12 @@ export default class Map extends BaseModel {
             baseShipCost: this.baseShipCost,
             spyTerritoryCost: this.spyTerritoryCost,
             spyFortifiedTerritoryCost: this.spyFortifiedTerritoryCost,
+            spyFactoryCost: this.spyFactoryCost,
             spyPlayerCost: this.spyPlayerCost,
             financePlayerCostFactor: this.financePlayerCostFactor,
             financePlayerStep: this.financePlayerStep,
             financeWildTerritoryStep: this.financeWildTerritoryStep,
-            baseSubversionCost: this.baseSubversionCost,
+            subvertCost: this.subvertCost,
             fortifyCost: this.fortifyCost,
             createdBy: this.createdBy.apiSerialize(),
             createdAt: this.createdAt?.toString(),

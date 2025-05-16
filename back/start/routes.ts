@@ -126,6 +126,7 @@ router
                                 router.get('/', [GameController, 'get']);
                                 router.patch('/ready', [GameController, 'ready']);
                                 router.get('player', [GameController, 'getPlayer']);
+                                router.get('territory/:territoryCode', [GameController, 'getGameTerritory']).use([middleware.gameTerritory()]);
 
                                 router
                                     .group((): void => {
@@ -137,7 +138,7 @@ router
                                                             .group((): void => {
                                                                 router.get('spy', [GameController, 'spyTerritory']);
                                                                 router.patch('finance', [GameController, 'financeWildTerritory']);
-                                                                router.patch('subverse', [GameController, 'subverse']);
+                                                                router.patch('subvert', [GameController, 'subvert']);
                                                             })
                                                             .use([middleware.isForeignTerritory()]);
 

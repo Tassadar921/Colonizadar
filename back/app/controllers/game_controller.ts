@@ -43,6 +43,10 @@ export default class GameController {
         return response.send(player.apiSerialize(language, user));
     }
 
+    public async getGameTerritory({ response, gameTerritory, user, language }: HttpContext): Promise<void> {
+        return response.send(gameTerritory.apiSerialize(language, user));
+    }
+
     public async ready({ request, response, user, player, game, language }: HttpContext): Promise<void> {
         const { isReady } = await request.validateUsing(setReadyValidator);
 
@@ -75,6 +79,7 @@ export default class GameController {
 
     public async spyTerritory({ response, user, player, game, gameTerritory, language }: HttpContext): Promise<void> {
         const cost: number = gameTerritory.isFortified ? game.map.spyFortifiedTerritoryCost : game.map.spyTerritoryCost;
+
         if (player.gold < cost) {
             return response.forbidden({ error: 'Not enough gold' });
         }
@@ -82,7 +87,11 @@ export default class GameController {
         player.gold -= cost;
         await player.save();
 
-        return response.send(gameTerritory.apiSerialize(language, user, true));
+        return response.send({
+            territory: gameTerritory.apiSerialize(language, user, true),
+            player: player.apiSerialize(language, user),
+            message: `Successfully spied ${gameTerritory.territory.translate(language)}`,
+        });
     }
 
     public async spyPlayer({ request, response, user, player, game, language }: HttpContext): Promise<void> {
@@ -154,6 +163,8 @@ export default class GameController {
             return response.forbidden({ error: 'Not enough gold' });
         } else if (amount % game.map.financeWildTerritoryStep !== 0) {
             return response.forbidden({ error: 'Invalid amount' });
+        } else if (gameTerritory.ownerId) {
+            return response.forbidden({ error: 'This territory is already owned' });
         }
 
         player.gold -= amount;
@@ -167,16 +178,16 @@ export default class GameController {
         });
     }
 
-    public async subverse({ response, player, gameTerritory, game, language, user }: HttpContext): Promise<void> {
-        if (player.gold < game.map.baseSubversionCost) {
+    public async subvert({ response, player, gameTerritory, game, language, user }: HttpContext): Promise<void> {
+        if (player.gold < game.map.subvertCost) {
             return response.forbidden({ error: 'Not enough gold' });
         } else if (gameTerritory.ownerId) {
             return response.forbidden({ error: 'This territory is already owned' });
         }
 
-        player.gold -= game.map.baseSubversionCost;
+        player.gold -= game.map.subvertCost;
 
-        gameTerritory.infantry -= Math.ceil((100 * 1000 * game.map.wildTerritorySubversionFactor * game.map.financeWildTerritoryCostFactor) / (game.map.wildInfantryCostFactor * 1000));
+        gameTerritory.infantry -= Math.ceil((100 * 1000 * game.map.wildTerritorySubvertFactor) / (game.map.wildInfantryCostFactor * 1000));
         if (gameTerritory.infantry <= 0) {
             gameTerritory.infantry = 1000;
             gameTerritory.ownerId = player.id;
@@ -184,7 +195,24 @@ export default class GameController {
 
         await Promise.all([player.save(), gameTerritory.save()]);
 
-        return response.send({ conquered: !!gameTerritory.ownerId, player: player.apiSerialize(language, user) });
+        if (gameTerritory.ownerId) {
+            await gameTerritory.load('owner', (ownerQuery): void => {
+                ownerQuery.preload('user').preload('bot').preload('country').preload('difficulty');
+            });
+
+            transmit.broadcast(`notification/play/game/${game.frontId}/territory/update`, {
+                territory: gameTerritory.apiSerialize(language, user),
+            });
+
+            return response.send({
+                player: player.apiSerialize(language, user),
+                message: `Successfully subverted ${gameTerritory.territory.translate(language)}`,
+            });
+        }
+
+        return response.send({
+            player: player.apiSerialize(language, user),
+        });
     }
 
     public async fortify({ response, user, language, player, gameTerritory, game }: HttpContext): Promise<void> {

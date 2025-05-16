@@ -8,11 +8,12 @@ type SerializedMapLight = {
     baseShipCost: number;
     spyTerritoryCost: number;
     spyFortifiedTerritoryCost: number;
+    spyFactoryCost: number;
     spyPlayerCost: number;
     financePlayerCostFactor: number;
     financePlayerStep: number;
     financeWildTerritoryStep: number;
-    baseSubversionCost: number;
+    subvertCost: number;
     fortifyCost: number;
     createdBy: SerializedUser;
     createdAt?: string;

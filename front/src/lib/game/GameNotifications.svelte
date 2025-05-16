@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { transmit } from '../../stores/transmitStore';
-	import { onDestroy } from 'svelte';
+	import { createEventDispatcher, onDestroy } from 'svelte';
 	import type { Subscription } from '@adonisjs/transmit-client';
 	import type SerializedRoomPlayer from 'colonizadar-backend/app/types/serialized/serialized_room_player';
 	import type SerializedGame from 'colonizadar-backend/app/types/serialized/serialized_game';
@@ -8,6 +8,9 @@
 	import { t } from 'svelte-i18n';
 	import { formatGameNumbers } from '../../services/stringService';
 	import axios from 'axios';
+	import type SerializedGameTerritory from 'colonizadar-backend/app/types/serialized/serialized_game_territory';
+
+	const dispatch = createEventDispatcher();
 
 	export let game: SerializedGame;
 	export let currentPlayer: SerializedRoomPlayer;
@@ -16,6 +19,7 @@
 
 	let gameUpdateNotification: Subscription;
 	let playerUpdateNotification: Subscription;
+	let territoryUpdateNotification: Subscription;
 	let spiedNotification: Subscription;
 	let warNotification: Subscription;
 	let askPeaceNotification: Subscription;
@@ -36,17 +40,17 @@
 	};
 
 	const updatePlayersInGame = async (playersToUpdate: SerializedRoomPlayer[]): Promise<void> => {
-		const shouldRefreshCurrent = playersToUpdate.some((p) => p.id === currentPlayer.id);
+		const shouldRefreshCurrent: boolean = playersToUpdate.some((updatePlayer: SerializedRoomPlayer): boolean => updatePlayer.id === currentPlayer.id);
 
 		const updatedPlayers = await Promise.all(
-			game.players.map(async (p) => {
-				const updated = playersToUpdate.find((u) => u.id === p.id);
+			game.players.map(async (loopPlayer: SerializedRoomPlayer): Promise<SerializedRoomPlayer> => {
+				const updated = playersToUpdate.find((updatePlayer: SerializedRoomPlayer): boolean => updatePlayer.id === loopPlayer.id);
 
 				if (updated === undefined) {
-					return p;
+					return loopPlayer;
 				}
 
-				if (p.id === currentPlayer.id && shouldRefreshCurrent) {
+				if (loopPlayer.id === currentPlayer.id && shouldRefreshCurrent) {
 					currentPlayer = await getCurrentPlayer();
 					return currentPlayer;
 				}
@@ -75,6 +79,7 @@
 	const setupTransmits = async (): Promise<void> => {
 		gameUpdateNotification = $transmit.subscription(`notification/play/game/${game.id}/update`);
 		playerUpdateNotification = $transmit.subscription(`notification/play/game/${game.id}/player/update`);
+		territoryUpdateNotification = $transmit.subscription(`notification/play/game/${game.id}/territory/update`);
 		spiedNotification = $transmit.subscription(`notification/play/game/${game.id}/${currentPlayer.id}/spied`);
 		warNotification = $transmit.subscription(`notification/play/game/${game.id}/war`);
 		askPeaceNotification = $transmit.subscription(`notification/play/game/${game.id}/${currentPlayer.id}/peace/ask`);
@@ -87,6 +92,7 @@
 		await Promise.all([
 			gameUpdateNotification.create(),
 			playerUpdateNotification.create(),
+			territoryUpdateNotification.create(),
 			spiedNotification.create(),
 			warNotification.create(),
 			askPeaceNotification.create(),
@@ -105,6 +111,26 @@
 
 		playerUpdateNotification.onMessage(async ({ player }: { player: SerializedRoomPlayer }): Promise<void> => {
 			await updatePlayersInGame([player]);
+		});
+
+		territoryUpdateNotification.onMessage(async ({ territory: updatedTerritory }: { territory: SerializedGameTerritory }): Promise<void> => {
+			if (updatedTerritory.owner?.id === currentPlayer.id) {
+				try {
+					const { data } = await axios.get(`/api/game/${game.id}/territory/${updatedTerritory.territory.code}`);
+					updatedTerritory = data;
+				} catch (error: any) {
+					showToast(error.response?.data?.error ?? 'Failed to fetch territory', 'error');
+				}
+			}
+
+			game = {
+				...game,
+				territories: game.territories.map((existingTerritory: SerializedGameTerritory): SerializedGameTerritory => {
+					return existingTerritory.territory.code === updatedTerritory.territory.code ? updatedTerritory : existingTerritory;
+				}),
+			};
+
+			dispatch('territoryUpdate', updatedTerritory);
 		});
 
 		spiedNotification.onMessage(({ player }: { player: SerializedRoomPlayer }): void => {
@@ -186,6 +212,7 @@
 			await Promise.all([
 				gameUpdateNotification?.delete().then(() => console.log('gameUpdateNotification deleted')),
 				playerUpdateNotification?.delete().then(() => console.log('playerUpdateNotification deleted')),
+				territoryUpdateNotification?.delete().then(() => console.log('territoryUpdateNotification deleted')),
 				warNotification?.delete().then(() => console.log('warNotification deleted')),
 				askPeaceNotification?.delete().then(() => console.log('askPeaceNotification deleted')),
 				refusePeaceNotification?.delete().then(() => console.log('refusePeaceNotification deleted')),

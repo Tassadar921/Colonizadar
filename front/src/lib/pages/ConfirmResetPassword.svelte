@@ -37,7 +37,7 @@
 
 <Breadcrumbs hasBackground items={[{ label: $t('home.title'), path: '/' }, { label: $t('reset-password.confirm.title') }]} />
 
-<Form action={`/api/reset-password/confirm/${token}`} method="POST" on:success={handleSuccess} bind:isValid={canSubmit}>
+<Form action={`/api/reset-password/confirm/${token}`} method="POST" on:success={handleSuccess} isValid={canSubmit}>
 	<PasswordInput name="password" bind:value={password} />
 	<PasswordInput name="confirmPassword" label={$t('common.confirm-password.label')} bind:value={confirmPassword} />
 </Form>

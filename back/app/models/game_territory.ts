@@ -57,7 +57,7 @@ export default class GameTerritory extends BaseModel {
         return {
             id: this.frontId,
             infantry: this.owner?.userId === user.id || isSpied ? this.infantry : undefined,
-            ships: this.owner?.userId === user.id || isSpied ? this.ships : undefined,
+            ships: this.owner?.userId === user.id || isSpied ? this.ships || 0 : undefined,
             value: this.value,
             isFortified: this.isFortified,
             owner: this.owner?.apiSerialize(language, user),

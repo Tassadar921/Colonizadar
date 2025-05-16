@@ -2,11 +2,7 @@
 	import MenuItem from './MenuItem.svelte';
 	import { t } from 'svelte-i18n';
 	import { profile } from '../../stores/profileStore';
-	import Home from '../icons/Home.svelte';
-	import Game from '../icons/Game.svelte';
-	import People from '../icons/People.svelte';
-	import User from '../icons/User.svelte';
-	import UserRemove from '../icons/UserRemove.svelte';
+	import Icon from '../shared/Icon.svelte';
 
 	export let footer: boolean = false;
 </script>
@@ -14,28 +10,28 @@
 <ul class={`${footer ? '' : 'space-y-4'} p-4`}>
 	{#if $profile}
 		<MenuItem {footer} href="/" on:click>
-			<Home slot="iconLeft" />
+			<Icon name="home" slot="iconLeft" />
 			{$t('home.title')}
 		</MenuItem>
 		<MenuItem {footer} href="/play" on:click>
-			<Game slot="iconLeft" />
+			<Icon name="game" slot="iconLeft" />
 			{$t('play.title')}
 		</MenuItem>
 		<MenuItem {footer} href="/social" on:click>
-			<People slot="iconLeft" />
+			<Icon name="people" slot="iconLeft" />
 			{$t('social.title')}
 		</MenuItem>
 		<MenuItem {footer} href="/profile" on:click>
-			<User slot="iconLeft" />
+			<Icon name="user" slot="iconLeft" />
 			{$t('profile.title')}
 		</MenuItem>
 		<MenuItem {footer} href="/logout" on:click>
-			<UserRemove slot="iconLeft" />
+			<Icon name="userRemove" slot="iconLeft" />
 			{$t('logout.title')}
 		</MenuItem>
 	{:else}
 		<MenuItem {footer} href="/login" on:click>
-			<User slot="iconLeft" />
+			<Icon name="user" slot="iconLeft" />
 			{$t('login.title')}
 		</MenuItem>
 	{/if}

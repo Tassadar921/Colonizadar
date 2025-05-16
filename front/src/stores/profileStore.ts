@@ -1,6 +1,7 @@
 import { type Writable, writable } from 'svelte/store';
 import axios from 'axios';
 import type SerializedUser from 'colonizadar-backend/app/types/serialized/serialized_user';
+import { showToast } from '../services/toastService';
 
 export const profile: Writable<SerializedUser | null> = writable(null);
 
@@ -9,15 +10,11 @@ export function setProfile(user: SerializedUser | null): void {
 }
 
 export async function updateProfile(profile: SerializedUser | null = null): Promise<void> {
-	try {
-		if (!profile) {
-			const { data: fetchedProfile } = await axios.get('/api/profile');
-			profile = fetchedProfile.user;
-		}
-		setProfile(profile);
-	} catch (error: any) {
-		throw new Error();
+	if (!profile) {
+		const { data: fetchedProfile } = await axios.get('/api/profile');
+		profile = fetchedProfile.user;
 	}
+	setProfile(profile);
 }
 
 export function clearProfile(): void {
