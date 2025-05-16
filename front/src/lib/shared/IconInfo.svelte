@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Popover from './Popover.svelte';
-    import Icon from "./Icon.svelte";
+	import Icon from './Icon.svelte';
 
 	let show: boolean = false;
 	let iconElement: HTMLDivElement;
@@ -17,7 +17,7 @@
 		on:mouseleave={() => (show = false)}
 		on:blur={() => (show = false)}
 	>
-        <Icon name="help" />
+		<Icon name="help" />
 	</div>
 
 	<Popover {show} target={iconElement}>

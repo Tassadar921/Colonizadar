@@ -4,7 +4,7 @@
 	import Button from '../shared/Button.svelte';
 	import CommonMenu from './CommonMenu.svelte';
 	import FlagMenu from './FlagMenu.svelte';
-    import Icon from "../shared/Icon.svelte";
+	import Icon from '../shared/Icon.svelte';
 
 	let isOpen: boolean = false;
 
@@ -34,7 +34,7 @@
 		<!-- Bind the button element reference -->
 		<div bind:this={buttonContainerElement}>
 			<Button idName="menu-button" customStyle className={`text-primary-500 hover:text-primary-800 duration-300 transition-colors ${isOpen ? 'opacity-0' : ''}`} on:click={() => (isOpen = !isOpen)}>
-                <Icon name="burger" />
+				<Icon name="burger" />
 			</Button>
 		</div>
 
@@ -53,7 +53,7 @@
 					</div>
 				</div>
 				<Button on:click={closeMenu}>
-                    <Icon name="close" />
+					<Icon name="close" />
 				</Button>
 			</div>
 

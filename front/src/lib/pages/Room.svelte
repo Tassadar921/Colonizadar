@@ -20,7 +20,7 @@
 	import Loader from '../shared/Loader.svelte';
 	import Ready from '../room/Ready.svelte';
 	import PlayableCountriesInfo from '../room/PlayableCountriesInfo.svelte';
-    import Icon from "../shared/Icon.svelte";
+	import Icon from '../shared/Icon.svelte';
 
 	export let roomId: string;
 
@@ -108,7 +108,7 @@
 			<Button ariaLabel="Copy token" customStyle={true} className="group flex items-center px-2 hover:cursor-pointer text-black dark:text-white" on:click={handleCopy}>
 				<span class="group-hover:text-primary-500 transition-all duration-300 group-hover:scale-110">{room.token}</span>
 				<div class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 ml-7">
-                    <Icon name="copy" />
+					<Icon name="copy" />
 				</div>
 			</Button>
 		</div>
@@ -120,7 +120,7 @@
 				on:click={() => (showInviteFriendModal = true)}
 			>
 				<span>{$t('play.room.invite.title')}</span>
-                <Icon name="invite" />
+				<Icon name="invite" />
 			</Button>
 			<Ready bind:room bind:isLoading />
 		</div>

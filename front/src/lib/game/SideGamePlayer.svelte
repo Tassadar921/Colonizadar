@@ -14,7 +14,7 @@
 	import AskPeace from './AskPeace.svelte';
 	import type SerializedWar from 'colonizadar-backend/app/types/serialized/serialized_war';
 	import type SerializedPeace from 'colonizadar-backend/app/types/serialized/serialized_peace';
-    import Icon from "../shared/Icon.svelte";
+	import Icon from '../shared/Icon.svelte';
 
 	export let game: SerializedGame;
 	export let currentPlayer: SerializedRoomPlayer;
@@ -46,7 +46,7 @@
 			<p class="flex gap-1 {player.user.id === $profile?.id ? 'font-bold' : ''}">
 				{#if game.owner.id === player.user.id}
 					<span class="text-orange-500">
-                        <Icon name="crown" />
+						<Icon name="crown" />
 					</span>
 				{/if}
 				{player.user.username}
@@ -56,7 +56,7 @@
 			<div class="flex flex-col">
 				<p class="flex gap-1">
 					<span class="text-green-500">
-                        <Icon name="bot" />
+						<Icon name="bot" />
 					</span>
 					{player.bot.name}
 				</p>

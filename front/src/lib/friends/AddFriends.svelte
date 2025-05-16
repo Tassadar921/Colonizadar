@@ -16,7 +16,7 @@
 	import type PaginatedUsers from 'colonizadar-backend/app/types/paginated/paginated_users';
 	import type SerializedPendingFriend from 'colonizadar-backend/app/types/serialized/serialized_pending_friend';
 	import Loader from '../shared/Loader.svelte';
-    import Icon from "../shared/Icon.svelte";
+	import Icon from '../shared/Icon.svelte';
 
 	const dispatch = createEventDispatcher();
 
@@ -205,7 +205,7 @@
 									className="transition-all duration-300 hover:scale-110 transform text-red-600 hover:text-red-500"
 									on:click={() => handleCancelFriendRequest(user)}
 								>
-                                    <Icon name="close" />
+									<Icon name="close" />
 								</Button>
 							{:else if user.receivedFriendRequest}
 								<div class="flex gap-5">
@@ -215,7 +215,7 @@
 										className="transition-all duration-300 hover:scale-110 transform text-green-600 hover:text-green-400"
 										on:click={() => handleAcceptPendingRequest(user)}
 									>
-                                        <Icon name="confirm" />
+										<Icon name="confirm" />
 									</Button>
 									<Button
 										ariaLabel="Refuse friend request"
@@ -223,7 +223,7 @@
 										className="transition-all duration-300 hover:scale-110 transform text-red-600 hover:text-red-400"
 										on:click={() => handleRefusePendingRequest(user)}
 									>
-                                        <Icon name="close" />
+										<Icon name="close" />
 									</Button>
 								</div>
 							{:else}
@@ -233,7 +233,7 @@
 									className="transition-all duration-300 hover:scale-110 transform text-green-600 hover:text-green-400 flex gap-1"
 									on:click={() => handleAddFriend(user)}
 								>
-                                    <Icon name="addUser" />
+									<Icon name="addUser" />
 								</Button>
 							{/if}
 							<Button
@@ -242,7 +242,7 @@
 								className="transition-all duration-300 hover:scale-110 transform text-red-600 hover:text-red-400"
 								on:click={() => handleShowBlockingModal(user)}
 							>
-                                <Icon name="stop" />
+								<Icon name="stop" />
 							</Button>
 						</div>
 					</div>

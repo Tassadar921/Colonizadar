@@ -3,7 +3,7 @@
 	import { createEventDispatcher } from 'svelte';
 	import Subtitle from '../shared/Subtitle.svelte';
 	import type SerializedPendingFriend from 'colonizadar-backend/app/types/serialized/serialized_pending_friend';
-    import Icon from "../shared/Icon.svelte";
+	import Icon from '../shared/Icon.svelte';
 
 	const dispatch = createEventDispatcher();
 
@@ -32,10 +32,10 @@
 					</div>
 					<div class="flex gap-10 pr-5">
 						<Button ariaLabel="Accept as friend" customStyle className="transition-colors duration-300 text-green-600 hover:text-green-400" on:click={() => dispatch('accept', notificationObject)}>
-                            <Icon name="confirm" />
+							<Icon name="confirm" />
 						</Button>
 						<Button ariaLabel="Refuse friend request" customStyle className="transition-colors duration-300 text-red-600 hover:text-red-400" on:click={() => dispatch('refuse', notificationObject)}>
-                            <Icon name="close" />
+							<Icon name="close" />
 						</Button>
 					</div>
 				</div>

@@ -2,7 +2,7 @@
 	import Button from './Button.svelte';
 	import axios from 'axios';
 	import Loader from './Loader.svelte';
-    import Icon from "./Icon.svelte";
+	import Icon from './Icon.svelte';
 
 	interface PaginatedObject {
 		currentPage: number;
@@ -46,11 +46,11 @@
 		{#if !isLoading}
 			<!-- First Page Button -->
 			<Button disabled={!canGoBack} on:click={() => handleClick(paginatedObject.firstPage, paginatedObject.perPage)}>
-                <Icon name="doubleChevronLeft" />
+				<Icon name="doubleChevronLeft" />
 			</Button>
 			<!-- Previous Page Button -->
 			<Button disabled={!canGoBack} on:click={() => handleClick(paginatedObject.currentPage - 1, paginatedObject.perPage)}>
-                <Icon name="arrowLeft" />
+				<Icon name="arrowLeft" />
 			</Button>
 			<!-- Page Indicator -->
 			<p>
@@ -58,11 +58,11 @@
 			</p>
 			<!-- Next Page Button -->
 			<Button disabled={!canGoForward} on:click={() => handleClick(paginatedObject.currentPage + 1, paginatedObject.perPage)}>
-                <Icon name="chevronRight" />
+				<Icon name="chevronRight" />
 			</Button>
 			<!-- Last Page Button -->
 			<Button disabled={!canGoForward} on:click={() => handleClick(paginatedObject.lastPage, paginatedObject.perPage)}>
-                <Icon name="doubleChevronRight" />
+				<Icon name="doubleChevronRight" />
 			</Button>
 		{:else}
 			<Loader bind:isLoading />

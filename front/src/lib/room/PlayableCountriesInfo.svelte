@@ -6,7 +6,7 @@
 	import Button from '../shared/Button.svelte';
 	import { t } from 'svelte-i18n';
 	import { formatGameNumbers } from '../../services/stringService';
-    import Icon from "../shared/Icon.svelte";
+	import Icon from '../shared/Icon.svelte';
 
 	export let playableCountries: SerializedPlayableCountry[] = [];
 
@@ -56,11 +56,11 @@
 		<div class="relative min-h-[180px] overflow-hidden flex">
 			<div class="flex items-center justify-between w-full">
 				<Button ariaLabel="Previous country" customStyle className="p-4 text-primary-500 hover:text-primary-700 hover:scale-110 transition-all duration-300 z-50" on:click={prev}>
-                    <Icon name="chevronLeft" size={60} />
+					<Icon name="chevronLeft" size={60} />
 				</Button>
 
 				<Button ariaLabel="Previous country" customStyle className="p-4 text-primary-500 hover:text-primary-700 hover:scale-110 transition-all duration-300 z-50" on:click={next}>
-                    <Icon name="chevronRight" size={60} />
+					<Icon name="chevronRight" size={60} />
 				</Button>
 
 				{#key currentIndex}

@@ -13,7 +13,7 @@
 	import type PaginatedBlockedUsers from 'colonizadar-backend/app/types/paginated/paginated_blocked_users';
 	import type SerializedUser from 'colonizadar-backend/app/types/serialized/serialized_user';
 	import Loader from '../shared/Loader.svelte';
-    import Icon from "../shared/Icon.svelte";
+	import Icon from '../shared/Icon.svelte';
 
 	let isLoading: boolean = false;
 	let paginatedBlockedUsers: PaginatedBlockedUsers;
@@ -98,7 +98,7 @@
 							className="transition-all duration-300 hover:scale-110 transform text-green-600 hover:text-green-400"
 							on:click={() => handleShowUnblockModal(blocked.user)}
 						>
-                            <Icon name="unblock" />
+							<Icon name="unblock" />
 						</Button>
 					</div>
 				{/each}

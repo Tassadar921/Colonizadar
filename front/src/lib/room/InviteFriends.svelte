@@ -12,7 +12,7 @@
 	import type PaginatedFriends from 'colonizadar-backend/app/types/paginated/paginated_friends';
 	import type SerializedUser from 'colonizadar-backend/app/types/serialized/serialized_user';
 	import Loader from '../shared/Loader.svelte';
-    import Icon from "../shared/Icon.svelte";
+	import Icon from '../shared/Icon.svelte';
 
 	export let room: SerializedRoom;
 
@@ -109,7 +109,7 @@
 									className="transition-all duration-300 hover:scale-110 transform text-green-600 hover:text-green-400"
 									on:click={() => handleInviteFriend(friendObject.friend)}
 								>
-                                    <Icon name="invite" />
+									<Icon name="invite" />
 								</Button>
 							{/if}
 						</div>

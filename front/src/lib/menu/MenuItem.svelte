@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { location } from '../../stores/locationStore';
 	import Link from '../shared/Link.svelte';
-    import Icon from "../shared/Icon.svelte";
+	import Icon from '../shared/Icon.svelte';
 
 	export let href: string = '';
 	export let footer: boolean = false;
@@ -25,7 +25,7 @@
 		<slot />
 	</span>
 	<div class="dark:text-white right">
-        <Icon name="chevronRight" />
+		<Icon name="chevronRight" />
 	</div>
 </Link>
 

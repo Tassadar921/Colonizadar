@@ -6,7 +6,7 @@
 	import { onMount } from 'svelte';
 	import { profile } from '../../stores/profileStore';
 	import type SerializedBotDifficulty from 'colonizadar-backend/app/types/serialized/serialized_bot_difficulty';
-    import Icon from "../shared/Icon.svelte";
+	import Icon from '../shared/Icon.svelte';
 
 	export let room;
 	export let difficulties: { value: string; label: string }[] = [];
@@ -40,7 +40,7 @@
 			className="flex items-center gap-3 rounded-full hover:scale-105 bg-green-600 dark:bg-green-600 transition-all duration-300 p-2 px-4 text-xl"
 			on:click={handleAddBot}
 		>
-            <Icon name="plus" />
+			<Icon name="plus" />
 			<span>{$t('play.room.add-bot')}</span>
 		</Button>
 	</div>

@@ -34,7 +34,7 @@
 	$: canSubmit = amount >= game.map.financePlayerStep && amount % game.map.financePlayerStep === 0 && amount <= (currentPlayer?.gold ?? 0);
 </script>
 
-<button class="bg-green-500 hover:bg-green-600 transition-colors duration-300 px-3 rounded-xl" on:click={() => (showModal = true)}>
+<button class="bg-green-500 hover:bg-green-600 transition-colors duration-300 px-3 py-1 rounded-xl" on:click={() => (showModal = true)}>
 	{$t('play.game.finance')}
 </button>
 
