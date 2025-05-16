@@ -27,10 +27,11 @@
 	import Play from './lib/pages/Play.svelte';
 	import Room from './lib/pages/Room.svelte';
 	import Game from './lib/pages/Game.svelte';
+	import { showToast } from './services/toastService';
 
 	const supportedLanguages = ['en', 'fr'];
 
-	const initializeLanguage = () => {
+	const initializeLanguage = (): void => {
 		const langRegex = new RegExp(`^\/(${supportedLanguages.join('|')})(\/|$)`);
 		const langMatch = langRegex.exec($location);
 
@@ -50,8 +51,8 @@
 		}
 	};
 
-	const logInformations = async (token: string) => {
-		const tokenExpiresAt = localStorage.getItem('apiTokenExpiration');
+	const logInformations = async (token: string): Promise<void> => {
+		const tokenExpiresAt: string | null = localStorage.getItem('apiTokenExpiration');
 		if (tokenExpiresAt && new Date(tokenExpiresAt) < new Date()) {
 			localStorage.removeItem('apiToken');
 			localStorage.removeItem('apiTokenExpiration');
@@ -60,26 +61,33 @@
 		axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 		try {
 			await axios.get('/api');
-		} catch (e) {
+			await updateProfile();
+		} catch (error: any) {
+			if (error.response.data.errors) {
+				error.response.data.errors.forEach((error: any) => {
+					showToast(error.message, 'error');
+				});
+			} else {
+				showToast(error.response.data.error, 'error');
+			}
 			localStorage.removeItem('apiToken');
 			localStorage.removeItem('apiTokenExpiration');
 			axios.defaults.headers.common['Authorization'] = '';
 		}
 	};
 
-	onMount(async () => {
+	onMount(async (): Promise<void> => {
 		axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL;
 		initializeLanguage();
 
-		const theme = localStorage.getItem('theme');
+		const theme: string | null = localStorage.getItem('theme');
 		if (theme !== 'light' && theme !== 'dark') {
 			localStorage.setItem('theme', 'light');
 		}
 
-		const token = localStorage.getItem('apiToken');
+		const token: string | null = localStorage.getItem('apiToken');
 		if (token) {
 			await logInformations(token);
-			await updateProfile();
 		}
 	});
 </script>

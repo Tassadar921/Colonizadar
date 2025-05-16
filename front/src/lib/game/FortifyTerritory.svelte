@@ -3,17 +3,20 @@
 	import type SerializedGame from 'colonizadar-backend/app/types/serialized/serialized_game';
 	import { showToast } from '../../services/toastService';
 	import type SerializedRoomPlayer from 'colonizadar-backend/app/types/serialized/serialized_room_player';
-	import type SerializedGameTerritory from 'colonizadar-backend/app/types/serialized/serialized_game_territory';
+	import type SerializedselectedTerritory from 'colonizadar-backend/app/types/serialized/serialized_game_territory';
 	import axios from 'axios';
 	import { formatGameNumbers } from '../../services/stringService';
 	import { getCentroidFromPath, setFortifiedIcon } from '../../services/gameGeometryService';
 
 	export let game: SerializedGame;
-	export let gameTerritory: SerializedGameTerritory;
+	export let selectedTerritory: SerializedselectedTerritory;
+	export let currentPlayer: SerializedRoomPlayer;
 	export let svgElement: SVGSVGElement;
 
+	let isButtonDisabled: boolean = false;
+
 	const handleGraphicalUpdate = (): void => {
-		const svgGroup: SVGGElement | null = document.getElementById(gameTerritory.territory.code.toLowerCase()) as unknown as SVGGElement | null;
+		const svgGroup: SVGGElement | null = document.getElementById(selectedTerritory.territory.code.toLowerCase()) as unknown as SVGGElement | null;
 		const svgPath: SVGPathElement | null = svgGroup?.querySelector('.mainland') as SVGPathElement | null;
 		if (!svgGroup || !svgPath) {
 			return;
@@ -33,7 +36,7 @@
 
 	const handleFortify = async (): Promise<void> => {
 		try {
-			const { data } = await axios.patch(`/api/game/${game.id}/actions/territory/${gameTerritory.territory.code}/fortify`);
+			const { data } = await axios.patch(`/api/game/${game.id}/actions/territory/${selectedTerritory.territory.code}/fortify`);
 			game = {
 				...game,
 				players: game.players.map((player: SerializedRoomPlayer) => {
@@ -42,11 +45,11 @@
 					}
 					return player;
 				}),
-				territories: game.territories.map((gameTerritory: SerializedGameTerritory) => {
-					if (data.territory.id === gameTerritory.id) {
+				territories: game.territories.map((selectedTerritory: SerializedselectedTerritory) => {
+					if (data.territory.id === selectedTerritory.id) {
 						return data.territory;
 					}
-					return gameTerritory;
+					return selectedTerritory;
 				}),
 			};
 			handleGraphicalUpdate();
@@ -55,9 +58,11 @@
 			showToast(error.response.data.error, 'error');
 		}
 	};
+
+	$: isButtonDisabled = (currentPlayer?.gold ?? 0) < game.map.fortifyCost;
 </script>
 
-<button class="bg-green-500 hover:bg-green-600 transition-colors duration-300 px-3 rounded-xl" on:click={handleFortify}>
+<button disabled={isButtonDisabled} class="bg-green-500 hover:bg-green-600 transition-colors duration-300 px-3 rounded-xl" on:click={handleFortify}>
 	{$t('play.game.fortify')}
 </button>
 

@@ -12,7 +12,7 @@
 	import type SerializedGameTerritory from 'colonizadar-backend/app/types/serialized/serialized_game_territory';
 
 	export let game: SerializedGame;
-	export let gameTerritory: SerializedGameTerritory;
+	export let selectedTerritory: SerializedGameTerritory;
 	export let currentPlayer: SerializedRoomPlayer;
 
 	let amount: number = 1000;
@@ -33,13 +33,14 @@
 			...game,
 			players: game.players.map((player: SerializedRoomPlayer) => {
 				if (event.detail.player.id === player.id) {
+					amount = 1000;
 					return event.detail.player;
 				}
 				return player;
 			}),
 			territories: game.territories.map((territory: SerializedGameTerritory) => {
 				if (event.detail.territory.id === territory.id) {
-					gameTerritory = event.detail.territory;
+					selectedTerritory = event.detail.territory;
 					return event.detail.territory;
 				}
 				return territory;
@@ -72,14 +73,14 @@
 <Modal bind:showModal>
 	<Subtitle slot="header">
 		{$t('play.game.buy-infantry-modal.title')}
-		{gameTerritory.territory.name}
+		{selectedTerritory.territory.name}
 	</Subtitle>
 
 	<div class="flex flex-col gap-3">
-		<p>{$t('play.game.total-infantry')}: {gameTerritory.infantry}</p>
-		<p>{$t('play.game.total-ships')}: {gameTerritory.ships}</p>
+		<p>{$t('play.game.total-infantry')}: {selectedTerritory.infantry}</p>
+		<p>{$t('play.game.total-ships')}: {selectedTerritory.ships}</p>
 	</div>
-	<Form method="PATCH" action={`/api/game/${game.id}/actions/territory/${gameTerritory.territory.code}/buy/infantry`} hasBackground={false} {isValid} on:success={handleSuccess}>
+	<Form method="PATCH" action={`/api/game/${game.id}/actions/territory/${selectedTerritory.territory.code}/buy/infantry`} hasBackground={false} {isValid} on:success={handleSuccess}>
 		<Incrementation bind:value={amount} smallStep={1000} smallShiftStep={10000} largeStep={100000} largeShiftStep={1000000} {canDecrement} {canIncrement} name="amount" />
 
 		<p class="text-center mt-4">

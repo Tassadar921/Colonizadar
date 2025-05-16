@@ -66,7 +66,11 @@
 		{/if}
 		<p>{$t('play.game.score')}: {formatGameNumbers(player.score)}</p>
 		<p>{$t('play.game.gold')}: {player.gold ? formatGameNumbers(player.gold) : '?'}</p>
-		<p>{$t('play.game.territories')}: {formatGameNumbers(game.territories.reduce((accumulator, territory: SerializedGameTerritory) => accumulator + Number(territory.owner?.id === player.id), 0))}</p>
+		<p>
+			{$t('play.game.territories')}: {formatGameNumbers(
+				game.territories.reduce((accumulator, gameTerritory: SerializedGameTerritory) => accumulator + Number(gameTerritory.owner?.id === player.id), 0)
+			)}
+		</p>
 		{#if player.user?.id !== $profile?.id}
 			<div class="flex flex-col gap-3">
 				<div class="flex gap-3">

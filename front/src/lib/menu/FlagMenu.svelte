@@ -28,7 +28,7 @@
 	};
 
 	const selectFlag = (flag: Flag): void => {
-		const initialLanguage = localStorage.getItem('language');
+		const initialLanguage: string | null = localStorage.getItem('language');
 		if (initialLanguage === flag.value) {
 			return;
 		}

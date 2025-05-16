@@ -11,7 +11,7 @@
 
 	export let game: SerializedGame;
 	export let currentPlayer: SerializedRoomPlayer;
-	export let gameTerritory: SerializedGameTerritory;
+	export let selectedTerritory: SerializedGameTerritory;
 
 	let amount: number;
 	let showModal: boolean = false;
@@ -28,6 +28,7 @@
 				return player;
 			}),
 		};
+		selectedTerritory.infantry = undefined;
 		showToast(event.detail.message);
 	};
 
@@ -40,7 +41,7 @@
 
 <Modal bind:showModal>
 	<Subtitle slot="header">{$t('play.game.finance-player-modal.title')}</Subtitle>
-	<Form method="PATCH" action={`/api/game/${game.id}/actions/territory/${gameTerritory.territory.code}/finance`} hasBackground={false} {isValid} on:success={handleSuccess}>
+	<Form method="PATCH" action={`/api/game/${game.id}/actions/territory/${selectedTerritory.territory.code}/finance`} hasBackground={false} {isValid} on:success={handleSuccess}>
 		<Range name="amount" bind:value={amount} min={game.map.financeWildTerritoryStep} max={currentPlayer?.gold ?? 0} step={game.map.financeWildTerritoryStep} />
 	</Form>
 </Modal>
