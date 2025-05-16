@@ -13,7 +13,7 @@
 
 	let email: string = '';
 	let password: string = '';
-	let isValid: boolean = false;
+	let canSubmit: boolean = false;
 
 	const handleSuccess = async (event: CustomEvent): Promise<void> => {
 		localStorage.setItem('apiToken', event.detail.token.token);
@@ -26,14 +26,14 @@
 		navigate('/');
 	};
 
-	$: isValid = !!email && !!password;
+	$: canSubmit = !!email && !!password;
 </script>
 
 <Title title={$t('login.title')} hasBackground />
 
 <Breadcrumbs hasBackground items={[{ label: $t('home.title'), path: '/' }, { label: $t('login.title') }]} />
 
-<Form action="/api/login" method="post" on:success={handleSuccess} bind:isValid>
+<Form action="/api/login" method="post" on:success={handleSuccess} isValid={canSubmit}>
 	<Input type="email" name="email" placeholder={$t('common.email.placeholder')} label={$t('common.email.label')} bind:value={email} />
 	<PasswordInput bind:value={password} />
 	<div class="w-full mb-3">

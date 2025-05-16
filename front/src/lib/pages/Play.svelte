@@ -17,8 +17,8 @@
 	let showJoinModal: boolean = false;
 	let showCreateModal: boolean = false;
 
-	let isJoinSubmittable: boolean = false;
-	let isCreateSubmittable: boolean = false;
+	let canSubmitJoin: boolean = false;
+	let canSubmitCreate: boolean = false;
 
 	let token: string;
 	let name: string;
@@ -39,8 +39,8 @@
 		navigate(`/play/room/${event.detail.roomId}`);
 	};
 
-	$: isJoinSubmittable = !!token && isValidUuid(token);
-	$: isCreateSubmittable = !!name && name.length >= 3 && !!(isPrivate ? password && password.length >= 3 : true);
+	$: canSubmitJoin = !!token && isValidUuid(token);
+	$: canSubmitCreate = !!name && name.length >= 3 && !!(isPrivate ? password && password.length >= 3 : true);
 </script>
 
 <Loader bind:isLoading />
@@ -62,7 +62,7 @@
 
 <Modal bind:showModal={showJoinModal}>
 	<Subtitle slot="header">{$t('play.room.join.title')}</Subtitle>
-	<Form action="/api/room/join" method="POST" hasBackground={false} bind:isValid={isJoinSubmittable} on:success={handleJoinSuccess}>
+	<Form action="/api/room/join" method="POST" hasBackground={false} isValid={canSubmitJoin} isFormVisible={showJoinModal} on:success={handleJoinSuccess}>
 		<Input name="token" label={$t('play.room.join.modal.token.label')} placeholder={$t('play.room.join.modal.token.placeholder')} bind:value={token} required />
 		<PasswordInput min={3} bind:value={password} required={false} />
 	</Form>
@@ -70,7 +70,7 @@
 
 <Modal bind:showModal={showCreateModal}>
 	<Subtitle slot="header">{$t('play.room.create.title')}</Subtitle>
-	<Form action="/api/room/create" method="POST" hasBackground={false} bind:isValid={isCreateSubmittable} on:success={handleCreateSuccess}>
+	<Form action="/api/room/create" method="POST" hasBackground={false} isValid={canSubmitCreate} isFormVisible={showCreateModal} on:success={handleCreateSuccess}>
 		<Input name="name" label={$t('play.room.create.modal.name.label')} placeholder={$t('play.room.create.modal.name.placeholder')} bind:value={name} min={3} required />
 		<div class="flex flex-col">
 			<div class="flex items-center mt-10 mb-5">

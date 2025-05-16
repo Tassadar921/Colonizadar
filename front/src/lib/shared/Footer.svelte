@@ -3,7 +3,7 @@
 	import MenuItem from '../menu/MenuItem.svelte';
 	import { t } from 'svelte-i18n';
 	import { isLoading } from 'svelte-i18n';
-	import OpenSource from '../icons/OpenSource.svelte';
+    import Icon from "./Icon.svelte";
 </script>
 
 {#if !$isLoading}
@@ -12,7 +12,7 @@
 			<div class="px-1">
 				<ul class="p-4">
 					<MenuItem target="_blank" footer href={import.meta.env.VITE_GITHUB_REPOSITORY}>
-						<OpenSource slot="iconLeft" />
+                        <Icon name="openSource" slot="iconLeft" />
 						{$t('menu.source-code')}
 					</MenuItem>
 				</ul>

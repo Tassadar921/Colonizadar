@@ -5,7 +5,6 @@
 	import { showToast } from '../../services/toastService';
 	import type SerializedRoom from 'colonizadar-backend/app/types/serialized/serialized_room';
 	import type SerializedRoomPlayer from 'colonizadar-backend/app/types/serialized/serialized_room_player';
-	import Close from '../icons/Close.svelte';
 
 	export let room: SerializedRoom;
 	export let player: SerializedRoomPlayer;
@@ -27,5 +26,5 @@
 	className="flex items-center transition-all duration-300 hover:scale-110 mt-2 transform text-red-600 hover:text-red-400"
 	on:click={() => handleKick(player)}
 >
-	<Close size={40} />
+    <Icon name="close" size={40} />
 </Button>

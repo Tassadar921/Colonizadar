@@ -18,7 +18,7 @@
 	let amount: number = 5;
 	let cost: number = 0;
 	let showModal: boolean = false;
-	let isValid: boolean = true;
+	let canSubmit: boolean = true;
 
 	let canDecrement: boolean = true;
 	let canIncrement: boolean = true;
@@ -62,7 +62,7 @@
 		}
 
 		cost = game.map.baseShipCost * currentPlayer.country.shipPriceFactor * amount;
-		isValid = amount >= 5 && amount % 5 === 0;
+        canSubmit = amount >= 5 && amount % 5 === 0;
 		canDecrement = amount > 5;
 	}
 </script>
@@ -81,7 +81,7 @@
 		<p>{$t('play.game.total-infantry')}: {selectedTerritory.infantry}</p>
 		<p>{$t('play.game.total-ships')}: {selectedTerritory.ships}</p>
 	</div>
-	<Form method="PATCH" action={`/api/game/${game.id}/actions/territory/${selectedTerritory.territory.code}/buy/ships`} hasBackground={false} {isValid} on:success={handleSuccess}>
+	<Form method="PATCH" action={`/api/game/${game.id}/actions/territory/${selectedTerritory.territory.code}/buy/ships`} hasBackground={false} isValid={canSubmit} isFormVisible={showModal} on:success={handleSuccess}>
 		<Incrementation bind:value={amount} smallStep={5} smallShiftStep={10} largeStep={100} largeShiftStep={1000} {canDecrement} {canIncrement} name="amount" />
 
 		<p class="text-center mt-4">

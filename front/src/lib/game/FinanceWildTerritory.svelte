@@ -15,7 +15,7 @@
 
 	let amount: number;
 	let showModal: boolean = false;
-	let isValid: boolean = false;
+	let canSubmit: boolean = false;
 
 	const handleSuccess = async (event: CustomEvent): Promise<void> => {
 		game = {
@@ -32,7 +32,7 @@
 		showToast(event.detail.message);
 	};
 
-	$: isValid = amount >= game.map.financeWildTerritoryStep && amount % game.map.financeWildTerritoryStep === 0 && amount <= (currentPlayer?.gold ?? 0);
+	$: canSubmit = amount >= game.map.financeWildTerritoryStep && amount % game.map.financeWildTerritoryStep === 0 && amount <= (currentPlayer?.gold ?? 0);
 </script>
 
 <button class="bg-green-500 hover:bg-green-600 transition-colors duration-300 px-3 rounded-xl" on:click={() => (showModal = true)}>
@@ -41,7 +41,7 @@
 
 <Modal bind:showModal>
 	<Subtitle slot="header">{$t('play.game.finance-player-modal.title')}</Subtitle>
-	<Form method="PATCH" action={`/api/game/${game.id}/actions/territory/${selectedTerritory.territory.code}/finance`} hasBackground={false} {isValid} on:success={handleSuccess}>
+	<Form method="PATCH" action={`/api/game/${game.id}/actions/territory/${selectedTerritory.territory.code}/finance`} hasBackground={false} isValid={canSubmit} isFormVisible={showModal} on:success={handleSuccess}>
 		<Range name="amount" bind:value={amount} min={game.map.financeWildTerritoryStep} max={currentPlayer?.gold ?? 0} step={game.map.financeWildTerritoryStep} />
 	</Form>
 </Modal>
