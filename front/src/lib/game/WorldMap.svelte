@@ -3,7 +3,7 @@
 	export let svgElement: SVGSVGElement;
 </script>
 
-<svg bind:this={svgElement} {viewBox} xmlns="http://www.w3.org/2000/svg">
+<svg id="map" bind:this={svgElement} {viewBox} xmlns="http://www.w3.org/2000/svg">
 	<g transform="matrix(0.610507, 0, 0, 0.589732, -11.845947, -111.800987)">
 		<g class="mountain">
 			<path

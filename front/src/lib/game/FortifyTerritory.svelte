@@ -3,17 +3,15 @@
 	import type SerializedGame from 'colonizadar-backend/app/types/serialized/serialized_game';
 	import { showToast } from '../../services/toastService';
 	import type SerializedRoomPlayer from 'colonizadar-backend/app/types/serialized/serialized_room_player';
-	import type SerializedselectedTerritory from 'colonizadar-backend/app/types/serialized/serialized_game_territory';
 	import axios from 'axios';
 	import { formatGameNumbers } from '../../services/stringService';
-	import { getCentroidFromPath, setFortifiedIcon } from '../../services/gameGeometryService';
 	import { onMount, tick } from 'svelte';
 	import Icon from '../shared/Icon.svelte';
+	import type SerializedGameTerritory from 'colonizadar-backend/app/types/serialized/serialized_game_territory';
 
 	export let game: SerializedGame;
-	export let selectedTerritory: SerializedselectedTerritory;
+	export let selectedTerritory: SerializedGameTerritory;
 	export let currentPlayer: SerializedRoomPlayer;
-	export let svgElement: SVGSVGElement;
 
 	let isButtonDisabled: boolean = false;
 	let isLoading: boolean = false;
@@ -25,25 +23,6 @@
 		buttonElement.style.setProperty('width', `${width}px`);
 		buttonElement.style.setProperty('height', `${height}px`);
 	});
-
-	const handleGraphicalUpdate = (): void => {
-		const svgGroup: SVGGElement | null = document.getElementById(selectedTerritory.territory.code.toLowerCase()) as unknown as SVGGElement | null;
-		const svgPath: SVGPathElement | null = svgGroup?.querySelector('.mainland') as SVGPathElement | null;
-		if (!svgGroup || !svgPath) {
-			return;
-		}
-
-		const ctm: DOMMatrix | null = svgPath.getCTM();
-		const groupCTMInverse: DOMMatrix | undefined = svgGroup.getCTM()?.inverse();
-		if (!ctm || !groupCTMInverse) {
-			return;
-		}
-
-		const point: SVGPoint = getCentroidFromPath(svgPath, svgElement);
-		const pointInGroup: DOMPoint = point.matrixTransform(ctm).matrixTransform(groupCTMInverse);
-
-		setFortifiedIcon(game, pointInGroup, svgGroup);
-	};
 
 	const handleFortify = async (): Promise<void> => {
 		isLoading = true;
@@ -57,14 +36,7 @@
 					}
 					return player;
 				}),
-				territories: game.territories.map((selectedTerritory: SerializedselectedTerritory) => {
-					if (data.territory.id === selectedTerritory.id) {
-						return data.territory;
-					}
-					return selectedTerritory;
-				}),
 			};
-			handleGraphicalUpdate();
 			showToast(data.message);
 		} catch (error: any) {
 			showToast(error.response.data.error, 'error');

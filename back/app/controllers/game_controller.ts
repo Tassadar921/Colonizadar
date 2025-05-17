@@ -227,8 +227,11 @@ export default class GameController {
 
         await Promise.all([player.save(), gameTerritory.save()]);
 
-        return response.send({
+        transmit.broadcast(`notification/play/game/${game.frontId}/territory/update`, {
             territory: gameTerritory.apiSerialize(language, user),
+        });
+
+        return response.send({
             player: player.apiSerialize(language, user),
             message: `Fortified ${gameTerritory.territory.translate(language)}`,
         });

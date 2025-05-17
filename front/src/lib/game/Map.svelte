@@ -219,7 +219,7 @@
 						<SubvertWildTerritory bind:game bind:selectedTerritory {currentPlayer} />
 					{/if}
 				{:else if !selectedTerritory.isFortified}
-					<FortifyTerritory bind:game bind:selectedTerritory {currentPlayer} {svgElement} />
+					<FortifyTerritory bind:game {selectedTerritory} {currentPlayer} />
 				{:else if selectedTerritory.territory.isFactory}
 					<BuyInfantry bind:game bind:selectedTerritory {currentPlayer} />
 					<BuyShips bind:game bind:selectedTerritory {currentPlayer} />

@@ -32,7 +32,7 @@
 	});
 
 	const handleTerritoryUpdate = (event: CustomEvent): void => {
-		if (event.detail.id === selectedTerritory.id) {
+		if (event.detail.id === selectedTerritory?.id) {
 			selectedTerritory = event.detail;
 			selectedTerritoryOwner = event.detail.owner;
 		}

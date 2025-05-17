@@ -4,6 +4,17 @@ import type SerializedGameTerritory from 'colonizadar-backend/app/types/serializ
 const hoverColor: string = '#ffffac';
 const mountainColor: string = '#653a06';
 
+const getPointInGroup = (mainSvgPath: SVGPathElement, svgGroup: SVGGElement, svgElement: SVGSVGElement): DOMPoint => {
+	const ctm: DOMMatrix | null = mainSvgPath.getCTM();
+	const groupCTMInverse: DOMMatrix | undefined = svgGroup.getCTM()?.inverse();
+	if (!ctm || !groupCTMInverse) {
+		throw new Error('CTM is null');
+	}
+
+	const point: SVGPoint = getCentroidFromPath(mainSvgPath, svgElement);
+	return point.matrixTransform(ctm).matrixTransform(groupCTMInverse);
+};
+
 const getCentroidFromPath = (path: SVGPathElement, svgElement: SVGSVGElement, samples = 100): SVGPoint => {
 	const totalLength: number = path.getTotalLength();
 	let sumX: number = 0;
@@ -21,17 +32,8 @@ const getCentroidFromPath = (path: SVGPathElement, svgElement: SVGSVGElement, sa
 	return svgPoint;
 };
 
-const setIcons = (game: SerializedGame, gameTerritory: SerializedGameTerritory, svgGroup: SVGGElement, mainSvgPath: SVGPathElement, svgElement: SVGSVGElement) => {
+const setIcons = (game: SerializedGame, gameTerritory: SerializedGameTerritory, svgGroup: SVGGElement, mainSvgPath: SVGPathElement, svgElement: SVGSVGElement): void => {
 	resetTerritoryColor(game, svgGroup);
-
-	const ctm: DOMMatrix | null = mainSvgPath.getCTM();
-	const groupCTMInverse: DOMMatrix | undefined = svgGroup.getCTM()?.inverse();
-	if (!ctm || !groupCTMInverse) {
-		return;
-	}
-
-	const point: SVGPoint = getCentroidFromPath(mainSvgPath, svgElement);
-	const pointInGroup: DOMPoint = point.matrixTransform(ctm).matrixTransform(groupCTMInverse);
 
 	const flag: SVGImageElement = document.createElementNS('http://www.w3.org/2000/svg', 'image');
 	flag.classList.add('flag-icon');
@@ -46,6 +48,8 @@ const setIcons = (game: SerializedGame, gameTerritory: SerializedGameTerritory, 
 
 	flag.setAttribute('width', String(flagSize));
 	flag.setAttribute('height', String(flagSize));
+
+	const pointInGroup: SVGPoint = getPointInGroup(mainSvgPath, svgGroup, svgElement);
 
 	flag.setAttribute('x', String(pointInGroup.x - flagSize / 2));
 	flag.setAttribute('y', String(pointInGroup.y - flagSize / 2));
@@ -70,6 +74,26 @@ const setFactoryIcon = (game: SerializedGame, pointInGroup: SVGPoint, svgGroup: 
 	factoryIcon.setAttribute('x', String(pointInGroup.x));
 	factoryIcon.setAttribute('y', String(pointInGroup.y - 1));
 	svgGroup.appendChild(factoryIcon);
+};
+
+const handleFortifyAction = (game: SerializedGame, gameTerritory: SerializedGameTerritory): void => {
+	const svgElement: SVGSVGElement = document.getElementById('map') as unknown as SVGSVGElement;
+	const svgGroup: SVGGElement | null = document.getElementById(gameTerritory.territory.code.toLowerCase()) as unknown as SVGGElement | null;
+	const svgPath: SVGPathElement | null = svgGroup?.querySelector('.mainland') as SVGPathElement | null;
+	if (!svgGroup || !svgPath) {
+		return;
+	}
+
+	const ctm: DOMMatrix | null = svgPath.getCTM();
+	const groupCTMInverse: DOMMatrix | undefined = svgGroup.getCTM()?.inverse();
+	if (!ctm || !groupCTMInverse) {
+		return;
+	}
+
+	const point: SVGPoint = getCentroidFromPath(svgPath, svgElement);
+	const pointInGroup: DOMPoint = point.matrixTransform(ctm).matrixTransform(groupCTMInverse);
+
+	setFortifiedIcon(game, pointInGroup, svgGroup);
 };
 
 const setFortifiedIcon = (game: SerializedGame, pointInGroup: SVGPoint, svgGroup: SVGGElement): void => {
@@ -105,4 +129,4 @@ const setHoverColor = (svgGroup: SVGGElement): void => {
 	svgGroup.setAttribute('fill', hoverColor);
 };
 
-export { getCentroidFromPath, setIcons, setFactoryIcon, setFortifiedIcon, resetTerritoryColor, setMountainColor, setHoverColor };
+export { getCentroidFromPath, setIcons, setFactoryIcon, handleFortifyAction, setFortifiedIcon, resetTerritoryColor, setMountainColor, setHoverColor };
