@@ -1,5 +1,5 @@
 format:
-	npm run format
+	npx prettier --write "**/*.{js,ts,svelte,html,css}"
 
 upgrade:
 	make upgrade-front && make upgrade-back && rm -rf .vite node_modules package-lock.json front/node_modules back/node_modules && npm install
