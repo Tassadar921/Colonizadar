@@ -1,10 +1,10 @@
-format: format-front format-back
+format:
+	cd front && npx prettier --write "**/*.{js,ts,svelte,html,css,json,yml}"
+	cd back && npx prettier --write "**/*.{js,ts,json,yml}"
 
-format-front:
-	cd front && npm run format
-
-format-back:
-	cd back && npm run format
+format-check:
+	cd front && npx prettier --check "**/*.{js,ts,svelte,html,css,json,yml}"
+	cd back && npx prettier --check "**/*.{js,ts,json,yml}"
 
 upgrade:
 	make upgrade-front && make upgrade-back && rm -rf .vite node_modules package-lock.json front/node_modules back/node_modules && npm install

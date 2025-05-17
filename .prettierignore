@@ -1,0 +1,9 @@
+# Back
+back/node_modules/
+back/build/
+back/public/assets/
+
+# Front
+front/node_modules/
+front/dist/
+front/build/

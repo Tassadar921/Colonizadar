@@ -1,45 +1,44 @@
 {
-	"name": "colonizadar-frontend",
-	"version": "1.0",
-	"private": true,
-	"type": "module",
-	"license": "MIT",
-	"scripts": {
-		"dev": "vite",
-		"build": "vite build",
-		"preview": "vite preview",
-		"check": "svelte-check --tsconfig ./tsconfig.json && tsc -p tsconfig.node.json",
-		"format": "npx prettier --write ."
-	},
-	"devDependencies": {
-		"@tsconfig/svelte": "^5.0.4",
-		"@types/node": "^22.14.1",
-		"@types/toastify-js": "^1.12.3",
-		"autoprefixer": "^10.4.21",
-		"postcss": "^8.5.3",
-		"prettier": "^3.5.3",
-		"prettier-plugin-svelte": "^3.3.3",
-		"rollup": "^4.40.0",
-		"svelte": "^5.28.1",
-		"svelte-check": "^4.1.6",
-		"svelte-preprocess": "^6.0.3",
-		"tailwindcss": "^4.1.4",
-		"tslib": "^2.8.1",
-		"typescript": "^5.8.3",
-		"vite": "^6.3.2"
-	},
-	"dependencies": {
-		"@adonisjs/transmit-client": "^1.0.0",
-		"@sveltejs/adapter-auto": "^6.0.0",
-		"@sveltejs/vite-plugin-svelte": "^5.0.3",
-		"@tailwindcss/postcss": "^4.1.4",
-		"@tailwindcss/vite": "^4.1.4",
-		"axios": "^1.8.4",
-		"colonizadar-backend": "file:../back",
-		"dotenv": "^16.5.0",
-		"svelte-i18n": "^4.0.1",
-		"svelte-routing": "^2.13.0",
-		"toastify-js": "^1.12.0",
-		"vite-plugin-env-compatible": "^2.0.1"
-	}
+    "name": "colonizadar-frontend",
+    "version": "1.0",
+    "private": true,
+    "type": "module",
+    "license": "MIT",
+    "scripts": {
+        "dev": "vite",
+        "build": "vite build",
+        "preview": "vite preview",
+        "check": "svelte-check --tsconfig ./tsconfig.json && tsc -p tsconfig.node.json"
+    },
+    "devDependencies": {
+        "@tsconfig/svelte": "^5.0.4",
+        "@types/node": "^22.14.1",
+        "@types/toastify-js": "^1.12.3",
+        "autoprefixer": "^10.4.21",
+        "postcss": "^8.5.3",
+        "prettier": "^3.5.3",
+        "prettier-plugin-svelte": "^3.3.3",
+        "rollup": "^4.40.0",
+        "svelte": "^5.28.1",
+        "svelte-check": "^4.1.6",
+        "svelte-preprocess": "^6.0.3",
+        "tailwindcss": "^4.1.4",
+        "tslib": "^2.8.1",
+        "typescript": "^5.8.3",
+        "vite": "^6.3.2"
+    },
+    "dependencies": {
+        "@adonisjs/transmit-client": "^1.0.0",
+        "@sveltejs/adapter-auto": "^6.0.0",
+        "@sveltejs/vite-plugin-svelte": "^5.0.3",
+        "@tailwindcss/postcss": "^4.1.4",
+        "@tailwindcss/vite": "^4.1.4",
+        "axios": "^1.8.4",
+        "colonizadar-backend": "file:../back",
+        "dotenv": "^16.5.0",
+        "svelte-i18n": "^4.0.1",
+        "svelte-routing": "^2.13.0",
+        "toastify-js": "^1.12.0",
+        "vite-plugin-env-compatible": "^2.0.1"
+    }
 }

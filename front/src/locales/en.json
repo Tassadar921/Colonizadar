@@ -1,319 +1,319 @@
 {
-	"common": {
-		"yes": "Yes",
-		"no": "No",
-		"language": "Language",
-		"close": "Close",
-		"close-modal": "Close modal",
-		"cancel": "Cancel",
-		"back-to-home": "Back to homepage",
-		"search": "Search ...",
-		"name": "Name",
-		"created-at": "Created at",
-		"updated-at": "Updated at",
-		"public": "Public",
-		"private": "Private",
-		"title": {
-			"label": "Title",
-			"placeholder": "Jesus' photo"
-		},
-		"username": {
-			"label": "Username",
-			"placeholder": "John123"
-		},
-		"email": {
-			"label": "Email",
-			"placeholder": "john.smith@gmail.com"
-		},
-		"password": {
-			"label": "Password",
-			"placeholder": "xxx",
-			"match": "Passwords do not match",
-			"length": "Password must be at least 8 characters long",
-			"lowercase": "Password must contain at least one lowercase letter",
-			"uppercase": "Password must contain at least one uppercase letter",
-			"number": "Password must contain at least one number",
-			"special-character": "Password must contain at least one special character"
-		},
-		"confirm-password": {
-			"label": "Confirm password",
-			"placeholder": "xxx"
-		},
-		"reset-password": "Reset password",
-		"submit": "Submit",
-		"file": {
-			"title": "Select a file",
-			"description": "Drag & drop or click to select a file."
-		}
-	},
-	"toast": {
-		"copy": {
-			"success": "Copied to clipboard"
-		},
-		"login": {
-			"success": "You are now logged in",
-			"error": "Wrong credentials"
-		},
-		"logout": {
-			"success": "You are now disconnected",
-			"error": "An error occurred while disconnecting"
-		},
-		"reset-password": {
-			"mail": {
-				"success": "A mail has been sent to reset your password",
-				"error": "An error occurred while sending mail. Retry later."
-			},
-			"confirm": {
-				"success": "Password reset successfully",
-				"error": "An error occurred while confirming account creation. Retry later."
-			}
-		},
-		"profile": {
-			"get": {
-				"error": "An error occurred while fetching your profile"
-			},
-			"update": {
-				"success": "Profile updated",
-				"error": "An error occurred while updating your profile"
-			}
-		},
-		"friends": {
-			"search": {
-				"error": "An error occurred while searching friends"
-			},
-			"add": {
-				"success": "Friend request sent",
-				"error": "An error occurred while asking user as friend",
-				"cancel": {
-					"success": "Friend request cancelled",
-					"error": "An error occurred while cancelling the friend request"
-				}
-			},
-			"remove": {
-				"success": "Friend removed"
-			}
-		},
-		"blocked": {
-			"success": "User blocked",
-			"error": "An error occurred while blocking user"
-		},
-		"unblock": {
-			"success": "User unblocked",
-			"error": "An error occurred while unblocking user"
-		},
-		"invite": {
-			"success": "has been invited to your room",
-			"error": "An error occurred while inviting user"
-		},
-		"notification": {
-			"friend-request": {
-				"ask": "You received a friend request from",
-				"accept": "has been added to your friends",
-				"accepted": "accepted your friend request",
-				"refuse": "You refused the friend request of"
-			},
-			"play": {
-				"invited": "invited you to join his room",
-				"accepted": "Request accepted",
-				"room": {
-					"closed": "Room closed"
-				}
-			}
-		},
-		"room": {
-			"error": "An error occurred while pinging room",
-			"create": {
-				"success": "Room created",
-				"error": "An error occurred while creating the room"
-			},
-			"add-bot": {
-				"success": "Bot added",
-				"error": "An error occurred while adding the bot"
-			}
-		}
-	},
-	"menu": {
-		"source-code": "Source code"
-	},
-	"profile": {
-		"title": "Profile",
-		"description": "Update your profile",
-		"reset-password": "Reset password",
-		"profile-picture": {
-			"title": "Profile picture",
-			"description": "Upload here a profile picture"
-		}
-	},
-	"reset-password": {
-		"title": "Reset password",
-		"confirm": {
-			"title": "Finish reset password"
-		}
-	},
-	"home": {
-		"title": "Home"
-	},
-	"login": {
-		"title": "Login"
-	},
-	"logout": {
-		"title": "Logout",
-		"modal": {
-			"title": "Logout",
-			"text": "Are you sure you want to logout ?"
-		}
-	},
-	"forbidden": {
-		"title": "Forbidden",
-		"subtitle": "You have to be logged to access this app's part."
-	},
-	"not-found": {
-		"title": "Page not found"
-	},
-	"already-connected": {
-		"title": "Already connected"
-	},
-	"social": {
-		"title": "Social",
-		"description": "Manage your friends & blocked users",
-		"friends": {
-			"title": "Friends",
-			"description": "Manage your friends",
-			"none": "No friend found",
-			"search": {
-				"placeholder": "John123",
-				"label": "Friend's username"
-			},
-			"add": {
-				"title": "Ask a new friend",
-				"none": "No user available",
-				"search": {
-					"placeholder": "John123",
-					"label": "User's username"
-				}
-			},
-			"remove": {
-				"modal": {
-					"title": "Remove a friend",
-					"text": "will be removed from your friends"
-				}
-			}
-		},
-		"blocked": {
-			"title": "Blocked users",
-			"description": "Manage your blocked users",
-			"none": "No blocked user found",
-			"search": {
-				"placeholder": "John123",
-				"label": "Blocked user's username"
-			},
-			"modal": {
-				"title": "Blocking user",
-				"text": "will be blocked"
-			}
-		},
-		"unblock": {
-			"modal": {
-				"title": "Unblocking user",
-				"text": "will be unblocked"
-			}
-		}
-	},
-	"notifications": {
-		"title": "Notifications",
-		"friend-requests": {
-			"title": "Friend requests",
-			"none": "No pending friend request"
-		}
-	},
-	"play": {
-		"title": "Play",
-		"description": "Play alone or with your friends",
-		"common": {
-			"infantry": "Infantry",
-			"ships": "Ships",
-			"landing": "Landing",
-			"attack": "Attack",
-			"defense": "Defense",
-			"price": "Price"
-		},
-		"room": {
-			"title": "Room",
-			"create": {
-				"title": "Create a room",
-				"modal": {
-					"name": {
-						"label": "Name",
-						"placeholder": "Room of John123"
-					}
-				}
-			},
-			"join": {
-				"title": "Join",
-				"modal": {
-					"token": {
-						"label": "Token",
-						"placeholder": "550e8400-e29b-41d4-a716-446655440000"
-					}
-				}
-			},
-			"invite": {
-				"title": "Invite a friend"
-			},
-			"add-bot": "Add a bot"
-		},
-		"game": {
-			"score": "Score",
-			"territories": "Territories",
-			"gold": "Gold",
-			"year": "Year",
-			"season": "Season",
-			"spring": "Spring",
-			"summer": "Summer",
-			"fall": "Autumn",
-			"winter": "Winter",
-			"spy": "Spy",
-			"finance": "Finance",
-			"will-receive": "will receive",
-			"received-from": "received from",
-			"will-cost": "Will cost",
-			"spied-by": "You have been spied by",
-			"declare-war": "Declare war",
-			"peace": {
-				"ask": "Ask for peace",
-				"asked": "asked for peace",
-				"accept": "Accept peace",
-				"refuse": "Refuse peace",
-				"refused": "refused peace",
-				"cancel": "Cancel pending peace",
-				"cancelled": "cancelled pending peace",
-				"made": "made peace with",
-				"expires-on": "Peace expires on"
-			},
-			"subvert": "Subvert",
-			"cost": "Cost",
-			"fortified": "Fortified",
-			"fortify": "Fortify",
-			"buy-infantry": "Buy infantry",
-			"buy-ships": "Buy ships",
-			"total-infantry": "Total infantry",
-			"total-ships": "Total ships",
-			"buy-infantry-modal": {
-				"title": "Buy infantry into"
-			},
-			"buy-ships-modal": {
-				"title": "Buy ships into"
-			},
-			"country-modal": {
-				"owner": "Owner",
-				"indigenous": "Indigenous",
-				"value": "Value"
-			},
-			"finance-player-modal": {
-				"title": "Finance player"
-			},
-			"declared-war": "declared war on",
-			"declared-war-on-you": "declared war on you"
-		}
-	}
+    "common": {
+        "yes": "Yes",
+        "no": "No",
+        "language": "Language",
+        "close": "Close",
+        "close-modal": "Close modal",
+        "cancel": "Cancel",
+        "back-to-home": "Back to homepage",
+        "search": "Search ...",
+        "name": "Name",
+        "created-at": "Created at",
+        "updated-at": "Updated at",
+        "public": "Public",
+        "private": "Private",
+        "title": {
+            "label": "Title",
+            "placeholder": "Jesus' photo"
+        },
+        "username": {
+            "label": "Username",
+            "placeholder": "John123"
+        },
+        "email": {
+            "label": "Email",
+            "placeholder": "john.smith@gmail.com"
+        },
+        "password": {
+            "label": "Password",
+            "placeholder": "xxx",
+            "match": "Passwords do not match",
+            "length": "Password must be at least 8 characters long",
+            "lowercase": "Password must contain at least one lowercase letter",
+            "uppercase": "Password must contain at least one uppercase letter",
+            "number": "Password must contain at least one number",
+            "special-character": "Password must contain at least one special character"
+        },
+        "confirm-password": {
+            "label": "Confirm password",
+            "placeholder": "xxx"
+        },
+        "reset-password": "Reset password",
+        "submit": "Submit",
+        "file": {
+            "title": "Select a file",
+            "description": "Drag & drop or click to select a file."
+        }
+    },
+    "toast": {
+        "copy": {
+            "success": "Copied to clipboard"
+        },
+        "login": {
+            "success": "You are now logged in",
+            "error": "Wrong credentials"
+        },
+        "logout": {
+            "success": "You are now disconnected",
+            "error": "An error occurred while disconnecting"
+        },
+        "reset-password": {
+            "mail": {
+                "success": "A mail has been sent to reset your password",
+                "error": "An error occurred while sending mail. Retry later."
+            },
+            "confirm": {
+                "success": "Password reset successfully",
+                "error": "An error occurred while confirming account creation. Retry later."
+            }
+        },
+        "profile": {
+            "get": {
+                "error": "An error occurred while fetching your profile"
+            },
+            "update": {
+                "success": "Profile updated",
+                "error": "An error occurred while updating your profile"
+            }
+        },
+        "friends": {
+            "search": {
+                "error": "An error occurred while searching friends"
+            },
+            "add": {
+                "success": "Friend request sent",
+                "error": "An error occurred while asking user as friend",
+                "cancel": {
+                    "success": "Friend request cancelled",
+                    "error": "An error occurred while cancelling the friend request"
+                }
+            },
+            "remove": {
+                "success": "Friend removed"
+            }
+        },
+        "blocked": {
+            "success": "User blocked",
+            "error": "An error occurred while blocking user"
+        },
+        "unblock": {
+            "success": "User unblocked",
+            "error": "An error occurred while unblocking user"
+        },
+        "invite": {
+            "success": "has been invited to your room",
+            "error": "An error occurred while inviting user"
+        },
+        "notification": {
+            "friend-request": {
+                "ask": "You received a friend request from",
+                "accept": "has been added to your friends",
+                "accepted": "accepted your friend request",
+                "refuse": "You refused the friend request of"
+            },
+            "play": {
+                "invited": "invited you to join his room",
+                "accepted": "Request accepted",
+                "room": {
+                    "closed": "Room closed"
+                }
+            }
+        },
+        "room": {
+            "error": "An error occurred while pinging room",
+            "create": {
+                "success": "Room created",
+                "error": "An error occurred while creating the room"
+            },
+            "add-bot": {
+                "success": "Bot added",
+                "error": "An error occurred while adding the bot"
+            }
+        }
+    },
+    "menu": {
+        "source-code": "Source code"
+    },
+    "profile": {
+        "title": "Profile",
+        "description": "Update your profile",
+        "reset-password": "Reset password",
+        "profile-picture": {
+            "title": "Profile picture",
+            "description": "Upload here a profile picture"
+        }
+    },
+    "reset-password": {
+        "title": "Reset password",
+        "confirm": {
+            "title": "Finish reset password"
+        }
+    },
+    "home": {
+        "title": "Home"
+    },
+    "login": {
+        "title": "Login"
+    },
+    "logout": {
+        "title": "Logout",
+        "modal": {
+            "title": "Logout",
+            "text": "Are you sure you want to logout ?"
+        }
+    },
+    "forbidden": {
+        "title": "Forbidden",
+        "subtitle": "You have to be logged to access this app's part."
+    },
+    "not-found": {
+        "title": "Page not found"
+    },
+    "already-connected": {
+        "title": "Already connected"
+    },
+    "social": {
+        "title": "Social",
+        "description": "Manage your friends & blocked users",
+        "friends": {
+            "title": "Friends",
+            "description": "Manage your friends",
+            "none": "No friend found",
+            "search": {
+                "placeholder": "John123",
+                "label": "Friend's username"
+            },
+            "add": {
+                "title": "Ask a new friend",
+                "none": "No user available",
+                "search": {
+                    "placeholder": "John123",
+                    "label": "User's username"
+                }
+            },
+            "remove": {
+                "modal": {
+                    "title": "Remove a friend",
+                    "text": "will be removed from your friends"
+                }
+            }
+        },
+        "blocked": {
+            "title": "Blocked users",
+            "description": "Manage your blocked users",
+            "none": "No blocked user found",
+            "search": {
+                "placeholder": "John123",
+                "label": "Blocked user's username"
+            },
+            "modal": {
+                "title": "Blocking user",
+                "text": "will be blocked"
+            }
+        },
+        "unblock": {
+            "modal": {
+                "title": "Unblocking user",
+                "text": "will be unblocked"
+            }
+        }
+    },
+    "notifications": {
+        "title": "Notifications",
+        "friend-requests": {
+            "title": "Friend requests",
+            "none": "No pending friend request"
+        }
+    },
+    "play": {
+        "title": "Play",
+        "description": "Play alone or with your friends",
+        "common": {
+            "infantry": "Infantry",
+            "ships": "Ships",
+            "landing": "Landing",
+            "attack": "Attack",
+            "defense": "Defense",
+            "price": "Price"
+        },
+        "room": {
+            "title": "Room",
+            "create": {
+                "title": "Create a room",
+                "modal": {
+                    "name": {
+                        "label": "Name",
+                        "placeholder": "Room of John123"
+                    }
+                }
+            },
+            "join": {
+                "title": "Join",
+                "modal": {
+                    "token": {
+                        "label": "Token",
+                        "placeholder": "550e8400-e29b-41d4-a716-446655440000"
+                    }
+                }
+            },
+            "invite": {
+                "title": "Invite a friend"
+            },
+            "add-bot": "Add a bot"
+        },
+        "game": {
+            "score": "Score",
+            "territories": "Territories",
+            "gold": "Gold",
+            "year": "Year",
+            "season": "Season",
+            "spring": "Spring",
+            "summer": "Summer",
+            "fall": "Autumn",
+            "winter": "Winter",
+            "spy": "Spy",
+            "finance": "Finance",
+            "will-receive": "will receive",
+            "received-from": "received from",
+            "will-cost": "Will cost",
+            "spied-by": "You have been spied by",
+            "declare-war": "Declare war",
+            "peace": {
+                "ask": "Ask for peace",
+                "asked": "asked for peace",
+                "accept": "Accept peace",
+                "refuse": "Refuse peace",
+                "refused": "refused peace",
+                "cancel": "Cancel pending peace",
+                "cancelled": "cancelled pending peace",
+                "made": "made peace with",
+                "expires-on": "Peace expires on"
+            },
+            "subvert": "Subvert",
+            "cost": "Cost",
+            "fortified": "Fortified",
+            "fortify": "Fortify",
+            "buy-infantry": "Buy infantry",
+            "buy-ships": "Buy ships",
+            "total-infantry": "Total infantry",
+            "total-ships": "Total ships",
+            "buy-infantry-modal": {
+                "title": "Buy infantry into"
+            },
+            "buy-ships-modal": {
+                "title": "Buy ships into"
+            },
+            "country-modal": {
+                "owner": "Owner",
+                "indigenous": "Indigenous",
+                "value": "Value"
+            },
+            "finance-player-modal": {
+                "title": "Finance player"
+            },
+            "declared-war": "declared war on",
+            "declared-war-on-you": "declared war on you"
+        }
+    }
 }

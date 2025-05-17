@@ -9,8 +9,7 @@
         "install:prod": "rm -rf node_modules && npm ci --omit=\"dev\"",
         "build": "cp -r build/static tmp_build_static && node ace build && cp -r static build && cp .env build/.env && cd build && npm run install:prod && pm2 stop colonizadar || true && pm2 delete colonizadar || true && pm2 start bin/server.js --name colonizadar && cd ../ && rsync -av --progress tmp_build_static/ build/static/ && rm -rf tmp_build_static",
         "dev": "node ace serve --hmr",
-        "test": "node ace test",
-        "format": "prettier --write ."
+        "test": "node ace test"
     },
     "imports": {
         "#controllers/*": "./app/controllers/*.js",
@@ -72,13 +71,5 @@
     },
     "overrides": {
         "strtok3": "8.0.1"
-    },
-    "resolutions": {
-        "strtok3": "8.0.1"
-    },
-    "pnpm": {
-        "overrides": {
-            "strtok3": "8.0.1"
-        }
     }
 }
