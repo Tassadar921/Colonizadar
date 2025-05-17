@@ -8,7 +8,7 @@ import UserRepository from '#repositories/user_repository';
 import { confirmAccountCreationValidator, loginValidator, sendAccountCreationEmailValidator } from '#validators/auth';
 import BrevoMailService from '#services/brevo_mail_service';
 import env from '#start/env';
-import { randomUUID } from "node:crypto";
+import { randomUUID } from 'node:crypto';
 
 @inject()
 export default class AuthController {
@@ -39,6 +39,7 @@ export default class AuthController {
     public async logout({ auth, response }: HttpContext): Promise<void> {
         const user: User & { currentAccessToken: AccessToken } = await auth.use('api').authenticate();
         await User.accessTokens.delete(user, user.currentAccessToken.identifier);
+
         return response.send({ revoked: true });
     }
 
