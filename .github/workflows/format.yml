@@ -9,13 +9,16 @@ jobs:
         runs-on: ubuntu-latest
 
         steps:
-            - name: Checkout repo
+            - name: Checkout repository
               uses: actions/checkout@v3
 
-            - name: Setup Node.js (if using editorconfig-checker)
+            - name: Set up Node.js
               uses: actions/setup-node@v3
               with:
-                  node-version: '16'
+                  node-version: '18' # you can bump from 16 to 18 for latest LTS
+
+            - name: Install dependencies (front and back)
+              run: npm install
 
             - name: Install editorconfig-checker
               run: npm install -g editorconfig-checker
@@ -29,7 +32,7 @@ jobs:
                     echo "editorconfig_check=false" >> $GITHUB_OUTPUT
                   fi
 
-            - name: Run make format if needed
+            - name: Run format if needed
               if: steps.check.outputs.editorconfig_check == 'false'
               run: |
                   make format
@@ -39,6 +42,6 @@ jobs:
                   git commit -m "chore: apply editorconfig formatting fixes"
                   git push
 
-            - name: Commit as usual if check passed
+            - name: Confirm formatting passed
               if: steps.check.outputs.editorconfig_check == 'true'
-              run: echo "EditorConfig check passed, no formatting needed."
+              run: echo "✅ EditorConfig check passed, no formatting needed."
