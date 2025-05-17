@@ -1,13 +1,13 @@
 format:
-	cd front && npx prettier --write "**/*.{js,ts,svelte,html,css,json,yml}"
 	cd back && npx prettier --write "**/*.{js,ts,json,yml}"
+	cd front && npx prettier --write "**/*.{js,ts,svelte,html,css,json,yml}"
 
 format-check:
-	cd front && npx prettier --check "**/*.{js,ts,svelte,html,css,json,yml}"
 	cd back && npx prettier --check "**/*.{js,ts,json,yml}"
+	cd front && npx prettier --check "**/*.{js,ts,svelte,html,css,json,yml}"
 
 upgrade:
-	make upgrade-front && make upgrade-back && rm -rf .vite node_modules package-lock.json front/node_modules back/node_modules && npm install
+	make upgrade-front && make upgrade-back && rm -rf .vite node_modules package-lock.json && npm install
 
 upgrade-front:
 	cd front && ncu -u
