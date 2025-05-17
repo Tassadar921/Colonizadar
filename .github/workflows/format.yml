@@ -1,47 +1,35 @@
-name: EditorConfig Check and Format
+name: Prettier Format Check
 
 on:
     push:
+    pull_request:
     workflow_dispatch:
 
 jobs:
-    check_format:
+    prettier_check:
         runs-on: ubuntu-latest
 
         steps:
-            - name: Checkout repository
+            - name: Checkout code
               uses: actions/checkout@v3
 
             - name: Set up Node.js
               uses: actions/setup-node@v3
               with:
-                  node-version: '22'
+                  node-version: '18'
 
-            - name: Install dependencies (front and back)
+            - name: Install dependencies
               run: npm install
 
-            - name: Install editorconfig-checker
-              run: npm install -g editorconfig-checker
+            - name: Run Prettier check
+              run: make format-check
 
-            - name: Check EditorConfig compliance
-              id: check
-              run: |
-                  if editorconfig-checker; then
-                    echo "editorconfig_check=true" >> $GITHUB_OUTPUT
-                  else
-                    echo "editorconfig_check=false" >> $GITHUB_OUTPUT
-                  fi
-
-            - name: Run format if needed
-              if: steps.check.outputs.editorconfig_check == 'false'
+            - name: Auto format and push (on failure)
+              if: failure()
               run: |
                   make format
                   git config user.name "github-actions[bot]"
                   git config user.email "github-actions[bot]@users.noreply.github.com"
                   git add .
-                  git commit -m "chore: apply editorconfig formatting fixes"
+                  git commit -m "chore: apply prettier formatting"
                   git push
-
-            - name: Confirm formatting passed
-              if: steps.check.outputs.editorconfig_check == 'true'
-              run: echo "✅ EditorConfig check passed, no formatting needed."
