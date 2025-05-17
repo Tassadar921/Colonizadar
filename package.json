@@ -1,6 +1,9 @@
 {
     "name": "colonizadar",
     "private": true,
+    "scripts": {
+        "format": "npx prettier --write ."
+    },
     "workspaces": [
         "back",
         "front"

@@ -1,10 +1,5 @@
-format: format-front format-back
-
-format-front:
-	cd front && npm run format
-
-format-back:
-	cd back && npm run format
+format:
+	npm run format
 
 upgrade:
 	make upgrade-front && make upgrade-back && rm -rf .vite node_modules package-lock.json front/node_modules back/node_modules && npm install
