@@ -23,8 +23,6 @@
 		const { width, height } = buttonElement.getBoundingClientRect();
 		buttonElement.style.setProperty('width', `${width}px`);
 		buttonElement.style.setProperty('height', `${height}px`);
-
-		cost = selectedTerritory.isFortified ? (selectedTerritory.territory.isFactory ? game.map.spyFactoryCost : game.map.spyFortifiedTerritoryCost) : game.map.spyTerritoryCost;
 	});
 
 	const handleSpyTerritory = async (): Promise<void> => {
@@ -54,6 +52,7 @@
 		isLoading = false;
 	};
 
+	$: cost = selectedTerritory.isFortified ? (selectedTerritory.territory.isFactory ? game.map.spyFactoryCost : game.map.spyFortifiedTerritoryCost) : game.map.spyTerritoryCost;
 	$: isButtonDisabled = isLoading || (currentPlayer?.gold ?? 0) < game.map.spyCost || !!selectedTerritory.infantry;
 </script>
 

@@ -9,6 +9,7 @@
 	import { formatGameNumbers } from '../../services/stringService';
 	import axios from 'axios';
 	import type SerializedGameTerritory from 'colonizadar-backend/app/types/serialized/serialized_game_territory';
+	import { handleFortifyAction } from '../../services/gameGeometryService';
 
 	const dispatch = createEventDispatcher();
 
@@ -119,18 +120,24 @@
 					const { data } = await axios.get(`/api/game/${game.id}/territory/${updatedTerritory.territory.code}`);
 					updatedTerritory = data;
 				} catch (error: any) {
-					showToast(error.response?.data?.error ?? 'Failed to fetch territory', 'error');
+					showToast(error.response.data.error ?? 'Failed to fetch territory', 'error');
 				}
 			}
 
 			game = {
 				...game,
 				territories: game.territories.map((existingTerritory: SerializedGameTerritory): SerializedGameTerritory => {
-					return existingTerritory.territory.code === updatedTerritory.territory.code ? updatedTerritory : existingTerritory;
+					if (existingTerritory.id === updatedTerritory.id) {
+						if (updatedTerritory.isFortified) {
+							handleFortifyAction(game, updatedTerritory);
+						}
+						dispatch('territoryUpdate', updatedTerritory);
+						return updatedTerritory;
+					}
+
+					return existingTerritory;
 				}),
 			};
-
-			dispatch('territoryUpdate', updatedTerritory);
 		});
 
 		spiedNotification.onMessage(({ player }: { player: SerializedRoomPlayer }): void => {
