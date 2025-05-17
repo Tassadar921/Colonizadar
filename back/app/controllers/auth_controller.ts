@@ -16,6 +16,7 @@ export default class AuthController {
         private readonly userRepository: UserRepository,
         private readonly mailService: BrevoMailService
     ) {}
+
     public async login({ request, response }: HttpContext): Promise<void> {
         try {
             const { email, password } = await request.validateUsing(loginValidator);
