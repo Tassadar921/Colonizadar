@@ -8,7 +8,7 @@ import UserRepository from '#repositories/user_repository';
 import { confirmAccountCreationValidator, loginValidator, sendAccountCreationEmailValidator } from '#validators/auth';
 import BrevoMailService from '#services/brevo_mail_service';
 import env from '#start/env';
-import { randomUUID } from "node:crypto";
+import { randomUUID } from 'node:crypto';
 
 @inject()
 export default class AuthController {
