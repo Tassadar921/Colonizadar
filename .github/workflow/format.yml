@@ -1,0 +1,43 @@
+name: EditorConfig Check and Format
+
+on:
+    push:
+
+jobs:
+    check_format:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout repo
+              uses: actions/checkout@v3
+
+            - name: Setup Node.js (if using editorconfig-checker)
+              uses: actions/setup-node@v3
+              with:
+                  node-version: '16'
+
+            - name: Install editorconfig-checker
+              run: npm install -g editorconfig-checker
+
+            - name: Check EditorConfig compliance
+              id: check
+              run: |
+                  if editorconfig-checker; then
+                    echo "editorconfig_check=true" >> $GITHUB_OUTPUT
+                  else
+                    echo "editorconfig_check=false" >> $GITHUB_OUTPUT
+                  fi
+
+            - name: Run make format if needed
+              if: steps.check.outputs.editorconfig_check == 'false'
+              run: |
+                  make format
+                  git config user.name "github-actions[bot]"
+                  git config user.email "github-actions[bot]@users.noreply.github.com"
+                  git add .
+                  git commit -m "chore: apply editorconfig formatting fixes"
+                  git push
+
+            - name: Commit as usual if check passed
+              if: steps.check.outputs.editorconfig_check == 'true'
+              run: echo "EditorConfig check passed, no formatting needed."
