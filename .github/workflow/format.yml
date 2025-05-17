@@ -2,6 +2,7 @@ name: EditorConfig Check and Format
 
 on:
     push:
+    workflow_dispatch:
 
 jobs:
     check_format:
