@@ -15,7 +15,7 @@ jobs:
             - name: Set up Node.js
               uses: actions/setup-node@v3
               with:
-                  node-version: '18' # you can bump from 16 to 18 for latest LTS
+                  node-version: '22'
 
             - name: Install dependencies (front and back)
               run: npm install
