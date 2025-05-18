@@ -22,9 +22,7 @@
     on:blur
     on:mouseout
     {style}
-    class="{customStyle
-        ? className
-        : `rounded ${disabled ? 'text-gray-400 cursor-not-allowed' : 'hover:scale-[1.15] text-primary-500 hover:text-primary-300 cursor-pointer'} transition-all duration-300`} {additionalStyle}"
+    class="{customStyle ? className : `rounded ${disabled ? '' : 'hover:scale-[1.15] text-primary-500 hover:text-primary-300'} transition-all duration-300`} {additionalStyle}"
 >
     <slot />
 </button>

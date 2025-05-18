@@ -3,14 +3,12 @@
     import Icon from './Icon.svelte';
 
     let show: boolean = false;
-    let iconElement: HTMLDivElement;
+    let iconElement: HTMLButtonElement;
 </script>
 
 <div class="flex items-center justify-center">
-    <div
-        role="button"
-        tabindex="0"
-        class="flex items-center justify-center bg-blue-500 text-white rounded-full size-8 cursor-pointer"
+    <button
+        class="flex items-center justify-center bg-blue-500 text-white rounded-full size-8"
         bind:this={iconElement}
         on:mouseover={() => (show = true)}
         on:focus={() => (show = true)}
@@ -18,7 +16,7 @@
         on:blur={() => (show = false)}
     >
         <Icon name="help" />
-    </div>
+    </button>
 
     <Popover {show} target={iconElement}>
         <slot />

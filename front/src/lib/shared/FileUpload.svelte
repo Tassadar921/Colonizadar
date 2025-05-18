@@ -102,11 +102,9 @@
     {/if}
     <button
         type="button"
-        class={`w-${width} flex flex-col items-center justify-center border-2 border-gray-400 dark:border-white rounded-lg cursor-pointer transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 w-48 m-auto p-3`}
+        class={`w-${width} flex flex-col items-center justify-center border-2 border-gray-400 dark:border-white rounded-lg transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 w-48 m-auto p-3`}
         class:bg-blue-50={isDragging && !disabled}
         class:border-blue-500={isDragging && !disabled}
-        class:opacity-50={disabled}
-        class:cursor-not-allowed={disabled}
         on:click={() => !disabled && inputRef.click()}
         on:dragover={handleDragOver}
         on:dragleave={handleDragLeave}
