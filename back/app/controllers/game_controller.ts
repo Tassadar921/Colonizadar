@@ -24,7 +24,7 @@ import PendingPeaceRepository from '#repositories/pending_peace_repository';
 import PeaceRepository from '#repositories/peace_repository';
 import PendingPeace from '#models/pending_peace';
 import PeaceStatusEnum from '#types/enum/peace_status_enum';
-import WarStatusEnum from '#types/enum/war_status_enum';
+import WarStatusEnum from "#types/enum/war_status_enum";
 
 @inject()
 export default class GameController {
