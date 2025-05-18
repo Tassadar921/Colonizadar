@@ -186,7 +186,7 @@
 </script>
 
 <button
-    class="w-4/5 overflow-hidden {isDragging ? 'cursor-grabbing' : 'cursor-pointer'}"
+    class="w-4/5 overflow-hidden {isDragging ? 'cursor-grabbing' : ''}"
     on:wheel={handleWheel}
     on:mousedown={startDrag}
     on:mousemove={onDrag}

@@ -1,6 +1,7 @@
 <script lang="ts">
-    import IconButton from './IconButton.svelte';
     import { createEventDispatcher } from 'svelte';
+    import Button from './Button.svelte';
+    import Icon from './Icon.svelte';
 
     const dispatch = createEventDispatcher();
 
@@ -12,7 +13,7 @@
     export let editable: boolean = true;
 
     let editing: boolean = false;
-    let icon: string = 'pen';
+    let icon: 'pen' | 'check' = 'pen';
     let inputElement: HTMLInputElement;
     let message: string = '';
     let initialValue: string = value;
@@ -72,7 +73,9 @@
 
     {#if editable}
         <div class={iconClassName}>
-            <IconButton bind:icon on:click={handleIconClick} />
+            <Button on:click={handleIconClick}>
+                <Icon name={icon} />
+            </Button>
         </div>
     {/if}
 </div>

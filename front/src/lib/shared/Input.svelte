@@ -101,7 +101,7 @@
             class={`${classes} pr-9`}
             {...inputAttributes}
         />
-        <Button additionalStyle="absolute top-2 right-2 cursor-pointer" on:click={switchType}>
+        <Button additionalStyle="absolute top-2 right-2" on:click={switchType}>
             <Icon name="eye" />
         </Button>
     {:else}
@@ -118,7 +118,7 @@
             class={`${classes} pr-9`}
             {...inputAttributes}
         />
-        <Button additionalStyle="absolute top-2 right-2 cursor-pointer" on:click={switchType}>
+        <Button additionalStyle="absolute top-2 right-2" on:click={switchType}>
             <Icon name="eyeSlash" />
         </Button>
     {/if}

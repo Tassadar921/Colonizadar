@@ -59,7 +59,7 @@
 <div class="flex gap-1 flex-col justify-center items-center">
     <button
         bind:this={buttonElement}
-        class="{isButtonDisabled ? 'cursor-not-allowed' : 'hover:bg-green-600'} flex justify-center items-center bg-green-500 transition-colors duration-300 px-3 py-1 rounded-xl"
+        class="{isButtonDisabled ? '' : 'hover:bg-green-600'} flex justify-center items-center bg-green-500 transition-colors duration-300 px-3 py-1 rounded-xl"
         on:click={handleSpyTerritory}
         disabled={isButtonDisabled}
     >

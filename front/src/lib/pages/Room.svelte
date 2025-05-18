@@ -105,7 +105,7 @@
 
     <div class="grid grid-cols-1 sm:grid-cols-2">
         <div class="flex justify-center h-10 text-white mt-3 text-sm px-3">
-            <Button ariaLabel="Copy token" customStyle={true} className="group flex items-center px-2 hover:cursor-pointer text-black dark:text-white" on:click={handleCopy}>
+            <Button ariaLabel="Copy token" customStyle={true} className="group flex items-center px-2 text-black dark:text-white" on:click={handleCopy}>
                 <span class="group-hover:text-primary-500 transition-all duration-300 group-hover:scale-110">{room.token}</span>
                 <div class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 ml-7">
                     <Icon name="copy" />

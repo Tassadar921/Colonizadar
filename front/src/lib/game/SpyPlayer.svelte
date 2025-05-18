@@ -39,7 +39,7 @@
 
 <button
     bind:this={buttonElement}
-    class="{isButtonDisabled ? 'cursor-disabled' : 'hover:bg-green-600'} bg-green-500 transition-colors duration-300 px-3 py-1 rounded-xl"
+    class="{isButtonDisabled ? '' : 'hover:bg-green-600'} bg-green-500 transition-colors duration-300 px-3 py-1 rounded-xl"
     on:click={handleSpyPlayer}
     on:mouseenter={() => (showPopover = true)}
     on:focus={() => (showPopover = true)}
