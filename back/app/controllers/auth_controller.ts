@@ -39,6 +39,7 @@ export default class AuthController {
     public async logout({ auth, response }: HttpContext): Promise<void> {
         const user: User & { currentAccessToken: AccessToken } = await auth.use('api').authenticate();
         await User.accessTokens.delete(user, user.currentAccessToken.identifier);
+
         return response.send({ revoked: true });
     }
 
