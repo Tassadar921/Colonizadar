@@ -139,6 +139,7 @@ export default class GameController {
         }
 
         player.gold -= amount;
+
         const givenAmount: number = Math.floor((amount * game.map.financePlayerCostFactor) / 1000) * 1000;
         targetPlayer.gold += givenAmount;
 
