@@ -34,7 +34,24 @@ const getCentroidFromPath = (path: SVGPathElement, svgElement: SVGSVGElement, sa
     return svgPoint;
 };
 
-const setIcons = (game: SerializedGame, gameTerritory: SerializedGameTerritory, svgGroup: SVGGElement, mainSvgPath: SVGPathElement, svgElement: SVGSVGElement): void => {
+const setIcons = (svgElement: SVGSVGElement, game: SerializedGame): void => {
+    svgElement?.querySelectorAll('.flag-icon').forEach((el): void => el.remove());
+    svgElement?.querySelectorAll('.factory-icon').forEach((el): void => el.remove());
+    svgElement?.querySelectorAll('.fortified-icon').forEach((el): void => el.remove());
+
+    for (const gameTerritory of game.territories) {
+        const svgGroup: SVGGElement | null = document.getElementById(gameTerritory.territory.code.toLowerCase()) as unknown as SVGGElement | null;
+        const mainSvgPath: SVGPathElement | null = svgGroup?.querySelector('.mainland') as SVGPathElement | null;
+
+        if (!svgGroup || !mainSvgPath) {
+            continue;
+        }
+
+        setGameTerritoryIcons(game, gameTerritory, svgGroup, mainSvgPath, svgElement);
+    }
+};
+
+const setGameTerritoryIcons = (game: SerializedGame, gameTerritory: SerializedGameTerritory, svgGroup: SVGGElement, mainSvgPath: SVGPathElement, svgElement: SVGSVGElement): void => {
     resetTerritoryColor(game, svgGroup);
 
     const flag: SVGImageElement = document.createElementNS('http://www.w3.org/2000/svg', 'image');
@@ -60,22 +77,22 @@ const setIcons = (game: SerializedGame, gameTerritory: SerializedGameTerritory, 
 
     if (gameTerritory.owner) {
         if (gameTerritory.territory.isFactory) {
-            setFactoryIcon(game, pointInGroup, svgGroup);
+            setIcon(game, pointInGroup, svgGroup, 'factory-icon');
         } else if (gameTerritory.isFortified) {
-            setFortifiedIcon(game, pointInGroup, svgGroup);
+            setIcon(game, pointInGroup, svgGroup, 'fortified-icon');
         }
     }
 };
 
-const setFactoryIcon = (game: SerializedGame, pointInGroup: SVGPoint, svgGroup: SVGGElement): void => {
-    const factoryIcon: SVGImageElement = document.createElementNS('http://www.w3.org/2000/svg', 'image');
-    factoryIcon.classList.add('factory-icon');
-    factoryIcon.setAttribute('href', `${import.meta.env.VITE_API_BASE_URL}/api/static/${game.map.id}/factory-icon?token=${localStorage.getItem('apiToken')}`);
-    factoryIcon.setAttribute('width', '4');
-    factoryIcon.setAttribute('height', '4');
-    factoryIcon.setAttribute('x', String(pointInGroup.x));
-    factoryIcon.setAttribute('y', String(pointInGroup.y - 1));
-    svgGroup.appendChild(factoryIcon);
+const setIcon = (game: SerializedGame, pointInGroup: SVGPoint, svgGroup: SVGGElement, iconName: string): void => {
+    const icon: SVGImageElement = document.createElementNS('http://www.w3.org/2000/svg', 'image');
+    icon.classList.add(iconName);
+    icon.setAttribute('href', `${import.meta.env.VITE_API_BASE_URL}/api/static/${game.map.id}/${iconName}?token=${localStorage.getItem('apiToken')}`);
+    icon.setAttribute('width', '4');
+    icon.setAttribute('height', '4');
+    icon.setAttribute('x', String(pointInGroup.x));
+    icon.setAttribute('y', String(pointInGroup.y - 1));
+    svgGroup.appendChild(icon);
 };
 
 const handleFortifyAction = (game: SerializedGame, gameTerritory: SerializedGameTerritory): void => {
@@ -88,18 +105,7 @@ const handleFortifyAction = (game: SerializedGame, gameTerritory: SerializedGame
 
     const pointInGroup: SVGPoint = getPointInGroup(mainPath, svgGroup, svgElement);
 
-    setFortifiedIcon(game, pointInGroup, svgGroup);
-};
-
-const setFortifiedIcon = (game: SerializedGame, pointInGroup: SVGPoint, svgGroup: SVGGElement): void => {
-    const fortifiedIcon: SVGImageElement = document.createElementNS('http://www.w3.org/2000/svg', 'image');
-    fortifiedIcon.classList.add('fortified-icon');
-    fortifiedIcon.setAttribute('href', `${import.meta.env.VITE_API_BASE_URL}/api/static/${game.map.id}/fortified-icon?token=${localStorage.getItem('apiToken')}`);
-    fortifiedIcon.setAttribute('width', '4');
-    fortifiedIcon.setAttribute('height', '4');
-    fortifiedIcon.setAttribute('x', String(pointInGroup.x));
-    fortifiedIcon.setAttribute('y', String(pointInGroup.y - 1));
-    svgGroup.appendChild(fortifiedIcon);
+    setIcon(game, pointInGroup, svgGroup, 'fortified-icon');
 };
 
 const getNeighboursGroups = (game: SerializedGame, gameTerritory: SerializedGameTerritory): { neighbours: SVGGElement[]; neighboursSet: Set<string> } => {
@@ -159,4 +165,4 @@ const setFlashColor = (game: SerializedGame, svgGroup: SVGGElement, isFlashColor
     }
 };
 
-export { getCentroidFromPath, setIcons, setFactoryIcon, handleFortifyAction, setFortifiedIcon, getNeighboursGroups, resetTerritoryColor, setMountainColor, setHoverColor, setFlashColor };
+export { setIcons, handleFortifyAction, getNeighboursGroups, resetTerritoryColor, setMountainColor, setHoverColor, setFlashColor };

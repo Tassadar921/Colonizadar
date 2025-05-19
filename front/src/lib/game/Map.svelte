@@ -68,11 +68,14 @@
     });
 
     const handleResize = (): void => {
-        viewBox = `${offsetX} ${offsetY} ${width} ${height}`;
+        const newViewboxWidth: number = width / zoomLevel;
+        const newViewboxHeight: number = height / zoomLevel;
+
+        viewBox = `${offsetX} ${offsetY} ${newViewboxWidth} ${newViewboxHeight}`;
     };
 
     const zoom = (delta: number, cursorX: number, cursorY: number): void => {
-        const svgRect = svgElement.getBoundingClientRect();
+        const svgRect: DOMRect = svgElement.getBoundingClientRect();
 
         const mouseX: number = cursorX - svgRect.left;
         const mouseY: number = cursorY - svgRect.top;
@@ -200,20 +203,7 @@
     }
 
     $: if (game) {
-        svgElement?.querySelectorAll('.flag-icon').forEach((el) => el.remove());
-        svgElement?.querySelectorAll('.factory-icon').forEach((el) => el.remove());
-        svgElement?.querySelectorAll('.fortified-icon').forEach((el) => el.remove());
-
-        for (const gameTerritory of game.territories) {
-            const svgGroup: SVGGElement | null = document.getElementById(gameTerritory.territory.code.toLowerCase()) as unknown as SVGGElement | null;
-            const mainSvgPath: SVGPathElement | null = svgGroup?.querySelector('.mainland') as SVGPathElement | null;
-
-            if (!svgGroup || !mainSvgPath) {
-                continue;
-            }
-
-            setIcons(game, gameTerritory, svgGroup, mainSvgPath, svgElement);
-        }
+        setIcons(svgElement, game);
     }
 </script>
 

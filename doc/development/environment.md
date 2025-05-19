@@ -40,9 +40,9 @@ FRIEND_EMAILS=["paul.lecuisinier@gmail.com"]
 | `DB_USER`              | superadmin                                                                                              |
 | `DB_PASSWORD`          | xxx                                                                                                     |
 | `DB_DATABASE`          | colonizadar                                                                                             |
-| `LOGS_DB_USER`         | superadmin                                                                                              |
-| `LOGS_DB_PASSWORD`     | xxx                                                                                                     |
-| `LOGS_DB_DATABASE`     | colonizadar_logs                                                                                        |
+| `LOG_DB_USER`          | superadmin                                                                                              |
+| `LOG_DB_PASSWORD`      | xxx                                                                                                     |
+| `LOG_DB_DATABASE`      | colonizadar_logs                                                                                        |
 | `REDIS_HOST`           | 127.0.0.1                                                                                               |
 | `REDIS_PORT`           | 6379                                                                                                    |
 | `REDIS_PASSWORD`       |                                                                                                         |
