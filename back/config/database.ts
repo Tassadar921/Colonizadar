@@ -22,8 +22,8 @@ const dbConfig: DatabaseConfig = defineConfig({
         logs: {
             client: 'pg',
             connection: {
-                host: env.get('LOGS_HOST'),
-                port: env.get('LOGS_PORT'),
+                host: env.get('DB_HOST'),
+                port: env.get('DB_PORT'),
                 user: env.get('LOGS_USER'),
                 password: env.get('LOGS_PASSWORD'),
                 database: env.get('LOGS_DATABASE'),

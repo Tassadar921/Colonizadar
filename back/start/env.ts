@@ -31,11 +31,9 @@ export default await Env.create(new URL('../', import.meta.url), {
     DB_PASSWORD: Env.schema.string.optional(),
     DB_DATABASE: Env.schema.string(),
 
-    LOGS_HOST: Env.schema.string({ format: 'host' }),
-    LOGS_PORT: Env.schema.number(),
-    LOGS_USER: Env.schema.string(),
-    LOGS_PASSWORD: Env.schema.string.optional(),
-    LOGS_DATABASE: Env.schema.string(),
+    LOGS_DB_USER: Env.schema.string(),
+    LOGS_DB_PASSWORD: Env.schema.string.optional(),
+    LOGS_DB_DATABASE: Env.schema.string(),
 
     REDIS_HOST: Env.schema.string({ format: 'host' }),
     REDIS_PORT: Env.schema.number(),

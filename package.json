@@ -4,5 +4,10 @@
     "workspaces": [
         "back",
         "front"
-    ]
+    ],
+    "devDependencies": {
+        "prettier": "^3.5.3",
+        "typescript": "~5.8",
+        "npm-check-updates": "^18.0.1"
+    }
 }
