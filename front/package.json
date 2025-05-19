@@ -31,7 +31,6 @@
         "@sveltejs/vite-plugin-svelte": "^5.0.3",
         "@tailwindcss/postcss": "^4.1.7",
         "@tailwindcss/vite": "^4.1.7",
-        "axios": "^1.9.0",
         "colonizadar-backend": "file:../back",
         "dexie": "^4.0.11",
         "dotenv": "^16.5.0",
