@@ -13,8 +13,8 @@
 - `make up` - Starts the Docker containers in detached mode.
 - `make stop` - Stops all Docker containers and removes orphans.
 - `make rm` - Fully stops and resets Colonizadar containers and volumes.
-- `make start` - Runs `make rm`, builds and starts containers, then resets and seeds the database.
 - `make db` - Resets and seeds the database
+- `make start` - Runs `make rm`, builds the containers, then run `make db`.
 - `make format` - Formats the codebase using Prettier.
 
 
