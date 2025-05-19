@@ -17,7 +17,6 @@
 - `make start` - Runs `make rm`, builds the containers, then run `make db`.
 - `make format` - Formats the codebase using Prettier.
 
-
 ### Related documentation
 
 - [Getting started &rarr;](getting-started.md)
