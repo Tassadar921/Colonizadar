@@ -3,20 +3,11 @@
     import { onMount } from 'svelte';
     import Modal from '../shared/Modal.svelte';
     import Subtitle from '../shared/Subtitle.svelte';
-    import { t } from 'svelte-i18n';
-    import InGamePlayer from './InGamePlayer.svelte';
-    import { formatGameNumbers } from '../../services/stringService';
     import type SerializedGame from 'colonizadar-backend/app/types/serialized/serialized_game';
     import type SerializedGameTerritory from 'colonizadar-backend/app/types/serialized/serialized_game_territory';
     import type SerializedRoomPlayer from 'colonizadar-backend/app/types/serialized/serialized_room_player';
-    import { setHoverColor, resetTerritoryColor, setMountainColor, setIcons } from '../../services/gameGeometryService';
-    import SpyTerritory from './SpyTerritory.svelte';
-    import { profile } from '../../stores/profileStore';
-    import FinanceWildTerritory from './FinanceWildTerritory.svelte';
-    import FortifyTerritory from './FortifyTerritory.svelte';
-    import BuyInfantry from './BuyInfantry.svelte';
-    import BuyShips from './BuyShips.svelte';
-    import SubvertWildTerritory from './SubvertWildTerritory.svelte';
+    import { setHoverColor, resetTerritoryColor, setMountainColor, setIcons, getNeighboursGroups, setFlashColor } from '../../services/gameGeometryService';
+    import SelectedTerritoryModalContent from './SelectedTerritoryModalContent.svelte';
 
     export let game: SerializedGame;
     export let currentPlayer: SerializedRoomPlayer;
@@ -39,10 +30,12 @@
     let startX: number = 0;
     let startY: number = 0;
     let hasDragged: boolean = false;
+    let interval: NodeJS.Timeout | undefined;
+    let neighbours: SVGGElement[] = [];
+    let neighboursSet: Set<string>;
+    let isFlashColor: boolean = false;
 
     const dragSensitivity: number = 1.3;
-
-    const checkedProfile = $profile!;
 
     onMount(() => {
         svgElement.classList.add('rounded-lg', 'bg-blue-950', 'border', 'border-black', 'dark:border-white', 'box-content');
@@ -136,14 +129,37 @@
     };
 
     const handleClick = (territoryId: string): void => {
-        if (!hasDragged && territoryId) {
-            const gameTerritory: SerializedGameTerritory | undefined = game.territories.find((gameTerritory): boolean => {
-                return gameTerritory.territory.code.toLowerCase() === territoryId;
-            });
-            if (gameTerritory) {
-                selectedTerritory = gameTerritory;
-                selectedTerritoryOwner = selectedTerritory.owner;
-                showCountryModal = true;
+        if (interval) {
+            clearInterval(interval);
+            interval = undefined;
+            isFlashColor = false;
+            for (const neighbour of neighbours) {
+                resetTerritoryColor(game, neighbour);
+            }
+            if (neighboursSet.has(territoryId)) {
+                const gameTerritory: SerializedGameTerritory | undefined = game.territories.find((gameTerritory): boolean => {
+                    return gameTerritory.territory.code.toLowerCase() === territoryId;
+                });
+                if (!gameTerritory) {
+                    return;
+                }
+
+                if (gameTerritory.owner?.id === currentPlayer.id) {
+                    console.log('moving to', gameTerritory.territory.name);
+                } else {
+                    console.log('attacking', gameTerritory.territory.name);
+                }
+            }
+        } else {
+            if (!hasDragged && territoryId) {
+                const gameTerritory: SerializedGameTerritory | undefined = game.territories.find((gameTerritory): boolean => {
+                    return gameTerritory.territory.code.toLowerCase() === territoryId;
+                });
+                if (gameTerritory) {
+                    selectedTerritory = gameTerritory;
+                    selectedTerritoryOwner = selectedTerritory.owner;
+                    showCountryModal = true;
+                }
             }
         }
     };
@@ -153,11 +169,27 @@
             return;
         }
 
-        resetTerritoryColor(game, svgGroup!);
+        if (interval && isFlashColor) {
+            setFlashColor(game, svgGroup, isFlashColor);
+        } else {
+            resetTerritoryColor(game, svgGroup);
+        }
+    };
+
+    const handleMoveClicked = (): void => {
+        showCountryModal = false;
+        interval = setInterval(() => {
+            isFlashColor = !isFlashColor;
+            for (const neighbour of neighbours) {
+                setFlashColor(game, neighbour, isFlashColor);
+            }
+        }, 1000);
     };
 
     $: if (selectedTerritory) {
         const svgGroup = document.getElementById(selectedTerritory.territory.code.toLowerCase()) as unknown as SVGGElement;
+        ({ neighbours, neighboursSet } = getNeighboursGroups(game, selectedTerritory));
+
         if (svgGroup) {
             if (showCountryModal) {
                 setHoverColor(svgGroup);
@@ -200,31 +232,6 @@
 {#if selectedTerritory}
     <Modal bind:showModal={showCountryModal}>
         <Subtitle slot="header">{selectedTerritory.territory.name}</Subtitle>
-        <div class="flex gap-1 items-center">
-            <p>{$t('play.game.country-modal.owner')} :</p>
-            <InGamePlayer bind:game bind:player={selectedTerritoryOwner} />
-        </div>
-        <p>{$t('play.game.country-modal.value')} : {formatGameNumbers(selectedTerritory.value ?? 0)}</p>
-        <p>{$t('play.common.infantry')} : {selectedTerritory.infantry ? formatGameNumbers(selectedTerritory.infantry) : '???'}</p>
-        {#if selectedTerritory && selectedTerritoryOwner && selectedTerritory.territory.isCoastal}
-            <p>{$t('play.common.ships')} : {typeof selectedTerritory.ships === 'number' ? formatGameNumbers(selectedTerritory.ships) : '???'}</p>
-        {/if}
-        <p>{$t('play.game.fortified')} : {selectedTerritory.isFortified}</p>
-        <div class="flex gap-5 justify-center">
-            {#if game.map.mainSeason === game.season && selectedTerritory}
-                {#if selectedTerritoryOwner?.user?.id !== checkedProfile.id}
-                    <SpyTerritory bind:game bind:selectedTerritory {currentPlayer} />
-                    {#if !selectedTerritoryOwner}
-                        <FinanceWildTerritory bind:game bind:selectedTerritory {currentPlayer} />
-                        <SubvertWildTerritory bind:game bind:selectedTerritory {currentPlayer} />
-                    {/if}
-                {:else if !selectedTerritory.isFortified}
-                    <FortifyTerritory bind:game {selectedTerritory} {currentPlayer} />
-                {:else if selectedTerritory.territory.isFactory}
-                    <BuyInfantry bind:game bind:selectedTerritory {currentPlayer} />
-                    <BuyShips bind:game bind:selectedTerritory {currentPlayer} />
-                {/if}
-            {/if}
-        </div>
+        <SelectedTerritoryModalContent bind:game bind:selectedTerritory bind:selectedTerritoryOwner {currentPlayer} on:move={handleMoveClicked} />
     </Modal>
 {/if}

@@ -1,8 +1,10 @@
 import type SerializedGame from 'colonizadar-backend/app/types/serialized/serialized_game';
 import type SerializedGameTerritory from 'colonizadar-backend/app/types/serialized/serialized_game_territory';
+import type SerializedTerritory from 'colonizadar-backend/app/types/serialized/serialized_territory';
 
 const hoverColor: string = '#ffffac';
 const mountainColor: string = '#653a06';
+const flashColor: string = '#ff0000';
 
 const getPointInGroup = (mainSvgPath: SVGPathElement, svgGroup: SVGGElement, svgElement: SVGSVGElement): DOMPoint => {
     const ctm: DOMMatrix | null = mainSvgPath.getCTM();
@@ -79,19 +81,12 @@ const setFactoryIcon = (game: SerializedGame, pointInGroup: SVGPoint, svgGroup: 
 const handleFortifyAction = (game: SerializedGame, gameTerritory: SerializedGameTerritory): void => {
     const svgElement: SVGSVGElement = document.getElementById('map') as unknown as SVGSVGElement;
     const svgGroup: SVGGElement | null = document.getElementById(gameTerritory.territory.code.toLowerCase()) as unknown as SVGGElement | null;
-    const svgPath: SVGPathElement | null = svgGroup?.querySelector('.mainland') as SVGPathElement | null;
-    if (!svgGroup || !svgPath) {
+    const mainPath: SVGPathElement | null = svgGroup?.querySelector('.mainland') as SVGPathElement | null;
+    if (!svgGroup || !mainPath) {
         return;
     }
 
-    const ctm: DOMMatrix | null = svgPath.getCTM();
-    const groupCTMInverse: DOMMatrix | undefined = svgGroup.getCTM()?.inverse();
-    if (!ctm || !groupCTMInverse) {
-        return;
-    }
-
-    const point: SVGPoint = getCentroidFromPath(svgPath, svgElement);
-    const pointInGroup: DOMPoint = point.matrixTransform(ctm).matrixTransform(groupCTMInverse);
+    const pointInGroup: SVGPoint = getPointInGroup(mainPath, svgGroup, svgElement);
 
     setFortifiedIcon(game, pointInGroup, svgGroup);
 };
@@ -105,6 +100,33 @@ const setFortifiedIcon = (game: SerializedGame, pointInGroup: SVGPoint, svgGroup
     fortifiedIcon.setAttribute('x', String(pointInGroup.x));
     fortifiedIcon.setAttribute('y', String(pointInGroup.y - 1));
     svgGroup.appendChild(fortifiedIcon);
+};
+
+const getNeighboursGroups = (game: SerializedGame, gameTerritory: SerializedGameTerritory): { neighbours: SVGGElement[]; neighboursSet: Set<string> } => {
+    const neighboursSet = new Set<string>();
+    const neighbours: SVGGElement[] = [];
+
+    gameTerritory.territory.neighbours.forEach((neighbour: SerializedTerritory): void => {
+        const svgGroup: SVGGElement | null = document.getElementById(neighbour.code.toLowerCase()) as SVGGElement | null;
+        if (svgGroup && !neighboursSet.has(svgGroup.id)) {
+            neighboursSet.add(svgGroup.id);
+            neighbours.push(svgGroup);
+        }
+    });
+
+    if (gameTerritory.territory.isCoastal && gameTerritory.ships) {
+        game.territories.forEach((territory: SerializedGameTerritory): void => {
+            if (territory.territory.isCoastal && territory.territory.code !== gameTerritory.territory.code) {
+                const svgGroup: SVGGElement | null = document.getElementById(territory.territory.code.toLowerCase()) as SVGGElement | null;
+                if (svgGroup && !neighboursSet.has(svgGroup.id)) {
+                    neighboursSet.add(svgGroup.id);
+                    neighbours.push(svgGroup);
+                }
+            }
+        });
+    }
+
+    return { neighbours, neighboursSet };
 };
 
 const resetTerritoryColor = (game: SerializedGame, svgGroup: SVGGElement): void => {
@@ -129,4 +151,12 @@ const setHoverColor = (svgGroup: SVGGElement): void => {
     svgGroup.setAttribute('fill', hoverColor);
 };
 
-export { getCentroidFromPath, setIcons, setFactoryIcon, handleFortifyAction, setFortifiedIcon, resetTerritoryColor, setMountainColor, setHoverColor };
+const setFlashColor = (game: SerializedGame, svgGroup: SVGGElement, isFlashColor: boolean): void => {
+    if (isFlashColor) {
+        resetTerritoryColor(game, svgGroup);
+    } else {
+        svgGroup.setAttribute('fill', flashColor);
+    }
+};
+
+export { getCentroidFromPath, setIcons, setFactoryIcon, handleFortifyAction, setFortifiedIcon, getNeighboursGroups, resetTerritoryColor, setMountainColor, setHoverColor, setFlashColor };

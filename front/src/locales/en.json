@@ -292,6 +292,7 @@
             },
             "subvert": "Subvert",
             "cost": "Cost",
+            "move": "Move",
             "fortified": "Fortified",
             "fortify": "Fortify",
             "buy-infantry": "Buy infantry",

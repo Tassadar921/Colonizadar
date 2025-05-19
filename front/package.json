@@ -35,6 +35,7 @@
         "@tailwindcss/vite": "^4.1.7",
         "axios": "^1.9.0",
         "colonizadar-backend": "file:../back",
+        "dexie": "^4.0.11",
         "dotenv": "^16.5.0",
         "svelte-i18n": "^4.0.1",
         "svelte-routing": "^2.13.0",
