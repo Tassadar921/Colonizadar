@@ -293,6 +293,8 @@
             "subvert": "Subvertir",
             "cost": "Coût",
             "move": "Déplacer",
+            "attacking": "Attaquer",
+            "moving": "Déplacer vers",
             "fortified": "Fortifié",
             "fortify": "Fortifier",
             "buy-infantry": "Acheter de l'infanterie",

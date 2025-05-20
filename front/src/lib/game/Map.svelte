@@ -8,6 +8,8 @@
     import type SerializedRoomPlayer from 'colonizadar-backend/app/types/serialized/serialized_room_player';
     import { setHoverColor, resetTerritoryColor, setMountainColor, setIcons, getNeighboursGroups, setFlashColor } from '../../services/gameGeometryService';
     import SelectedTerritoryModalContent from './SelectedTerritoryModalContent.svelte';
+    import { t } from 'svelte-i18n';
+    import MoveModalContent from "./MoveModalContent.svelte";
 
     export let game: SerializedGame;
     export let currentPlayer: SerializedRoomPlayer;
@@ -15,6 +17,7 @@
     export let selectedTerritory: SerializedGameTerritory;
 
     let showCountryModal: boolean = false;
+    let showMoveModal: boolean = false;
 
     let width: number = 500;
     let height: number = 300;
@@ -30,10 +33,14 @@
     let startX: number = 0;
     let startY: number = 0;
     let hasDragged: boolean = false;
+
     let interval: NodeJS.Timeout | undefined;
     let neighbours: SVGGElement[] = [];
     let neighboursSet: Set<string>;
     let isFlashColor: boolean = false;
+
+    let isAttacking: boolean = false;
+    let targetTerritory: SerializedGameTerritory;
 
     const dragSensitivity: number = 1.3;
 
@@ -147,11 +154,15 @@
                     return;
                 }
 
+                targetTerritory = gameTerritory;
                 if (gameTerritory.owner?.id === currentPlayer.id) {
+                    isAttacking = false;
                     console.log('moving to', gameTerritory.territory.name);
                 } else {
+                    isAttacking = true;
                     console.log('attacking', gameTerritory.territory.name);
                 }
+                showMoveModal = true;
             }
         } else {
             if (!hasDragged && territoryId) {
@@ -186,7 +197,7 @@
             for (const neighbour of neighbours) {
                 setFlashColor(game, neighbour, isFlashColor);
             }
-        }, 1000);
+        }, 750);
     };
 
     $: if (selectedTerritory) {
@@ -223,5 +234,12 @@
     <Modal bind:showModal={showCountryModal}>
         <Subtitle slot="header">{selectedTerritory.territory.name}</Subtitle>
         <SelectedTerritoryModalContent bind:game bind:selectedTerritory bind:selectedTerritoryOwner {currentPlayer} on:move={handleMoveClicked} />
+    </Modal>
+{/if}
+
+{#if targetTerritory}
+    <Modal bind:showModal={showMoveModal}>
+        <Subtitle slot="header">{isAttacking ? $t('play.game.attacking') : $t('play.game.moving')} {selectedTerritory.territory.name}</Subtitle>
+        <MoveModalContent />
     </Modal>
 {/if}
