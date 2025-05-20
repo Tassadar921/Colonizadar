@@ -13,6 +13,7 @@
         "updated-at": "Updated at",
         "public": "Public",
         "private": "Private",
+        "value": "Value",
         "title": {
             "label": "Title",
             "placeholder": "Jesus' photo"

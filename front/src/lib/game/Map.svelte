@@ -9,7 +9,7 @@
     import { setHoverColor, resetTerritoryColor, setMountainColor, setIcons, getNeighboursGroups, setFlashColor } from '../../services/gameGeometryService';
     import SelectedTerritoryModalContent from './SelectedTerritoryModalContent.svelte';
     import { t } from 'svelte-i18n';
-    import MoveModalContent from "./MoveModalContent.svelte";
+    import MoveModalContent from './MoveModalContent.svelte';
 
     export let game: SerializedGame;
     export let currentPlayer: SerializedRoomPlayer;
@@ -239,7 +239,7 @@
 
 {#if targetTerritory}
     <Modal bind:showModal={showMoveModal}>
-        <Subtitle slot="header">{isAttacking ? $t('play.game.attacking') : $t('play.game.moving')} {selectedTerritory.territory.name}</Subtitle>
-        <MoveModalContent />
+        <Subtitle slot="header">{isAttacking ? $t('play.game.attacking') : $t('play.game.moving')} {targetTerritory.territory.name}</Subtitle>
+        <MoveModalContent bind:selectedTerritory {targetTerritory} />
     </Modal>
 {/if}
