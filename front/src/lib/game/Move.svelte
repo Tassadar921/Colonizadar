@@ -2,6 +2,7 @@
     import type SerializedGameTerritory from 'colonizadar-backend/app/types/serialized/serialized_game_territory';
     import { t } from 'svelte-i18n';
     import { createEventDispatcher } from 'svelte';
+    import ActionButton from './ActionButton.svelte';
 
     const dispatch = createEventDispatcher();
 
@@ -12,6 +13,6 @@
     $: isButtonDisabled = (!selectedTerritory.ships || selectedTerritory.ships === 0) && (!selectedTerritory.infantry || selectedTerritory.infantry <= 1000);
 </script>
 
-<button disabled={isButtonDisabled} class="bg-green-500 hover:bg-green-600 transition-colors duration-300 px-3 py-1 rounded-xl" on:click={() => dispatch('move')}>
-    {$t('play.game.move')}
-</button>
+<ActionButton {isButtonDisabled} on:click={() => dispatch('move')}>
+    <span slot="text">{$t('play.game.move')}</span>
+</ActionButton>

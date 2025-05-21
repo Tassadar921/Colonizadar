@@ -7,7 +7,7 @@
     export let step: number = 1;
     export let value: number = min;
     export let name: string;
-    export let label: string = '';
+    export let label: string | undefined = undefined;
 
     const id: string = `range-${Math.random().toString(36).slice(2, 9)}`;
 

@@ -293,6 +293,7 @@
             },
             "subvert": "Subvert",
             "cost": "Cost",
+            "attack": "Attack",
             "move": "Move",
             "attacking": "Attacking",
             "moving": "Moving to",

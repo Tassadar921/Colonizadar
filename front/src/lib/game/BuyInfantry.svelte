@@ -10,11 +10,13 @@
     import type SerializedGame from 'colonizadar-backend/app/types/serialized/serialized_game';
     import type SerializedRoomPlayer from 'colonizadar-backend/app/types/serialized/serialized_room_player';
     import type SerializedGameTerritory from 'colonizadar-backend/app/types/serialized/serialized_game_territory';
+    import ActionButton from './ActionButton.svelte';
 
     export let game: SerializedGame;
     export let selectedTerritory: SerializedGameTerritory;
     export let currentPlayer: SerializedRoomPlayer;
 
+    let isButtonDisabled: boolean = false;
     let amount: number = 1000;
     let cost: number = 0;
     let showModal: boolean = false;
@@ -50,6 +52,7 @@
         showToast(event.detail.message);
     };
 
+    $: isButtonDisabled = (currentPlayer.gold ?? 0) < game.map.baseInfantryCost * currentPlayer.country.infantryPriceFactor * 1000;
     $: {
         const maxAffordableAmount = getInfantryFromCost(currentPlayer.gold ?? 0);
 
@@ -66,9 +69,9 @@
     }
 </script>
 
-<button class="bg-green-500 hover:bg-green-600 transition-colors duration-300 px-3 py-1 rounded-xl" on:click={() => (showModal = true)}>
-    <span>{$t('play.game.buy-infantry')}</span>
-</button>
+<ActionButton {isButtonDisabled} on:click={() => (showModal = true)}>
+    <span slot="text">{$t('play.game.buy-infantry')}</span>
+</ActionButton>
 
 <Modal bind:showModal>
     <Subtitle slot="header">

@@ -33,7 +33,7 @@
     <p>{$t('play.common.ships')} : {typeof selectedTerritory.ships === 'number' ? formatGameNumbers(selectedTerritory.ships) : '???'}</p>
 {/if}
 <p>{$t('play.game.fortified')} : {selectedTerritory.isFortified}</p>
-<div class="flex gap-5 justify-center">
+<div class="flex gap-5 justify-center items-start">
     {#if game.map.mainSeason === game.season && selectedTerritory}
         {#if selectedTerritoryOwner?.user?.id !== checkedProfile.id}
             <SpyTerritory bind:game bind:selectedTerritory {currentPlayer} />

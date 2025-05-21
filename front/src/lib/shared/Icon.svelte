@@ -58,6 +58,8 @@
         'Copy',
         'Bot',
         'Spinner',
+        'Attack',
+        'Move',
     ] as const;
 
     type PascalCase = (typeof iconNames)[number];

@@ -41,11 +41,13 @@
 
     let isAttacking: boolean = false;
     let targetTerritory: SerializedGameTerritory;
+    let moveInfantryAmount: number;
+    let moveShipsAmount: number;
 
     const dragSensitivity: number = 1.3;
 
     onMount(() => {
-        svgElement.classList.add('rounded-lg', 'bg-blue-950', 'border', 'border-black', 'dark:border-white', 'box-content');
+        svgElement.classList.add('rounded-lg', 'bg-blue-600', 'border', 'border-black', 'dark:border-white', 'box-content');
 
         handleResize();
         window.addEventListener('resize', handleResize);
@@ -157,10 +159,8 @@
                 targetTerritory = gameTerritory;
                 if (gameTerritory.owner?.id === currentPlayer.id) {
                     isAttacking = false;
-                    console.log('moving to', gameTerritory.territory.name);
                 } else {
                     isAttacking = true;
-                    console.log('attacking', gameTerritory.territory.name);
                 }
                 showMoveModal = true;
             }
@@ -198,6 +198,11 @@
                 setFlashColor(game, neighbour, isFlashColor);
             }
         }, 750);
+    };
+
+    const handleCloseMoveModal = (): void => {
+        moveInfantryAmount = 0;
+        moveShipsAmount = 0;
     };
 
     $: if (selectedTerritory) {
@@ -238,8 +243,8 @@
 {/if}
 
 {#if targetTerritory}
-    <Modal bind:showModal={showMoveModal}>
+    <Modal bind:showModal={showMoveModal} on:close={handleCloseMoveModal}>
         <Subtitle slot="header">{isAttacking ? $t('play.game.attacking') : $t('play.game.moving')} {targetTerritory.territory.name}</Subtitle>
-        <MoveModalContent bind:selectedTerritory {targetTerritory} />
+        <MoveModalContent bind:selectedTerritory {targetTerritory} {isAttacking} bind:infantryAmount={moveInfantryAmount} bind:shipsAmount={moveShipsAmount} />
     </Modal>
 {/if}
