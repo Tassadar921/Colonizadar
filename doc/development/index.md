@@ -23,3 +23,4 @@
 - [Adminer &rarr;](adminer.md)
 - [Environment variables &rarr;](environment.md)
 - [Commands &rarr;](commands.md)
+- [Icons &rarr;](commands.md)

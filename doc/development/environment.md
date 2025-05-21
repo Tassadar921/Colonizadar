@@ -1,5 +1,7 @@
 # Colonizadar - Development Environment Variables
 
+---
+
 ### Development backend .env (back/.env)
 
 ```
@@ -52,6 +54,8 @@ FRIEND_EMAILS=["paul.lecuisinier@gmail.com"]
 | `BREVO_API_KEY`        | **`A valid Brevo API key`**                                                                             |
 | `FRIEND_EMAILS`        | ["paul.lecuisinier@gmail.com"] **Feel free to add other emails to create other users or test emailing** |
 
+---
+
 ### Development frontend .env (front/.env)
 
 ```
@@ -67,6 +71,8 @@ VITE_DEFAULT_IMAGE=/assets/default/image.png
 | `VITE_FRONT_URI`         | http://localhost:5173                      |
 | `VITE_GITHUB_REPOSITORY` | https://github.com/Tassadar921/Colonizadar |
 | `VITE_DEFAULT_IMAGE`     | /assets/default/image.png                  |
+
+---
 
 ### Development index documentation
 

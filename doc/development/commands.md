@@ -1,5 +1,7 @@
 # Colonizadar Development Commands
 
+---
+
 | Command             | Description                                                                                                                         |
 |---------------------|-------------------------------------------------------------------------------------------------------------------------------------|
 | `make format`       | Format code both in `front` and `back` directories using Prettier.                                                                  ||
@@ -15,6 +17,8 @@
 | `make rm`           | Fully stops and resets Colonizadar Docker containers and volumes.                                                                   |
 | `make start`        | Fully stops and resets Colonizadar Docker containers and volumes, builds and starts containers, then resets and seeds the database. |
 | `make prune`        | **/!\\** Stops containers and prunes Docker system resources.                                                                       |
+
+---
 
 ### Development index documentation
 
