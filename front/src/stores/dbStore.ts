@@ -1,5 +1,5 @@
 import Dexie, { type Table } from 'dexie';
-import { get, readable } from 'svelte/store';
+import { readable } from 'svelte/store';
 import { liveQuery } from 'dexie';
 import { showToast } from '../services/toastService';
 import type SerializedGame from 'colonizadar-backend/app/types/serialized/serialized_game';
@@ -11,25 +11,16 @@ export interface Move {
     to: number;
     infantry: number;
     ships: number;
-}
-
-export interface Attack {
-    id?: number;
-    from: number;
-    to: number;
-    infantry: number;
-    ships: number;
+    isAttack: boolean;
 }
 
 class FrontDatabase extends Dexie {
     moves!: Table<Move, number>;
-    attacks!: Table<Attack, number>;
 
     constructor() {
         super('colonizadar');
         this.version(1).stores({
-            moves: '++id, from, to, infantry, ships',
-            attacks: '++id, from, to, infantry, ships',
+            moves: '++id, from, to, infantry, ships, isAttack',
         });
     }
 }
@@ -37,11 +28,9 @@ class FrontDatabase extends Dexie {
 const db = new FrontDatabase();
 
 export async function updateGameOnLoad(game: SerializedGame): Promise<void> {
-    const [allMoves, allAttacks] = await Promise.all([db.moves.toArray(), db.attacks.toArray()]);
+    const moves: Move[] = await db.moves.toArray();
 
-    const combined: (Move | Attack)[] = [...allMoves, ...allAttacks];
-
-    for (const move of combined) {
+    for (const move of moves) {
         const from: SerializedGameTerritory | undefined = game.territories.find((t: SerializedGameTerritory): boolean => t.id === move.from);
         if (from) {
             from.infantry = (from.infantry ?? 0) - move.infantry;
@@ -59,15 +48,6 @@ export const moves = readable<Move[]>([], (set) => {
     return (): void => subscription.unsubscribe();
 });
 
-export const attacks = readable<Move[]>([], (set) => {
-    const subscription = liveQuery(() => db.attacks.toArray()).subscribe({
-        next: set,
-        error: (error: any): void => showToast(error.message, 'error'),
-    });
-
-    return (): void => subscription.unsubscribe();
-});
-
 export async function addMove(move: Move): Promise<number> {
     return db.moves.add(move);
 }
@@ -76,18 +56,10 @@ export async function removeMove(id: number): Promise<void> {
     await db.moves.delete(id);
 }
 
+export async function getSelectedTerritoryMoves(gameTerritory: SerializedGameTerritory): Promise<Move[]> {
+    return db.moves.where('from').equals(gameTerritory.id).or('to').equals(gameTerritory.id).toArray();
+}
+
 export async function clearMoves(): Promise<void> {
     await db.moves.clear();
-}
-
-export async function addAttack(attack: Attack): Promise<number> {
-    return db.attacks.add(attack);
-}
-
-export async function removeAttack(id: number): Promise<void> {
-    await db.attacks.delete(id);
-}
-
-export async function clearAttacks(): Promise<void> {
-    await db.attacks.clear();
 }

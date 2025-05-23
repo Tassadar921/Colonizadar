@@ -4,7 +4,7 @@
 
 ## The application and logs database are separated and accessible via Adminer
 
-### Go to http://localhost:8080 and log in with the following credentials (generally we want to go to `database`, which is the app's database):
+### Go to http://localhost:8080 and log in with the following credentials (generally we want to go to `colonizadar`, which is the app's database):
 
 | Field     | Value                           |
 |-----------|---------------------------------|

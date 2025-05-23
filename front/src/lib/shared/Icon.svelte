@@ -60,6 +60,8 @@
         'Spinner',
         'Attack',
         'Move',
+        'Infantry',
+        'Ship',
     ] as const;
 
     type PascalCase = (typeof iconNames)[number];

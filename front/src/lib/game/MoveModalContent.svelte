@@ -7,7 +7,7 @@
     import ActionButton from './ActionButton.svelte';
     import type SerializedTerritory from 'colonizadar-backend/app/types/serialized/serialized_territory';
     import Incrementation from '../shared/Incrementation.svelte';
-    import { addAttack, addMove, type Attack, type Move } from '../../stores/dbStore';
+    import { addMove, type Move } from '../../stores/dbStore';
     import { showToast } from '../../services/toastService';
     import type SerializedGame from 'colonizadar-backend/app/types/serialized/serialized_game';
 
@@ -35,18 +35,15 @@
 
     const handleMove = async (): Promise<void> => {
         isLoading = true;
-        const action: Move | Attack = {
+        const move: Move = {
             from: selectedTerritory.id,
             to: targetTerritory.id,
             infantry: infantryAmount,
             ships: shipsAmount,
+            isAttack: isAttacking,
         };
         try {
-            if (isAttacking) {
-                await addAttack(action);
-            } else {
-                await addMove(action);
-            }
+            await addMove(move);
             game = {
                 ...game,
                 territories: game.territories.map((territory: SerializedGameTerritory) => {
