@@ -10,6 +10,7 @@
     import type { Subscription } from '@adonisjs/transmit-client';
     import type SerializedRoomPlayer from 'colonizadar-backend/app/types/serialized/serialized_room_player';
     import type SerializedRoom from 'colonizadar-backend/app/types/serialized/serialized_room';
+    import { clearMoves } from '../../stores/dbStore';
 
     const dispatch = createEventDispatcher();
 
@@ -85,6 +86,7 @@
 
         roomStartNotification.onMessage(({ message, gameId }: { message: string; gameId: number }): void => {
             showToast(message);
+            clearMoves();
             navigate(`/play/game/${gameId}`);
         });
     };

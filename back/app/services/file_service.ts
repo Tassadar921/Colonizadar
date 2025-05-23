@@ -6,7 +6,7 @@ import mime from 'mime-types';
 
 export default class FileService {
     public delete(file: File): void {
-        fs.unlink(`public/${file.path}`, (error): void => {
+        fs.unlink(`public/${file.path}`, (error: any): void => {
             if (error) {
                 console.error(error.message);
             }

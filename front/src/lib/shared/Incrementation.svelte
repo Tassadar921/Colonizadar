@@ -2,6 +2,7 @@
     import Button from './Button.svelte';
     import { onMount } from 'svelte';
     import Icon from './Icon.svelte';
+    import { formatGameNumbers } from '../../services/stringService';
 
     export let value: number = 0;
     export let smallStep: number;
@@ -10,13 +11,14 @@
     export let largeShiftStep: number;
     export let canDecrement: boolean;
     export let canIncrement: boolean;
+    export let canBeZero: boolean = false;
     export let name = '';
 
     const applyStep = (step: number, shiftStep: number, direction: 'inc' | 'dec', shiftKey: boolean) => {
         const appliedStep = shiftKey ? shiftStep : step;
 
         if (direction === 'dec' && canDecrement) {
-            value = Math.max(smallStep, value - appliedStep);
+            value = Math.max(canBeZero ? 0 : smallStep, value - appliedStep);
         }
 
         if (direction === 'inc' && canIncrement) {
@@ -85,7 +87,7 @@
 
     <!-- Value -->
     <p class="font-semibold min-w-[6rem] text-center">
-        {value.toLocaleString()}
+        {formatGameNumbers(value)}
     </p>
 
     <!-- Small Increment -->

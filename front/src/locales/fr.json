@@ -13,6 +13,7 @@
         "updated-at": "Mis à jour le",
         "public": "Public",
         "private": "Privé",
+        "value": "Value",
         "title": {
             "label": "Titre",
             "placeholder": "Photo de Jésus"
@@ -292,6 +293,10 @@
             },
             "subvert": "Subvertir",
             "cost": "Coût",
+            "attack": "Attaquer",
+            "move": "Déplacer",
+            "attacking": "Attaquer",
+            "moving": "Déplacer vers",
             "fortified": "Fortifié",
             "fortify": "Fortifier",
             "buy-infantry": "Acheter de l'infanterie",

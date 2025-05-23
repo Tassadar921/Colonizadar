@@ -25,14 +25,14 @@
     $: currentPeace = currentPlayer.peaces?.find(({ enemy }: { enemy: SerializedRoomPlayer }) => enemy.id === player.id);
 </script>
 
-<div class="ml-3 flex gap-5">
+<div class="mb-3 flex gap-5">
     <!--    Player country    -->
     <div class="flex justify-center items-center">
         <img alt={player.country.name} src={`${import.meta.env.VITE_API_BASE_URL}/api/static/country-flag/${player.country.id}?token=${localStorage.getItem('apiToken')}`} class="max-h-10" />
     </div>
 
     <!--    Player name & profile picture    -->
-    <div class="flex flex-col gap-3 flex-wrap items-center">
+    <div class="flex flex-col gap-1 flex-wrap items-center">
         {#if player.user}
             {#if player.user.profilePicture}
                 <img
@@ -63,13 +63,15 @@
                 <p>({player.difficulty.name})</p>
             </div>
         {/if}
-        <p>{$t('play.game.score')}: {formatGameNumbers(player.score)}</p>
-        <p>{$t('play.game.gold')}: {player.gold ? formatGameNumbers(player.gold) : '?'}</p>
-        <p>
-            {$t('play.game.territories')}: {formatGameNumbers(
-                game.territories.reduce((accumulator, gameTerritory: SerializedGameTerritory) => accumulator + Number(gameTerritory.owner?.id === player.id), 0)
-            )}
-        </p>
+        <div class="flex flex-col">
+            <p>{$t('play.game.score')}: {formatGameNumbers(player.score)}</p>
+            <p>{$t('play.game.gold')}: {player.gold ? formatGameNumbers(player.gold) : '?'}</p>
+            <p>
+                {$t('play.game.territories')}: {formatGameNumbers(
+                    game.territories.reduce((accumulator, gameTerritory: SerializedGameTerritory) => accumulator + Number(gameTerritory.owner?.id === player.id), 0)
+                )}
+            </p>
+        </div>
         {#if player.user?.id !== $profile?.id}
             <div class="flex flex-col gap-3">
                 <div class="flex gap-3">

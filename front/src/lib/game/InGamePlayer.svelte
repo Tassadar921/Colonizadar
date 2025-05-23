@@ -17,7 +17,7 @@
         </div>
 
         <!--    Player name & profile picture    -->
-        <div class="flex gap-5 flex-wrap items-center">
+        <div class="flex gap-1 flex-wrap items-center">
             {#if player.user}
                 {#if player.user.profilePicture}
                     <img
