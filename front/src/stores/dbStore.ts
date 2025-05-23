@@ -1,20 +1,22 @@
 import Dexie, { type Table } from 'dexie';
-import { readable } from 'svelte/store';
+import { get, readable } from 'svelte/store';
 import { liveQuery } from 'dexie';
 import { showToast } from '../services/toastService';
+import type SerializedGame from 'colonizadar-backend/app/types/serialized/serialized_game';
+import type SerializedGameTerritory from 'colonizadar-backend/app/types/serialized/serialized_game_territory';
 
 export interface Move {
     id?: number;
-    from: string;
-    to: string;
+    from: number;
+    to: number;
     infantry: number;
     ships: number;
 }
 
 export interface Attack {
     id?: number;
-    from: string;
-    to: string;
+    from: number;
+    to: number;
     infantry: number;
     ships: number;
 }
@@ -33,6 +35,20 @@ class FrontDatabase extends Dexie {
 }
 
 const db = new FrontDatabase();
+
+export async function updateGameOnLoad(game: SerializedGame): Promise<void> {
+    const [allMoves, allAttacks] = await Promise.all([db.moves.toArray(), db.attacks.toArray()]);
+
+    const combined: (Move | Attack)[] = [...allMoves, ...allAttacks];
+
+    for (const move of combined) {
+        const from: SerializedGameTerritory | undefined = game.territories.find((t: SerializedGameTerritory): boolean => t.id === move.from);
+        if (from) {
+            from.infantry = (from.infantry ?? 0) - move.infantry;
+            from.ships = (from.ships ?? 0) - move.ships;
+        }
+    }
+}
 
 export const moves = readable<Move[]>([], (set) => {
     const subscription = liveQuery(() => db.moves.toArray()).subscribe({

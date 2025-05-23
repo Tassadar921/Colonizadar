@@ -41,8 +41,8 @@
 
     let isAttacking: boolean = false;
     let targetTerritory: SerializedGameTerritory;
-    let moveInfantryAmount: number;
-    let moveShipsAmount: number;
+    let moveInfantryAmount: number = 0;
+    let moveShipsAmount: number = 0;
 
     const dragSensitivity: number = 1.3;
 
@@ -157,11 +157,7 @@
                 }
 
                 targetTerritory = gameTerritory;
-                if (gameTerritory.owner?.id === currentPlayer.id) {
-                    isAttacking = false;
-                } else {
-                    isAttacking = true;
-                }
+                isAttacking = gameTerritory.owner?.id !== currentPlayer.id;
                 showMoveModal = true;
             }
         } else {
@@ -224,7 +220,7 @@
 </script>
 
 <button
-    class="w-4/5 overflow-hidden {isDragging ? 'cursor-grabbing' : ''}"
+    class="w-[70%] overflow-hidden {isDragging ? 'cursor-grabbing' : ''}"
     on:wheel={handleWheel}
     on:mousedown={startDrag}
     on:mousemove={onDrag}
@@ -245,6 +241,15 @@
 {#if targetTerritory}
     <Modal bind:showModal={showMoveModal} on:close={handleCloseMoveModal}>
         <Subtitle slot="header">{isAttacking ? $t('play.game.attacking') : $t('play.game.moving')} {targetTerritory.territory.name}</Subtitle>
-        <MoveModalContent bind:selectedTerritory {targetTerritory} {isAttacking} bind:infantryAmount={moveInfantryAmount} bind:shipsAmount={moveShipsAmount} />
+        <MoveModalContent
+            bind:game
+            bind:selectedTerritory
+            {targetTerritory}
+            {isAttacking}
+            bind:infantryAmount={moveInfantryAmount}
+            bind:shipsAmount={moveShipsAmount}
+            bind:showCountryModal
+            bind:showMoveModal
+        />
     </Modal>
 {/if}

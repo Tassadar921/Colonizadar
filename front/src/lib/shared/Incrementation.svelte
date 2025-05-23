@@ -2,6 +2,7 @@
     import Button from './Button.svelte';
     import { onMount } from 'svelte';
     import Icon from './Icon.svelte';
+    import { formatGameNumbers } from '../../services/stringService';
 
     export let value: number = 0;
     export let smallStep: number;
@@ -86,7 +87,7 @@
 
     <!-- Value -->
     <p class="font-semibold min-w-[6rem] text-center">
-        {value.toLocaleString()}
+        {formatGameNumbers(value)}
     </p>
 
     <!-- Small Increment -->
