@@ -1,5 +1,4 @@
 <script lang="ts">
-    import { onMount } from 'svelte';
     import { Router, Route } from 'svelte-routing';
     import Homepage from './lib/pages/Home.svelte';
     import Login from './lib/pages/Login.svelte';
@@ -7,9 +6,8 @@
     import ResetPassword from './lib/pages/ResetPassword.svelte';
     import ConfirmResetPassword from './lib/pages/ConfirmResetPassword.svelte';
     import Forbidden from './lib/pages/Forbidden.svelte';
-    import { updateProfile, profile } from './stores/profileStore';
+    import { profile } from './stores/profileStore';
     import NotFound from './lib/pages/NotFound.svelte';
-    import axios from 'axios';
     import Profile from './lib/pages/Profile.svelte';
     import { isLoading } from 'svelte-i18n';
     import Footer from './lib/shared/Footer.svelte';
@@ -17,9 +15,6 @@
     import AlreadyConnected from './lib/pages/AlreadyConnected.svelte';
     import Notifications from './lib/pages/Notifications.svelte';
     import Menu from './lib/menu/Menu.svelte';
-    import { setLanguage } from './stores/languageStore';
-    import { location, navigate } from './stores/locationStore';
-    import { locale } from 'svelte-i18n';
     import Social from './lib/pages/Social.svelte';
     import Friends from './lib/pages/Friends.svelte';
     import Blocked from './lib/pages/Blocked.svelte';
@@ -27,69 +22,6 @@
     import Play from './lib/pages/Play.svelte';
     import Room from './lib/pages/Room.svelte';
     import Game from './lib/pages/Game.svelte';
-    import { showToast } from './services/toastService';
-
-    const supportedLanguages = ['en', 'fr'];
-
-    const initializeLanguage = (): void => {
-        const langRegex = new RegExp(`^\/(${supportedLanguages.join('|')})(\/|$)`);
-        const langMatch = langRegex.exec($location);
-
-        const initialSetLanguage = (language: string) => {
-            setLanguage(language);
-            locale.set(language);
-            axios.defaults.headers.common['Accept-Language'] = `${language}-${language.toUpperCase()}`;
-        };
-
-        let language = langMatch ? langMatch[1] : null;
-        if (!language || !supportedLanguages.includes(language)) {
-            language = 'en';
-            initialSetLanguage(language);
-            navigate(`/${language}`);
-        } else {
-            initialSetLanguage(language);
-        }
-    };
-
-    const logInformations = async (token: string): Promise<void> => {
-        const tokenExpiresAt: string | null = localStorage.getItem('apiTokenExpiration');
-        if (tokenExpiresAt && new Date(tokenExpiresAt) < new Date()) {
-            localStorage.removeItem('apiToken');
-            localStorage.removeItem('apiTokenExpiration');
-            return;
-        }
-        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-        try {
-            await axios.get('/api');
-            await updateProfile();
-        } catch (error: any) {
-            if (error.response.data.errors) {
-                error.response.data.errors.forEach((error: any) => {
-                    showToast(error.message, 'error');
-                });
-            } else {
-                showToast(error.response.data.error, 'error');
-            }
-            localStorage.removeItem('apiToken');
-            localStorage.removeItem('apiTokenExpiration');
-            axios.defaults.headers.common['Authorization'] = '';
-        }
-    };
-
-    onMount(async (): Promise<void> => {
-        axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL;
-        initializeLanguage();
-
-        const theme: string | null = localStorage.getItem('theme');
-        if (theme !== 'light' && theme !== 'dark') {
-            localStorage.setItem('theme', 'light');
-        }
-
-        const token: string | null = localStorage.getItem('apiToken');
-        if (token) {
-            await logInformations(token);
-        }
-    });
 </script>
 
 <NotificationsSetup />

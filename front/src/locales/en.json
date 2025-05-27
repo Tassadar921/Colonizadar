@@ -45,7 +45,8 @@
         "file": {
             "title": "Select a file",
             "description": "Drag & drop or click to select a file."
-        }
+        },
+        "consent": "I agree to the terms and conditions"
     },
     "toast": {
         "copy": {
@@ -55,63 +56,10 @@
             "success": "You are now logged in",
             "error": "Wrong credentials"
         },
-        "logout": {
-            "success": "You are now disconnected",
-            "error": "An error occurred while disconnecting"
-        },
-        "reset-password": {
-            "mail": {
-                "success": "A mail has been sent to reset your password",
-                "error": "An error occurred while sending mail. Retry later."
-            },
-            "confirm": {
-                "success": "Password reset successfully",
-                "error": "An error occurred while confirming account creation. Retry later."
-            }
-        },
-        "profile": {
-            "get": {
-                "error": "An error occurred while fetching your profile"
-            },
-            "update": {
-                "success": "Profile updated",
-                "error": "An error occurred while updating your profile"
-            }
-        },
-        "friends": {
-            "search": {
-                "error": "An error occurred while searching friends"
-            },
-            "add": {
-                "success": "Friend request sent",
-                "error": "An error occurred while asking user as friend",
-                "cancel": {
-                    "success": "Friend request cancelled",
-                    "error": "An error occurred while cancelling the friend request"
-                }
-            },
-            "remove": {
-                "success": "Friend removed"
-            }
-        },
-        "blocked": {
-            "success": "User blocked",
-            "error": "An error occurred while blocking user"
-        },
-        "unblock": {
-            "success": "User unblocked",
-            "error": "An error occurred while unblocking user"
-        },
-        "invite": {
-            "success": "has been invited to your room",
-            "error": "An error occurred while inviting user"
-        },
         "notification": {
             "friend-request": {
                 "ask": "You received a friend request from",
-                "accept": "has been added to your friends",
-                "accepted": "accepted your friend request",
-                "refuse": "You refused the friend request of"
+                "accepted": "accepted your friend request"
             },
             "play": {
                 "invited": "invited you to join his room",
@@ -119,17 +67,6 @@
                 "room": {
                     "closed": "Room closed"
                 }
-            }
-        },
-        "room": {
-            "error": "An error occurred while pinging room",
-            "create": {
-                "success": "Room created",
-                "error": "An error occurred while creating the room"
-            },
-            "add-bot": {
-                "success": "Bot added",
-                "error": "An error occurred while adding the bot"
             }
         }
     },

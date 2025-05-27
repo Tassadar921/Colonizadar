@@ -5,6 +5,7 @@ const EventStreamController = () => import('@adonisjs/transmit/controllers/event
 const SubscribeController = () => import('@adonisjs/transmit/controllers/subscribe_controller');
 const UnsubscribeController = () => import('@adonisjs/transmit/controllers/unsubscribe_controller');
 
+const HealthCheckController = () => import('#controllers/health_checks_controller');
 const AuthController = () => import('#controllers/auth_controller');
 const ProfileController = () => import('#controllers/profile_controller');
 const FileController = () => import('#controllers/file_controller');
@@ -18,12 +19,40 @@ const PlayableCountryController = () => import('#controllers/playable_country_co
 const MapController = () => import('#controllers/map_controller');
 const GameController = () => import('#controllers/game_controller');
 const BotDifficultyController = () => import('#controllers/bot_difficulty_controller');
+const OauthController = () => import('#controllers/oauth_controller');
 
-// API requests
+router.get('healthcheck', [HealthCheckController]);
+
 router
     .group((): void => {
-        router.post('/login', [AuthController, 'login']);
+        router
+            .group((): void => {
+                // Classic authentication routes
+                router.post('/', [AuthController, 'login']);
 
+                // OAuth routes
+                router
+                    .group((): void => {
+                        router.get('/', [OauthController, 'github']);
+                        router.get('/callback', [OauthController, 'githubCallback']);
+                    })
+                    .prefix('github');
+                router
+                    .group((): void => {
+                        router.get('/', [OauthController, 'discord']);
+                        router.get('/callback', [OauthController, 'discordCallback']);
+                    })
+                    .prefix('discord');
+                router
+                    .group((): void => {
+                        router.get('/', [OauthController, 'google']);
+                        router.get('/callback', [OauthController, 'googleCallback']);
+                    })
+                    .prefix('google');
+            })
+            .prefix('auth');
+
+        // Classic account creation routes
         router
             .group((): void => {
                 router.post('/send-mail', [AuthController, 'sendAccountCreationEmail']);

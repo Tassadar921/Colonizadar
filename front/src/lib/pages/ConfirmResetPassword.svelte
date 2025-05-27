@@ -16,8 +16,8 @@
     let canSubmit: boolean = false;
     let message: string = '';
 
-    const handleSuccess = (): void => {
-        showToast($t('toast.reset-password.confirm.success'));
+    const handleSuccess = (event: CustomEvent): void => {
+        showToast(event.detail.message);
         if (!$profile) {
             navigate('/login');
         } else {

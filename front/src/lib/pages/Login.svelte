@@ -22,7 +22,7 @@
 
         await updateProfile(event.detail.user);
 
-        showToast($t('toast.login.success'));
+        showToast(event.detail.message);
         navigate('/');
     };
 

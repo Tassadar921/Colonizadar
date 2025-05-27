@@ -2,7 +2,7 @@ import { addMessages, init, locale } from 'svelte-i18n';
 import en from './locales/en.json';
 import fr from './locales/fr.json';
 
-export async function initLanguages(): Promise<void> {
+export async function initI148nLanguages(): Promise<void> {
     const defaultLang = 'en';
     const supportedLanguages: string[] = ['en', 'fr'];
     let userLang: string | null = localStorage.getItem('language');

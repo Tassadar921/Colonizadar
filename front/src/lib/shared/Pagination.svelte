@@ -65,7 +65,7 @@
                 <Icon name="doubleChevronRight" />
             </Button>
         {:else}
-            <Loader bind:isLoading />
+            <Loader {isLoading} />
         {/if}
     {/if}
 </div>

@@ -20,8 +20,8 @@
         }
     });
 
-    const handleSuccess = (): void => {
-        showToast($t('toast.reset-password.mail.success'));
+    const handleSuccess = (event: CustomEvent): void => {
+        showToast(event.detail.message);
     };
 
     $: canSubmit = !!email && isValidEmail(email);

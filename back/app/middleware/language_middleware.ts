@@ -3,15 +3,20 @@ import { inject } from '@adonisjs/core';
 import RequestLanguagesEnum from '#types/enum/request_languages_enum';
 import LanguageRepository from '#repositories/language_repository';
 import type { NextFn } from '@adonisjs/core/types/http';
+import i18nManager from '@adonisjs/i18n/services/main';
+import Language from '#models/language';
 
 @inject()
 export default class LanguageMiddleware {
     constructor(private readonly languageRepository: LanguageRepository) {}
 
     public async handle(ctx: HttpContext, next: NextFn): Promise<void> {
-        ctx.language = await this.languageRepository.firstOrFail({
+        const language: Language = await this.languageRepository.firstOrFail({
             code: this.getLanguageCode(ctx.request).toLowerCase(),
         });
+
+        ctx.language = language;
+        ctx.i18n = i18nManager.locale(language.code);
 
         await next();
     }

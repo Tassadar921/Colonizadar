@@ -12,9 +12,9 @@
 
     const handleAcceptPendingRequest = async (event: CustomEvent): Promise<void> => {
         try {
-            await axios.post('/api/friends/accept', { userId: event.detail.from.id });
+            const { data } = await axios.post('/api/friends/accept', { userId: event.detail.from.id });
             removeNotification(event.detail, 'friendRequests');
-            showToast(`${event.detail.from.username} ${$t('toast.notification.friend-request.accept')}`, 'success', '/friends');
+            showToast(data.message, 'success', '/friends');
             if ($notifications.friendRequests.length <= 3) {
                 await setPendingFriendRequests();
             }
@@ -25,9 +25,9 @@
 
     const handleRefusePendingRequest = async (event: CustomEvent): Promise<void> => {
         try {
-            await axios.post('/api/friends/refuse', { userId: event.detail.from.id });
+            const { data } = await axios.post('/api/friends/refuse', { userId: event.detail.from.id });
             removeNotification(event.detail, 'friendRequests');
-            showToast(`${$t('toast.notification.friend-request.refuse')} ${event.detail.from.username}`, 'success', '/friends');
+            showToast(data.message, 'success', '/friends');
             if ($notifications.friendRequests.length <= 3) {
                 await setPendingFriendRequests();
             }
@@ -37,7 +37,7 @@
     };
 </script>
 
-<Loader bind:isLoading />
+<Loader {isLoading} />
 
 <Title title={$t('notifications.title')} />
 

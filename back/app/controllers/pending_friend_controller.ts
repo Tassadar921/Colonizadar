@@ -9,10 +9,13 @@ import User from '#models/user';
 import PendingFriendNotification from '#models/pending_friend_notification';
 import cache from '@adonisjs/cache/services/main';
 import PaginatedPendingFriends from '#types/paginated/paginated_pending_friends';
+import FriendRepository from '#repositories/friend_repository';
+import Friend from '#models/friend';
 
 @inject()
 export default class PendingFriendController {
     constructor(
+        private readonly friendRepository: FriendRepository,
         private readonly pendingFriendRepository: PendingFriendRepository,
         private readonly userRepository: UserRepository
     ) {}
@@ -31,13 +34,16 @@ export default class PendingFriendController {
         });
     }
 
-    public async add({ request, response, user }: HttpContext): Promise<void> {
+    public async add({ request, response, user, i18n }: HttpContext): Promise<void> {
         const { userId } = await request.validateUsing(addPendingFriendValidator);
 
         const askingToUser: User = await this.userRepository.firstOrFail({ frontId: userId });
+        const existingFriend: Friend | null = await this.friendRepository.findOneFromUsers(user, askingToUser);
+        if (existingFriend) {
+            return response.send({ message: i18n.t('messages.pending-friend.add.error', { username: askingToUser.username }) });
+        }
 
         let pendingFriend: PendingFriend | null;
-
         try {
             pendingFriend = await this.pendingFriendRepository.findOneFromUsers(user, askingToUser);
         } catch (error: any) {
@@ -61,14 +67,16 @@ export default class PendingFriendController {
             transmit.broadcast(`notification/add-friend/${userId}`, pendingFriend.apiSerialize());
         }
 
-        return response.send({ pendingFriend: pendingFriend.apiSerialize() });
+        return response.send({
+            message: i18n.t('messages.pending-friend.add.success', { username: askingToUser.username }),
+            pendingFriend: pendingFriend.apiSerialize(),
+        });
     }
 
-    public async cancel({ request, response, user }: HttpContext): Promise<void> {
+    public async cancel({ request, response, user, i18n }: HttpContext): Promise<void> {
         const { userId } = await cancelPendingFriendValidator.validate(request.params());
 
         const askingToUser: User = await this.userRepository.firstOrFail({ frontId: userId });
-
         const pendingFriend: PendingFriend = await this.pendingFriendRepository.findOneFromUsers(user, askingToUser);
 
         if (pendingFriend.userId === user.id || pendingFriend.friendId === user.id) {
@@ -76,9 +84,9 @@ export default class PendingFriendController {
             await pendingFriend.notification.delete();
             await pendingFriend.delete();
 
-            return response.send({ message: 'Request deleted' });
+            return response.send({ message: i18n.t('messages.pending-friend.cancel.success', { username: askingToUser.username }) });
         }
 
-        return response.forbidden({ error: 'You are not related to this request' });
+        return response.forbidden({ error: i18n.t('messages.pending-friend.cancel.error', { username: askingToUser.username }) });
     }
 }

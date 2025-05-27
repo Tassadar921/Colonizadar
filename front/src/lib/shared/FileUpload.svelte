@@ -94,7 +94,7 @@
     };
 </script>
 
-<Loader bind:isLoading />
+<Loader {isLoading} />
 
 <div class="flex flex-col w-full my-5">
     {#if title}

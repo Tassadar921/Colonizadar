@@ -13,17 +13,16 @@
 
     const handleSuccess = async (): Promise<void> => {
         try {
-            await axios.get('/api/logout');
+            const { data } = await axios.get('/api/logout');
             localStorage.removeItem('apiToken');
             localStorage.removeItem('apiTokenExpiration');
             localStorage.removeItem('subscribed');
             clearProfile();
-        } catch (error) {
-            showToast($t('toast.logout.error'), 'error');
-            navigate('/');
-        } finally {
-            showToast($t('toast.logout.success'));
+            showToast(data.message);
             navigate('/login');
+        } catch (error: any) {
+            showToast(error.response.data.error, 'error');
+            navigate('/');
         }
     };
 

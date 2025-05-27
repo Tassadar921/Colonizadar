@@ -56,8 +56,8 @@
                 uri: `${import.meta.env.VITE_API_BASE_URL}/api/static/country-flag/${playableCountry.id}?token=${localStorage.getItem('apiToken')}`,
             }));
             isLoading = false;
-        } catch (e: any) {
-            showToast($t('toast.room.error'), 'error');
+        } catch (error: any) {
+            showToast(error.response.data.error, 'error');
             await unloadCleanup();
             navigate('/play');
         }
@@ -149,5 +149,5 @@
         <InviteFriends bind:room />
     </Modal>
 {:else}
-    <Loader bind:isLoading />
+    <Loader {isLoading} />
 {/if}

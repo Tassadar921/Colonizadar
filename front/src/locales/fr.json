@@ -45,7 +45,8 @@
         "file": {
             "title": "Sélectionnez un fichier",
             "description": "Glissez-déposez ou cliquez pour sélectionner un fichier."
-        }
+        },
+        "consent": "J'accepte les termes et conditions"
     },
     "toast": {
         "copy": {
@@ -55,63 +56,10 @@
             "success": "Vous êtes maintenant connecté",
             "error": "Identifiants invalides"
         },
-        "logout": {
-            "success": "Vous êtes maintenant déconnecté",
-            "error": "Une erreur est survenue lors de la déconnexion"
-        },
-        "reset-password": {
-            "mail": {
-                "success": "Un mail a été envoyé pour réinitialiser votre mot de passe",
-                "error": "Une erreur s'est produite lors de l'envoi du mail. Réessayez plus tard."
-            },
-            "confirm": {
-                "success": "Mot de passe changé avec succès",
-                "error": "Une erreur s'est produite lors de la confirmation de la création du compte. Réessayez plus tard."
-            }
-        },
-        "profile": {
-            "get": {
-                "error": "Une erreur est survenue lors de la récupération de votre profil"
-            },
-            "update": {
-                "success": "Profil mis à jour",
-                "error": "Une erreur est survenue lors de la mise à jour du profil"
-            }
-        },
-        "friends": {
-            "search": {
-                "error": "Une erreur est survenue lors de la recherche d'amis"
-            },
-            "add": {
-                "success": "Demande d'ami envoyée",
-                "error": "Une erreur est survenue lors de la demande en ami",
-                "cancel": {
-                    "success": "Demande d'ami annulée",
-                    "error": "Une erreur est survenue lors de l'annulation de la demande d'ami"
-                }
-            },
-            "remove": {
-                "success": "Ami supprimé"
-            }
-        },
-        "blocked": {
-            "success": "Utilisateur bloqué",
-            "error": "Une erreur est survenue lors du blocage de l'utilisateur"
-        },
-        "unblock": {
-            "success": "Utilisateur débloqué",
-            "error": "Une erreur est survenue lors du déblocage de l'utilisateur"
-        },
-        "invite": {
-            "success": "a été invité dans votre salon",
-            "error": "Une erreur est survenue lors de l'invitation de l'utilisateur"
-        },
         "notification": {
             "friend-request": {
                 "ask": "Vous avez reçu une demande d'ami de",
-                "accept": "a été ajouté à vos amis",
-                "accepted": "a accepté votre demande d'ami",
-                "refuse": "Vous avez refusé la demande d'ami de"
+                "accepted": "a accepté votre demande d'ami"
             },
             "play": {
                 "invited": "vous a invité à rejoindre son salon",
@@ -119,17 +67,6 @@
                 "room": {
                     "closed": "Salon fermé"
                 }
-            }
-        },
-        "room": {
-            "error": "Une erreur est survenue lors de la requête au salon",
-            "create": {
-                "success": "Salon créé",
-                "error": "Une erreur est survenue lors de la création du salon"
-            },
-            "add-bot": {
-                "success": "Bot ajouté",
-                "error": "Une erreur est survenue lors de l'ajout du bot"
             }
         }
     },

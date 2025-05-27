@@ -42,11 +42,11 @@
 
     const handleUnblockUser = async (): Promise<void> => {
         try {
-            await axios.delete(`/api/blocked/cancel/${selectedBlockedUser.id}`);
+            const { data } = await axios.delete(`/api/blocked/cancel/${selectedBlockedUser.id}`);
             paginatedBlockedUsers.blockedUsers = paginatedBlockedUsers.blockedUsers.filter((currentUser) => {
                 return currentUser.user.id !== selectedBlockedUser.id;
             });
-            showToast($t('toast.unblock.success'));
+            showToast(data.message);
         } catch (error: any) {
             showToast(error.response.data.error, 'error');
         }
@@ -109,9 +109,9 @@
             <p class="my-5">{$t('social.blocked.none')}</p>
         {/if}
     </div>
-    <Pagination bind:paginatedObject={paginatedBlockedUsers} bind:baseUrl={searchBaseUrl} />
+    <Pagination bind:paginatedObject={paginatedBlockedUsers} baseUrl={searchBaseUrl} />
 {:else}
-    <Loader bind:isLoading />
+    <Loader {isLoading} />
 {/if}
 
 <ConfirmModal bind:showModal on:success={handleUnblockUser}>

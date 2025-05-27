@@ -11,11 +11,12 @@ export default class extends BaseSchema {
             table.specificType('front_id', 'serial').notNullable();
             table.string('username', 50).notNullable();
             table.string('email', 255).notNullable().unique();
-            table.string('password', 255).notNullable();
+            table.string('password', 255).nullable();
             table.uuid('creation_token').nullable();
+            table.enum('role', Object.values(UserRoleEnum)).notNullable().defaultTo(UserRoleEnum.USER);
             table.boolean('enabled').defaultTo(false);
             table.boolean('accepted_terms_and_conditions').defaultTo(false);
-            table.enum('role', Object.values(UserRoleEnum)).notNullable().defaultTo(UserRoleEnum.USER);
+            table.boolean('is_oauth').defaultTo(false);
             table.uuid('profile_picture_id').nullable().references('id').inTable('files');
             table.timestamp('created_at', { useTz: true }).notNullable().defaultTo(this.now());
             table.timestamp('updated_at', { useTz: true }).notNullable().defaultTo(this.now());

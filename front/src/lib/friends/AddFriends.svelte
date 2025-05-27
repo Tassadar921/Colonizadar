@@ -47,11 +47,11 @@
 
     const handleAddFriend = async (user: SerializedUser): Promise<void> => {
         try {
-            await axios.post('/api/friends/ask', {
+            const { data } = await axios.post('/api/friends/ask', {
                 userId: user.id,
             });
             updateUser(user.id, { sentFriendRequest: true });
-            showToast($t('toast.friends.add.success'));
+            showToast(data.message);
         } catch (error: any) {
             showToast(error.response.data.error, 'error');
         }
@@ -59,9 +59,9 @@
 
     const handleCancelFriendRequest = async (user: SerializedUser): Promise<void> => {
         try {
-            await axios.delete(`/api/friends/pending/cancel/${user.id}`);
+            const { data } = await axios.delete(`/api/friends/pending/cancel/${user.id}`);
             updateUser(user.id, { sentFriendRequest: false });
-            showToast($t('toast.friends.add.cancel.success'));
+            showToast(data.message);
         } catch (error: any) {
             showToast(error.response.data.error, 'error');
         }
@@ -69,9 +69,9 @@
 
     const handleBlockUser = async (): Promise<void> => {
         try {
-            await axios.get(`/api/blocked/add/${blockingUser.id}`);
+            const { data } = await axios.get(`/api/blocked/add/${blockingUser.id}`);
             paginatedUsers.users = paginatedUsers.users.filter((currentUser) => currentUser.id !== blockingUser.id);
-            showToast($t('toast.blocked.success'));
+            showToast(data.message);
         } catch (error: any) {
             showToast(error.response.data.error, 'error');
         }
@@ -144,8 +144,8 @@
 
     const handleAcceptPendingRequest = async (user: SerializedUser): Promise<void> => {
         try {
-            await axios.post('/api/friends/accept', { userId: user.id });
-            showToast(`${user.username} ${$t('toast.notification.friend-request.accept')}`, 'success', '/friends');
+            const { data } = await axios.post('/api/friends/accept', { userId: user.id });
+            showToast(data.message, 'success', '/friends');
             await setPendingFriendRequests();
             paginatedUsers.users = paginatedUsers.users.filter((currentUser) => currentUser.id !== user.id);
             dispatch('updateFriends');
@@ -156,8 +156,8 @@
 
     const handleRefusePendingRequest = async (user: SerializedUser): Promise<void> => {
         try {
-            await axios.post('/api/friends/refuse', { userId: user.id });
-            showToast(`${$t('toast.notification.friend-request.refuse')} ${user.username}`, 'success', '/friends');
+            const { data } = await axios.post('/api/friends/refuse', { userId: user.id });
+            showToast(data.message, 'success', '/friends');
             await setPendingFriendRequests();
             updateUser(user.id, { receivedFriendRequest: false });
         } catch (error: any) {
@@ -258,9 +258,9 @@
             <p class="my-5">{$t('social.friends.add.none')}</p>
         {/if}
     </div>
-    <Pagination bind:paginatedObject={paginatedUsers} bind:baseUrl={searchBaseUrl} />
+    <Pagination bind:paginatedObject={paginatedUsers} baseUrl={searchBaseUrl} />
 {:else}
-    <Loader bind:isLoading />
+    <Loader {isLoading} />
 {/if}
 
 <ConfirmModal bind:showModal on:success={handleBlockUser}>

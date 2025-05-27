@@ -33,11 +33,10 @@
 
     const handleSuccess = (event: CustomEvent): void => {
         setProfile(event.detail.user);
-        showToast($t('toast.profile.update.success'));
+        showToast(event.detail.message);
     };
 
     const handleError = (): void => {
-        showToast($t('toast.profile.update.error'), 'error');
         formValues = {
             username: $profile!.username,
             email: $profile!.email,
