@@ -3,6 +3,7 @@
     import { t } from 'svelte-i18n';
     import Title from '../shared/Title.svelte';
     import Breadcrumbs from '../shared/Breadcrumbs.svelte';
+    import { MetaTags } from 'svelte-meta-tags';
 
     interface Page {
         title: string;
@@ -34,6 +35,22 @@
         },
     ];
 </script>
+
+<MetaTags
+    title={$t('social.meta.title')}
+    description={$t('social.meta.description')}
+    keywords={$t('social.meta.keywords').split(', ')}
+    languageAlternates={[
+        {
+            hrefLang: 'en',
+            href: `${import.meta.env.VITE_FRONT_URI}/en/social`,
+        },
+        {
+            hrefLang: 'fr',
+            href: `${import.meta.env.VITE_FRONT_URI}/fr/social`,
+        },
+    ]}
+/>
 
 <Title title={$t('social.title')} />
 

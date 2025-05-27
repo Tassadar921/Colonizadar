@@ -82,7 +82,7 @@
                 type="submit"
                 disabled={isSendButtonDisabled}
                 aria-label="Submit form"
-                class="bg-green-700 {isSendButtonDisabled ? '' : 'hover:bg-green-800'} transition-all duration-300 px-3 py-1.5 rounded-xl text-2xl font-bold flex justify-center items-center gap-3"
+                class="bg-green-700 {isSendButtonDisabled ? '' : 'hover:bg-green-800'} transition-all duration-300 px-5 py-1.5 rounded-xl text-2xl font-bold flex justify-center items-center gap-3"
             >
                 {#if isLoading}
                     <Icon name="spinner" size={40} />

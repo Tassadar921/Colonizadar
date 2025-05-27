@@ -7,6 +7,7 @@
     import Loader from '../shared/Loader.svelte';
     import axios from 'axios';
     import { showToast } from '../../services/toastService';
+    import { MetaTags } from 'svelte-meta-tags';
 
     let isLoading: boolean = false;
 
@@ -36,6 +37,22 @@
         }
     };
 </script>
+
+<MetaTags
+    title={$t('notifications.meta.title')}
+    description={$t('notifications.meta.description')}
+    keywords={$t('notifications.meta.keywords').split(', ')}
+    languageAlternates={[
+        {
+            hrefLang: 'en',
+            href: `${import.meta.env.VITE_FRONT_URI}/en/notifications`,
+        },
+        {
+            hrefLang: 'fr',
+            href: `${import.meta.env.VITE_FRONT_URI}/fr/notifications`,
+        },
+    ]}
+/>
 
 <Loader {isLoading} />
 

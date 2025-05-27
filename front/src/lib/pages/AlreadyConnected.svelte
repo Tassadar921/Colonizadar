@@ -3,7 +3,11 @@
     import { t } from 'svelte-i18n';
     import BackTo from '../shared/BackTo.svelte';
     import Breadcrumbs from '../shared/Breadcrumbs.svelte';
+    import { MetaTags } from 'svelte-meta-tags';
 </script>
+
+<meta name="robots" content="noindex, nofollow" />
+<MetaTags title={$t('already-connected.meta.title')} description={$t('already-connected.meta.description')} keywords={$t('already-connected.meta.keywords').split(', ')} />
 
 <Breadcrumbs hasBackground items={[{ label: $t('home.title'), path: '/' }, { label: $t('already-connected.title') }]} />
 

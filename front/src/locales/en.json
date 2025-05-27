@@ -76,6 +76,11 @@
     "profile": {
         "title": "Profile",
         "description": "Update your profile",
+        "meta": {
+            "title": "Edit Profile – Adonis & Svelte Starter Kit",
+            "description": "Update your username and profile picture easily on Adonis & Svelte Starter Kit. Manage your personal information securely.",
+            "keywords": "edit profile, update username, change profile picture, user settings, Adonis & Svelte Starter Kit"
+        },
         "reset-password": "Reset password",
         "profile-picture": {
             "title": "Profile picture",
@@ -84,18 +89,67 @@
     },
     "reset-password": {
         "title": "Reset password",
+        "meta": {
+            "title": "Reset Password – Adonis & Svelte Starter Kit",
+            "description": "Enter your email to receive a password reset link. The email field is prefilled if you are logged in.",
+            "keywords": "reset password, password recovery, forgot password, password reset email, Adonis & Svelte Starter Kit"
+        },
         "confirm": {
-            "title": "Finish reset password"
+            "title": "Finish reset password",
+            "meta": {
+                "title": "Password Reset Confirmation – Adonis & Svelte Starter Kit",
+                "description": "Confirm your password reset by clicking the link sent to your email. Securely update your password and regain access to your account.",
+                "keywords": "password reset confirmation, reset password, email verification, Adonis & Svelte Starter Kit"
+            }
         }
     },
     "home": {
-        "title": "Home"
+        "title": "Home",
+        "meta": {
+            "title": "Welcome to Colonizadar – Online Strategy & Colonization Game",
+            "description": "In Colonizadar, lead your nation to global domination! Conquer new lands, battle natives, and outmaneuver rival players in this multiplayer colonization game.",
+            "keywords": "colonization game, online strategy game, multiplayer game, conquer the world, nation builder, Colonizadar"
+        }
     },
     "login": {
-        "title": "Login"
+        "title": "Login",
+        "meta": {
+            "title": "Login – Adonis & Svelte Starter Kit",
+            "description": "Log in to Adonis & Svelte Starter Kit using your email and password, or quickly via Google, GitHub, or Discord OAuth.",
+            "keywords": "login, sign in, email login, password login, OAuth login, Google login, GitHub login, Discord login, Adonis & Svelte Starter Kit"
+        }
+    },
+    "create-account": {
+        "title": "Create account",
+        "meta": {
+            "title": "Create Your Account – Adonis & Svelte Starter Kit",
+            "description": "Sign up for Adonis & Svelte Starter Kit by creating your account with username, email, and password. Or quickly register using Google, Discord, or GitHub.",
+            "keywords": "create account, sign up, register, username, email, password, OAuth, Google login, Discord login, GitHub login, Adonis & Svelte Starter Kit"
+        },
+        "confirm": {
+            "title": "Confirm account creation",
+            "meta": {
+                "title": "Account Confirmation – Welcome to Adonis & Svelte Starter Kit",
+                "description": "Confirm your account creation by clicking the link sent to your email. Get started with Adonis & Svelte Starter Kit today.",
+                "keywords": "account confirmation, email verification, create account, Adonis & Svelte Starter Kit"
+            }
+        }
+    },
+    "oauth": {
+        "title": "Login with OAuth",
+        "meta": {
+            "title": "OAuth Callback – Adonis & Svelte Starter Kit",
+            "description": "Processing OAuth callback to authenticate and retrieve user profile. Securely handling access token before redirecting you.",
+            "keywords": "OAuth callback, access token, user authentication, bearer token, Adonis & Svelte Starter Kit"
+        }
     },
     "logout": {
         "title": "Logout",
+        "meta": {
+            "title": "Confirm Logout – Adonis & Svelte Starter Kit",
+            "description": "Are you sure you want to log out? Confirm your logout to end your session safely on Adonis & Svelte Starter Kit.",
+            "keywords": "confirm logout, logout confirmation, end session, Adonis & Svelte Starter Kit"
+        },
         "modal": {
             "title": "Logout",
             "text": "Are you sure you want to logout ?"
@@ -103,20 +157,45 @@
     },
     "forbidden": {
         "title": "Forbidden",
-        "subtitle": "You have to be logged to access this app's part."
+        "subtitle": "You have to be logged to access this app's part.",
+        "meta": {
+            "title": "Access Forbidden – Adonis & Svelte Starter Kit",
+            "description": "You do not have permission to access this page. If you believe this is an error, please contact support.",
+            "keywords": "access forbidden, 403 error, permission denied, restricted access, Adonis & Svelte Starter Kit"
+        }
     },
     "not-found": {
-        "title": "Page not found"
+        "title": "Page not found",
+        "meta": {
+            "title": "Page Not Found – Adonis & Svelte Starter Kit",
+            "description": "The page you are looking for does not exist. Check the URL or return to the homepage of Adonis & Svelte Starter Kit.",
+            "keywords": "404 error, page not found, missing page, Adonis & Svelte Starter Kit"
+        }
     },
     "already-connected": {
-        "title": "Already connected"
+        "title": "Already connected",
+        "meta": {
+            "title": "Already Logged In – Return to Your Dashboard | Adonis & Svelte Starter Kit",
+            "description": "You're already logged in to Adonis & Svelte Starter Kit. Continue to your dashboard or return to the homepage to explore more features.",
+            "keywords": "already logged in, user session, dashboard, homepage, Adonis & Svelte Starter Kit"
+        }
     },
     "social": {
         "title": "Social",
         "description": "Manage your friends & blocked users",
+        "meta": {
+            "title": "Social Hub – Adonis & Svelte Starter Kit",
+            "description": "Access your social dashboard: manage your friends, blocked users, and profile settings from one place.",
+            "keywords": "social hub, manage friends, blocked users, user profile, Adonis & Svelte Starter Kit"
+        },
         "friends": {
             "title": "Friends",
             "description": "Manage your friends",
+            "meta": {
+                "title": "Manage Your Friends – Adonis & Svelte Starter Kit",
+                "description": "Add, remove, accept friend requests, and block users easily with Adonis & Svelte Starter Kit. Manage your social connections seamlessly.",
+                "keywords": "manage friends, add friends, remove friends, friend requests, block users, social management, Adonis & Svelte Starter Kit"
+            },
             "none": "No friend found",
             "search": {
                 "placeholder": "John123",
@@ -140,6 +219,11 @@
         "blocked": {
             "title": "Blocked users",
             "description": "Manage your blocked users",
+            "meta": {
+                "title": "Blocked Users - Manage Your Block List | Adonis & Svelte Starter Kit",
+                "description": "Easily view and manage the users you've blocked on Adonis & Svelte Starter Kit. Take control of your social connections and ensure a safer experience.",
+                "keywords": "blocked users, block list, manage blocked users, social settings, privacy control, Adonis & Svelte Starter Kit"
+            },
             "none": "No blocked user found",
             "search": {
                 "placeholder": "John123",
@@ -159,6 +243,11 @@
     },
     "notifications": {
         "title": "Notifications",
+        "meta": {
+            "title": "Manage Notifications – Adonis & Svelte Starter Kit",
+            "description": "View, accept, decline, and delete your notifications, including friend requests, easily with Adonis & Svelte Starter Kit.",
+            "keywords": "notifications, manage notifications, friend requests, accept notifications, decline notifications, delete notifications, Adonis & Svelte Starter Kit"
+        },
         "friend-requests": {
             "title": "Friend requests",
             "none": "No pending friend request"

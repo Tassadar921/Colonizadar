@@ -3,7 +3,11 @@
     import { t } from 'svelte-i18n';
     import BackTo from '../shared/BackTo.svelte';
     import Breadcrumbs from '../shared/Breadcrumbs.svelte';
+    import { MetaTags } from 'svelte-meta-tags';
 </script>
+
+<meta name="robots" content="noindex, nofollow" />
+<MetaTags title={$t('not-found.meta.title')} description={$t('not-found.meta.description')} keywords={$t('not-found.meta.keywords').split(', ')} />
 
 <Breadcrumbs hasBackground items={[{ label: $t('home.title'), path: '/' }, { label: $t('not-found.title') }]} />
 
