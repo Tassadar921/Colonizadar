@@ -13,9 +13,9 @@
     import Loader from '../shared/Loader.svelte';
     import Icon from '../shared/Icon.svelte';
     import { MetaTags } from 'svelte-meta-tags';
-    import type PaginatedBlockedUsers from "colonizadar-backend/app/types/paginated/paginated_blocked_users";
-    import type SerializedUser from "colonizadar-backend/app/types/serialized/serialized_user";
-    import type SerializedBlockedUser from "colonizadar-backend/app/types/serialized/serialized_blocked_user";
+    import type PaginatedBlockedUsers from 'colonizadar-backend/app/types/paginated/paginated_blocked_users';
+    import type SerializedUser from 'colonizadar-backend/app/types/serialized/serialized_user';
+    import type SerializedBlockedUser from 'colonizadar-backend/app/types/serialized/serialized_blocked_user';
 
     let isLoading: boolean = false;
     let paginatedBlockedUsers: PaginatedBlockedUsers;

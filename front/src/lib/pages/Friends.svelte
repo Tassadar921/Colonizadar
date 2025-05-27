@@ -19,7 +19,7 @@
     import Loader from '../shared/Loader.svelte';
     import Icon from '../shared/Icon.svelte';
     import { MetaTags } from 'svelte-meta-tags';
-    import type SerializedFriend from "colonizadar-backend/app/types/serialized/serialized_friend";
+    import type SerializedFriend from 'colonizadar-backend/app/types/serialized/serialized_friend';
 
     let isLoading: boolean = false;
     let paginatedFriends: PaginatedFriends;
