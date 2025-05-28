@@ -12,7 +12,9 @@ install:
 	rm -rf .vite node_modules package-lock.json back/node_modules front/node_modules && npm install
 
 upgrade:
-	cd front && npx ncu -u && cd back && npx ncu -u && make install
+	cd back && npx ncu -u
+	cd front && npx ncu -u
+	${MAKE} install
 
 list-routes:
 	cd back && node ace list:routes
@@ -37,12 +39,12 @@ stop:
 	set -a && source back/.env && set +a && docker compose down --remove-orphans
 
 up:
-	make stop && set -a && source back/.env && set +a && docker compose up -d --build
+	${MAKE} stop && set -a && source back/.env && set +a && docker compose up -d --build
 
 rm:
 	set -a && source back/.env && set +a && docker compose down --volumes --remove-orphans
 
 start: install rm up db
 
-make prune:
+prune:
 	docker system prune -f
