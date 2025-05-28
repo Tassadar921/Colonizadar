@@ -5,6 +5,7 @@ import LanguageRepository from '#repositories/language_repository';
 import type { NextFn } from '@adonisjs/core/types/http';
 import i18nManager from '@adonisjs/i18n/services/main';
 import Language from '#models/language';
+import env from '#start/env';
 
 @inject()
 export default class LanguageMiddleware {
@@ -14,6 +15,10 @@ export default class LanguageMiddleware {
         const language: Language = await this.languageRepository.firstOrFail({
             code: this.getLanguageCode(ctx.request).toLowerCase(),
         });
+
+        if (env.get('NODE_ENV') === 'development') {
+            await i18nManager.reloadTranslations();
+        }
 
         ctx.language = language;
         ctx.i18n = i18nManager.locale(language.code);

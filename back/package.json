@@ -44,7 +44,8 @@
         "@types/node": "^22.15.18",
         "hot-hook": "^0.4.0",
         "pino-pretty": "^13.0.0",
-        "ts-node-maintained": "^10.9.5"
+        "ts-node-maintained": "^10.9.5",
+        "typescript": "~5.8"
     },
     "dependencies": {
         "@adonisjs/ally": "^5.1.0",
@@ -61,12 +62,14 @@
         "luxon": "^3.6.1",
         "mime-types": "^3.0.1",
         "pg": "^8.16.0",
-        "reflect-metadata": "^0.2.2"
+        "reflect-metadata": "^0.2.2",
+        "axios": "^1.9.0"
     },
     "hotHook": {
         "boundaries": [
             "./app/controllers/**/*.ts",
-            "./app/middleware/*.ts"
+            "./app/middleware/*.ts",
+            "./resources/lang/**/*.json"
         ]
     },
     "overrides": {

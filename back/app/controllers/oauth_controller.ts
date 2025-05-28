@@ -93,12 +93,39 @@ export default class OauthController {
                 user.isOauth = true;
                 await user.save();
             }
+            if (oauthUser.avatarUrl && !user.profilePictureId) {
+                const profilePicture: File = await this.storeAndGetFileFromUrl(oauthUser.avatarUrl);
+                user.profilePictureId = profilePicture.id;
+                await user.save();
+            }
             const accessToken: AccessToken = await User.accessTokens.create(user);
             const { token, expiresAt } = accessToken.toJSON();
             return { token: { token: token!, expiresAt: expiresAt! } };
         }
 
-        const profilePicturePath: string = await this.fileService.saveOauthProfilePictureFromUrl(oauthUser.avatarUrl);
+        let profilePicture: File | null = null;
+
+        if (oauthUser.avatarUrl) {
+            profilePicture = await this.storeAndGetFileFromUrl(oauthUser.avatarUrl);
+        }
+
+        user = await User.create({
+            username: oauthUser.nickName,
+            email: oauthUser.email,
+            isOauth: true,
+            profilePictureId: profilePicture?.id,
+            enabled: true,
+            acceptedTermsAndConditions: true,
+            role: UserRoleEnum.USER,
+        });
+
+        const accessToken: AccessToken = await User.accessTokens.create(user);
+        const { token, expiresAt } = accessToken.toJSON();
+        return { token: { token: token!, expiresAt: expiresAt! } };
+    }
+
+    private async storeAndGetFileFromUrl(url: string): Promise<File> {
+        const profilePicturePath: string = await this.fileService.saveOauthProfilePictureFromUrl(url);
         const { size, mimeType, extension, name } = await this.fileService.getFileInfo(app.makePath(profilePicturePath));
 
         const profilePicture: File | null = await File.create({
@@ -108,20 +135,7 @@ export default class OauthController {
             mimeType,
             size,
         });
-        await profilePicture.refresh();
 
-        user = await User.create({
-            username: oauthUser.nickName,
-            email: oauthUser.email,
-            isOauth: true,
-            profilePictureId: profilePicture.id,
-            enabled: true,
-            acceptedTermsAndConditions: true,
-            role: UserRoleEnum.USER,
-        });
-
-        const accessToken: AccessToken = await User.accessTokens.create(user);
-        const { token, expiresAt } = accessToken.toJSON();
-        return { token: { token: token!, expiresAt: expiresAt! } };
+        return await profilePicture.refresh();
     }
 }

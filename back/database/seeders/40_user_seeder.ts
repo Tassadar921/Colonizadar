@@ -9,13 +9,13 @@ export default class extends BaseSeeder {
         const userRepository: UserRepository = new UserRepository();
 
         const emails: string[] = JSON.parse(env.get('FRIEND_EMAILS'));
-        for (const email of emails) {
+        for (const email of [...emails, env.get('ADMIN_EMAIL')]) {
             if (!(await userRepository.findOneBy({ email }))) {
                 await User.create({
                     username: email.split('@')[0],
                     email,
                     password: 'xxx',
-                    role: email === 'paul.lecuisinier@gmail.com' ? UserRoleEnum.ADMIN : UserRoleEnum.USER,
+                    role: email === env.get('ADMIN_EMAIL') ? UserRoleEnum.ADMIN : UserRoleEnum.USER,
                     enabled: true,
                     acceptedTermsAndConditions: true,
                 });

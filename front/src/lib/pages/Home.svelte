@@ -2,6 +2,7 @@
     import Card from '../shared/Card.svelte';
     import { t } from 'svelte-i18n';
     import Title from '../shared/Title.svelte';
+    import { MetaTags } from 'svelte-meta-tags';
 
     interface Page {
         title: string;

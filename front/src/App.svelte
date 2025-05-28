@@ -22,6 +22,9 @@
     import Play from './lib/pages/Play.svelte';
     import Room from './lib/pages/Room.svelte';
     import Game from './lib/pages/Game.svelte';
+    import Oauth from './lib/pages/Oauth.svelte';
+    import CreateAccount from './lib/pages/CreateAccount.svelte';
+    import ConfirmAccountCreation from './lib/pages/ConfirmAccountCreation.svelte';
 </script>
 
 <NotificationsSetup />
@@ -32,11 +35,15 @@
             <Menu />
             <Router>
                 <Route path="/:language/reset-password"><ResetPassword /></Route>
-                <Route path="/:language/reset-password/confirm/:token" let:params><ConfirmResetPassword {...params} /></Route>
+                <Route path="/:language/reset-password/confirm/:token" let:params><ConfirmResetPassword token={params.token} /></Route>
 
                 {#if $profile}
                     <Route path="/:language"><Homepage /></Route>
+
+                    <Route path="/:language/oauth/:apiToken"><AlreadyConnected /></Route>
                     <Route path="/:language/login"><AlreadyConnected /></Route>
+                    <Route path="/:language/create-account"><AlreadyConnected /></Route>
+                    <Route path="/:language/create-account/confirm/:token"><AlreadyConnected /></Route>
 
                     <Route path="/:language/social"><Social /></Route>
                     <Route path="/:language/social/friends"><Friends /></Route>
@@ -55,7 +62,11 @@
                     <Route path="/:language/logout"><Logout /></Route>
                 {:else}
                     <Route path="/:language/"><Login /></Route>
+
+                    <Route path="/:language/oauth/:apiToken" let:params><Oauth apiToken={params.apiToken} /></Route>
                     <Route path="/:language/login"><Login /></Route>
+                    <Route path="/:language/create-account"><CreateAccount /></Route>
+                    <Route path="/:language/create-account/confirm/:token" let:params><ConfirmAccountCreation token={params.token} /></Route>
 
                     <Route path="/:language/social"><Forbidden /></Route>
                     <Route path="/:language/social/friends"><Forbidden /></Route>

@@ -33,7 +33,6 @@ export default defineConfig({
         () => import('@adonisjs/lucid/database_provider'),
         () => import('@adonisjs/auth/auth_provider'),
         () => import('@adonisjs/transmit/transmit_provider'),
-        () => import('#providers/i18n_provider'),
         () => import('#providers/room_provider'),
         () => import('@adonisjs/cache/cache_provider'),
         () => import('@adonisjs/redis/redis_provider'),
@@ -77,12 +76,8 @@ export default defineConfig({
     },
     metaFiles: [
         {
-            pattern: 'public/**',
-            reloadServer: false,
-        },
-        {
-            pattern: 'resources/lang/**/*.{json,yaml,yml}',
-            reloadServer: false,
+            pattern: 'resources/lang/**/*.json',
+            reloadServer: true,
         },
     ],
 });

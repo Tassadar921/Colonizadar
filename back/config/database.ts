@@ -24,9 +24,9 @@ const dbConfig: DatabaseConfig = defineConfig({
             connection: {
                 host: env.get('DB_HOST'),
                 port: env.get('DB_PORT'),
-                user: env.get('LOG_DB_USER'),
-                password: env.get('LOG_DB_PASSWORD'),
-                database: env.get('LOG_DB_DATABASE'),
+                user: env.get('LOGS_DB_USER'),
+                password: env.get('LOGS_DB_PASSWORD'),
+                database: env.get('LOGS_DB_DATABASE'),
             },
             migrations: {
                 naturalSort: true,
