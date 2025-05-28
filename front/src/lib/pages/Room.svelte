@@ -21,6 +21,7 @@
     import Ready from '../room/Ready.svelte';
     import PlayableCountriesInfo from '../room/PlayableCountriesInfo.svelte';
     import Icon from '../shared/Icon.svelte';
+    import { MetaTags } from 'svelte-meta-tags';
 
     export let roomId: string;
 
@@ -93,6 +94,22 @@
         fetchRoomData();
     }
 </script>
+
+<MetaTags
+    title={$t('play.room.meta.title')}
+    description={$t('play.room.meta.description')}
+    keywords={$t('play.room.meta.keywords').split(', ')}
+    languageAlternates={[
+        {
+            hrefLang: 'en',
+            href: `${import.meta.env.VITE_FRONT_URI}/en/play/room/${roomId}`,
+        },
+        {
+            hrefLang: 'fr',
+            href: `${import.meta.env.VITE_FRONT_URI}/fr/play/room/${roomId}`,
+        },
+    ]}
+/>
 
 {#if room}
     <Title title={room.name ? room.name : $t('play.room.title')} />
