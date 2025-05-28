@@ -25,7 +25,7 @@
     const handleAddBot = async () => {
         try {
             const { data } = await axios.post(`/api/room/${room.id}/add-bot`);
-            showToast(`${$t('toast.room.add-bot.success')} : ${data.player.bot.name}`);
+            showToast(data.message);
         } catch (error: any) {
             showToast(error.response.data.error, 'error');
         }

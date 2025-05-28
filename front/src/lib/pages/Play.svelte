@@ -35,7 +35,7 @@
 
     const handleCreateSuccess = (event: CustomEvent): void => {
         showCreateModal = false;
-        showToast($t('toast.room.create.success'));
+        showToast(event.detail.message);
         navigate(`/play/room/${event.detail.roomId}`);
     };
 
@@ -43,7 +43,7 @@
     $: canSubmitCreate = !!name && name.length >= 3 && !!(isPrivate ? password && password.length >= 3 : true);
 </script>
 
-<Loader bind:isLoading />
+<Loader {isLoading} />
 
 <Title title={$t('play.title')} hasBackground />
 

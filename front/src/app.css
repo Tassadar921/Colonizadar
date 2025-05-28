@@ -116,6 +116,46 @@ button:disabled {
         color: var(--color-primary-900);
     }
 
+    .border-primary-50 {
+        border-color: var(--color-primary-50);
+    }
+
+    .border-primary-100 {
+        border-color: var(--color-primary-100);
+    }
+
+    .border-primary-200 {
+        border-color: var(--color-primary-200);
+    }
+
+    .border-primary-300 {
+        border-color: var(--color-primary-300);
+    }
+
+    .border-primary-400 {
+        border-color: var(--color-primary-400);
+    }
+
+    .border-primary-500 {
+        border-color: var(--color-primary-500);
+    }
+
+    .border-primary-600 {
+        border-color: var(--color-primary-600);
+    }
+
+    .border-primary-700 {
+        border-color: var(--color-primary-700);
+    }
+
+    .border-primary-800 {
+        border-color: var(--color-primary-800);
+    }
+
+    .border-primary-900 {
+        border-color: var(--color-primary-900);
+    }
+
     .shadow-main {
         box-shadow: var(--shadow-main);
     }

@@ -2,6 +2,7 @@
     import Card from '../shared/Card.svelte';
     import { t } from 'svelte-i18n';
     import Title from '../shared/Title.svelte';
+    import { MetaTags } from 'svelte-meta-tags';
 
     interface Page {
         title: string;
@@ -27,6 +28,22 @@
         },
     ];
 </script>
+
+<MetaTags
+    title={$t('home.meta.title')}
+    description={$t('home.meta.description')}
+    keywords={$t('home.meta.keywords').split(', ')}
+    languageAlternates={[
+        {
+            hrefLang: 'en',
+            href: `${import.meta.env.VITE_FRONT_URI}/en`,
+        },
+        {
+            hrefLang: 'fr',
+            href: `${import.meta.env.VITE_FRONT_URI}/fr`,
+        },
+    ]}
+/>
 
 <Title title={$t('home.title')} />
 

@@ -28,7 +28,7 @@ export default class FileController {
         private readonly mapRepository: MapRepository
     ) {}
 
-    public async serveStaticProfilePictureFile({ request, response }: HttpContext): Promise<void> {
+    public async serveStaticProfilePictureFile({ request, response, i18n }: HttpContext): Promise<void> {
         const { userId } = await serveStaticProfilePictureFileValidator.validate(request.params());
 
         try {
@@ -49,7 +49,7 @@ export default class FileController {
             return response.download(filePath);
         } catch (error: any) {
             if (error.message === 'NO_PICTURE') {
-                return response.notFound({ error: "User's profile picture not found" });
+                return response.notFound({ error: i18n.t('messages.file.serve-status-profile-picture-file.error') });
             }
         }
     }

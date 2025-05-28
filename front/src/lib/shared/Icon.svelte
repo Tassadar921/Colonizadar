@@ -62,6 +62,9 @@
         'Move',
         'Infantry',
         'Ship',
+        'Google',
+        'Github',
+        'Discord',
     ] as const;
 
     type PascalCase = (typeof iconNames)[number];

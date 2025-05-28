@@ -8,6 +8,7 @@
     import { profile } from '../../stores/profileStore';
     import { isValidEmail } from '../../services/checkStringService';
     import Breadcrumbs from '../shared/Breadcrumbs.svelte';
+    import { MetaTags } from 'svelte-meta-tags';
 
     let email: string = '';
     let readonly: boolean = false;
@@ -20,18 +21,33 @@
         }
     });
 
-    const handleSuccess = (): void => {
-        showToast($t('toast.reset-password.mail.success'));
+    const handleSuccess = (event: CustomEvent): void => {
+        showToast(event.detail.message);
     };
 
     $: canSubmit = !!email && isValidEmail(email);
 </script>
+
+<MetaTags
+    title={$t('reset-password.meta.title')}
+    description={$t('reset-password.meta.description')}
+    keywords={$t('reset-password.meta.keywords').split(', ')}
+    languageAlternates={[
+        {
+            hrefLang: 'en',
+            href: `${import.meta.env.VITE_FRONT_URI}/en/reset-password`,
+        },
+        {
+            hrefLang: 'fr',
+            href: `${import.meta.env.VITE_FRONT_URI}/fr/reset-password`,
+        },
+    ]}
+/>
 
 <Title title={$t('reset-password.title')} hasBackground />
 
 <Breadcrumbs hasBackground items={[{ label: $t('home.title'), path: '/' }, { label: $t('reset-password.title') }]} />
 
 <Form action="/api/reset-password/send-mail" method="POST" on:success={handleSuccess} isValid={canSubmit}>
-    <input type="hidden" name="frontUri" value={`${import.meta.env.VITE_FRONT_URI}/reset-password/confirm`} />
     <Input label={$t('common.email.label')} placeholder={$t('common.email.placeholder')} type="email" name="email" bind:value={email} required {readonly} />
 </Form>

@@ -7,10 +7,6 @@
     ],
     "devDependencies": {
         "prettier": "^3.5.3",
-        "typescript": "~5.8",
         "npm-check-updates": "^18.0.1"
-    },
-    "dependencies": {
-        "axios": "^1.9.0"
     }
 }

@@ -47,6 +47,9 @@ export default class User extends compose(BaseModel, AuthFinder) {
     declare acceptedTermsAndConditions: boolean;
 
     @column()
+    declare isOauth: boolean;
+
+    @column()
     declare profilePictureId: string | null;
 
     @belongsTo((): typeof File => File, {

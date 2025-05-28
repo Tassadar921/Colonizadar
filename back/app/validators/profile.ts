@@ -3,7 +3,6 @@ import vine from '@vinejs/vine';
 export const sendResetPasswordEmailValidator = vine.compile(
     vine.object({
         email: vine.string().trim().email(),
-        frontUri: vine.string().trim().url(),
     })
 );
 

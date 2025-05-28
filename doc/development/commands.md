@@ -15,7 +15,7 @@
 | `make db`           | Runs `db-fresh` and `db-seed`.                                                                           |
 | `make stop`         | Stops all Docker containers and removes orphans.                                                         |
 | `make up`           | Stops containers and then builds and starts them in detached mode.                                       |
-| `make rm`           | Fully stops and resets Colonizadar Docker containers and volumes.                                        |
+| `make rm`           | Fully stops and resets app Docker containers and volumes.                                                |
 | `make start`        | Runs `make install`, `make rm`, `make up` and `make db`                                                  |
 | `make prune`        | **/!\\** Stops containers and prunes Docker system resources.                                            |
 
