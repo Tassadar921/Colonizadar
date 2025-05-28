@@ -5,8 +5,6 @@
     import type SerializedRoomPlayer from 'colonizadar-backend/app/types/serialized/serialized_room_player';
     import axios from 'axios';
     import { formatGameNumbers } from '../../services/stringService';
-    import { onMount, tick } from 'svelte';
-    import Icon from '../shared/Icon.svelte';
     import type SerializedGameTerritory from 'colonizadar-backend/app/types/serialized/serialized_game_territory';
     import ActionButton from './ActionButton.svelte';
 

@@ -18,7 +18,7 @@
     import type SerializedPlayableCountry from 'colonizadar-backend/app/types/serialized/serialized_playable_country';
     import type SerializedMap from 'colonizadar-backend/app/types/serialized/serialized_map';
     import Loader from '../shared/Loader.svelte';
-    import Ready from '../room/Ready.svelte';
+    import RoomReady from '../room/RoomReady.svelte';
     import PlayableCountriesInfo from '../room/PlayableCountriesInfo.svelte';
     import Icon from '../shared/Icon.svelte';
     import { MetaTags } from 'svelte-meta-tags';
@@ -139,7 +139,7 @@
                 <span>{$t('play.room.invite.title')}</span>
                 <Icon name="invite" />
             </Button>
-            <Ready bind:room bind:isLoading />
+            <RoomReady bind:room bind:isLoading />
         </div>
     </div>
 
