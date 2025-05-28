@@ -41,10 +41,10 @@
 
     const handleInviteFriend = async (user: SerializedUser): Promise<void> => {
         try {
-            await axios.post(`/api/room/${room.id}/invite`, {
+            const { data } = await axios.post(`/api/room/${room.id}/invite`, {
                 userId: user.id,
             });
-            showToast($t(`${user.username} ${$t('toast.invite.success')}`));
+            showToast(data.message);
         } catch (error: any) {
             showToast(error.response.data.error, 'error');
         }
@@ -122,7 +122,7 @@
             <p class="mt-5">{$t('social.friends.none')}</p>
         {/if}
     </div>
-    <Pagination bind:paginatedObject={paginatedFriends} bind:baseUrl={searchBaseUrl} />
+    <Pagination bind:paginatedObject={paginatedFriends} baseUrl={searchBaseUrl} />
 {:else}
-    <Loader bind:isLoading />
+    <Loader {isLoading} />
 {/if}

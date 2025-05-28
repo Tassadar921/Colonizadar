@@ -4,11 +4,9 @@ services:
         container_name: db
         restart: always
         environment:
-            POSTGRES_DB: colonizadar
-            POSTGRES_USER: superadmin
-            POSTGRES_PASSWORD: xxx
-        ports:
-            - '5432:5432'
+            POSTGRES_DB: ${DB_DATABASE}
+            POSTGRES_USER: ${DB_USER}
+            POSTGRES_PASSWORD: ${DB_PASSWORD}
         volumes:
             - postgres_data:/var/lib/postgresql/data
 
@@ -16,8 +14,6 @@ services:
         image: redis:latest
         container_name: redis
         restart: always
-        ports:
-            - '6379:6379'
 
     backend:
         build:
@@ -31,9 +27,10 @@ services:
             - ./back:/app
             - /app/node_modules
         ports:
-            - '3333:3333'
+            - '${PORT}:${PORT}'
         depends_on:
             - db
+            - redis
 
     frontend:
         build:

@@ -13,6 +13,7 @@
         "updated-at": "Updated at",
         "public": "Public",
         "private": "Private",
+        "value": "Value",
         "title": {
             "label": "Title",
             "placeholder": "Jesus' photo"
@@ -44,7 +45,8 @@
         "file": {
             "title": "Select a file",
             "description": "Drag & drop or click to select a file."
-        }
+        },
+        "consent": "I agree to the terms and conditions"
     },
     "toast": {
         "copy": {
@@ -54,63 +56,10 @@
             "success": "You are now logged in",
             "error": "Wrong credentials"
         },
-        "logout": {
-            "success": "You are now disconnected",
-            "error": "An error occurred while disconnecting"
-        },
-        "reset-password": {
-            "mail": {
-                "success": "A mail has been sent to reset your password",
-                "error": "An error occurred while sending mail. Retry later."
-            },
-            "confirm": {
-                "success": "Password reset successfully",
-                "error": "An error occurred while confirming account creation. Retry later."
-            }
-        },
-        "profile": {
-            "get": {
-                "error": "An error occurred while fetching your profile"
-            },
-            "update": {
-                "success": "Profile updated",
-                "error": "An error occurred while updating your profile"
-            }
-        },
-        "friends": {
-            "search": {
-                "error": "An error occurred while searching friends"
-            },
-            "add": {
-                "success": "Friend request sent",
-                "error": "An error occurred while asking user as friend",
-                "cancel": {
-                    "success": "Friend request cancelled",
-                    "error": "An error occurred while cancelling the friend request"
-                }
-            },
-            "remove": {
-                "success": "Friend removed"
-            }
-        },
-        "blocked": {
-            "success": "User blocked",
-            "error": "An error occurred while blocking user"
-        },
-        "unblock": {
-            "success": "User unblocked",
-            "error": "An error occurred while unblocking user"
-        },
-        "invite": {
-            "success": "has been invited to your room",
-            "error": "An error occurred while inviting user"
-        },
         "notification": {
             "friend-request": {
                 "ask": "You received a friend request from",
-                "accept": "has been added to your friends",
-                "accepted": "accepted your friend request",
-                "refuse": "You refused the friend request of"
+                "accepted": "accepted your friend request"
             },
             "play": {
                 "invited": "invited you to join his room",
@@ -118,17 +67,6 @@
                 "room": {
                     "closed": "Room closed"
                 }
-            }
-        },
-        "room": {
-            "error": "An error occurred while pinging room",
-            "create": {
-                "success": "Room created",
-                "error": "An error occurred while creating the room"
-            },
-            "add-bot": {
-                "success": "Bot added",
-                "error": "An error occurred while adding the bot"
             }
         }
     },
@@ -138,6 +76,11 @@
     "profile": {
         "title": "Profile",
         "description": "Update your profile",
+        "meta": {
+            "title": "Edit Profile – Colonizadar",
+            "description": "Update your username and profile picture easily on Colonizadar. Manage your personal information securely.",
+            "keywords": "edit profile, update username, change profile picture, user settings, Colonizadar"
+        },
         "reset-password": "Reset password",
         "profile-picture": {
             "title": "Profile picture",
@@ -146,18 +89,67 @@
     },
     "reset-password": {
         "title": "Reset password",
+        "meta": {
+            "title": "Reset Password – Colonizadar",
+            "description": "Enter your email to receive a password reset link. The email field is prefilled if you are logged in.",
+            "keywords": "reset password, password recovery, forgot password, password reset email, Colonizadar"
+        },
         "confirm": {
-            "title": "Finish reset password"
+            "title": "Finish reset password",
+            "meta": {
+                "title": "Password Reset Confirmation – Colonizadar",
+                "description": "Confirm your password reset by clicking the link sent to your email. Securely update your password and regain access to your account.",
+                "keywords": "password reset confirmation, reset password, email verification, Colonizadar"
+            }
         }
     },
     "home": {
-        "title": "Home"
+        "title": "Home",
+        "meta": {
+            "title": "Welcome to Colonizadar – Online Strategy & Colonization Game",
+            "description": "In Colonizadar, lead your nation to global domination! Conquer new lands, battle natives, and outmaneuver rival players in this multiplayer colonization game.",
+            "keywords": "colonization game, online strategy game, multiplayer game, conquer the world, nation builder, Colonizadar"
+        }
     },
     "login": {
-        "title": "Login"
+        "title": "Login",
+        "meta": {
+            "title": "Login – Colonizadar",
+            "description": "Log in to Colonizadar using your email and password, or quickly via Google, GitHub, or Discord OAuth.",
+            "keywords": "login, sign in, email login, password login, OAuth login, Google login, GitHub login, Discord login, Colonizadar"
+        }
+    },
+    "create-account": {
+        "title": "Create account",
+        "meta": {
+            "title": "Create Your Account – Colonizadar",
+            "description": "Sign up for Colonizadar by creating your account with username, email, and password. Or quickly register using Google, Discord, or GitHub.",
+            "keywords": "create account, sign up, register, username, email, password, OAuth, Google login, Discord login, GitHub login, Colonizadar"
+        },
+        "confirm": {
+            "title": "Confirm account creation",
+            "meta": {
+                "title": "Account Confirmation – Welcome to Colonizadar",
+                "description": "Confirm your account creation by clicking the link sent to your email. Get started with Colonizadar today.",
+                "keywords": "account confirmation, email verification, create account, Colonizadar"
+            }
+        }
+    },
+    "oauth": {
+        "title": "Login with OAuth",
+        "meta": {
+            "title": "OAuth Callback – Colonizadar",
+            "description": "Processing OAuth callback to authenticate and retrieve user profile. Securely handling access token before redirecting you.",
+            "keywords": "OAuth callback, access token, user authentication, bearer token, Colonizadar"
+        }
     },
     "logout": {
         "title": "Logout",
+        "meta": {
+            "title": "Confirm Logout – Colonizadar",
+            "description": "Are you sure you want to log out? Confirm your logout to end your session safely on Colonizadar.",
+            "keywords": "confirm logout, logout confirmation, end session, Colonizadar"
+        },
         "modal": {
             "title": "Logout",
             "text": "Are you sure you want to logout ?"
@@ -165,20 +157,45 @@
     },
     "forbidden": {
         "title": "Forbidden",
-        "subtitle": "You have to be logged to access this app's part."
+        "subtitle": "You have to be logged to access this app's part.",
+        "meta": {
+            "title": "Access Forbidden – Colonizadar",
+            "description": "You do not have permission to access this page. If you believe this is an error, please contact support.",
+            "keywords": "access forbidden, 403 error, permission denied, restricted access, Colonizadar"
+        }
     },
     "not-found": {
-        "title": "Page not found"
+        "title": "Page not found",
+        "meta": {
+            "title": "Page Not Found – Colonizadar",
+            "description": "The page you are looking for does not exist. Check the URL or return to the homepage of Colonizadar.",
+            "keywords": "404 error, page not found, missing page, Colonizadar"
+        }
     },
     "already-connected": {
-        "title": "Already connected"
+        "title": "Already connected",
+        "meta": {
+            "title": "Already Logged In – Return to Your Dashboard | Colonizadar",
+            "description": "You're already logged in to Colonizadar. Continue to your dashboard or return to the homepage to explore more features.",
+            "keywords": "already logged in, user session, dashboard, homepage, Colonizadar"
+        }
     },
     "social": {
         "title": "Social",
         "description": "Manage your friends & blocked users",
+        "meta": {
+            "title": "Social Hub – Colonizadar",
+            "description": "Access your social dashboard: manage your friends, blocked users, and profile settings from one place.",
+            "keywords": "social hub, manage friends, blocked users, user profile, Colonizadar"
+        },
         "friends": {
             "title": "Friends",
             "description": "Manage your friends",
+            "meta": {
+                "title": "Manage Your Friends – Colonizadar",
+                "description": "Add, remove, accept friend requests, and block users easily with Colonizadar. Manage your social connections seamlessly.",
+                "keywords": "manage friends, add friends, remove friends, friend requests, block users, social management, Colonizadar"
+            },
             "none": "No friend found",
             "search": {
                 "placeholder": "John123",
@@ -202,6 +219,11 @@
         "blocked": {
             "title": "Blocked users",
             "description": "Manage your blocked users",
+            "meta": {
+                "title": "Blocked Users - Manage Your Block List | Colonizadar",
+                "description": "Easily view and manage the users you've blocked on Colonizadar. Take control of your social connections and ensure a safer experience.",
+                "keywords": "blocked users, block list, manage blocked users, social settings, privacy control, Colonizadar"
+            },
             "none": "No blocked user found",
             "search": {
                 "placeholder": "John123",
@@ -221,6 +243,11 @@
     },
     "notifications": {
         "title": "Notifications",
+        "meta": {
+            "title": "Manage Notifications – Colonizadar",
+            "description": "View, accept, decline, and delete your notifications, including friend requests, easily with Colonizadar.",
+            "keywords": "notifications, manage notifications, friend requests, accept notifications, decline notifications, delete notifications, Colonizadar"
+        },
         "friend-requests": {
             "title": "Friend requests",
             "none": "No pending friend request"
@@ -292,6 +319,10 @@
             },
             "subvert": "Subvert",
             "cost": "Cost",
+            "attack": "Attack",
+            "move": "Move",
+            "attacking": "Attacking",
+            "moving": "Moving to",
             "fortified": "Fortified",
             "fortify": "Fortify",
             "buy-infantry": "Buy infantry",

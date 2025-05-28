@@ -17,8 +17,6 @@ export const sendAccountCreationEmailValidator = vine.compile(
             .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*(),.?":{}|<>]).{8,}$/)
             .trim()
             .confirmed({ confirmationField: 'confirmPassword' }),
-        frontClient: vine.string().trim(),
-        frontUri: vine.string().trim().url(),
         consent: vine.boolean(),
     })
 );

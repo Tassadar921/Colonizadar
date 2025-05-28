@@ -1,3 +1,5 @@
+SHELL := /bin/bash
+
 format:
 	cd back && npx prettier --write "**/*.{js,ts,json,yml}"
 	cd front && npx prettier --write "**/*.{js,ts,svelte,html,css,json,yml}"
@@ -6,31 +8,25 @@ format-check:
 	cd back && npx prettier --check "**/*.{js,ts,json,yml}"
 	cd front && npx prettier --check "**/*.{js,ts,svelte,html,css,json,yml}"
 
-upgrade:
-	make upgrade-front && make upgrade-back && rm -rf .vite node_modules package-lock.json && npm install
-
-upgrade-front:
-	cd front && ncu -u
-
-upgrade-back:
-	cd back && ncu -u
-
 install:
-	rm -rf .vite node_modules package-lock.json front/node_modules back/node_modules && npm install
+	rm -rf .vite node_modules package-lock.json back/node_modules front/node_modules && npm install
+
+upgrade:
+	cd front && npx ncu -u && cd back && npx ncu -u && make install
 
 list-routes:
 	cd back && node ace list:routes
 
 db-fresh:
-	docker compose exec -T backend node ace migration:fresh
-	docker compose exec -T backend node ace migration:fresh --connection=logs
+	set -a && source back/.env && set +a && docker compose exec -T backend node ace migration:fresh
+	set -a && source back/.env && set +a && docker compose exec -T backend node ace migration:fresh --connection=logs
 
 db-migrate:
-	docker compose exec -T backend node ace migration:run
-	docker compose exec -T backend node ace migration:run --connection=logs
+	set -a && source back/.env && set +a && docker compose exec -T backend node ace migration:run
+	set -a && source back/.env && set +a && docker compose exec -T backend node ace migration:run --connection=logs
 
 db-seed:
-	docker compose exec -T backend node ace db:seed
+	set -a && source back/.env && set +a && docker compose exec -T backend node ace db:seed
 
 init-logs-db:
 	./init-logs-db.sh
@@ -38,13 +34,13 @@ init-logs-db:
 db: init-logs-db db-fresh db-seed
 
 stop:
-	docker compose down --remove-orphans
+	set -a && source back/.env && set +a && docker compose down --remove-orphans
 
 up:
-	make stop && docker compose up -d --build
+	make stop && set -a && source back/.env && set +a && docker compose up -d --build
 
 rm:
-	docker compose down --volumes --remove-orphans
+	set -a && source back/.env && set +a && docker compose down --volumes --remove-orphans
 
 start: install rm up db
 

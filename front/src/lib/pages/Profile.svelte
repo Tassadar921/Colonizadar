@@ -10,6 +10,7 @@
     import FileUpload from '../shared/FileUpload.svelte';
     import Breadcrumbs from '../shared/Breadcrumbs.svelte';
     import type SerializedUser from 'colonizadar-backend/app/types/serialized/serialized_user';
+    import { MetaTags } from 'svelte-meta-tags';
 
     let formValues: { username: string; email: string } = {
         username: '',
@@ -33,11 +34,10 @@
 
     const handleSuccess = (event: CustomEvent): void => {
         setProfile(event.detail.user);
-        showToast($t('toast.profile.update.success'));
+        showToast(event.detail.message);
     };
 
     const handleError = (): void => {
-        showToast($t('toast.profile.update.error'), 'error');
         formValues = {
             username: $profile!.username,
             email: $profile!.email,
@@ -46,6 +46,22 @@
 
     $: canSubmit = !!formValues.username && !!formValues.email;
 </script>
+
+<MetaTags
+    title={$t('profile.meta.title')}
+    description={$t('profile.meta.description')}
+    keywords={$t('profile.meta.keywords').split(', ')}
+    languageAlternates={[
+        {
+            hrefLang: 'en',
+            href: `${import.meta.env.VITE_FRONT_URI}/en/profile`,
+        },
+        {
+            hrefLang: 'fr',
+            href: `${import.meta.env.VITE_FRONT_URI}/fr/profile`,
+        },
+    ]}
+/>
 
 <Title title={$t('profile.title')} hasBackground />
 

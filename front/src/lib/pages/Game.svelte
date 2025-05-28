@@ -13,6 +13,7 @@
     import { formatGameNumbers, formatSeasonFromNumber } from '../../services/stringService';
     import GameNotifications from '../game/GameNotifications.svelte';
     import type SerializedGameTerritory from 'colonizadar-backend/app/types/serialized/serialized_game_territory';
+    import { updateGameOnLoad } from '../../stores/dbStore';
 
     export let gameId: string;
 
@@ -25,6 +26,7 @@
         try {
             const { data } = await axios.get(`/api/game/${gameId}`);
             game = data;
+            await updateGameOnLoad(game);
         } catch (error: any) {
             showToast(error.response.data.error, 'error');
             navigate('/play');
@@ -53,16 +55,14 @@
 {/if}
 
 <!-- TODO: faire en sorte que ça soit présentable pour 2, 4, 6 (idéalement 8 ou même 10 mais pas sûr d'avoir la place) -->
-<!-- Ne pas inclure dans le if game, pour charger le svg en parallèle de la requête au back pour récupérer la data -->
+<!-- Do not include in the if game, to load the svg in parallel of the back request to get the data -->
 <div class="flex gap-5 justify-center items-center">
     <div class="flex flex-col">
         {#each game?.players.slice(0, game?.players.length / 2) as player (player.id)}
             <SideGamePlayer bind:game {currentPlayer} {player} />
         {/each}
     </div>
-    <div class="w-4/5 flex flex-col gap-3 items-center">
-        <Map bind:game {currentPlayer} bind:selectedTerritory bind:selectedTerritoryOwner />
-    </div>
+    <Map bind:game {currentPlayer} bind:selectedTerritory bind:selectedTerritoryOwner />
     <div class="flex flex-col">
         {#each game?.players.slice(game?.players.length / 2) as player (player.id)}
             <SideGamePlayer bind:game {currentPlayer} {player} />

@@ -10,6 +10,25 @@
 
 import router from '@adonisjs/core/services/router';
 import server from '@adonisjs/core/services/server';
+import Language from '#models/language';
+import { I18n } from '@adonisjs/i18n';
+import User from '#models/user';
+import Room from '#models/room';
+import Game from '#models/game';
+import RoomPlayer from '#models/room_player';
+import GameTerritory from '#models/game_territory';
+
+declare module '@adonisjs/core/http' {
+    export interface HttpContext {
+        language: Language;
+        i18n: I18n;
+        user: User;
+        room: Room;
+        game: Game;
+        player: RoomPlayer;
+        gameTerritory: GameTerritory;
+    }
+}
 
 /**
  * The error handler is used to convert an exception

@@ -3,20 +3,13 @@
     import { onMount } from 'svelte';
     import Modal from '../shared/Modal.svelte';
     import Subtitle from '../shared/Subtitle.svelte';
-    import { t } from 'svelte-i18n';
-    import InGamePlayer from './InGamePlayer.svelte';
-    import { formatGameNumbers } from '../../services/stringService';
     import type SerializedGame from 'colonizadar-backend/app/types/serialized/serialized_game';
     import type SerializedGameTerritory from 'colonizadar-backend/app/types/serialized/serialized_game_territory';
     import type SerializedRoomPlayer from 'colonizadar-backend/app/types/serialized/serialized_room_player';
-    import { setHoverColor, resetTerritoryColor, setMountainColor, setIcons } from '../../services/gameGeometryService';
-    import SpyTerritory from './SpyTerritory.svelte';
-    import { profile } from '../../stores/profileStore';
-    import FinanceWildTerritory from './FinanceWildTerritory.svelte';
-    import FortifyTerritory from './FortifyTerritory.svelte';
-    import BuyInfantry from './BuyInfantry.svelte';
-    import BuyShips from './BuyShips.svelte';
-    import SubvertWildTerritory from './SubvertWildTerritory.svelte';
+    import { setHoverColor, resetTerritoryColor, setMountainColor, setIcons, getNeighboursGroups, setFlashColor } from '../../services/gameGeometryService';
+    import SelectedTerritoryModalContent from './SelectedTerritoryModalContent.svelte';
+    import { t } from 'svelte-i18n';
+    import MoveModalContent from './MoveModalContent.svelte';
 
     export let game: SerializedGame;
     export let currentPlayer: SerializedRoomPlayer;
@@ -24,6 +17,7 @@
     export let selectedTerritory: SerializedGameTerritory;
 
     let showCountryModal: boolean = false;
+    let showMoveModal: boolean = false;
 
     let width: number = 500;
     let height: number = 300;
@@ -40,12 +34,20 @@
     let startY: number = 0;
     let hasDragged: boolean = false;
 
+    let interval: NodeJS.Timeout | undefined;
+    let neighbours: SVGGElement[] = [];
+    let neighboursSet: Set<string>;
+    let isFlashColor: boolean = false;
+
+    let isAttacking: boolean = false;
+    let targetTerritory: SerializedGameTerritory;
+    let moveInfantryAmount: number = 0;
+    let moveShipsAmount: number = 0;
+
     const dragSensitivity: number = 1.3;
 
-    const checkedProfile = $profile!;
-
     onMount(() => {
-        svgElement.classList.add('rounded-lg', 'bg-blue-950', 'border', 'border-black', 'dark:border-white', 'box-content');
+        svgElement.classList.add('rounded-lg', 'bg-blue-600', 'border', 'border-black', 'dark:border-white', 'box-content');
 
         handleResize();
         window.addEventListener('resize', handleResize);
@@ -75,11 +77,14 @@
     });
 
     const handleResize = (): void => {
-        viewBox = `${offsetX} ${offsetY} ${width} ${height}`;
+        const newViewboxWidth: number = width / zoomLevel;
+        const newViewboxHeight: number = height / zoomLevel;
+
+        viewBox = `${offsetX} ${offsetY} ${newViewboxWidth} ${newViewboxHeight}`;
     };
 
     const zoom = (delta: number, cursorX: number, cursorY: number): void => {
-        const svgRect = svgElement.getBoundingClientRect();
+        const svgRect: DOMRect = svgElement.getBoundingClientRect();
 
         const mouseX: number = cursorX - svgRect.left;
         const mouseY: number = cursorY - svgRect.top;
@@ -136,14 +141,35 @@
     };
 
     const handleClick = (territoryId: string): void => {
-        if (!hasDragged && territoryId) {
-            const gameTerritory: SerializedGameTerritory | undefined = game.territories.find((gameTerritory): boolean => {
-                return gameTerritory.territory.code.toLowerCase() === territoryId;
-            });
-            if (gameTerritory) {
-                selectedTerritory = gameTerritory;
-                selectedTerritoryOwner = selectedTerritory.owner;
-                showCountryModal = true;
+        if (interval) {
+            clearInterval(interval);
+            interval = undefined;
+            isFlashColor = false;
+            for (const neighbour of neighbours) {
+                resetTerritoryColor(game, neighbour);
+            }
+            if (neighboursSet.has(territoryId)) {
+                const gameTerritory: SerializedGameTerritory | undefined = game.territories.find((gameTerritory): boolean => {
+                    return gameTerritory.territory.code.toLowerCase() === territoryId;
+                });
+                if (!gameTerritory) {
+                    return;
+                }
+
+                targetTerritory = gameTerritory;
+                isAttacking = gameTerritory.owner?.id !== currentPlayer.id;
+                showMoveModal = true;
+            }
+        } else {
+            if (!hasDragged && territoryId) {
+                const gameTerritory: SerializedGameTerritory | undefined = game.territories.find((gameTerritory): boolean => {
+                    return gameTerritory.territory.code.toLowerCase() === territoryId;
+                });
+                if (gameTerritory) {
+                    selectedTerritory = gameTerritory;
+                    selectedTerritoryOwner = selectedTerritory.owner;
+                    showCountryModal = true;
+                }
             }
         }
     };
@@ -153,11 +179,32 @@
             return;
         }
 
-        resetTerritoryColor(game, svgGroup!);
+        if (interval && isFlashColor) {
+            setFlashColor(game, svgGroup, isFlashColor);
+        } else {
+            resetTerritoryColor(game, svgGroup);
+        }
+    };
+
+    const handleMoveClicked = (): void => {
+        showCountryModal = false;
+        interval = setInterval(() => {
+            isFlashColor = !isFlashColor;
+            for (const neighbour of neighbours) {
+                setFlashColor(game, neighbour, isFlashColor);
+            }
+        }, 750);
+    };
+
+    const handleCloseMoveModal = (): void => {
+        moveInfantryAmount = 0;
+        moveShipsAmount = 0;
     };
 
     $: if (selectedTerritory) {
         const svgGroup = document.getElementById(selectedTerritory.territory.code.toLowerCase()) as unknown as SVGGElement;
+        ({ neighbours, neighboursSet } = getNeighboursGroups(game, selectedTerritory));
+
         if (svgGroup) {
             if (showCountryModal) {
                 setHoverColor(svgGroup);
@@ -168,25 +215,12 @@
     }
 
     $: if (game) {
-        svgElement?.querySelectorAll('.flag-icon').forEach((el) => el.remove());
-        svgElement?.querySelectorAll('.factory-icon').forEach((el) => el.remove());
-        svgElement?.querySelectorAll('.fortified-icon').forEach((el) => el.remove());
-
-        for (const gameTerritory of game.territories) {
-            const svgGroup: SVGGElement | null = document.getElementById(gameTerritory.territory.code.toLowerCase()) as unknown as SVGGElement | null;
-            const mainSvgPath: SVGPathElement | null = svgGroup?.querySelector('.mainland') as SVGPathElement | null;
-
-            if (!svgGroup || !mainSvgPath) {
-                continue;
-            }
-
-            setIcons(game, gameTerritory, svgGroup, mainSvgPath, svgElement);
-        }
+        setIcons(svgElement, game);
     }
 </script>
 
 <button
-    class="w-4/5 overflow-hidden {isDragging ? 'cursor-grabbing' : ''}"
+    class="w-[70%] overflow-hidden {isDragging ? 'cursor-grabbing' : ''}"
     on:wheel={handleWheel}
     on:mousedown={startDrag}
     on:mousemove={onDrag}
@@ -200,31 +234,22 @@
 {#if selectedTerritory}
     <Modal bind:showModal={showCountryModal}>
         <Subtitle slot="header">{selectedTerritory.territory.name}</Subtitle>
-        <div class="flex gap-1 items-center">
-            <p>{$t('play.game.country-modal.owner')} :</p>
-            <InGamePlayer bind:game bind:player={selectedTerritoryOwner} />
-        </div>
-        <p>{$t('play.game.country-modal.value')} : {formatGameNumbers(selectedTerritory.value ?? 0)}</p>
-        <p>{$t('play.common.infantry')} : {selectedTerritory.infantry ? formatGameNumbers(selectedTerritory.infantry) : '???'}</p>
-        {#if selectedTerritory && selectedTerritoryOwner && selectedTerritory.territory.isCoastal}
-            <p>{$t('play.common.ships')} : {typeof selectedTerritory.ships === 'number' ? formatGameNumbers(selectedTerritory.ships) : '???'}</p>
-        {/if}
-        <p>{$t('play.game.fortified')} : {selectedTerritory.isFortified}</p>
-        <div class="flex gap-5 justify-center">
-            {#if game.map.mainSeason === game.season && selectedTerritory}
-                {#if selectedTerritoryOwner?.user?.id !== checkedProfile.id}
-                    <SpyTerritory bind:game bind:selectedTerritory {currentPlayer} />
-                    {#if !selectedTerritoryOwner}
-                        <FinanceWildTerritory bind:game bind:selectedTerritory {currentPlayer} />
-                        <SubvertWildTerritory bind:game bind:selectedTerritory {currentPlayer} />
-                    {/if}
-                {:else if !selectedTerritory.isFortified}
-                    <FortifyTerritory bind:game {selectedTerritory} {currentPlayer} />
-                {:else if selectedTerritory.territory.isFactory}
-                    <BuyInfantry bind:game bind:selectedTerritory {currentPlayer} />
-                    <BuyShips bind:game bind:selectedTerritory {currentPlayer} />
-                {/if}
-            {/if}
-        </div>
+        <SelectedTerritoryModalContent bind:game bind:selectedTerritory bind:selectedTerritoryOwner {currentPlayer} on:move={handleMoveClicked} />
+    </Modal>
+{/if}
+
+{#if targetTerritory}
+    <Modal bind:showModal={showMoveModal} on:close={handleCloseMoveModal}>
+        <Subtitle slot="header">{isAttacking ? $t('play.game.attacking') : $t('play.game.moving')} {targetTerritory.territory.name}</Subtitle>
+        <MoveModalContent
+            bind:game
+            bind:selectedTerritory
+            {targetTerritory}
+            {isAttacking}
+            bind:infantryAmount={moveInfantryAmount}
+            bind:shipsAmount={moveShipsAmount}
+            bind:showCountryModal
+            bind:showMoveModal
+        />
     </Modal>
 {/if}

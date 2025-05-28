@@ -31,7 +31,7 @@
 
     let focused: boolean = false;
 
-    const classes: string = `block w-full px-3 py-2 mt-1 text-base text-gray-800 placeholder:gray-500 border border-gray-300 shadow-xs shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${
+    const classes: string = `rounded-lg bg-gray-400 dark:bg-gray-500 block w-full px-3 py-2 mt-1 text-base text-black placeholder:gray-900 border border-gray-300 shadow-xs shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${
         disabled || readonly ? 'bg-gray-300 dark:bg-gray-500' : ''
     }`;
 
@@ -64,11 +64,11 @@
 <div class={`relative mt-${marginTop} mb-${marginBottom}`}>
     <label
         for={name}
-        class="absolute pointer-events-none z-10 transition-all duration-800 ease-in-out font-medium {focused || value ? 'text-primary-500 bottom-11 left-1' : 'text-gray-500 bottom-2.5 left-3'}"
+        class="absolute pointer-events-none z-10 transition-all duration-800 ease-in-out font-medium {focused || value ? 'text-primary-500 bottom-11 left-1' : 'text-gray-900 bottom-2.5 left-3'}"
     >
         {label}
         {#if required}
-            <span class="text-red-500 font-medium">*</span>
+            <span class="text-red-600 font-medium">*</span>
         {/if}
     </label>
 

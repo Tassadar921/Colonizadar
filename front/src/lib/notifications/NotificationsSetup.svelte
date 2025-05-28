@@ -30,12 +30,12 @@
 
         const inviteRequest = $transmit.subscription(`notification/play/invite/${$profile!.id}`);
         await inviteRequest.create();
-        inviteRequest.onMessage((data: { roomId: number; from: SerializedUser }) => {
+        inviteRequest.onMessage(({ roomId, from }: { roomId: number; from: SerializedUser }) => {
             const handleJoin = async (roomId: number) => {
                 showToast($t('toast.notification.play.accepted'));
                 navigate(`/play/room/${roomId}`);
             };
-            showToast(`${data.from.username} ${$t('toast.notification.play.invited')}`, 'warning', () => handleJoin(data.roomId));
+            showToast(`${from.username} ${$t('toast.notification.play.invited')}`, 'warning', () => handleJoin(roomId));
         });
 
         await setPendingFriendRequests();

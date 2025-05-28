@@ -10,10 +10,12 @@
     import { showToast } from '../../services/toastService';
     import Subtitle from '../shared/Subtitle.svelte';
     import ConfirmModal from '../shared/ConfirmModal.svelte';
-    import type PaginatedBlockedUsers from 'colonizadar-backend/app/types/paginated/paginated_blocked_users';
-    import type SerializedUser from 'colonizadar-backend/app/types/serialized/serialized_user';
     import Loader from '../shared/Loader.svelte';
     import Icon from '../shared/Icon.svelte';
+    import { MetaTags } from 'svelte-meta-tags';
+    import type PaginatedBlockedUsers from 'colonizadar-backend/app/types/paginated/paginated_blocked_users';
+    import type SerializedUser from 'colonizadar-backend/app/types/serialized/serialized_user';
+    import type SerializedBlockedUser from 'colonizadar-backend/app/types/serialized/serialized_blocked_user';
 
     let isLoading: boolean = false;
     let paginatedBlockedUsers: PaginatedBlockedUsers;
@@ -42,11 +44,11 @@
 
     const handleUnblockUser = async (): Promise<void> => {
         try {
-            await axios.delete(`/api/blocked/cancel/${selectedBlockedUser.id}`);
-            paginatedBlockedUsers.blockedUsers = paginatedBlockedUsers.blockedUsers.filter((currentUser) => {
+            const { data } = await axios.delete(`/api/blocked/cancel/${selectedBlockedUser.id}`);
+            paginatedBlockedUsers.blockedUsers = paginatedBlockedUsers.blockedUsers.filter((currentUser: SerializedBlockedUser) => {
                 return currentUser.user.id !== selectedBlockedUser.id;
             });
-            showToast($t('toast.unblock.success'));
+            showToast(data.message);
         } catch (error: any) {
             showToast(error.response.data.error, 'error');
         }
@@ -58,6 +60,22 @@
         showModal = true;
     };
 </script>
+
+<MetaTags
+    title={$t('social.blocked.meta.title')}
+    description={$t('social.blocked.meta.description')}
+    keywords={$t('social.blocked.meta.keywords').split(', ')}
+    languageAlternates={[
+        {
+            hrefLang: 'en',
+            href: `${import.meta.env.VITE_FRONT_URI}/en/social/blocked`,
+        },
+        {
+            hrefLang: 'fr',
+            href: `${import.meta.env.VITE_FRONT_URI}/fr/social/blocked`,
+        },
+    ]}
+/>
 
 <Title title={$t('social.blocked.title')} />
 
@@ -109,9 +127,9 @@
             <p class="my-5">{$t('social.blocked.none')}</p>
         {/if}
     </div>
-    <Pagination bind:paginatedObject={paginatedBlockedUsers} bind:baseUrl={searchBaseUrl} />
+    <Pagination bind:paginatedObject={paginatedBlockedUsers} baseUrl={searchBaseUrl} />
 {:else}
-    <Loader bind:isLoading />
+    <Loader {isLoading} />
 {/if}
 
 <ConfirmModal bind:showModal on:success={handleUnblockUser}>

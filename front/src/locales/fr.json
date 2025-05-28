@@ -13,6 +13,7 @@
         "updated-at": "Mis à jour le",
         "public": "Public",
         "private": "Privé",
+        "value": "Value",
         "title": {
             "label": "Titre",
             "placeholder": "Photo de Jésus"
@@ -44,7 +45,8 @@
         "file": {
             "title": "Sélectionnez un fichier",
             "description": "Glissez-déposez ou cliquez pour sélectionner un fichier."
-        }
+        },
+        "consent": "J'accepte les termes et conditions"
     },
     "toast": {
         "copy": {
@@ -54,63 +56,10 @@
             "success": "Vous êtes maintenant connecté",
             "error": "Identifiants invalides"
         },
-        "logout": {
-            "success": "Vous êtes maintenant déconnecté",
-            "error": "Une erreur est survenue lors de la déconnexion"
-        },
-        "reset-password": {
-            "mail": {
-                "success": "Un mail a été envoyé pour réinitialiser votre mot de passe",
-                "error": "Une erreur s'est produite lors de l'envoi du mail. Réessayez plus tard."
-            },
-            "confirm": {
-                "success": "Mot de passe changé avec succès",
-                "error": "Une erreur s'est produite lors de la confirmation de la création du compte. Réessayez plus tard."
-            }
-        },
-        "profile": {
-            "get": {
-                "error": "Une erreur est survenue lors de la récupération de votre profil"
-            },
-            "update": {
-                "success": "Profil mis à jour",
-                "error": "Une erreur est survenue lors de la mise à jour du profil"
-            }
-        },
-        "friends": {
-            "search": {
-                "error": "Une erreur est survenue lors de la recherche d'amis"
-            },
-            "add": {
-                "success": "Demande d'ami envoyée",
-                "error": "Une erreur est survenue lors de la demande en ami",
-                "cancel": {
-                    "success": "Demande d'ami annulée",
-                    "error": "Une erreur est survenue lors de l'annulation de la demande d'ami"
-                }
-            },
-            "remove": {
-                "success": "Ami supprimé"
-            }
-        },
-        "blocked": {
-            "success": "Utilisateur bloqué",
-            "error": "Une erreur est survenue lors du blocage de l'utilisateur"
-        },
-        "unblock": {
-            "success": "Utilisateur débloqué",
-            "error": "Une erreur est survenue lors du déblocage de l'utilisateur"
-        },
-        "invite": {
-            "success": "a été invité dans votre salon",
-            "error": "Une erreur est survenue lors de l'invitation de l'utilisateur"
-        },
         "notification": {
             "friend-request": {
                 "ask": "Vous avez reçu une demande d'ami de",
-                "accept": "a été ajouté à vos amis",
-                "accepted": "a accepté votre demande d'ami",
-                "refuse": "Vous avez refusé la demande d'ami de"
+                "accepted": "a accepté votre demande d'ami"
             },
             "play": {
                 "invited": "vous a invité à rejoindre son salon",
@@ -118,17 +67,6 @@
                 "room": {
                     "closed": "Salon fermé"
                 }
-            }
-        },
-        "room": {
-            "error": "Une erreur est survenue lors de la requête au salon",
-            "create": {
-                "success": "Salon créé",
-                "error": "Une erreur est survenue lors de la création du salon"
-            },
-            "add-bot": {
-                "success": "Bot ajouté",
-                "error": "Une erreur est survenue lors de l'ajout du bot"
             }
         }
     },
@@ -138,26 +76,80 @@
     "profile": {
         "title": "Profil",
         "description": "Mettez à jour votre profil",
+        "meta": {
+            "title": "Modifier le profil – Colonizadar",
+            "description": "Mettez à jour votre nom d’utilisateur et votre photo de profil facilement sur Colonizadar. Gérez vos informations personnelles en toute sécurité.",
+            "keywords": "modifier profil, changer nom d’utilisateur, changer photo de profil, paramètres utilisateur, Colonizadar"
+        },
         "reset-password": "Réinitialiser le mot de passe",
         "profile-picture": {
             "title": "Photo de profil",
-            "description": "Uploadez ici une photo de phofil"
+            "description": "Uploadez ici une photo de profil"
         }
     },
     "reset-password": {
         "title": "Réinitialiser le mot de passe",
+        "meta": {
+            "title": "Réinitialiser le mot de passe – Colonizadar",
+            "description": "Entrez votre email pour recevoir un lien de réinitialisation du mot de passe. Le champ email est prérempli si vous êtes connecté.",
+            "keywords": "réinitialiser mot de passe, récupération mot de passe, mot de passe oublié, email réinitialisation, Colonizadar"
+        },
         "confirm": {
-            "title": "Finaliser la réinitialisation du mot de passe"
+            "title": "Finaliser la réinitialisation du mot de passe",
+            "meta": {
+                "title": "Confirmation de réinitialisation de mot de passe – Colonizadar",
+                "description": "Confirmez la réinitialisation de votre mot de passe en cliquant sur le lien envoyé par email. Mettez à jour votre mot de passe en toute sécurité et retrouvez l’accès à votre compte.",
+                "keywords": "confirmation réinitialisation mot de passe, réinitialiser mot de passe, vérification email, Colonizadar"
+            }
         }
     },
     "home": {
-        "title": "Accueil"
+        "title": "Accueil",
+        "meta": {
+            "title": "Bienvenue sur Colonizadar – Jeu de stratégie et de colonisation en ligne",
+            "description": "Dans Colonizadar, incarnez une nation et partez à la conquête du monde ! Affrontez les autochtones et les autres joueurs dans un jeu multijoueur de colonisation stratégique.",
+            "keywords": "jeu de colonisation, jeu de stratégie en ligne, jeu multijoueur, conquête du monde, Colonizadar"
+        }
     },
     "login": {
-        "title": "Connexion"
+        "title": "Connexion",
+        "meta": {
+            "title": "Connexion – Colonizadar",
+            "description": "Connectez-vous à Colonizadar avec votre email et mot de passe, ou rapidement via OAuth Google, GitHub ou Discord.",
+            "keywords": "connexion, login, se connecter, email, mot de passe, OAuth, connexion Google, connexion GitHub, connexion Discord, Colonizadar"
+        }
+    },
+    "create-account": {
+        "title": "Créer un compte",
+        "meta": {
+            "title": "Créer votre compte – Colonizadar",
+            "description": "Inscrivez-vous sur Colonizadar en créant un compte avec nom d'utilisateur, email et mot de passe. Ou connectez-vous rapidement via Google, Discord ou GitHub.",
+            "keywords": "créer un compte, inscription, nom d'utilisateur, email, mot de passe, OAuth, connexion Google, connexion Discord, connexion GitHub, Colonizadar"
+        },
+        "confirm": {
+            "title": "Confirmer la création du compte",
+            "meta": {
+                "title": "Confirmation de compte – Bienvenue sur Colonizadar",
+                "description": "Confirmez la création de votre compte en cliquant sur le lien envoyé par email. Commencez dès maintenant avec Colonizadar.",
+                "keywords": "confirmation de compte, vérification email, création de compte, Colonizadar"
+            }
+        }
+    },
+    "oauth": {
+        "title": "Connexion via OAuth",
+        "meta": {
+            "title": "Callback OAuth – Colonizadar",
+            "description": "Traitement du callback OAuth pour authentifier et récupérer le profil utilisateur. Gestion sécurisée du token d'accès avant redirection.",
+            "keywords": "callback OAuth, token d'accès, authentification utilisateur, token bearer, Colonizadar"
+        }
     },
     "logout": {
         "title": "Déconnexion",
+        "meta": {
+            "title": "Confirmer la déconnexion – Colonizadar",
+            "description": "Êtes-vous sûr de vouloir vous déconnecter ? Confirmez votre déconnexion pour terminer votre session en toute sécurité sur Colonizadar.",
+            "keywords": "confirmer déconnexion, confirmation logout, terminer session, Colonizadar"
+        },
         "modal": {
             "title": "Déconnexion",
             "text": "Êtes-vous sûr de vouloir vous déconnecter ?"
@@ -165,20 +157,45 @@
     },
     "forbidden": {
         "title": "Accès refusé",
-        "subtitle": "Vous devez êtez connecté pour accéder à cette partie de l'application."
+        "subtitle": "Vous devez être connecté pour accéder à cette partie de l'application.",
+        "meta": {
+            "title": "Accès Interdit – Colonizadar",
+            "description": "Vous n’avez pas la permission d’accéder à cette page. Si vous pensez qu’il s’agit d’une erreur, veuillez contacter le support.",
+            "keywords": "accès interdit, erreur 403, permission refusée, accès restreint, Colonizadar"
+        }
     },
     "not-found": {
-        "title": "Page inexistante"
+        "title": "Page inexistante",
+        "meta": {
+            "title": "Page non trouvée – Colonizadar",
+            "description": "La page que vous recherchez n’existe pas. Vérifiez l’URL ou retournez à la page d’accueil de Colonizadar.",
+            "keywords": "erreur 404, page non trouvée, page manquante, Colonizadar"
+        }
     },
     "already-connected": {
-        "title": "Déjà connecté"
+        "title": "Déjà connecté",
+        "meta": {
+            "title": "Déjà connecté – Accédez à votre tableau de bord | Colonizadar",
+            "description": "Vous êtes déjà connecté à Colonizadar. Accédez à votre tableau de bord ou retournez à la page d'accueil pour découvrir toutes les fonctionnalités.",
+            "keywords": "déjà connecté, session utilisateur, tableau de bord, page d'accueil, Colonizadar"
+        }
     },
     "social": {
         "title": "Social",
         "description": "Gérez vos amis et les utilisateurs bloqués",
+        "meta": {
+            "title": "Espace social – Colonizadar",
+            "description": "Accédez à votre espace social : gérez vos amis, utilisateurs bloqués et paramètres de profil depuis un seul endroit.",
+            "keywords": "espace social, gérer amis, utilisateurs bloqués, profil utilisateur, Colonizadar"
+        },
         "friends": {
             "title": "Amis",
             "description": "Gérez vos amis",
+            "meta": {
+                "title": "Gérez vos amis – Colonizadar",
+                "description": "Ajoutez, supprimez, acceptez les demandes d’amis et bloquez des utilisateurs facilement avec Colonizadar. Gérez vos connexions sociales simplement.",
+                "keywords": "gérer amis, ajouter amis, supprimer amis, demandes d’amis, bloquer utilisateurs, gestion sociale, Colonizadar"
+            },
             "none": "Pas d'ami trouvé",
             "search": {
                 "placeholder": "Jean123",
@@ -202,6 +219,11 @@
         "blocked": {
             "title": "Utilisateurs bloqués",
             "description": "Gérez les utilisateurs bloqués",
+            "meta": {
+                "title": "Utilisateurs bloqués – Gérer votre liste de blocage | Colonizadar",
+                "description": "Consultez et gérez facilement les utilisateurs que vous avez bloqués sur Colonizadar. Prenez le contrôle de votre expérience sociale et renforcez votre confidentialité.",
+                "keywords": "utilisateurs bloqués, liste de blocage, gérer les utilisateurs bloqués, paramètres sociaux, confidentialité"
+            },
             "none": "Pas d'utilisateur bloqué trouvé",
             "search": {
                 "placeholder": "Jean123",
@@ -221,6 +243,11 @@
     },
     "notifications": {
         "title": "Notifications",
+        "meta": {
+            "title": "Gérer les notifications – Colonizadar",
+            "description": "Consultez, acceptez, refusez et supprimez vos notifications, y compris les demandes d’amis, facilement avec Colonizadar.",
+            "keywords": "notifications, gérer notifications, demandes d’amis, accepter notifications, refuser notifications, supprimer notifications, Colonizadar"
+        },
         "friend-requests": {
             "title": "Demandes d'ami",
             "none": "Pas de demande d'ami en attente"
@@ -292,6 +319,10 @@
             },
             "subvert": "Subvertir",
             "cost": "Coût",
+            "attack": "Attaquer",
+            "move": "Déplacer",
+            "attacking": "Attaquer",
+            "moving": "Déplacer vers",
             "fortified": "Fortifié",
             "fortify": "Fortifier",
             "buy-infantry": "Acheter de l'infanterie",

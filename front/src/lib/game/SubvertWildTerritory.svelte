@@ -5,9 +5,8 @@
     import axios from 'axios';
     import type SerializedGameTerritory from 'colonizadar-backend/app/types/serialized/serialized_game_territory';
     import type SerializedRoomPlayer from 'colonizadar-backend/app/types/serialized/serialized_room_player';
-    import Icon from '../shared/Icon.svelte';
-    import { onMount, tick } from 'svelte';
     import { formatGameNumbers } from '../../services/stringService';
+    import ActionButton from './ActionButton.svelte';
 
     export let game: SerializedGame;
     export let selectedTerritory: SerializedGameTerritory;
@@ -15,14 +14,6 @@
 
     let isButtonDisabled: boolean = false;
     let isLoading: boolean = false;
-    let buttonElement: HTMLButtonElement;
-
-    onMount(async (): Promise<void> => {
-        await tick();
-        const { width, height } = buttonElement.getBoundingClientRect();
-        buttonElement.style.setProperty('width', `${width}px`);
-        buttonElement.style.setProperty('height', `${height}px`);
-    });
 
     const handleSubvert = async (): Promise<void> => {
         isLoading = true;
@@ -50,19 +41,7 @@
     $: isButtonDisabled = isLoading || (currentPlayer?.gold ?? 0) < game.map.subvertCost;
 </script>
 
-<div class="flex gap-1 flex-col justify-center items-center">
-    <button
-        bind:this={buttonElement}
-        disabled={isButtonDisabled}
-        class="flex justify-center items-center bg-green-500 hover:bg-green-600 transition-colors duration-300 px-3 py-1 rounded-xl"
-        on:click={handleSubvert}
-    >
-        {#if isLoading}
-            <Icon name="spinner" />
-        {:else}
-            {$t('play.game.subvert')}
-        {/if}
-    </button>
-
-    <p>{$t('play.game.cost')} : {formatGameNumbers(game.map.subvertCost)}</p>
-</div>
+<ActionButton {isButtonDisabled} {isLoading} on:click={handleSubvert}>
+    <span slot="text">{$t('play.game.subvert')}</span>
+    <p slot="informations">{$t('play.game.cost')} : {formatGameNumbers(game.map.subvertCost)}</p>
+</ActionButton>
