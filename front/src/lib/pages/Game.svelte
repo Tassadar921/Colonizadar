@@ -14,6 +14,7 @@
     import GameNotifications from '../game/GameNotifications.svelte';
     import type SerializedGameTerritory from 'colonizadar-backend/app/types/serialized/serialized_game_territory';
     import { updateGameOnLoad } from '../../stores/dbStore';
+    import { MetaTags } from 'svelte-meta-tags';
 
     export let gameId: string;
 
@@ -44,6 +45,22 @@
         currentPlayer = game.players.find((player: SerializedRoomPlayer) => player.user?.id === $profile!.id);
     }
 </script>
+
+<MetaTags
+    title={$t('play.game.meta.title')}
+    description={$t('play.game.meta.description')}
+    keywords={$t('play.game.meta.keywords').split(', ')}
+    languageAlternates={[
+        {
+            hrefLang: 'en',
+            href: `${import.meta.env.VITE_FRONT_URI}/en/play/game/${gameId}`,
+        },
+        {
+            hrefLang: 'fr',
+            href: `${import.meta.env.VITE_FRONT_URI}/fr/play/game/${gameId}`,
+        },
+    ]}
+/>
 
 <Title title={game?.name} />
 
