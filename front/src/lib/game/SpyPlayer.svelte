@@ -6,8 +6,10 @@
     import type SerializedRoomPlayer from 'colonizadar-backend/app/types/serialized/serialized_room_player';
     import Popover from '../shared/Popover.svelte';
     import { formatGameNumbers } from '../../services/stringService';
+    import ActionButton from './ActionButton.svelte';
 
     export let game: SerializedGame;
+    export let currentPlayer: SerializedRoomPlayer;
     export let player: SerializedRoomPlayer;
 
     let buttonElement: HTMLButtonElement;
@@ -34,21 +36,20 @@
         }
     };
 
-    $: isButtonDisabled = !!player.gold;
+    $: isButtonDisabled = (currentPlayer?.gold ?? 0) < game.map.spyPlayerCost;
 </script>
 
-<button
-    bind:this={buttonElement}
-    class="{isButtonDisabled ? '' : 'hover:bg-green-600'} bg-green-500 transition-colors duration-300 px-3 py-1 rounded-xl"
+<ActionButton
+    bind:buttonElement
     on:click={handleSpyPlayer}
     on:mouseenter={() => (showPopover = true)}
     on:focus={() => (showPopover = true)}
     on:mouseleave={() => (showPopover = false)}
     on:blur={() => (showPopover = false)}
-    disabled={isButtonDisabled}
+    {isButtonDisabled}
 >
-    {$t('play.game.spy')}
-</button>
+    <span slot="text">{$t('play.game.spy')}</span>
+</ActionButton>
 
 <Popover target={buttonElement} show={showPopover}>
     <span>{$t('play.game.cost')} : {formatGameNumbers(game?.map.spyPlayerCost ?? 0)}</span>

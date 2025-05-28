@@ -66,9 +66,17 @@
 
 {#if game && currentPlayer}
     <GameNotifications bind:game bind:currentPlayer on:territoryUpdate={handleTerritoryUpdate} />
-    <p>{$t('play.game.gold')}: {formatGameNumbers(currentPlayer.gold ?? 0)}</p>
-    <p>{$t('play.game.year')}: {game.year}</p>
-    <p>{$t('play.game.season')}: {$t(`play.game.${formatSeasonFromNumber(game.season)}`)}</p>
+    <div class="flex gap-3 justify-between">
+        <div class="w-1/3">
+            <p>{$t('play.game.gold')}: {formatGameNumbers(currentPlayer.gold ?? 0)}</p>
+            <p>{$t('play.game.year')}: {game.year}</p>
+            <p>{$t('play.game.season')}: {$t(`play.game.${formatSeasonFromNumber(game.season)}`)}</p>
+        </div>
+        <div class="w-1/3 flex justify-center items-center">
+            <p>test</p>
+        </div>
+        <div class="w-1/3"></div>
+    </div>
 {/if}
 
 <!-- TODO: faire en sorte que ça soit présentable pour 2, 4, 6 (idéalement 8 ou même 10 mais pas sûr d'avoir la place) -->
