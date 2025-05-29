@@ -6,7 +6,7 @@
     import type SerializedRoomPlayer from 'colonizadar-backend/app/types/serialized/serialized_room_player';
     import Popover from '../shared/Popover.svelte';
     import { formatGameNumbers } from '../../services/stringService';
-    import ActionButton from './ActionButton.svelte';
+    import ActionButton from '../shared/ActionButton.svelte';
 
     export let game: SerializedGame;
     export let currentPlayer: SerializedRoomPlayer;

@@ -4,7 +4,7 @@
     import Range from '../shared/Range.svelte';
     import { t } from 'svelte-i18n';
     import Icon from '../shared/Icon.svelte';
-    import ActionButton from './ActionButton.svelte';
+    import ActionButton from '../shared/ActionButton.svelte';
     import type SerializedTerritory from 'colonizadar-backend/app/types/serialized/serialized_territory';
     import Incrementation from '../shared/Incrementation.svelte';
     import { addMove, type Move } from '../../stores/dbStore';

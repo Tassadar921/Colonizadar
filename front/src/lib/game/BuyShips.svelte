@@ -10,7 +10,7 @@
     import type SerializedGame from 'colonizadar-backend/app/types/serialized/serialized_game';
     import type SerializedRoomPlayer from 'colonizadar-backend/app/types/serialized/serialized_room_player';
     import type SerializedGameTerritory from 'colonizadar-backend/app/types/serialized/serialized_game_territory';
-    import ActionButton from './ActionButton.svelte';
+    import ActionButton from '../shared/ActionButton.svelte';
 
     export let game: SerializedGame;
     export let selectedTerritory: SerializedGameTerritory;

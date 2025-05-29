@@ -8,7 +8,7 @@
     import Range from '../shared/Range.svelte';
     import Form from '../shared/Form.svelte';
     import { formatGameNumbers } from '../../services/stringService';
-    import ActionButton from './ActionButton.svelte';
+    import ActionButton from '../shared/ActionButton.svelte';
 
     export let game: SerializedGame;
     export let currentPlayer: SerializedRoomPlayer;

@@ -3,8 +3,9 @@
     import axios from 'axios';
     import { showToast } from '../../services/toastService';
     import type SerializedRoom from 'colonizadar-backend/app/types/serialized/serialized_room';
-    import Fab from '../shared/Fab.svelte';
     import { profile } from '../../stores/profileStore';
+    import { t } from 'svelte-i18n';
+    import ActionButton from '../shared/ActionButton.svelte';
 
     export let room: SerializedRoom;
     export let isLoading: boolean = false;
@@ -30,4 +31,6 @@
     $: color = player.isReady ? 'green' : 'red';
 </script>
 
-<button class="bg-red-500 hover:bg-red-500 rounded-full px-3 py-2 text-white" on:click={() => handleReady(player)}>Ready ?</button>
+<ActionButton {isLoading} on:click={() => handleReady(player)} {color}>
+    <span slot="text">{$t('play.common.ready')} ?</span>
+</ActionButton>

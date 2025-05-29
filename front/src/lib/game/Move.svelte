@@ -2,7 +2,7 @@
     import type SerializedGameTerritory from 'colonizadar-backend/app/types/serialized/serialized_game_territory';
     import { t } from 'svelte-i18n';
     import { createEventDispatcher } from 'svelte';
-    import ActionButton from './ActionButton.svelte';
+    import ActionButton from '../shared/ActionButton.svelte';
 
     const dispatch = createEventDispatcher();
 

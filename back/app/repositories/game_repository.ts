@@ -23,8 +23,12 @@ export default class GameRepository extends BaseRepository<typeof Game> {
             .preload('room', (roomQuery): void => {
                 roomQuery.preload('owner').preload('players', (playersQuery): void => {
                     playersQuery
-                        .preload('user')
-                        .preload('bot')
+                        .preload('user', (userQuery): void => {
+                            userQuery.preload('profilePicture');
+                        })
+                        .preload('bot', (botQuery): void => {
+                            botQuery.preload('picture');
+                        })
                         .preload('country')
                         .preload('difficulty')
                         .preload('wars', (warsQuery): void => {

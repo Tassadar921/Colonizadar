@@ -79,7 +79,6 @@
     </div>
 {/if}
 
-<!-- TODO: faire en sorte que ça soit présentable pour 2, 4, 6 (idéalement 8 ou même 10 mais pas sûr d'avoir la place) -->
 <!-- Do not include in the if game, to load the svg in parallel of the back request to get the data -->
 <div class="flex gap-5 justify-center items-center">
     <div class="flex flex-col">
