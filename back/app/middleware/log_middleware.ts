@@ -32,6 +32,10 @@ export default class LogHttpRequest {
             if ('password' in copy) {
                 copy.password = 'HIDDEN';
             }
+            if ('confirmPassword' in copy) {
+                copy.confirmPassword = 'HIDDEN';
+            }
+
             return copy;
         }
 

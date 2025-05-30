@@ -262,6 +262,7 @@
             "keywords": "rejoindre salle, créer salle, accès salle, salle privée, connexion jeton, partie de jeu, Colonizadar"
         },
         "common": {
+            "ready": "Prêt",
             "infantry": "Infanterie",
             "ships": "Navires",
             "landing": "Débarquement",

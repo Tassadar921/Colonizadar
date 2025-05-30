@@ -2,11 +2,11 @@
     import type SerializedRoomPlayer from 'colonizadar-backend/app/types/serialized/serialized_room_player';
     import axios from 'axios';
     import { showToast } from '../../services/toastService';
-    import type SerializedRoom from 'colonizadar-backend/app/types/serialized/serialized_room';
+    import type SerializedGame from 'colonizadar-backend/app/types/serialized/serialized_game';
     import { t } from 'svelte-i18n';
     import ActionButton from '../shared/ActionButton.svelte';
 
-    export let room: SerializedRoom;
+    export let game: SerializedGame;
     export let currentPlayer: SerializedRoomPlayer;
 
     let isLoading: boolean = false;
@@ -14,9 +14,7 @@
     const handleReady = async () => {
         isLoading = true;
         try {
-            await axios.patch(`/api/room/${room.id}/player/ready`, {
-                isReady: !currentPlayer.isReady,
-            });
+            await axios.patch(`/api/game/${game.id}/ready`);
         } catch (error: any) {
             showToast(error.response.data.error, 'error');
         }

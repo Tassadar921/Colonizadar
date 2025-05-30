@@ -15,7 +15,7 @@ export default class RoomRepository extends BaseRepository<typeof Room> {
             .andWhere('front_id', roomId)
             .preload('owner')
             .preload('players', (playersQuery): void => {
-                playersQuery.preload('user').preload('bot').preload('country').preload('difficulty').orderBy('frontId');
+                playersQuery.orderBy('frontId');
             })
             .preload('map', (mapQuery): void => {
                 mapQuery
@@ -36,7 +36,7 @@ export default class RoomRepository extends BaseRepository<typeof Room> {
             .andWhere('rooms.token', token)
             .preload('owner')
             .preload('players', (playersQuery): void => {
-                playersQuery.preload('user').preload('bot').preload('country').preload('difficulty').orderBy('frontId');
+                playersQuery.orderBy('frontId');
             })
             .preload('map', (mapQuery): void => {
                 mapQuery

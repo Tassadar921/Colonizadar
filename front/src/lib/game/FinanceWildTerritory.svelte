@@ -8,7 +8,7 @@
     import Range from '../shared/Range.svelte';
     import Form from '../shared/Form.svelte';
     import type SerializedGameTerritory from 'colonizadar-backend/app/types/serialized/serialized_game_territory';
-    import ActionButton from './ActionButton.svelte';
+    import ActionButton from '../shared/ActionButton.svelte';
 
     export let game: SerializedGame;
     export let currentPlayer: SerializedRoomPlayer;
@@ -34,8 +34,8 @@
         showToast(event.detail.message);
     };
 
-    $: isButtonDisabled = (currentPlayer?.gold ?? 0) < game.map.financeWildTerritoryStep;
-    $: canSubmit = amount >= game.map.financeWildTerritoryStep && amount % game.map.financeWildTerritoryStep === 0 && amount <= (currentPlayer?.gold ?? 0);
+    $: isButtonDisabled = currentPlayer.isReady || (currentPlayer?.gold ?? 0) < game.map.financeWildTerritoryStep;
+    $: canSubmit = !currentPlayer.isReady && amount >= game.map.financeWildTerritoryStep && amount % game.map.financeWildTerritoryStep === 0 && amount <= (currentPlayer?.gold ?? 0);
 </script>
 
 <ActionButton {isButtonDisabled} on:click={() => (showModal = true)}>

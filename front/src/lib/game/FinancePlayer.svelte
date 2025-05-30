@@ -8,12 +8,13 @@
     import Range from '../shared/Range.svelte';
     import Form from '../shared/Form.svelte';
     import { formatGameNumbers } from '../../services/stringService';
-    import ActionButton from './ActionButton.svelte';
+    import ActionButton from '../shared/ActionButton.svelte';
 
     export let game: SerializedGame;
     export let currentPlayer: SerializedRoomPlayer;
     export let targetPlayer: SerializedRoomPlayer;
 
+    let isButtonDisabled: boolean = false;
     let amount: number;
     let showModal: boolean = false;
     let canSubmit: boolean = false;
@@ -32,10 +33,11 @@
         showToast(event.detail.message);
     };
 
+    $: isButtonDisabled = (currentPlayer?.gold ?? 0) < game.map.financePlayerStep || currentPlayer.isReady;
     $: canSubmit = amount >= game.map.financePlayerStep && amount % game.map.financePlayerStep === 0 && amount <= (currentPlayer?.gold ?? 0);
 </script>
 
-<ActionButton on:click={() => (showModal = true)}>
+<ActionButton {isButtonDisabled} on:click={() => (showModal = true)}>
     <span slot="text">{$t('play.game.finance')}</span>
 </ActionButton>
 

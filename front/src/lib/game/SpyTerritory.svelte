@@ -6,7 +6,7 @@
     import { showToast } from '../../services/toastService';
     import type SerializedRoomPlayer from 'colonizadar-backend/app/types/serialized/serialized_room_player';
     import { formatGameNumbers } from '../../services/stringService';
-    import ActionButton from './ActionButton.svelte';
+    import ActionButton from '../shared/ActionButton.svelte';
 
     export let game: SerializedGame;
     export let selectedTerritory: SerializedGameTerritory;
@@ -44,7 +44,7 @@
     };
 
     $: cost = selectedTerritory.isFortified ? (selectedTerritory.territory.isFactory ? game.map.spyFactoryCost : game.map.spyFortifiedTerritoryCost) : game.map.spyTerritoryCost;
-    $: isButtonDisabled = isLoading || (currentPlayer?.gold ?? 0) < cost || !!selectedTerritory.infantry;
+    $: isButtonDisabled = isLoading || (currentPlayer?.gold ?? 0) < cost || !!selectedTerritory.infantry || currentPlayer.isReady;
 </script>
 
 <ActionButton {isButtonDisabled} {isLoading} on:click={handleSpyTerritory}>

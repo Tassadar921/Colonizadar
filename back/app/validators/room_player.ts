@@ -24,7 +24,7 @@ export const selectBotDifficultyValidator = vine.compile(
     })
 );
 
-export const setReadyValidator = vine.compile(
+export const readyValidator = vine.compile(
     vine.object({
         isReady: vine.boolean(),
     })

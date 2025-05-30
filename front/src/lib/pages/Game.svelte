@@ -15,6 +15,7 @@
     import type SerializedGameTerritory from 'colonizadar-backend/app/types/serialized/serialized_game_territory';
     import { updateGameOnLoad } from '../../stores/dbStore';
     import { MetaTags } from 'svelte-meta-tags';
+    import GameReady from '../game/GameReady.svelte';
 
     export let gameId: string;
 
@@ -73,13 +74,12 @@
             <p>{$t('play.game.season')}: {$t(`play.game.${formatSeasonFromNumber(game.season)}`)}</p>
         </div>
         <div class="w-1/3 flex justify-center items-center">
-            <p>test</p>
+            <GameReady {game} {currentPlayer} />
         </div>
         <div class="w-1/3"></div>
     </div>
 {/if}
 
-<!-- TODO: faire en sorte que ça soit présentable pour 2, 4, 6 (idéalement 8 ou même 10 mais pas sûr d'avoir la place) -->
 <!-- Do not include in the if game, to load the svg in parallel of the back request to get the data -->
 <div class="flex gap-5 justify-center items-center">
     <div class="flex flex-col">

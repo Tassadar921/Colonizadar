@@ -22,6 +22,8 @@
     import PlayableCountriesInfo from '../room/PlayableCountriesInfo.svelte';
     import Icon from '../shared/Icon.svelte';
     import { MetaTags } from 'svelte-meta-tags';
+    import type SerializedRoomPlayer from 'colonizadar-backend/app/types/serialized/serialized_room_player';
+    import { profile } from '../../stores/profileStore';
 
     export let roomId: string;
 
@@ -30,6 +32,8 @@
         value: string;
         uri?: string;
     }
+
+    let currentPlayer: SerializedRoomPlayer;
 
     let isLoading: boolean = true;
     let room: SerializedRoom;
@@ -93,6 +97,8 @@
     $: if (roomId) {
         fetchRoomData();
     }
+
+    $: currentPlayer = room?.players.find((player: SerializedRoomPlayer): boolean => player.user?.id === $profile!.id);
 </script>
 
 <MetaTags
@@ -139,7 +145,7 @@
                 <span>{$t('play.room.invite.title')}</span>
                 <Icon name="invite" />
             </Button>
-            <RoomReady bind:room bind:isLoading />
+            <RoomReady bind:room bind:currentPlayer />
         </div>
     </div>
 

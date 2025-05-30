@@ -10,7 +10,7 @@
     import type SerializedGame from 'colonizadar-backend/app/types/serialized/serialized_game';
     import type SerializedRoomPlayer from 'colonizadar-backend/app/types/serialized/serialized_room_player';
     import type SerializedGameTerritory from 'colonizadar-backend/app/types/serialized/serialized_game_territory';
-    import ActionButton from './ActionButton.svelte';
+    import ActionButton from '../shared/ActionButton.svelte';
 
     export let game: SerializedGame;
     export let selectedTerritory: SerializedGameTerritory;
@@ -52,7 +52,7 @@
         showToast(event.detail.message);
     };
 
-    $: isButtonDisabled = (currentPlayer.gold ?? 0) < game.map.baseInfantryCost * currentPlayer.country.infantryPriceFactor * 1000;
+    $: isButtonDisabled = (currentPlayer.gold ?? 0) < game.map.baseInfantryCost * currentPlayer.country.infantryPriceFactor * 1000 || currentPlayer.isReady;
     $: {
         const maxAffordableAmount = getInfantryFromCost(currentPlayer.gold ?? 0);
 
@@ -60,12 +60,12 @@
             amount = maxAffordableAmount;
             canIncrement = false;
         } else {
-            canIncrement = amount + 1000 <= maxAffordableAmount;
+            canIncrement = amount + 1000 <= maxAffordableAmount && !currentPlayer.isReady;
         }
 
         cost = game.map.baseInfantryCost * currentPlayer.country.infantryPriceFactor * amount;
-        canSubmit = amount >= 1000 && amount % 1000 === 0;
-        canDecrement = amount > 1000;
+        canSubmit = amount >= 1000 && amount % 1000 === 0 && !currentPlayer.isReady;
+        canDecrement = amount > 1000 && !currentPlayer.isReady;
     }
 </script>
 

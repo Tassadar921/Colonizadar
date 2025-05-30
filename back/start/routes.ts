@@ -154,6 +154,7 @@ router
                             .group((): void => {
                                 router.get('/', [GameController, 'get']);
                                 router.patch('/ready', [GameController, 'ready']);
+                                router.post('/actions', [GameController, 'nextTurnActions']);
                                 router.get('player', [GameController, 'getPlayer']);
                                 router.get('territory/:territoryCode', [GameController, 'getGameTerritory']).use([middleware.gameTerritory()]);
 

@@ -262,6 +262,7 @@
             "keywords": "join room, create room, room access, private room, token login, game session, Colonizadar"
         },
         "common": {
+            "ready": "Ready",
             "infantry": "Infantry",
             "ships": "Ships",
             "landing": "Landing",
