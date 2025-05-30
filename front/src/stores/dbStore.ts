@@ -4,7 +4,7 @@ import { liveQuery } from 'dexie';
 import { showToast } from '../services/toastService';
 import type SerializedGame from 'colonizadar-backend/app/types/serialized/serialized_game';
 import type SerializedGameTerritory from 'colonizadar-backend/app/types/serialized/serialized_game_territory';
-import { type Move } from 'colonizadar-backend/app/types/Move';
+import type { Move } from 'colonizadar-backend/app/types/Move';
 
 class FrontDatabase extends Dexie {
     moves!: Table<Move, number>;

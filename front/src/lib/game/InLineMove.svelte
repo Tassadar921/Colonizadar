@@ -3,7 +3,7 @@
     import type SerializedGameTerritory from 'colonizadar-backend/app/types/serialized/serialized_game_territory';
     import Icon from '../shared/Icon.svelte';
     import { formatGameNumbers } from '../../services/stringService';
-    import { type Move } from 'colonizadar-backend/app/types/Move';
+    import type { Move } from 'colonizadar-backend/app/types/Move';
 
     const dispatch = createEventDispatcher();
 

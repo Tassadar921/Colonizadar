@@ -32,31 +32,19 @@ export default class GameRepository extends BaseRepository<typeof Game> {
                         .preload('country')
                         .preload('difficulty')
                         .preload('wars', (warsQuery): void => {
-                            warsQuery
-                                .preload('enemy', (enemyQuery): void => {
-                                    enemyQuery.preload('user').preload('bot').preload('country').preload('difficulty');
-                                })
-                                .where('status', WarStatusEnum.IN_PROGRESS);
+                            warsQuery.preload('enemy').where('status', WarStatusEnum.IN_PROGRESS);
                         })
                         .preload('sentPendingPeaces', (sentPendingPeacesQuery): void => {
-                            sentPendingPeacesQuery.preload('enemy', (enemyQuery): void => {
-                                enemyQuery.preload('user').preload('bot').preload('country').preload('difficulty');
-                            });
+                            sentPendingPeacesQuery.preload('enemy');
                         })
                         .preload('receivedPendingPeaces', (receivedPendingPeacesQuery): void => {
-                            receivedPendingPeacesQuery.preload('player', (enemyQuery): void => {
-                                enemyQuery.preload('user').preload('bot').preload('country').preload('difficulty');
-                            });
+                            receivedPendingPeacesQuery.preload('player');
                         })
                         .preload('peaces', (peacesQuery): void => {
                             peacesQuery
-                                .preload('enemy', (enemyQuery): void => {
-                                    enemyQuery.preload('user').preload('bot').preload('country').preload('difficulty');
-                                })
+                                .preload('enemy')
                                 .preload('war', (warQuery): void => {
-                                    warQuery.preload('enemy', (enemyQuery): void => {
-                                        enemyQuery.preload('user').preload('bot').preload('country').preload('difficulty');
-                                    });
+                                    warQuery.preload('enemy');
                                 })
                                 .where('status', PeaceStatusEnum.IN_PROGRESS);
                         })
@@ -64,15 +52,11 @@ export default class GameRepository extends BaseRepository<typeof Game> {
                 });
             })
             .preload('territories', (territoriesQuery): void => {
-                territoriesQuery
-                    .preload('owner', (ownerQuery): void => {
-                        ownerQuery.preload('bot').preload('user').preload('country').preload('difficulty');
-                    })
-                    .preload('territory', (territoryQuery): void => {
-                        territoryQuery.preload('neighbours', (neighboursQuery): void => {
-                            neighboursQuery.preload('neighbour');
-                        });
+                territoriesQuery.preload('owner').preload('territory', (territoryQuery): void => {
+                    territoryQuery.preload('neighbours', (neighboursQuery): void => {
+                        neighboursQuery.preload('neighbour');
                     });
+                });
             })
             .preload('map', (mapQuery): void => {
                 mapQuery.preload('createdBy');

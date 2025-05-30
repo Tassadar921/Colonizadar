@@ -98,7 +98,7 @@
         fetchRoomData();
     }
 
-    $: room?.players.find((player: SerializedRoomPlayer): boolean => player.user?.id === $profile!.id);
+    $: currentPlayer = room?.players.find((player: SerializedRoomPlayer): boolean => player.user?.id === $profile!.id);
 </script>
 
 <MetaTags

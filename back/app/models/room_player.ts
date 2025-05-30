@@ -1,5 +1,5 @@
 import { DateTime } from 'luxon';
-import { BaseModel, belongsTo, column, hasMany } from '@adonisjs/lucid/orm';
+import { BaseModel, beforeFetch, beforeFind, belongsTo, column, hasMany } from '@adonisjs/lucid/orm';
 import User from '#models/user';
 import type { BelongsTo, HasMany } from '@adonisjs/lucid/types/relations';
 import Room from '#models/room';
@@ -95,6 +95,12 @@ export default class RoomPlayer extends BaseModel {
 
     @column.dateTime({ autoCreate: true, autoUpdate: true })
     declare updatedAt: DateTime;
+
+    @beforeFind()
+    @beforeFetch()
+    public static preloadDefaults(query: any): void {
+        query.preload('user').preload('bot').preload('country').preload('difficulty');
+    }
 
     public apiSerialize(language: Language, user?: User, isSpied = false): SerializedRoomPlayer {
         return {

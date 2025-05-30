@@ -19,4 +19,10 @@ export default class RoomPlayerWarRepository extends BaseRepository<typeof War> 
             .update('end_season', game.season)
             .update('end_year', game.year);
     }
+
+    public async loadFromGamePlayer(player: RoomPlayer): Promise<void> {
+        await player.load('wars', (warsQuery): void => {
+            warsQuery.preload('enemy');
+        });
+    }
 }
