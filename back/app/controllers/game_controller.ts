@@ -91,6 +91,10 @@ export default class GameController {
                 }
 
                 const moves: Move[] = JSON.parse(stringifiedMoves);
+                // TODO: process moves & attacks
+                // TODO: make bots play
+
+                await redis.del(`game:${game.frontId}-player:${currentPlayer.frontId}-moves`);
             });
         }
     }
