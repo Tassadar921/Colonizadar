@@ -3,14 +3,16 @@
     import { t } from 'svelte-i18n';
     import { createEventDispatcher } from 'svelte';
     import ActionButton from '../shared/ActionButton.svelte';
+    import type SerializedRoomPlayer from 'colonizadar-backend/app/types/serialized/serialized_room_player';
 
     const dispatch = createEventDispatcher();
 
     export let selectedTerritory: SerializedGameTerritory;
+    export let currentPlayer: SerializedRoomPlayer;
 
     let isButtonDisabled: boolean = false;
 
-    $: isButtonDisabled = (!selectedTerritory.ships || selectedTerritory.ships === 0) && (!selectedTerritory.infantry || selectedTerritory.infantry <= 1000);
+    $: isButtonDisabled = currentPlayer.isReady || ((!selectedTerritory.ships || selectedTerritory.ships === 0) && (!selectedTerritory.infantry || selectedTerritory.infantry <= 1000));
 </script>
 
 <ActionButton {isButtonDisabled} on:click={() => dispatch('move')}>

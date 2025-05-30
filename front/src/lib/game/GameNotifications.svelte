@@ -10,6 +10,7 @@
     import axios from 'axios';
     import type SerializedGameTerritory from 'colonizadar-backend/app/types/serialized/serialized_game_territory';
     import { handleFortifyAction } from '../../services/gameGeometryService';
+    import { getAllMoves, moves } from '../../stores/dbStore';
 
     const dispatch = createEventDispatcher();
 
@@ -28,6 +29,7 @@
     let cancelPendingPeaceNotification: Subscription;
     let peaceNotification: Subscription;
     let financedNotification: Subscription;
+    let playerReadyNotification: Subscription;
     let nextTurnNotification: Subscription;
 
     const getCurrentPlayer = async (): Promise<SerializedRoomPlayer> => {
@@ -88,6 +90,7 @@
         cancelPendingPeaceNotification = $transmit.subscription(`notification/play/game/${game.id}/${currentPlayer.id}/peace/cancel`);
         peaceNotification = $transmit.subscription(`notification/play/game/${game.id}/peace`);
         financedNotification = $transmit.subscription(`notification/play/game/${game.id}/${currentPlayer.id}/financed`);
+        playerReadyNotification = $transmit.subscription(`notification/play/game/${game.id}/player/ready`);
         nextTurnNotification = $transmit.subscription(`notification/play/game/${game.id}/next-turn`);
 
         await Promise.all([
@@ -101,6 +104,7 @@
             cancelPendingPeaceNotification.create(),
             peaceNotification.create(),
             financedNotification.create(),
+            playerReadyNotification.create(),
             nextTurnNotification.create(),
         ]);
     };
@@ -199,8 +203,26 @@
             showToast(`${formatGameNumbers(amount)} ${$t('play.game.received-from')} ${targetPlayer.user?.username ?? targetPlayer.bot.name}`);
         });
 
-        nextTurnNotification.onMessage((): void => {
-            // TODO: send all turn actions : moves, attacks
+        playerReadyNotification.onMessage(({ playerId, isReady }: { playerId: number; isReady: boolean }): void => {
+            game = {
+                ...game,
+                players: game.players.map((player: SerializedRoomPlayer): SerializedRoomPlayer => {
+                    if (player.id === playerId) {
+                        return {
+                            ...player,
+                            isReady,
+                        };
+                    }
+                    return player;
+                }),
+            };
+        });
+
+        nextTurnNotification.onMessage(async (): Promise<void> => {
+            const { data } = await axios.post(`/api/game/${game.id}/actions`, {
+                moves: await getAllMoves(),
+            });
+            console.log(data);
         });
     };
 
@@ -210,12 +232,14 @@
                 gameUpdateNotification?.delete().then(() => console.log('gameUpdateNotification deleted')),
                 playerUpdateNotification?.delete().then(() => console.log('playerUpdateNotification deleted')),
                 territoryUpdateNotification?.delete().then(() => console.log('territoryUpdateNotification deleted')),
+                spiedNotification?.delete().then(() => console.log('spiedNotification deleted')),
                 warNotification?.delete().then(() => console.log('warNotification deleted')),
                 askPeaceNotification?.delete().then(() => console.log('askPeaceNotification deleted')),
                 refusePeaceNotification?.delete().then(() => console.log('refusePeaceNotification deleted')),
                 cancelPendingPeaceNotification?.delete().then(() => console.log('cancelPendingPeaceNotification deleted')),
                 peaceNotification?.delete().then(() => console.log('peaceNotification deleted')),
                 financedNotification?.delete().then(() => console.log('financedNotification deleted')),
+                playerReadyNotification?.delete().then(() => console.log('playerReadyNotification deleted')),
                 nextTurnNotification?.delete().then(() => console.log('nextTurnNotification deleted')),
             ]);
         } catch (error: any) {

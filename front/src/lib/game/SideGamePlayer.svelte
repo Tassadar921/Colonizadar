@@ -75,22 +75,22 @@
         {#if player.user?.id !== $profile?.id}
             <div class="flex flex-col gap-3">
                 <div class="flex gap-3">
-                    <SpyPlayer bind:game {player} />
+                    <SpyPlayer bind:game {currentPlayer} {player} />
                     <FinancePlayer bind:game {currentPlayer} targetPlayer={player} />
                 </div>
                 <div class="flex gap-3">
                     {#if currentPlayer.wars?.find((war: SerializedWar) => war.enemy.id === player.id)}
                         {#if currentPlayer.receivedPendingPeaces?.find((enemy: SerializedRoomPlayer) => enemy.id === player.id)}
                             <p>{currentPlayer.receivedPendingPeaces?.length}</p>
-                            <AcceptPeace bind:game targetPlayer={player} />
-                            <RefusePeace bind:game targetPlayer={player} />
+                            <AcceptPeace bind:game targetPlayer={player} {currentPlayer} />
+                            <RefusePeace bind:game targetPlayer={player} {currentPlayer} />
                         {:else if currentPlayer.sentPendingPeaces?.find((enemy: SerializedRoomPlayer) => enemy.id === player.id)}
-                            <CancelPendingPeace bind:game targetPlayer={player} />
+                            <CancelPendingPeace bind:game targetPlayer={player} {currentPlayer} />
                         {:else}
-                            <AskPeace bind:game targetPlayer={player} />
+                            <AskPeace bind:game targetPlayer={player} {currentPlayer} />
                         {/if}
                     {:else if !currentPeace}
-                        <DeclareWar bind:game targetPlayer={player} />
+                        <DeclareWar bind:game targetPlayer={player} {currentPlayer} />
                     {:else}
                         <p>{$t('play.game.peace.expires-on')} {$t(`play.game.${formatSeasonFromNumber(currentPeace.expirationSeason)}`)} {currentPeace.expirationYear}</p>
                     {/if}

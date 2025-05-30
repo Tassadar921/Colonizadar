@@ -15,6 +15,7 @@
     import type SerializedGameTerritory from 'colonizadar-backend/app/types/serialized/serialized_game_territory';
     import { updateGameOnLoad } from '../../stores/dbStore';
     import { MetaTags } from 'svelte-meta-tags';
+    import GameReady from '../game/GameReady.svelte';
 
     export let gameId: string;
 
@@ -73,7 +74,7 @@
             <p>{$t('play.game.season')}: {$t(`play.game.${formatSeasonFromNumber(game.season)}`)}</p>
         </div>
         <div class="w-1/3 flex justify-center items-center">
-            <p>test</p>
+            <GameReady {game} {currentPlayer} />
         </div>
         <div class="w-1/3"></div>
     </div>

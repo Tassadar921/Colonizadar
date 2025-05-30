@@ -4,15 +4,7 @@ import { liveQuery } from 'dexie';
 import { showToast } from '../services/toastService';
 import type SerializedGame from 'colonizadar-backend/app/types/serialized/serialized_game';
 import type SerializedGameTerritory from 'colonizadar-backend/app/types/serialized/serialized_game_territory';
-
-export interface Move {
-    id?: number;
-    from: number;
-    to: number;
-    infantry: number;
-    ships: number;
-    isAttack: boolean;
-}
+import { type Move } from 'colonizadar-backend/app/types/Move';
 
 class FrontDatabase extends Dexie {
     moves!: Table<Move, number>;
@@ -58,6 +50,10 @@ export async function removeMove(id: number): Promise<void> {
 
 export async function getSelectedTerritoryMoves(gameTerritory: SerializedGameTerritory): Promise<Move[]> {
     return db.moves.where('from').equals(gameTerritory.id).or('to').equals(gameTerritory.id).toArray();
+}
+
+export async function getAllMoves(): Promise<Move[]> {
+    return db.moves.toArray();
 }
 
 export async function clearMoves(): Promise<void> {

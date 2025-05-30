@@ -38,7 +38,7 @@
         isLoading = false;
     };
 
-    $: isButtonDisabled = isLoading || (currentPlayer?.gold ?? 0) < game.map.subvertCost;
+    $: isButtonDisabled = currentPlayer.isReady || isLoading || (currentPlayer?.gold ?? 0) < game.map.subvertCost;
 </script>
 
 <ActionButton {isButtonDisabled} {isLoading} on:click={handleSubvert}>

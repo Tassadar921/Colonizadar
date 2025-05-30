@@ -1,6 +1,5 @@
 import { HttpContext } from '@adonisjs/core/http';
 import RoomPlayer from '#models/room_player';
-import { setReadyValidator } from '#validators/room_player';
 import transmit from '@adonisjs/transmit/services/main';
 import {
     askPeaceParamsValidator,
@@ -12,6 +11,7 @@ import {
     financePlayerValidator,
     financeWildTerritoryValidator,
     makePeaceParamsValidator,
+    nextTurnActionsValidator,
     refusePeaceParamsValidator,
     spyPlayerParamsValidator,
 } from '#validators/game';
@@ -25,6 +25,8 @@ import PeaceRepository from '#repositories/peace_repository';
 import PendingPeace from '#models/pending_peace';
 import PeaceStatusEnum from '#types/enum/peace_status_enum';
 import WarStatusEnum from '#types/enum/war_status_enum';
+import redis from '@adonisjs/redis/services/main';
+import { Move } from '#types/Move';
 
 @inject()
 export default class GameController {
@@ -47,33 +49,49 @@ export default class GameController {
         return response.send(gameTerritory.apiSerialize(language, user));
     }
 
-    public async ready({ request, response, user, player, game, language }: HttpContext): Promise<void> {
-        const { isReady } = await request.validateUsing(setReadyValidator);
-
-        player.isReady = isReady;
+    public async ready({ response, player, game }: HttpContext): Promise<void> {
+        player.isReady = !player.isReady;
         await player.save();
 
-        transmit.broadcast(`notification/play/game/${game.frontId}/player/update`, { player: player.apiSerialize(language, user) });
-        response.send({ message: `Set to ${isReady ? 'ready' : 'not ready'}` });
+        transmit.broadcast(`notification/play/game/${game.frontId}/player/ready`, { playerId: player.frontId, isReady: player.isReady });
+        response.send({ message: `Set to ${player.isReady ? 'ready' : 'not ready'}` });
 
         if (game.room.players.every((player: RoomPlayer): boolean => (player.botId ? true : player.isReady))) {
-            switch (game.season === 4) {
-                case true:
-                    game.season = 1;
-                    game.year++;
-                    break;
-                case false:
-                    game.season++;
-                    break;
-            }
-            await game.save();
-
-            // TODO: after end of turn, check peaces and update statuses if needed
-
-            game.room.status = RoomStatusEnum.WAITING;
+            // game.room.status = RoomStatusEnum.WAITING;
             await game.room.save();
 
             transmit.broadcast(`notification/play/game/${game.frontId}/next-turn`);
+        }
+    }
+
+    public async nextTurnActions({ request, response, game, player }: HttpContext): Promise<void> {
+        const { moves } = await request.validateUsing(nextTurnActionsValidator);
+        console.log(moves);
+
+        await redis.set(`game:${game.frontId}-player:${player.frontId}-moves`, JSON.stringify(moves));
+        response.send({ message: 'Moves saved' });
+
+        const existsArray: number[] = await Promise.all(
+            game.room.players.map((currentPlayer: RoomPlayer): Promise<number> => {
+                const key = `game:${game.frontId}-player:${currentPlayer.frontId}-moves`;
+                return redis.exists(key);
+            })
+        );
+
+        const totalExists: number = existsArray.reduce((acc: number, value: number): number => acc + value, 0);
+        const botsNumber: number = game.room.players.reduce((acc: number, currentPlayer: RoomPlayer): number => {
+            return currentPlayer.botId ? acc + 1 : acc;
+        }, 0);
+
+        if (totalExists + botsNumber === game.room.players.length) {
+            game.room.players.map(async (currentPlayer: RoomPlayer): Promise<void> => {
+                const stringifiedMoves: string | null = await redis.get(`game:${game.frontId}-player:${currentPlayer.frontId}-moves`);
+                if (!stringifiedMoves) {
+                    return;
+                }
+
+                const moves: Move[] = JSON.parse(stringifiedMoves);
+            });
         }
     }
 

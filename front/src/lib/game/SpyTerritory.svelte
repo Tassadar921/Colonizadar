@@ -44,7 +44,7 @@
     };
 
     $: cost = selectedTerritory.isFortified ? (selectedTerritory.territory.isFactory ? game.map.spyFactoryCost : game.map.spyFortifiedTerritoryCost) : game.map.spyTerritoryCost;
-    $: isButtonDisabled = isLoading || (currentPlayer?.gold ?? 0) < cost || !!selectedTerritory.infantry;
+    $: isButtonDisabled = isLoading || (currentPlayer?.gold ?? 0) < cost || !!selectedTerritory.infantry || currentPlayer.isReady;
 </script>
 
 <ActionButton {isButtonDisabled} {isLoading} on:click={handleSpyTerritory}>

@@ -13,7 +13,7 @@ import { DateTime } from 'luxon';
 import Language from '#models/language';
 import PlayableCountryRepository from '#repositories/playable_country_repository';
 import PlayableCountry from '#models/playable_country';
-import { selectBotDifficultyParamsValidator, selectBotDifficultyValidator, selectCountryParamsValidator, selectCountryValidator, setReadyValidator } from '#validators/room_player';
+import { readyValidator, selectBotDifficultyParamsValidator, selectBotDifficultyValidator, selectCountryParamsValidator, selectCountryValidator } from '#validators/room_player';
 import BotDifficultyRepository from '#repositories/bot_difficulty_repository';
 import BotDifficulty from '#models/bot_difficulty';
 import sleep from '../utils/sleep.js';
@@ -223,7 +223,7 @@ export default class RoomController {
     }
 
     public async ready({ request, response, user, room, language, player }: HttpContext): Promise<void> {
-        const { isReady } = await request.validateUsing(setReadyValidator);
+        const { isReady } = await request.validateUsing(readyValidator);
 
         if (isReady) {
             const isValidReady: boolean = room.players.every((loopPlayer: RoomPlayer): boolean => {

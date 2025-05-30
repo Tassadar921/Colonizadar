@@ -7,7 +7,10 @@
     import ActionButton from '../shared/ActionButton.svelte';
 
     export let game: SerializedGame;
+    export let currentPlayer: SerializedRoomPlayer;
     export let targetPlayer: SerializedRoomPlayer;
+
+    let isButtonDisabled: boolean = false;
 
     const handleDeclareWar = async (): Promise<void> => {
         try {
@@ -17,8 +20,10 @@
             showToast(error.response.data.error, 'error');
         }
     };
+
+    $: isButtonDisabled = currentPlayer.isReady;
 </script>
 
-<ActionButton on:click={handleDeclareWar}>
+<ActionButton {isButtonDisabled} on:click={handleDeclareWar}>
     <span slot="text">{$t('play.game.declare-war')}</span>
 </ActionButton>

@@ -1,14 +1,14 @@
 <script lang="ts">
     import { createEventDispatcher } from 'svelte';
-    import type { GameTerritoryMove } from '../../types/GameTerritoryMove';
     import type SerializedGameTerritory from 'colonizadar-backend/app/types/serialized/serialized_game_territory';
     import Icon from '../shared/Icon.svelte';
     import { formatGameNumbers } from '../../services/stringService';
+    import { type Move } from 'colonizadar-backend/app/types/Move';
 
     const dispatch = createEventDispatcher();
 
     export let selectedTerritory: SerializedGameTerritory;
-    export let move: GameTerritoryMove;
+    export let move: Move;
 </script>
 
 <div class="flex gap-3 justify-between items-center bg-white dark:bg-gray-800 p-2 rounded-xl border border-gray-200 dark:border-gray-600">

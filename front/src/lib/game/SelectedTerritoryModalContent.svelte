@@ -13,9 +13,8 @@
     import type SerializedUser from 'colonizadar-backend/app/types/serialized/serialized_user';
     import { profile } from '../../stores/profileStore.js';
     import { t } from 'svelte-i18n';
-    import { getSelectedTerritoryMoves, type Move as FetchedMove, removeMove } from '../../stores/dbStore';
+    import { getSelectedTerritoryMoves, removeMove } from '../../stores/dbStore';
     import Move from './Move.svelte';
-    import type { GameTerritoryMove } from '../../types/GameTerritoryMove';
     import InLineMove from './InLineMove.svelte';
 
     export let game: SerializedGame;
@@ -86,7 +85,7 @@
                 <SubvertWildTerritory bind:game bind:selectedTerritory {currentPlayer} />
             {/if}
         {:else}
-            <Move bind:selectedTerritory on:move />
+            <MoveComponent bind:selectedTerritory {currentPlayer} on:move />
             {#if !selectedTerritory.isFortified}
                 <FortifyTerritory bind:game {selectedTerritory} {currentPlayer} />
             {:else if selectedTerritory.territory.isFactory}

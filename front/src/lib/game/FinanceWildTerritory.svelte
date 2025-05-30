@@ -34,8 +34,8 @@
         showToast(event.detail.message);
     };
 
-    $: isButtonDisabled = (currentPlayer?.gold ?? 0) < game.map.financeWildTerritoryStep;
-    $: canSubmit = amount >= game.map.financeWildTerritoryStep && amount % game.map.financeWildTerritoryStep === 0 && amount <= (currentPlayer?.gold ?? 0);
+    $: isButtonDisabled = currentPlayer.isReady || (currentPlayer?.gold ?? 0) < game.map.financeWildTerritoryStep;
+    $: canSubmit = !currentPlayer.isReady && amount >= game.map.financeWildTerritoryStep && amount % game.map.financeWildTerritoryStep === 0 && amount <= (currentPlayer?.gold ?? 0);
 </script>
 
 <ActionButton {isButtonDisabled} on:click={() => (showModal = true)}>

@@ -35,7 +35,7 @@
         isLoading = false;
     };
 
-    $: isButtonDisabled = isLoading || (currentPlayer?.gold ?? 0) < game.map.fortifyCost;
+    $: isButtonDisabled = currentPlayer.isReady || isLoading || (currentPlayer?.gold ?? 0) < game.map.fortifyCost || !selectedTerritory.infantry;
 </script>
 
 <ActionButton {isButtonDisabled} {isLoading} on:click={handleFortify}>

@@ -12,6 +12,23 @@ export const gameTerritoryMiddlewareValidator = vine.compile(
     })
 );
 
+export const nextTurnActionsValidator = vine.compile(
+    vine.object({
+        moves: vine
+            .array(
+                vine.object({
+                    id: vine.number().optional(),
+                    from: vine.number(),
+                    to: vine.number(),
+                    infantry: vine.number(),
+                    ships: vine.number(),
+                    isAttack: vine.boolean(),
+                })
+            )
+            .optional(),
+    })
+);
+
 export const spyPlayerParamsValidator = vine.compile(
     vine.object({
         playerId: vine.number().positive(),
