@@ -18,7 +18,7 @@ services:
     backend:
         build:
             context: .
-            dockerfile: ./Dockerfile.back
+            dockerfile: Dockerfile.back.dev
         container_name: back
         restart: always
         env_file: ./back/.env
@@ -35,7 +35,7 @@ services:
     frontend:
         build:
             context: .
-            dockerfile: ./Dockerfile.front
+            dockerfile: Dockerfile.front.dev
         container_name: front
         restart: always
         env_file: ./front/.env

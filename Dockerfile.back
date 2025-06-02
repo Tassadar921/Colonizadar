@@ -1,25 +1,25 @@
+# Dockerfile.back
 FROM node:22
 
 # Create app directory
 WORKDIR /app
 
-# Copy backend dependencies
+# Install dependencies
 COPY back/package*.json ./
+RUN npm install --omit=dev
 
-# Install backend deps
-RUN npm install
-
-# Copy backend app code
+# Copy application code
 COPY back /app
 
-# Also copy root-level shared tools (optional)
-COPY package*.json /shared/
+# Compile AdonisJS app
+RUN npm run build
 
-# Permissions
-RUN chown -R node:node /app
-
+# Expose port
 EXPOSE 3333
 
+# Run as non-root
 USER node
 
-CMD ["npm", "run", "dev"]
+# Start server
+CMD ["node", "build/server.js"]
+
