@@ -13,6 +13,7 @@ import Peace from '#models/peace';
 import PendingPeace from '#models/pending_peace';
 import SerializedPeace from '#types/serialized/serialized_peace';
 import SerializedWar from '#types/serialized/serialized_war';
+import GameTerritory from '#models/game_territory';
 
 export default class RoomPlayer extends BaseModel {
     @column({ isPrimary: true })
@@ -66,6 +67,11 @@ export default class RoomPlayer extends BaseModel {
 
     @belongsTo((): typeof Room => Room)
     declare room: BelongsTo<typeof Room>;
+
+    @hasMany((): typeof GameTerritory => GameTerritory, {
+        foreignKey: 'ownerId',
+    })
+    declare territories: HasMany<typeof GameTerritory>;
 
     @hasMany((): typeof War => War, {
         foreignKey: 'playerId',

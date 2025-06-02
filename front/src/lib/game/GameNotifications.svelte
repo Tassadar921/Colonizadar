@@ -6,20 +6,23 @@
     import type SerializedGame from 'colonizadar-backend/app/types/serialized/serialized_game';
     import { showToast } from '../../services/toastService';
     import { t } from 'svelte-i18n';
-    import { formatGameNumbers } from '../../services/stringService';
+    import { capitalize, formatGameNumbers, formatSeasonFromNumber } from '../../services/stringService';
     import axios from 'axios';
     import type SerializedGameTerritory from 'colonizadar-backend/app/types/serialized/serialized_game_territory';
     import { handleFortifyAction } from '../../services/gameGeometryService';
-    import { getAllMoves, moves } from '../../stores/dbStore';
+    import { getAllMoves, clearMoves } from '../../stores/dbStore';
+    import Loader from '../shared/Loader.svelte';
+    import { navigate } from '../../stores/locationStore';
 
     const dispatch = createEventDispatcher();
 
     export let game: SerializedGame;
     export let currentPlayer: SerializedRoomPlayer;
 
-    let isInitialized = false;
+    let isLoading: boolean = false;
+    let isInitialized: boolean = false;
 
-    let gameUpdateNotification: Subscription;
+    let newTurnNotification: Subscription;
     let playerUpdateNotification: Subscription;
     let territoryUpdateNotification: Subscription;
     let spiedNotification: Subscription;
@@ -80,7 +83,7 @@
     };
 
     const setupTransmits = async (): Promise<void> => {
-        gameUpdateNotification = $transmit.subscription(`notification/play/game/${game.id}/update`);
+        newTurnNotification = $transmit.subscription(`notification/play/game/${game.id}/turn/new`);
         playerUpdateNotification = $transmit.subscription(`notification/play/game/${game.id}/player/update`);
         territoryUpdateNotification = $transmit.subscription(`notification/play/game/${game.id}/territory/update`);
         spiedNotification = $transmit.subscription(`notification/play/game/${game.id}/${currentPlayer.id}/spied`);
@@ -91,10 +94,10 @@
         peaceNotification = $transmit.subscription(`notification/play/game/${game.id}/peace`);
         financedNotification = $transmit.subscription(`notification/play/game/${game.id}/${currentPlayer.id}/financed`);
         playerReadyNotification = $transmit.subscription(`notification/play/game/${game.id}/player/ready`);
-        nextTurnNotification = $transmit.subscription(`notification/play/game/${game.id}/next-turn`);
+        nextTurnNotification = $transmit.subscription(`notification/play/game/${game.id}/turn/next`);
 
         await Promise.all([
-            gameUpdateNotification.create(),
+            newTurnNotification.create(),
             playerUpdateNotification.create(),
             territoryUpdateNotification.create(),
             spiedNotification.create(),
@@ -110,8 +113,17 @@
     };
 
     const setupHandlers = (): void => {
-        gameUpdateNotification.onMessage(({ game: newGame }: { game: SerializedGame }): void => {
-            game = newGame;
+        newTurnNotification.onMessage(async (): Promise<void> => {
+            try {
+                const { data } = await axios.get(`/api/game/${game.id}`);
+                game = data;
+            } catch (error: any) {
+                showToast(error.response.data.error, 'error');
+                navigate('/play');
+            }
+            isLoading = false;
+            await clearMoves();
+            showToast(`${capitalize(formatSeasonFromNumber(game.season))} ${game.year}`, 'success');
         });
 
         playerUpdateNotification.onMessage(async ({ player }: { player: SerializedRoomPlayer }): Promise<void> => {
@@ -219,17 +231,17 @@
         });
 
         nextTurnNotification.onMessage(async (): Promise<void> => {
-            const { data } = await axios.post(`/api/game/${game.id}/actions`, {
+            isLoading = true;
+            await axios.post(`/api/game/${game.id}/actions`, {
                 moves: await getAllMoves(),
             });
-            console.log(data);
         });
     };
 
     const cleanupTransmits = async (): Promise<void> => {
         try {
             await Promise.all([
-                gameUpdateNotification?.delete().then(() => console.log('gameUpdateNotification deleted')),
+                newTurnNotification?.delete().then(() => console.log('newTurnNotification deleted')),
                 playerUpdateNotification?.delete().then(() => console.log('playerUpdateNotification deleted')),
                 territoryUpdateNotification?.delete().then(() => console.log('territoryUpdateNotification deleted')),
                 spiedNotification?.delete().then(() => console.log('spiedNotification deleted')),
@@ -257,3 +269,5 @@
         cleanupTransmits();
     });
 </script>
+
+<Loader {isLoading} />

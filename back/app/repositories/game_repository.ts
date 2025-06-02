@@ -21,6 +21,7 @@ export default class GameRepository extends BaseRepository<typeof Game> {
             .select('games.*')
             .leftJoin('rooms', 'rooms.id', 'games.room_id')
             .where('rooms.status', RoomStatusEnum.PLAYING)
+            .orWhere('rooms.status', RoomStatusEnum.WAITING)
             .andWhere('games.front_id', gameId)
             .preload('room', (roomQuery): void => {
                 roomQuery.preload('owner').preload('players', (playersQuery): void => {

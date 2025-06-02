@@ -72,7 +72,7 @@
                     <Route path="/:language/social/friends"><Forbidden /></Route>
                     <Route path="/:language/social/blocked"><Forbidden /></Route>
 
-                    <Route path="/:language/play"><Play /></Route>
+                    <Route path="/:language/play"><Forbidden /></Route>
                     <Route path="/:language/play/room/:roomId"><Forbidden /></Route>
                     <Route path="/:language/play/game/:gameId"><Forbidden /></Route>
 

@@ -115,10 +115,10 @@
         canBeZero={true}
     />
     {#if isCoastal}
-        <Range name="amount" bind:value={shipsAmount} min={0} max={selectedTerritory.ships} step={5} label={$t('play.common.ships')} />
+        <Range name="amount" bind:value={shipsAmount} min={0} max={selectedTerritory.ships} step={1} label={$t('play.common.ships')} />
         <Incrementation
             bind:value={shipsAmount}
-            smallStep={5}
+            smallStep={1}
             smallShiftStep={10}
             largeStep={100}
             largeShiftStep={1000}

@@ -36,12 +36,20 @@
         {#if player.user}
             {#if player.user.profilePicture}
                 <img
-                    alt={player.user.username}
+                    class="size-10 rounded-full z-10 border-4"
+                    class:border-green-500={player.isReady}
+                    class:border-red-500={!player.isReady}
                     src={`${import.meta.env.VITE_API_BASE_URL}/api/static/profile-picture/${player.user.id}?token=${localStorage.getItem('apiToken')}`}
-                    class="size-10 rounded-full"
+                    alt={player.user.username}
                 />
             {:else}
-                <img alt={player.user.username} src={import.meta.env.VITE_DEFAULT_IMAGE} class="max-h-10 rounded-full" />
+                <img
+                    class="size-10 rounded-full z-10 border-4"
+                    class:border-green-500={player.isReady}
+                    class:border-red-500={!player.isReady}
+                    src={import.meta.env.VITE_DEFAULT_IMAGE}
+                    alt={player.user.username}
+                />
             {/if}
             <p class="flex gap-1 {player.user.id === $profile?.id ? 'font-bold' : ''}">
                 {#if game.owner.id === player.user.id}
@@ -52,7 +60,7 @@
                 {player.user.username}
             </p>
         {:else if player.bot}
-            <img alt={player.bot.name} src={`${import.meta.env.VITE_API_BASE_URL}/api/static/bot-picture/${player.bot.id}?token=${localStorage.getItem('apiToken')}`} class="w-10 rounded-full" />
+            <img alt={player.bot.name} src={`${import.meta.env.VITE_API_BASE_URL}/api/static/bot-picture/${player.bot.id}?token=${localStorage.getItem('apiToken')}`} class="size-10 rounded-full" />
             <div class="flex flex-col">
                 <p class="flex gap-1">
                     <span class="text-green-500">

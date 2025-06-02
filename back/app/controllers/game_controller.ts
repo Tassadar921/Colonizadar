@@ -27,6 +27,9 @@ import WarStatusEnum from '#types/enum/war_status_enum';
 import redis from '@adonisjs/redis/services/main';
 import { Move } from '#types/Move';
 import GameTerritory from '#models/game_territory';
+import TerritoryService from '#services/territory_service';
+import { BattleResult } from '#types/BattleResult';
+import RoomStatusEnum from '#types/enum/room_status_enum';
 
 @inject()
 export default class GameController {
@@ -34,7 +37,8 @@ export default class GameController {
         private readonly regexService: RegexService,
         private readonly warRepository: WarRepository,
         private readonly pendingPeaceRepository: PendingPeaceRepository,
-        private readonly peaceRepository: PeaceRepository
+        private readonly peaceRepository: PeaceRepository,
+        private readonly territoryService: TerritoryService
     ) {}
 
     public async get({ response, user, language, game }: HttpContext): Promise<void> {
@@ -57,16 +61,15 @@ export default class GameController {
         response.send({ message: `Set to ${player.isReady ? 'ready' : 'not ready'}` });
 
         if (game.room.players.every((player: RoomPlayer): boolean => (player.botId ? true : player.isReady))) {
-            // game.room.status = RoomStatusEnum.WAITING;
+            game.room.status = RoomStatusEnum.WAITING;
             await game.room.save();
 
-            transmit.broadcast(`notification/play/game/${game.frontId}/next-turn`);
+            transmit.broadcast(`notification/play/game/${game.frontId}/turn/next`);
         }
     }
 
     public async nextTurnActions({ request, response, game, player }: HttpContext): Promise<void> {
         const { moves } = await request.validateUsing(nextTurnActionsValidator);
-        console.log(moves);
 
         await redis.set(`game:${game.frontId}-player:${player.frontId}-moves`, JSON.stringify(moves));
         response.send({ message: 'Moves saved' });
@@ -84,11 +87,25 @@ export default class GameController {
         }, 0);
 
         if (totalExists + botsNumber === game.room.players.length) {
+            switch (game.season === 4) {
+                case true:
+                    game.season = 1;
+                    game.year++;
+                    break;
+                case false:
+                    game.season++;
+                    break;
+            }
+            game.room.status = RoomStatusEnum.PLAYING;
+            await game.save();
+
             game.room.players.map(async (currentPlayer: RoomPlayer): Promise<void> => {
                 const stringifiedMoves: string | null = await redis.get(`game:${game.frontId}-player:${currentPlayer.frontId}-moves`);
                 if (!stringifiedMoves?.length) {
                     return;
                 }
+
+                // TODO: make bots play
 
                 const moves: Move[] = JSON.parse(stringifiedMoves);
 
@@ -121,11 +138,33 @@ export default class GameController {
 
                     gameTerritory.infantry -= move.infantry;
                     gameTerritory.ships -= move.ships;
+
+                    const battleResults: BattleResult = this.territoryService.resolveBattle(player, move.infantry, move.ships, targetTerritory, game);
+
+                    if (battleResults.success) {
+                        targetTerritory.ownerId = gameTerritory.ownerId;
+                        targetTerritory.infantry = move.infantry - battleResults.attackerLosses.infantry;
+                        targetTerritory.ships += move.ships - battleResults.attackerLosses.ships;
+                        // TODO: move surviving defending ships to the closest defender player's coastal territory
+                    } else {
+                        targetTerritory.infantry -= Math.max(1000, battleResults.defenderLosses.infantry);
+                        targetTerritory.ships -= battleResults.defenderLosses.ships;
+                        gameTerritory.infantry = move.infantry - battleResults.attackerLosses.infantry;
+                        gameTerritory.ships += move.ships - battleResults.attackerLosses.ships;
+                    }
+                    await Promise.all([gameTerritory.save(), targetTerritory.save()]);
                 }
-                // TODO: make bots play
 
                 await redis.del(`game:${game.frontId}-player:${currentPlayer.frontId}-moves`);
+                currentPlayer.isReady = false;
+                if (game.season === 1) {
+                    await currentPlayer.load('territories');
+                    currentPlayer.gold += currentPlayer.territories.reduce((acc: number, territory: GameTerritory): number => acc + territory.value, 0);
+                }
+                await currentPlayer.save();
             });
+
+            transmit.broadcast(`notification/play/game/${game.frontId}/turn/new`);
         }
     }
 

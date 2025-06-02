@@ -1,5 +1,5 @@
 export interface BattleResult {
-    attackSuccess: boolean;
+    success: boolean;
     isLanding: boolean;
     attackerLosses: {
         infantry: number;

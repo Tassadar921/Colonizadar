@@ -1,6 +1,8 @@
 import Territory from '#models/territory';
 import { BattleResult } from '#types/BattleResult';
 import GameTerritory from '#models/game_territory';
+import Game from '#models/game';
+import RoomPlayer from '#models/room_player';
 
 export default class TerritoryService {
     /**
@@ -39,6 +41,41 @@ export default class TerritoryService {
     }
 
     /**
+     * Resolves a full battle between attacker and defender territories.
+     * @param attackerPlayer The player initiating the attack.
+     * @param attackerInfantry Number of attacking infantry units.
+     * @param attackerShips Number of attacking ships.
+     * @param targetTerritory The target territory being attacked.
+     * @param game The game instance (used to access wild modifiers if no defender).
+     * @returns The result of the battle, including success, losses, and ships to move.
+     */
+    public resolveBattle(attackerPlayer: RoomPlayer, attackerInfantry: number, attackerShips: number, targetTerritory: GameTerritory, game: Game): BattleResult {
+        const attackerModifiers = {
+            infantryAttackFactor: attackerPlayer.country.infantryAttackFactor,
+            shipAttackFactor: attackerPlayer.country.shipAttackFactor,
+            landingAttackFactor: attackerPlayer.country.landingAttackFactor,
+        };
+
+        let defenderModifiers;
+
+        if (targetTerritory.owner) {
+            defenderModifiers = {
+                infantryDefenseFactor: targetTerritory.owner.country.infantryDefenseFactor,
+                shipDefenseFactor: targetTerritory.owner.country.shipDefenseFactor,
+                landingDefenseFactor: targetTerritory.owner.country.landingDefenseFactor,
+            };
+        } else {
+            defenderModifiers = {
+                infantryDefenseFactor: game.map.wildInfantryDefenseFactor,
+                shipDefenseFactor: game.map.wildShipsDefenseFactor,
+                landingDefenseFactor: game.map.wildLandingDefenseFactor,
+            };
+        }
+
+        return this.resolveBattleWithModifiers(attackerInfantry, attackerShips, targetTerritory, attackerModifiers, defenderModifiers);
+    }
+
+    /**
      * Resolves the full battle between attacker and defender.
      * Defender units come from the GameTerritory instance.
      * Handles naval (if landing) and land combat, applying modifiers.
@@ -49,7 +86,7 @@ export default class TerritoryService {
      * @param defenderModifiers Modifiers applied to defender forces (infantry, ships, landing).
      * @returns The result of the battle including success, losses, and ships to move.
      */
-    public resolveBattle(
+    public resolveBattleWithModifiers(
         attackerInfantry: number,
         attackerShips: number,
         targetTerritory: GameTerritory,
@@ -64,30 +101,25 @@ export default class TerritoryService {
             landingDefenseFactor: number;
         }
     ): BattleResult {
-        // Extract defender infantry and ships from targetTerritory
         const defenderInfantry = targetTerritory.infantry;
         const defenderShips = targetTerritory.ships;
 
-        // Determine if this is a landing attack (infantry <= ships * 1000)
         const isLanding: boolean = attackerInfantry <= attackerShips * 1000;
 
         let effectiveAttackerInfantry: number = attackerInfantry;
         let attackerNavalLosses: number = 0;
         let defenderNavalLosses: number = 0;
 
-        // 1. Naval combat phase (only if landing and defender has ships)
         if (isLanding && defenderShips > 0) {
             const { attackerLosses, defenderLosses } = this.resolveNavalBattle(attackerShips, defenderShips, attackerModifiers.shipAttackFactor, defenderModifiers.shipDefenseFactor);
 
             attackerNavalLosses = attackerLosses;
             defenderNavalLosses = defenderLosses;
 
-            // Remove 1000 infantry per attacker ship lost (landing losses)
             effectiveAttackerInfantry = Math.max(0, effectiveAttackerInfantry - attackerNavalLosses * 1000);
         }
 
-        // 2. Land combat phase
-        const { attackSuccess, attackerInfantryLosses, defenderInfantryLosses } = this.resolveLandBattle(
+        const { success, attackerInfantryLosses, defenderInfantryLosses } = this.resolveLandBattle(
             effectiveAttackerInfantry,
             defenderInfantry,
             isLanding ? attackerModifiers.landingAttackFactor : attackerModifiers.infantryAttackFactor,
@@ -95,14 +127,14 @@ export default class TerritoryService {
         );
 
         return {
-            attackSuccess,
+            success,
             isLanding,
             attackerLosses: {
-                infantry: attackerInfantry - (attackSuccess ? attackerInfantryLosses : effectiveAttackerInfantry),
+                infantry: attackerInfantry - (success ? attackerInfantryLosses : effectiveAttackerInfantry),
                 ships: attackerNavalLosses,
             },
             defenderLosses: {
-                infantry: attackSuccess ? defenderInfantryLosses : 0,
+                infantry: success ? defenderInfantryLosses : 0,
                 ships: defenderNavalLosses,
             },
             defenderShipsToMove: defenderNavalLosses,
@@ -118,7 +150,15 @@ export default class TerritoryService {
      * @param defenderFactor Defense modifier for defender ships.
      * @returns Losses for both attacker and defender ships.
      */
-    private resolveNavalBattle(attackerShips: number, defenderShips: number, attackerFactor: number, defenderFactor: number): { attackerLosses: number; defenderLosses: number } {
+    private resolveNavalBattle(
+        attackerShips: number,
+        defenderShips: number,
+        attackerFactor: number,
+        defenderFactor: number
+    ): {
+        attackerLosses: number;
+        defenderLosses: number;
+    } {
         const attackerPower: number = attackerShips * attackerFactor;
         const defenderPower: number = defenderShips * defenderFactor;
 
@@ -151,34 +191,30 @@ export default class TerritoryService {
         attackerFactor: number,
         defenderFactor: number
     ): {
-        attackSuccess: boolean;
+        success: boolean;
         attackerInfantryLosses: number;
         defenderInfantryLosses: number;
     } {
         const attackerPower: number = attackerInfantry * attackerFactor;
         const defenderPower: number = defenderInfantry * defenderFactor;
 
-        const attackSuccess: boolean = attackerPower > defenderPower;
+        const success: boolean = attackerPower > defenderPower;
 
-        if (attackSuccess) {
-            // Defender loses all infantry if attack succeeds
-            // Attacker loses proportional infantry based on defender power
+        if (success) {
             return {
-                attackSuccess: true,
+                success: true,
                 attackerInfantryLosses: Math.round(defenderPower / attackerFactor),
                 defenderInfantryLosses: defenderInfantry,
             };
         } else {
-            // Attacker loses partial infantry even if attack fails
-            // Losses depend on closeness of battle (closer = fewer losses)
             const powerRatio: number = attackerPower / defenderPower;
             const lossRatio: number = 0.5 + (1 - powerRatio) * 0.5;
             const losses: number = Math.round(lossRatio * attackerInfantry);
 
             return {
-                attackSuccess: false,
+                success: false,
                 attackerInfantryLosses: losses,
-                defenderInfantryLosses: 0, // Defender does not lose infantry on defense success
+                defenderInfantryLosses: 0,
             };
         }
     }
