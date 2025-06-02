@@ -5,12 +5,14 @@ import Territory from '#models/territory';
 import GameTerritory from '#models/game_territory';
 import RoomStatusEnum from '#types/enum/room_status_enum';
 import RoomPlayer from '#models/room_player';
-import { rollTerritoryPower, rollTerritoryValue } from '#services/roll_territory_service';
+import TerritoryService from '#services/territory_service';
 import PeaceStatusEnum from '#types/enum/peace_status_enum';
 import WarStatusEnum from '#types/enum/war_status_enum';
+import { inject } from '@adonisjs/core';
 
+@inject()
 export default class GameRepository extends BaseRepository<typeof Game> {
-    constructor() {
+    constructor(private readonly territoryService: TerritoryService) {
         super(Game);
     }
 
@@ -77,12 +79,12 @@ export default class GameRepository extends BaseRepository<typeof Game> {
                 if (territory.defaultBelongsToId) {
                     owner = room.players.find((player: RoomPlayer): boolean => player.countryId === territory.defaultBelongsToId);
                 }
-                const value: number = rollTerritoryValue(territory);
+                const value: number = this.territoryService.rollTerritoryValue(territory);
                 return await GameTerritory.create({
                     territoryId: territory.id,
                     gameId: game.id,
                     ownerId: owner?.id,
-                    infantry: territory.defaultInfantry ?? rollTerritoryPower(territory, value),
+                    infantry: territory.defaultInfantry ?? this.territoryService.rollTerritoryPower(territory, value),
                     ships: territory.defaultShips,
                     isFortified: territory.isFactory,
                     value,

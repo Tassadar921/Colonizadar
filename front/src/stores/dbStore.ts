@@ -1,4 +1,4 @@
-import Dexie, { type Table } from 'dexie';
+import Dexie, { type PromiseExtended, type Table } from 'dexie';
 import { readable } from 'svelte/store';
 import { liveQuery } from 'dexie';
 import { showToast } from '../services/toastService';
@@ -31,8 +31,8 @@ export async function updateGameOnLoad(game: SerializedGame): Promise<void> {
     }
 }
 
-export const moves = readable<Move[]>([], (set) => {
-    const subscription = liveQuery(() => db.moves.toArray()).subscribe({
+export const moves = readable<Move[]>([], (set: (value: Move[]) => void) => {
+    const subscription = liveQuery((): PromiseExtended<Move[]> => db.moves.toArray()).subscribe({
         next: set,
         error: (error: any): void => showToast(error.message, 'error'),
     });

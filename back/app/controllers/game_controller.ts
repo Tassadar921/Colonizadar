@@ -26,6 +26,7 @@ import PeaceStatusEnum from '#types/enum/peace_status_enum';
 import WarStatusEnum from '#types/enum/war_status_enum';
 import redis from '@adonisjs/redis/services/main';
 import { Move } from '#types/Move';
+import GameTerritory from '#models/game_territory';
 
 @inject()
 export default class GameController {
@@ -85,12 +86,42 @@ export default class GameController {
         if (totalExists + botsNumber === game.room.players.length) {
             game.room.players.map(async (currentPlayer: RoomPlayer): Promise<void> => {
                 const stringifiedMoves: string | null = await redis.get(`game:${game.frontId}-player:${currentPlayer.frontId}-moves`);
-                if (!stringifiedMoves) {
+                if (!stringifiedMoves?.length) {
                     return;
                 }
 
                 const moves: Move[] = JSON.parse(stringifiedMoves);
-                // TODO: process moves & attacks
+
+                const nonAttackMoves: Move[] = moves.filter((move: Move): boolean => !move.isAttack).sort((a: Move, b: Move): number => a.to - b.to);
+
+                for (const move of nonAttackMoves) {
+                    const gameTerritory: GameTerritory | undefined = game.territories.find((gameTerritory: GameTerritory): boolean => gameTerritory.frontId === move.from);
+                    const targetTerritory: GameTerritory | undefined = game.territories.find((gameTerritory: GameTerritory): boolean => gameTerritory.frontId === move.to);
+
+                    if (!gameTerritory || !targetTerritory || gameTerritory.ownerId !== currentPlayer.id || gameTerritory.infantry - move.infantry < 1000 || gameTerritory.ships < move.ships) {
+                        continue;
+                    }
+
+                    gameTerritory.infantry -= move.infantry;
+                    gameTerritory.ships -= move.ships;
+
+                    targetTerritory.infantry += move.infantry;
+                    targetTerritory.ships += move.ships;
+                    await Promise.all([gameTerritory.save(), targetTerritory.save()]);
+                }
+
+                const attackMoves: Move[] = moves.filter((move: Move): boolean => move.isAttack).sort((a: Move, b: Move): number => a.to - b.to);
+                for (const move of attackMoves) {
+                    const gameTerritory: GameTerritory | undefined = game.territories.find((gameTerritory: GameTerritory): boolean => gameTerritory.frontId === move.from);
+                    const targetTerritory: GameTerritory | undefined = game.territories.find((gameTerritory: GameTerritory): boolean => gameTerritory.frontId === move.to);
+
+                    if (!gameTerritory || !targetTerritory || gameTerritory.ownerId !== currentPlayer.id || gameTerritory.infantry - move.infantry < 1000 || gameTerritory.ships < move.ships) {
+                        continue;
+                    }
+
+                    gameTerritory.infantry -= move.infantry;
+                    gameTerritory.ships -= move.ships;
+                }
                 // TODO: make bots play
 
                 await redis.del(`game:${game.frontId}-player:${currentPlayer.frontId}-moves`);
