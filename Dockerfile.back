@@ -22,4 +22,3 @@ USER node
 
 # Start server
 CMD ["node", "build/server.js"]
-
