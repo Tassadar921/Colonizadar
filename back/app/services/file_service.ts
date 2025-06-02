@@ -9,6 +9,12 @@ import { cuid } from '@adonisjs/core/helpers';
 import { fileURLToPath } from 'node:url';
 
 export default class FileService {
+    /**
+     * Deletes a file from the 'public' directory based on the given File object.
+     *
+     * @param {File} file - The File object containing the path to delete.
+     * @returns {void}
+     */
     public delete(file: File): void {
         fs.unlink(`public/${file.path}`, (error: any): void => {
             if (error) {
@@ -17,6 +23,13 @@ export default class FileService {
         });
     }
 
+    /**
+     * Retrieves information about a file, such as size, MIME type, extension, and name.
+     *
+     * @param {string} filePath - The path to the file.
+     * @returns {Promise<{ size: number; mimeType: string; extension: string; name: string }>}
+     *          An object containing file size, MIME type, extension, and filename.
+     */
     public async getFileInfo(filePath: string): Promise<{ size: number; mimeType: string; extension: string; name: string }> {
         const stats = await fsPromises.stat(filePath);
 
@@ -28,9 +41,17 @@ export default class FileService {
         return { size, mimeType, extension, name };
     }
 
+    /**
+     * Downloads an OAuth profile picture from a given URL, detects its file type,
+     * saves it locally with a unique filename, and returns the relative path.
+     *
+     * @param {string} url - The URL of the profile picture to download.
+     * @returns {Promise<string>} The relative path to the saved profile picture.
+     * @throws Will throw an error if the file type cannot be detected or saving fails.
+     */
     public async saveOauthProfilePictureFromUrl(url: string): Promise<string> {
         const response = await axios.get(url, { responseType: 'arraybuffer' });
-        const buffer: Buffer<any> = Buffer.from(response.data);
+        const buffer: Buffer = Buffer.from(response.data);
 
         const fileTypeResult: FileTypeResult | undefined = await fileTypeFromBuffer(buffer);
         if (!fileTypeResult) {

@@ -13,7 +13,7 @@ import { DateTime } from 'luxon';
 import Language from '#models/language';
 import PlayableCountryRepository from '#repositories/playable_country_repository';
 import PlayableCountry from '#models/playable_country';
-import { selectBotDifficultyParamsValidator, selectBotDifficultyValidator, selectCountryParamsValidator, selectCountryValidator, setReadyValidator } from '#validators/room_player';
+import { readyValidator, selectBotDifficultyParamsValidator, selectBotDifficultyValidator, selectCountryParamsValidator, selectCountryValidator } from '#validators/room_player';
 import BotDifficultyRepository from '#repositories/bot_difficulty_repository';
 import BotDifficulty from '#models/bot_difficulty';
 import sleep from '../utils/sleep.js';
@@ -67,7 +67,7 @@ export default class RoomController {
             countryId: country.id,
         });
 
-        return response.send({ roomId: room.frontId });
+        return response.send({ message: 'Room joined', roomId: room.frontId });
     }
 
     public async invite({ request, response, user, room }: HttpContext): Promise<void> {
@@ -108,7 +108,16 @@ export default class RoomController {
         }
 
         await room.load('players', (playersQuery): void => {
-            playersQuery.preload('user').preload('bot').preload('country').preload('difficulty').orderBy('frontId');
+            playersQuery
+                .preload('user', (userQuery): void => {
+                    userQuery.preload('profilePicture');
+                })
+                .preload('bot', (botQuery): void => {
+                    botQuery.preload('picture');
+                })
+                .preload('country')
+                .preload('difficulty')
+                .orderBy('frontId');
         });
         const player: RoomPlayer = <RoomPlayer>room.players.find((player: RoomPlayer): boolean => player.userId === user.id);
         player.isUserConnected = true;
@@ -138,7 +147,7 @@ export default class RoomController {
 
             transmit.broadcast(`notification/play/room/${room.frontId}/player/joined`, { player: player.apiSerialize(language, user) });
 
-            return response.send({ player: player.apiSerialize(language, user) });
+            return response.send({ message: 'Bot joined', player: player.apiSerialize(language, user) });
         } else {
             return response.badRequest({ error: 'Too many players' });
         }
@@ -214,7 +223,7 @@ export default class RoomController {
     }
 
     public async ready({ request, response, user, room, language, player }: HttpContext): Promise<void> {
-        const { isReady } = await request.validateUsing(setReadyValidator);
+        const { isReady } = await request.validateUsing(readyValidator);
 
         if (isReady) {
             const isValidReady: boolean = room.players.every((loopPlayer: RoomPlayer): boolean => {
@@ -228,7 +237,7 @@ export default class RoomController {
                 const botPlayers: RoomPlayer[] = room.players.filter((p: RoomPlayer): boolean => {
                     return !p.userId;
                 });
-                const isUniqueAmongPlayers: boolean = !room.players.some((p: RoomPlayer): boolean => {
+                const isCountryUniqueAmongPlayers: boolean = !room.players.some((p: RoomPlayer): boolean => {
                     return !!p.userId && p.countryId === loopPlayer.countryId;
                 });
                 const uniqueBotCountries = new Set(
@@ -238,7 +247,7 @@ export default class RoomController {
                 );
                 const areBotsUnique: boolean = uniqueBotCountries.size === botPlayers.length;
 
-                return isUniqueAmongPlayers && areBotsUnique;
+                return isCountryUniqueAmongPlayers && areBotsUnique;
             });
 
             if (!isValidReady) {

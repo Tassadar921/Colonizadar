@@ -6,19 +6,23 @@
     import type SerializedGame from 'colonizadar-backend/app/types/serialized/serialized_game';
     import { showToast } from '../../services/toastService';
     import { t } from 'svelte-i18n';
-    import { formatGameNumbers } from '../../services/stringService';
+    import { capitalize, formatGameNumbers, formatSeasonFromNumber } from '../../services/stringService';
     import axios from 'axios';
     import type SerializedGameTerritory from 'colonizadar-backend/app/types/serialized/serialized_game_territory';
     import { handleFortifyAction } from '../../services/gameGeometryService';
+    import { getAllMoves, clearMoves } from '../../stores/dbStore';
+    import Loader from '../shared/Loader.svelte';
+    import { navigate } from '../../stores/locationStore';
 
     const dispatch = createEventDispatcher();
 
     export let game: SerializedGame;
     export let currentPlayer: SerializedRoomPlayer;
 
-    let isInitialized = false;
+    let isLoading: boolean = false;
+    let isInitialized: boolean = false;
 
-    let gameUpdateNotification: Subscription;
+    let newTurnNotification: Subscription;
     let playerUpdateNotification: Subscription;
     let territoryUpdateNotification: Subscription;
     let spiedNotification: Subscription;
@@ -28,6 +32,7 @@
     let cancelPendingPeaceNotification: Subscription;
     let peaceNotification: Subscription;
     let financedNotification: Subscription;
+    let playerReadyNotification: Subscription;
     let nextTurnNotification: Subscription;
 
     const getCurrentPlayer = async (): Promise<SerializedRoomPlayer> => {
@@ -78,7 +83,7 @@
     };
 
     const setupTransmits = async (): Promise<void> => {
-        gameUpdateNotification = $transmit.subscription(`notification/play/game/${game.id}/update`);
+        newTurnNotification = $transmit.subscription(`notification/play/game/${game.id}/turn/new`);
         playerUpdateNotification = $transmit.subscription(`notification/play/game/${game.id}/player/update`);
         territoryUpdateNotification = $transmit.subscription(`notification/play/game/${game.id}/territory/update`);
         spiedNotification = $transmit.subscription(`notification/play/game/${game.id}/${currentPlayer.id}/spied`);
@@ -88,10 +93,11 @@
         cancelPendingPeaceNotification = $transmit.subscription(`notification/play/game/${game.id}/${currentPlayer.id}/peace/cancel`);
         peaceNotification = $transmit.subscription(`notification/play/game/${game.id}/peace`);
         financedNotification = $transmit.subscription(`notification/play/game/${game.id}/${currentPlayer.id}/financed`);
-        nextTurnNotification = $transmit.subscription(`notification/play/game/${game.id}/next-turn`);
+        playerReadyNotification = $transmit.subscription(`notification/play/game/${game.id}/player/ready`);
+        nextTurnNotification = $transmit.subscription(`notification/play/game/${game.id}/turn/next`);
 
         await Promise.all([
-            gameUpdateNotification.create(),
+            newTurnNotification.create(),
             playerUpdateNotification.create(),
             territoryUpdateNotification.create(),
             spiedNotification.create(),
@@ -101,13 +107,23 @@
             cancelPendingPeaceNotification.create(),
             peaceNotification.create(),
             financedNotification.create(),
+            playerReadyNotification.create(),
             nextTurnNotification.create(),
         ]);
     };
 
     const setupHandlers = (): void => {
-        gameUpdateNotification.onMessage(({ game: newGame }: { game: SerializedGame }): void => {
-            game = newGame;
+        newTurnNotification.onMessage(async (): Promise<void> => {
+            try {
+                const { data } = await axios.get(`/api/game/${game.id}`);
+                game = data;
+            } catch (error: any) {
+                showToast(error.response.data.error, 'error');
+                navigate('/play');
+            }
+            isLoading = false;
+            await clearMoves();
+            showToast(`${capitalize(formatSeasonFromNumber(game.season))} ${game.year}`, 'success');
         });
 
         playerUpdateNotification.onMessage(async ({ player }: { player: SerializedRoomPlayer }): Promise<void> => {
@@ -199,23 +215,43 @@
             showToast(`${formatGameNumbers(amount)} ${$t('play.game.received-from')} ${targetPlayer.user?.username ?? targetPlayer.bot.name}`);
         });
 
-        nextTurnNotification.onMessage((): void => {
-            // TODO: send all turn actions : moves, attacks
+        playerReadyNotification.onMessage(({ playerId, isReady }: { playerId: number; isReady: boolean }): void => {
+            game = {
+                ...game,
+                players: game.players.map((player: SerializedRoomPlayer): SerializedRoomPlayer => {
+                    if (player.id === playerId) {
+                        return {
+                            ...player,
+                            isReady,
+                        };
+                    }
+                    return player;
+                }),
+            };
+        });
+
+        nextTurnNotification.onMessage(async (): Promise<void> => {
+            isLoading = true;
+            await axios.post(`/api/game/${game.id}/actions`, {
+                moves: await getAllMoves(),
+            });
         });
     };
 
     const cleanupTransmits = async (): Promise<void> => {
         try {
             await Promise.all([
-                gameUpdateNotification?.delete().then(() => console.log('gameUpdateNotification deleted')),
+                newTurnNotification?.delete().then(() => console.log('newTurnNotification deleted')),
                 playerUpdateNotification?.delete().then(() => console.log('playerUpdateNotification deleted')),
                 territoryUpdateNotification?.delete().then(() => console.log('territoryUpdateNotification deleted')),
+                spiedNotification?.delete().then(() => console.log('spiedNotification deleted')),
                 warNotification?.delete().then(() => console.log('warNotification deleted')),
                 askPeaceNotification?.delete().then(() => console.log('askPeaceNotification deleted')),
                 refusePeaceNotification?.delete().then(() => console.log('refusePeaceNotification deleted')),
                 cancelPendingPeaceNotification?.delete().then(() => console.log('cancelPendingPeaceNotification deleted')),
                 peaceNotification?.delete().then(() => console.log('peaceNotification deleted')),
                 financedNotification?.delete().then(() => console.log('financedNotification deleted')),
+                playerReadyNotification?.delete().then(() => console.log('playerReadyNotification deleted')),
                 nextTurnNotification?.delete().then(() => console.log('nextTurnNotification deleted')),
             ]);
         } catch (error: any) {
@@ -233,3 +269,5 @@
         cleanupTransmits();
     });
 </script>
+
+<Loader {isLoading} />

@@ -1,5 +1,5 @@
 import { DateTime } from 'luxon';
-import { BaseModel, belongsTo, column, hasMany } from '@adonisjs/lucid/orm';
+import { BaseModel, beforeFetch, beforeFind, belongsTo, column, hasMany } from '@adonisjs/lucid/orm';
 import User from '#models/user';
 import type { BelongsTo, HasMany } from '@adonisjs/lucid/types/relations';
 import Room from '#models/room';
@@ -13,6 +13,7 @@ import Peace from '#models/peace';
 import PendingPeace from '#models/pending_peace';
 import SerializedPeace from '#types/serialized/serialized_peace';
 import SerializedWar from '#types/serialized/serialized_war';
+import GameTerritory from '#models/game_territory';
 
 export default class RoomPlayer extends BaseModel {
     @column({ isPrimary: true })
@@ -67,6 +68,11 @@ export default class RoomPlayer extends BaseModel {
     @belongsTo((): typeof Room => Room)
     declare room: BelongsTo<typeof Room>;
 
+    @hasMany((): typeof GameTerritory => GameTerritory, {
+        foreignKey: 'ownerId',
+    })
+    declare territories: HasMany<typeof GameTerritory>;
+
     @hasMany((): typeof War => War, {
         foreignKey: 'playerId',
     })
@@ -95,6 +101,12 @@ export default class RoomPlayer extends BaseModel {
 
     @column.dateTime({ autoCreate: true, autoUpdate: true })
     declare updatedAt: DateTime;
+
+    @beforeFind()
+    @beforeFetch()
+    public static preloadDefaults(query: any): void {
+        query.preload('user').preload('bot').preload('country').preload('difficulty');
+    }
 
     public apiSerialize(language: Language, user?: User, isSpied = false): SerializedRoomPlayer {
         return {

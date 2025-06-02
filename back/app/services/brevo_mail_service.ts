@@ -16,6 +16,13 @@ export default class BrevoMailService {
         Accept: 'application/json',
     };
 
+    /**
+     * Sends a password reset email to a user with a given URI for resetting.
+     *
+     * @param {User} user - The user object containing the email to send to.
+     * @param {string} uri - The URI link included in the reset password email.
+     * @returns {Promise<void>} Resolves when the email has been sent.
+     */
     public async sendResetPasswordEmail(user: User, uri: string): Promise<void> {
         await axios.post(
             this.apiUrl,
@@ -39,6 +46,13 @@ export default class BrevoMailService {
         );
     }
 
+    /**
+     * Sends an account creation email to a specified email address with a given URI.
+     *
+     * @param {string} email - The recipient's email address.
+     * @param {string} uri - The URI link included in the account creation email.
+     * @returns {Promise<void>} Resolves when the email has been sent.
+     */
     public async sendAccountCreationEmail(email: string, uri: string): Promise<void> {
         await axios.post(
             this.apiUrl,

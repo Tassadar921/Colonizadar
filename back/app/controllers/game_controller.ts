@@ -1,6 +1,5 @@
 import { HttpContext } from '@adonisjs/core/http';
 import RoomPlayer from '#models/room_player';
-import { setReadyValidator } from '#validators/room_player';
 import transmit from '@adonisjs/transmit/services/main';
 import {
     askPeaceParamsValidator,
@@ -12,10 +11,10 @@ import {
     financePlayerValidator,
     financeWildTerritoryValidator,
     makePeaceParamsValidator,
+    nextTurnActionsValidator,
     refusePeaceParamsValidator,
     spyPlayerParamsValidator,
 } from '#validators/game';
-import RoomStatusEnum from '#types/enum/room_status_enum';
 import { inject } from '@adonisjs/core';
 import RegexService from '#services/regex_service';
 import War from '#models/war';
@@ -25,6 +24,12 @@ import PeaceRepository from '#repositories/peace_repository';
 import PendingPeace from '#models/pending_peace';
 import PeaceStatusEnum from '#types/enum/peace_status_enum';
 import WarStatusEnum from '#types/enum/war_status_enum';
+import redis from '@adonisjs/redis/services/main';
+import { Move } from '#types/Move';
+import GameTerritory from '#models/game_territory';
+import TerritoryService from '#services/territory_service';
+import { BattleResult } from '#types/BattleResult';
+import RoomStatusEnum from '#types/enum/room_status_enum';
 
 @inject()
 export default class GameController {
@@ -32,7 +37,8 @@ export default class GameController {
         private readonly regexService: RegexService,
         private readonly warRepository: WarRepository,
         private readonly pendingPeaceRepository: PendingPeaceRepository,
-        private readonly peaceRepository: PeaceRepository
+        private readonly peaceRepository: PeaceRepository,
+        private readonly territoryService: TerritoryService
     ) {}
 
     public async get({ response, user, language, game }: HttpContext): Promise<void> {
@@ -47,16 +53,40 @@ export default class GameController {
         return response.send(gameTerritory.apiSerialize(language, user));
     }
 
-    public async ready({ request, response, user, player, game, language }: HttpContext): Promise<void> {
-        const { isReady } = await request.validateUsing(setReadyValidator);
-
-        player.isReady = isReady;
+    public async ready({ response, player, game }: HttpContext): Promise<void> {
+        player.isReady = !player.isReady;
         await player.save();
 
-        transmit.broadcast(`notification/play/game/${game.frontId}/player/update`, { player: player.apiSerialize(language, user) });
-        response.send({ message: `Set to ${isReady ? 'ready' : 'not ready'}` });
+        transmit.broadcast(`notification/play/game/${game.frontId}/player/ready`, { playerId: player.frontId, isReady: player.isReady });
+        response.send({ message: `Set to ${player.isReady ? 'ready' : 'not ready'}` });
 
         if (game.room.players.every((player: RoomPlayer): boolean => (player.botId ? true : player.isReady))) {
+            game.room.status = RoomStatusEnum.WAITING;
+            await game.room.save();
+
+            transmit.broadcast(`notification/play/game/${game.frontId}/turn/next`);
+        }
+    }
+
+    public async nextTurnActions({ request, response, game, player }: HttpContext): Promise<void> {
+        const { moves } = await request.validateUsing(nextTurnActionsValidator);
+
+        await redis.set(`game:${game.frontId}-player:${player.frontId}-moves`, JSON.stringify(moves));
+        response.send({ message: 'Moves saved' });
+
+        const existsArray: number[] = await Promise.all(
+            game.room.players.map((currentPlayer: RoomPlayer): Promise<number> => {
+                const key = `game:${game.frontId}-player:${currentPlayer.frontId}-moves`;
+                return redis.exists(key);
+            })
+        );
+
+        const totalExists: number = existsArray.reduce((acc: number, value: number): number => acc + value, 0);
+        const botsNumber: number = game.room.players.reduce((acc: number, currentPlayer: RoomPlayer): number => {
+            return currentPlayer.botId ? acc + 1 : acc;
+        }, 0);
+
+        if (totalExists + botsNumber === game.room.players.length) {
             switch (game.season === 4) {
                 case true:
                     game.season = 1;
@@ -66,14 +96,75 @@ export default class GameController {
                     game.season++;
                     break;
             }
+            game.room.status = RoomStatusEnum.PLAYING;
             await game.save();
 
-            // TODO: after end of turn, check peaces and update statuses if needed
+            game.room.players.map(async (currentPlayer: RoomPlayer): Promise<void> => {
+                const stringifiedMoves: string | null = await redis.get(`game:${game.frontId}-player:${currentPlayer.frontId}-moves`);
+                if (!stringifiedMoves?.length) {
+                    return;
+                }
 
-            game.room.status = RoomStatusEnum.WAITING;
-            await game.room.save();
+                // TODO: make bots play
 
-            transmit.broadcast(`notification/play/game/${game.frontId}/next-turn`);
+                const moves: Move[] = JSON.parse(stringifiedMoves);
+
+                const nonAttackMoves: Move[] = moves.filter((move: Move): boolean => !move.isAttack).sort((a: Move, b: Move): number => a.to - b.to);
+
+                for (const move of nonAttackMoves) {
+                    const gameTerritory: GameTerritory | undefined = game.territories.find((gameTerritory: GameTerritory): boolean => gameTerritory.frontId === move.from);
+                    const targetTerritory: GameTerritory | undefined = game.territories.find((gameTerritory: GameTerritory): boolean => gameTerritory.frontId === move.to);
+
+                    if (!gameTerritory || !targetTerritory || gameTerritory.ownerId !== currentPlayer.id || gameTerritory.infantry - move.infantry < 1000 || gameTerritory.ships < move.ships) {
+                        continue;
+                    }
+
+                    gameTerritory.infantry -= move.infantry;
+                    gameTerritory.ships -= move.ships;
+
+                    targetTerritory.infantry += move.infantry;
+                    targetTerritory.ships += move.ships;
+                    await Promise.all([gameTerritory.save(), targetTerritory.save()]);
+                }
+
+                const attackMoves: Move[] = moves.filter((move: Move): boolean => move.isAttack).sort((a: Move, b: Move): number => a.to - b.to);
+                for (const move of attackMoves) {
+                    const gameTerritory: GameTerritory | undefined = game.territories.find((gameTerritory: GameTerritory): boolean => gameTerritory.frontId === move.from);
+                    const targetTerritory: GameTerritory | undefined = game.territories.find((gameTerritory: GameTerritory): boolean => gameTerritory.frontId === move.to);
+
+                    if (!gameTerritory || !targetTerritory || gameTerritory.ownerId !== currentPlayer.id || gameTerritory.infantry - move.infantry < 1000 || gameTerritory.ships < move.ships) {
+                        continue;
+                    }
+
+                    gameTerritory.infantry -= move.infantry;
+                    gameTerritory.ships -= move.ships;
+
+                    const battleResults: BattleResult = this.territoryService.resolveBattle(player, move.infantry, move.ships, targetTerritory, game);
+
+                    if (battleResults.success) {
+                        targetTerritory.ownerId = gameTerritory.ownerId;
+                        targetTerritory.infantry = move.infantry - battleResults.attackerLosses.infantry;
+                        targetTerritory.ships += move.ships - battleResults.attackerLosses.ships;
+                        // TODO: move surviving defending ships to the closest defender player's coastal territory
+                    } else {
+                        targetTerritory.infantry -= Math.max(1000, battleResults.defenderLosses.infantry);
+                        targetTerritory.ships -= battleResults.defenderLosses.ships;
+                        gameTerritory.infantry = move.infantry - battleResults.attackerLosses.infantry;
+                        gameTerritory.ships += move.ships - battleResults.attackerLosses.ships;
+                    }
+                    await Promise.all([gameTerritory.save(), targetTerritory.save()]);
+                }
+
+                await redis.del(`game:${game.frontId}-player:${currentPlayer.frontId}-moves`);
+                currentPlayer.isReady = false;
+                if (game.season === 1) {
+                    await currentPlayer.load('territories');
+                    currentPlayer.gold += currentPlayer.territories.reduce((acc: number, territory: GameTerritory): number => acc + territory.value, 0);
+                }
+                await currentPlayer.save();
+            });
+
+            transmit.broadcast(`notification/play/game/${game.frontId}/turn/new`);
         }
     }
 
@@ -196,9 +287,7 @@ export default class GameController {
         await Promise.all([player.save(), gameTerritory.save()]);
 
         if (gameTerritory.ownerId) {
-            await gameTerritory.load('owner', (ownerQuery): void => {
-                ownerQuery.preload('user').preload('bot').preload('country').preload('difficulty');
-            });
+            await gameTerritory.load('owner');
 
             transmit.broadcast(`notification/play/game/${game.frontId}/territory/update`, {
                 territory: gameTerritory.apiSerialize(language, user),
@@ -326,18 +415,7 @@ export default class GameController {
             },
         ]);
 
-        await Promise.all([
-            player.load('wars', (warsQuery): void => {
-                warsQuery.preload('enemy', (enemyQuery): void => {
-                    enemyQuery.preload('user').preload('bot').preload('country').preload('difficulty');
-                });
-            }),
-            targetPlayer.load('wars', (warsQuery): void => {
-                warsQuery.preload('enemy', (enemyQuery): void => {
-                    enemyQuery.preload('user').preload('bot').preload('country').preload('difficulty');
-                });
-            }),
-        ]);
+        await Promise.all([this.warRepository.loadFromGamePlayer(player), this.warRepository.loadFromGamePlayer(targetPlayer)]);
 
         transmit.broadcast(`notification/play/game/${game.frontId}/war`, { player: player.apiSerialize(language, user), targetPlayer: targetPlayer.apiSerialize(language, user) });
 
@@ -365,18 +443,7 @@ export default class GameController {
             enemyId: targetPlayer.id,
         });
 
-        await Promise.all([
-            player.load('sentPendingPeaces', (sentPendingPeacesQuery): void => {
-                sentPendingPeacesQuery.preload('enemy', (enemyQuery): void => {
-                    enemyQuery.preload('user').preload('bot').preload('country').preload('difficulty');
-                });
-            }),
-            targetPlayer.load('receivedPendingPeaces', (receivedPendingPeacesQuery): void => {
-                receivedPendingPeacesQuery.preload('player', (enemyQuery): void => {
-                    enemyQuery.preload('user').preload('bot').preload('country').preload('difficulty');
-                });
-            }),
-        ]);
+        await Promise.all([this.pendingPeaceRepository.loadSentFromGamePlayer(player), this.pendingPeaceRepository.loadReceivedFromGamePlayer(targetPlayer)]);
 
         transmit.broadcast(`notification/play/game/${game.frontId}/${player.frontId}/peace/ask`, {
             player: player.apiSerialize(language, user),
@@ -441,32 +508,7 @@ export default class GameController {
             ]),
         ]);
 
-        await Promise.all([
-            player.load('peaces', (peacesQuery): void => {
-                peacesQuery
-                    .preload('enemy', (enemyQuery): void => {
-                        enemyQuery.preload('user').preload('bot').preload('country').preload('difficulty');
-                    })
-                    .preload('war', (warQuery): void => {
-                        warQuery.preload('enemy', (enemyQuery): void => {
-                            enemyQuery.preload('user').preload('bot').preload('country').preload('difficulty');
-                        });
-                    })
-                    .where('status', PeaceStatusEnum.IN_PROGRESS);
-            }),
-            targetPlayer.load('peaces', (peacesQuery): void => {
-                peacesQuery
-                    .preload('enemy', (enemyQuery): void => {
-                        enemyQuery.preload('user').preload('bot').preload('country').preload('difficulty');
-                    })
-                    .preload('war', (warQuery): void => {
-                        warQuery.preload('enemy', (enemyQuery): void => {
-                            enemyQuery.preload('user').preload('bot').preload('country').preload('difficulty');
-                        });
-                    })
-                    .where('status', PeaceStatusEnum.IN_PROGRESS);
-            }),
-        ]);
+        await Promise.all([this.peaceRepository.loadFromGamePlayer(player), this.peaceRepository.loadFromGamePlayer(targetPlayer)]);
 
         (player.receivedPendingPeaces as unknown as PendingPeace[]) = player.receivedPendingPeaces.filter((pendingPeace: PendingPeace): boolean => pendingPeace.playerId !== targetPlayer.id);
         (targetPlayer.sentPendingPeaces as unknown as PendingPeace[]) = targetPlayer.sentPendingPeaces.filter((pendingPeace: PendingPeace): boolean => pendingPeace.enemyId !== player.id);

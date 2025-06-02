@@ -6,7 +6,7 @@
     import axios from 'axios';
     import { formatGameNumbers } from '../../services/stringService';
     import type SerializedGameTerritory from 'colonizadar-backend/app/types/serialized/serialized_game_territory';
-    import ActionButton from './ActionButton.svelte';
+    import ActionButton from '../shared/ActionButton.svelte';
 
     export let game: SerializedGame;
     export let selectedTerritory: SerializedGameTerritory;
@@ -35,7 +35,7 @@
         isLoading = false;
     };
 
-    $: isButtonDisabled = isLoading || (currentPlayer?.gold ?? 0) < game.map.fortifyCost;
+    $: isButtonDisabled = currentPlayer.isReady || isLoading || (currentPlayer?.gold ?? 0) < game.map.fortifyCost || !selectedTerritory.infantry;
 </script>
 
 <ActionButton {isButtonDisabled} {isLoading} on:click={handleFortify}>

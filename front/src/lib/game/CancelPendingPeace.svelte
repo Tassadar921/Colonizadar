@@ -4,10 +4,13 @@
     import { showToast } from '../../services/toastService';
     import type SerializedRoomPlayer from 'colonizadar-backend/app/types/serialized/serialized_room_player';
     import axios from 'axios';
-    import ActionButton from './ActionButton.svelte';
+    import ActionButton from '../shared/ActionButton.svelte';
 
     export let game: SerializedGame;
+    export let currentPlayer: SerializedRoomPlayer;
     export let targetPlayer: SerializedRoomPlayer;
+
+    let isButtonDisabled: boolean = false;
 
     const handleCancelPendingPeace = async (): Promise<void> => {
         try {
@@ -17,8 +20,10 @@
             showToast(error.response.data.error, 'error');
         }
     };
+
+    $: isButtonDisabled = currentPlayer.isReady;
 </script>
 
-<ActionButton on:click={handleCancelPendingPeace}>
+<ActionButton {isButtonDisabled} on:click={handleCancelPendingPeace}>
     <span slot="text">{$t('play.game.peace.cancel')}</span>
 </ActionButton>
