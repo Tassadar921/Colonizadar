@@ -13,9 +13,7 @@ export default class GameTerritoryRepository extends BaseRepository<typeof GameT
             .leftJoin('territories', 'game_territories.territory_id', 'territories.id')
             .where('game_territories.game_id', game.id)
             .andWhere('territories.code', territoryCode)
-            .preload('owner', (ownerQuery): void => {
-                ownerQuery.preload('bot').preload('user').preload('country').preload('difficulty');
-            })
+            .preload('owner')
             .preload('territory', (territoryQuery): void => {
                 territoryQuery.preload('neighbours', (neighboursQuery): void => {
                     neighboursQuery.preload('neighbour');

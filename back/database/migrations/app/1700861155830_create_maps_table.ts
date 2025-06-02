@@ -13,6 +13,7 @@ export default class extends BaseSchema {
             table.integer('starting_players_gold').notNullable();
             table.decimal('wild_infantry_cost_factor', 16, 10).notNullable();
             table.decimal('wild_infantry_defense_factor', 16, 10).notNullable();
+            table.decimal('wild_ships_defense_factor', 16, 10).notNullable();
             table.decimal('wild_landing_defense_factor', 16, 10).notNullable();
             table.decimal('base_infantry_cost', 16, 10).notNullable();
             table.decimal('base_ship_cost', 16, 10).notNullable();

@@ -6,13 +6,13 @@
     import type SerializedRoomPlayer from 'colonizadar-backend/app/types/serialized/serialized_room_player';
     import Popover from '../shared/Popover.svelte';
     import { formatGameNumbers } from '../../services/stringService';
+    import ActionButton from '../shared/ActionButton.svelte';
 
     export let game: SerializedGame;
+    export let currentPlayer: SerializedRoomPlayer;
     export let player: SerializedRoomPlayer;
 
-    let buttonElement: HTMLButtonElement;
     let isButtonDisabled: boolean = false;
-    let showPopover: boolean = false;
 
     const handleSpyPlayer = async (): Promise<void> => {
         try {
@@ -34,22 +34,9 @@
         }
     };
 
-    $: isButtonDisabled = !!player.gold;
+    $: isButtonDisabled = (currentPlayer?.gold ?? 0) < game.map.spyPlayerCost || !!player.gold || currentPlayer.isReady;
 </script>
 
-<button
-    bind:this={buttonElement}
-    class="{isButtonDisabled ? '' : 'hover:bg-green-600'} bg-green-500 transition-colors duration-300 px-3 py-1 rounded-xl"
-    on:click={handleSpyPlayer}
-    on:mouseenter={() => (showPopover = true)}
-    on:focus={() => (showPopover = true)}
-    on:mouseleave={() => (showPopover = false)}
-    on:blur={() => (showPopover = false)}
-    disabled={isButtonDisabled}
->
-    {$t('play.game.spy')}
-</button>
-
-<Popover target={buttonElement} show={showPopover}>
-    <span>{$t('play.game.cost')} : {formatGameNumbers(game?.map.spyPlayerCost ?? 0)}</span>
-</Popover>
+<ActionButton on:click={handleSpyPlayer} {isButtonDisabled} popoverText={`${$t('play.game.cost')} : ${formatGameNumbers(game?.map.spyPlayerCost ?? 0)}`}>
+    <span slot="text">{$t('play.game.spy')}</span>
+</ActionButton>

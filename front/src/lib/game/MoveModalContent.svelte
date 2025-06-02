@@ -4,12 +4,13 @@
     import Range from '../shared/Range.svelte';
     import { t } from 'svelte-i18n';
     import Icon from '../shared/Icon.svelte';
-    import ActionButton from './ActionButton.svelte';
+    import ActionButton from '../shared/ActionButton.svelte';
     import type SerializedTerritory from 'colonizadar-backend/app/types/serialized/serialized_territory';
     import Incrementation from '../shared/Incrementation.svelte';
-    import { addMove, type Move } from '../../stores/dbStore';
+    import { addMove } from '../../stores/dbStore';
     import { showToast } from '../../services/toastService';
     import type SerializedGame from 'colonizadar-backend/app/types/serialized/serialized_game';
+    import type { Move } from 'colonizadar-backend/app/types/Move';
 
     export let game: SerializedGame;
     export let selectedTerritory: SerializedGameTerritory;
@@ -114,10 +115,10 @@
         canBeZero={true}
     />
     {#if isCoastal}
-        <Range name="amount" bind:value={shipsAmount} min={0} max={selectedTerritory.ships} step={5} label={$t('play.common.ships')} />
+        <Range name="amount" bind:value={shipsAmount} min={0} max={selectedTerritory.ships} step={1} label={$t('play.common.ships')} />
         <Incrementation
             bind:value={shipsAmount}
-            smallStep={5}
+            smallStep={1}
             smallShiftStep={10}
             largeStep={100}
             largeShiftStep={1000}

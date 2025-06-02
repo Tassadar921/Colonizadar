@@ -10,7 +10,7 @@
     import type SerializedGame from 'colonizadar-backend/app/types/serialized/serialized_game';
     import type SerializedRoomPlayer from 'colonizadar-backend/app/types/serialized/serialized_room_player';
     import type SerializedGameTerritory from 'colonizadar-backend/app/types/serialized/serialized_game_territory';
-    import ActionButton from './ActionButton.svelte';
+    import ActionButton from '../shared/ActionButton.svelte';
 
     export let game: SerializedGame;
     export let selectedTerritory: SerializedGameTerritory;
@@ -53,7 +53,7 @@
         showToast(event.detail.message);
     };
 
-    $: isButtonDisabled = (currentPlayer.gold ?? 0) < game.map.baseShipCost * currentPlayer.country.shipPriceFactor * 5;
+    $: isButtonDisabled = (currentPlayer.gold ?? 0) < game.map.baseShipCost * currentPlayer.country.shipPriceFactor * 5 || currentPlayer.isReady;
     $: {
         const maxAffordableAmount = getShipsFromCost(currentPlayer.gold ?? 0);
 
@@ -61,12 +61,12 @@
             amount = maxAffordableAmount;
             canIncrement = false;
         } else {
-            canIncrement = amount + 5 <= maxAffordableAmount;
+            canIncrement = amount + 5 <= maxAffordableAmount && !currentPlayer.isReady;
         }
 
         cost = game.map.baseShipCost * currentPlayer.country.shipPriceFactor * amount;
-        canSubmit = amount >= 5 && amount % 5 === 0;
-        canDecrement = amount > 5;
+        canSubmit = amount >= 5 && amount % 5 === 0 && !currentPlayer.isReady;
+        canDecrement = amount > 5 && !currentPlayer.isReady;
     }
 </script>
 

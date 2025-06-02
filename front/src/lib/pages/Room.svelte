@@ -18,9 +18,12 @@
     import type SerializedPlayableCountry from 'colonizadar-backend/app/types/serialized/serialized_playable_country';
     import type SerializedMap from 'colonizadar-backend/app/types/serialized/serialized_map';
     import Loader from '../shared/Loader.svelte';
-    import Ready from '../room/Ready.svelte';
+    import RoomReady from '../room/RoomReady.svelte';
     import PlayableCountriesInfo from '../room/PlayableCountriesInfo.svelte';
     import Icon from '../shared/Icon.svelte';
+    import { MetaTags } from 'svelte-meta-tags';
+    import type SerializedRoomPlayer from 'colonizadar-backend/app/types/serialized/serialized_room_player';
+    import { profile } from '../../stores/profileStore';
 
     export let roomId: string;
 
@@ -29,6 +32,8 @@
         value: string;
         uri?: string;
     }
+
+    let currentPlayer: SerializedRoomPlayer;
 
     let isLoading: boolean = true;
     let room: SerializedRoom;
@@ -92,7 +97,25 @@
     $: if (roomId) {
         fetchRoomData();
     }
+
+    $: currentPlayer = room?.players.find((player: SerializedRoomPlayer): boolean => player.user?.id === $profile!.id);
 </script>
+
+<MetaTags
+    title={$t('play.room.meta.title')}
+    description={$t('play.room.meta.description')}
+    keywords={$t('play.room.meta.keywords').split(', ')}
+    languageAlternates={[
+        {
+            hrefLang: 'en',
+            href: `${import.meta.env.VITE_FRONT_URI}/en/play/room/${roomId}`,
+        },
+        {
+            hrefLang: 'fr',
+            href: `${import.meta.env.VITE_FRONT_URI}/fr/play/room/${roomId}`,
+        },
+    ]}
+/>
 
 {#if room}
     <Title title={room.name ? room.name : $t('play.room.title')} />
@@ -122,7 +145,7 @@
                 <span>{$t('play.room.invite.title')}</span>
                 <Icon name="invite" />
             </Button>
-            <Ready bind:room bind:isLoading />
+            <RoomReady bind:room bind:currentPlayer />
         </div>
     </div>
 

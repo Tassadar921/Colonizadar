@@ -220,7 +220,8 @@
 </script>
 
 <button
-    class="w-[70%] overflow-hidden {isDragging ? 'cursor-grabbing' : ''}"
+    class="w-[70%] overflow-hidden"
+    class:!cursor-grabbing={isDragging}
     on:wheel={handleWheel}
     on:mousedown={startDrag}
     on:mousemove={onDrag}

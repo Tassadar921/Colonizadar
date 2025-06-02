@@ -28,4 +28,11 @@ const formatSeasonFromNumber = (seasonNumber: number): string => {
     }
 };
 
-export { raw, formatGameNumbers, toCamelCase, formatSeasonFromNumber };
+const capitalize = (str: string): string => {
+    if (str.length === 0) {
+        return '';
+    }
+    return str.charAt(0).toUpperCase() + str.slice(1);
+};
+
+export { raw, formatGameNumbers, toCamelCase, formatSeasonFromNumber, capitalize };

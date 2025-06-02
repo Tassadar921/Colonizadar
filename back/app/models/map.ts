@@ -45,6 +45,13 @@ export default class Map extends BaseModel {
             return Number(value).toString();
         },
     })
+    declare wildShipsDefenseFactor: number;
+
+    @column({
+        consume: (value: string | number): string => {
+            return Number(value).toString();
+        },
+    })
     declare wildLandingDefenseFactor: number;
 
     @column({

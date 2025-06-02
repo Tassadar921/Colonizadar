@@ -256,7 +256,13 @@
     "play": {
         "title": "Jouer",
         "description": "Jouez seul ou avec vos amis",
+        "meta": {
+            "title": "Jouer – Rejoindre ou Créer une Salle | Colonizadar",
+            "description": "Rejoignez une salle existante avec un jeton ou un mot de passe, ou créez votre propre salle pour jouer sur Colonizadar. Accès rapide et simple à vos parties.",
+            "keywords": "rejoindre salle, créer salle, accès salle, salle privée, connexion jeton, partie de jeu, Colonizadar"
+        },
         "common": {
+            "ready": "Prêt",
             "infantry": "Infanterie",
             "ships": "Navires",
             "landing": "Débarquement",
@@ -266,6 +272,11 @@
         },
         "room": {
             "title": "Salon",
+            "meta": {
+                "title": "Salle de Jeu – Préparation de la Partie | Colonizadar",
+                "description": "Configurez votre partie avant de la lancer. Attendez les joueurs ou ajoutez des bots si nécessaire. Gérez facilement votre salle avec Colonizadar.",
+                "keywords": "configuration partie, salon de jeu, attente joueurs, ajouter bots, salle multijoueur, Colonizadar"
+            },
             "create": {
                 "title": "Créer un salon",
                 "modal": {
@@ -290,6 +301,11 @@
             "add-bot": "Ajouter un bot"
         },
         "game": {
+            "meta": {
+                "title": "Partie en Cours – Colonizadar",
+                "description": "Jouez à Colonizadar en temps réel ! Développez votre empire, élaborez des stratégies avec ou contre les autres, et conquérez la carte dans ce jeu multijoueur.",
+                "keywords": "jeu en ligne, gameplay, Colonizadar partie, stratégie multijoueur, construction empire, jeu temps réel"
+            },
             "score": "Score",
             "territories": "Territoires",
             "gold": "Or",

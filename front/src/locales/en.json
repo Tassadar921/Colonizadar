@@ -256,7 +256,13 @@
     "play": {
         "title": "Play",
         "description": "Play alone or with your friends",
+        "meta": {
+            "title": "Play – Join or Create a Room | Colonizadar",
+            "description": "Join an existing room with a token or password, or create your own room to start playing on Colonizadar. Quick and easy access to your game sessions.",
+            "keywords": "join room, create room, room access, private room, token login, game session, Colonizadar"
+        },
         "common": {
+            "ready": "Ready",
             "infantry": "Infantry",
             "ships": "Ships",
             "landing": "Landing",
@@ -266,6 +272,11 @@
         },
         "room": {
             "title": "Room",
+            "meta": {
+                "title": "Room Setup – Prepare Your Game | Colonizadar",
+                "description": "Configure your game before it starts. Wait for players to join or add bots if needed. Manage your room settings easily with Colonizadar.",
+                "keywords": "room setup, game lobby, wait for players, add bots, game configuration, multiplayer room, Colonizadar"
+            },
             "create": {
                 "title": "Create a room",
                 "modal": {
@@ -290,6 +301,11 @@
             "add-bot": "Add a bot"
         },
         "game": {
+            "meta": {
+                "title": "Game in Progress – Colonizadar",
+                "description": "Play Colonizadar in real-time! Manage your empire, strategize with or against others, and conquer the map in this multiplayer experience.",
+                "keywords": "gameplay, online game, Colonizadar game, multiplayer strategy, empire building, real-time game"
+            },
             "score": "Score",
             "territories": "Territories",
             "gold": "Gold",

@@ -5,12 +5,14 @@ import Territory from '#models/territory';
 import GameTerritory from '#models/game_territory';
 import RoomStatusEnum from '#types/enum/room_status_enum';
 import RoomPlayer from '#models/room_player';
-import { rollTerritoryPower, rollTerritoryValue } from '#services/roll_territory_service';
+import TerritoryService from '#services/territory_service';
 import PeaceStatusEnum from '#types/enum/peace_status_enum';
 import WarStatusEnum from '#types/enum/war_status_enum';
+import { inject } from '@adonisjs/core';
 
+@inject()
 export default class GameRepository extends BaseRepository<typeof Game> {
-    constructor() {
+    constructor(private readonly territoryService: TerritoryService) {
         super(Game);
     }
 
@@ -19,40 +21,33 @@ export default class GameRepository extends BaseRepository<typeof Game> {
             .select('games.*')
             .leftJoin('rooms', 'rooms.id', 'games.room_id')
             .where('rooms.status', RoomStatusEnum.PLAYING)
+            .orWhere('rooms.status', RoomStatusEnum.WAITING)
             .andWhere('games.front_id', gameId)
             .preload('room', (roomQuery): void => {
                 roomQuery.preload('owner').preload('players', (playersQuery): void => {
                     playersQuery
-                        .preload('user')
-                        .preload('bot')
+                        .preload('user', (userQuery): void => {
+                            userQuery.preload('profilePicture');
+                        })
+                        .preload('bot', (botQuery): void => {
+                            botQuery.preload('picture');
+                        })
                         .preload('country')
                         .preload('difficulty')
                         .preload('wars', (warsQuery): void => {
-                            warsQuery
-                                .preload('enemy', (enemyQuery): void => {
-                                    enemyQuery.preload('user').preload('bot').preload('country').preload('difficulty');
-                                })
-                                .where('status', WarStatusEnum.IN_PROGRESS);
+                            warsQuery.preload('enemy').where('status', WarStatusEnum.IN_PROGRESS);
                         })
                         .preload('sentPendingPeaces', (sentPendingPeacesQuery): void => {
-                            sentPendingPeacesQuery.preload('enemy', (enemyQuery): void => {
-                                enemyQuery.preload('user').preload('bot').preload('country').preload('difficulty');
-                            });
+                            sentPendingPeacesQuery.preload('enemy');
                         })
                         .preload('receivedPendingPeaces', (receivedPendingPeacesQuery): void => {
-                            receivedPendingPeacesQuery.preload('player', (enemyQuery): void => {
-                                enemyQuery.preload('user').preload('bot').preload('country').preload('difficulty');
-                            });
+                            receivedPendingPeacesQuery.preload('player');
                         })
                         .preload('peaces', (peacesQuery): void => {
                             peacesQuery
-                                .preload('enemy', (enemyQuery): void => {
-                                    enemyQuery.preload('user').preload('bot').preload('country').preload('difficulty');
-                                })
+                                .preload('enemy')
                                 .preload('war', (warQuery): void => {
-                                    warQuery.preload('enemy', (enemyQuery): void => {
-                                        enemyQuery.preload('user').preload('bot').preload('country').preload('difficulty');
-                                    });
+                                    warQuery.preload('enemy');
                                 })
                                 .where('status', PeaceStatusEnum.IN_PROGRESS);
                         })
@@ -60,15 +55,11 @@ export default class GameRepository extends BaseRepository<typeof Game> {
                 });
             })
             .preload('territories', (territoriesQuery): void => {
-                territoriesQuery
-                    .preload('owner', (ownerQuery): void => {
-                        ownerQuery.preload('bot').preload('user').preload('country').preload('difficulty');
-                    })
-                    .preload('territory', (territoryQuery): void => {
-                        territoryQuery.preload('neighbours', (neighboursQuery): void => {
-                            neighboursQuery.preload('neighbour');
-                        });
+                territoriesQuery.preload('owner').preload('territory', (territoryQuery): void => {
+                    territoryQuery.preload('neighbours', (neighboursQuery): void => {
+                        neighboursQuery.preload('neighbour');
                     });
+                });
             })
             .preload('map', (mapQuery): void => {
                 mapQuery.preload('createdBy');
@@ -89,12 +80,12 @@ export default class GameRepository extends BaseRepository<typeof Game> {
                 if (territory.defaultBelongsToId) {
                     owner = room.players.find((player: RoomPlayer): boolean => player.countryId === territory.defaultBelongsToId);
                 }
-                const value: number = rollTerritoryValue(territory);
+                const value: number = this.territoryService.rollTerritoryValue(territory);
                 return await GameTerritory.create({
                     territoryId: territory.id,
                     gameId: game.id,
                     ownerId: owner?.id,
-                    infantry: territory.defaultInfantry ?? rollTerritoryPower(territory, value),
+                    infantry: territory.defaultInfantry ?? this.territoryService.rollTerritoryPower(territory, value),
                     ships: territory.defaultShips,
                     isFortified: territory.isFactory,
                     value,

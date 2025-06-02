@@ -13,6 +13,7 @@
     import PasswordInput from '../shared/PasswordInput.svelte';
     import { showToast } from '../../services/toastService';
     import { navigate } from '../../stores/locationStore';
+    import { MetaTags } from 'svelte-meta-tags';
 
     let showJoinModal: boolean = false;
     let showCreateModal: boolean = false;
@@ -42,6 +43,22 @@
     $: canSubmitJoin = !!token && isValidUuid(token);
     $: canSubmitCreate = !!name && name.length >= 3 && !!(isPrivate ? password && password.length >= 3 : true);
 </script>
+
+<MetaTags
+    title={$t('play.meta.title')}
+    description={$t('play.meta.description')}
+    keywords={$t('play.meta.keywords').split(', ')}
+    languageAlternates={[
+        {
+            hrefLang: 'en',
+            href: `${import.meta.env.VITE_FRONT_URI}/en/play`,
+        },
+        {
+            hrefLang: 'fr',
+            href: `${import.meta.env.VITE_FRONT_URI}/fr/play`,
+        },
+    ]}
+/>
 
 <Loader {isLoading} />
 

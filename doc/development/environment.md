@@ -39,7 +39,7 @@ API_URI=http://localhost:3333
 ACCOUNT_SENDER_EMAIL=account@colonizadar.fr
 BREVO_API_KEY=
 ADMIN_EMAIL=
-FRIEND_EMAILS=["paul.lecuisinier@gmail.com"]
+FRIEND_EMAILS=[]
 ```
 
 | Variable                | Value                                                                       |
