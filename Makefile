@@ -60,7 +60,7 @@ build-prod:
 	if [ -d back/build/static ]; then cp -r back/build/static back/.persist/static; fi
 
 	# Backend build
-	cd back && npm run build && cd build && npm install --omit=dev
+	cd back && npm run build && cp .env build/.env && cd build && npm install --omit=dev
 
 	# Persisted directories restoration
 	if [ -d back/.persist/public ]; then cp -r back/.persist/public back/build/; fi
