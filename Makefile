@@ -76,7 +76,7 @@ build-prod:
 	cd front && npm run build
 
 migrate-prod:
-	cd back && node ace migration:run
+	cd back && node ace migration:run && node ace migration:run --connection=logs
 
 start-prod:
 	pm2 start back/build/bin/server.js --name colonizadar
