@@ -5,9 +5,9 @@
     "type": "module",
     "license": "MIT",
     "scripts": {
-        "start": "node bin/server.js",
         "install:prod": "rm -rf node_modules && npm ci --omit=\"dev\"",
-        "build": "cp -r build/static tmp_build_static && node ace build && cp -r static build && cp .env build/.env && cd build && npm run install:prod && pm2 stop colonizadar || true && pm2 delete colonizadar || true && pm2 start bin/server.js --name colonizadar && cd ../ && rsync -av --progress tmp_build_static/ build/static/ && rm -rf tmp_build_static",
+        "build": "node ace build",
+        "start": "pm2-runtime build/server.js --name colonizadar",
         "dev": "node ace serve --hmr",
         "test": "node ace test"
     },
@@ -43,7 +43,6 @@
         "@types/mime-types": "^3.0.0",
         "@types/node": "^22.15.29",
         "hot-hook": "^0.4.0",
-        "pino-pretty": "^13.0.0",
         "ts-node-maintained": "^10.9.5",
         "typescript": "~5.8"
     },
@@ -58,6 +57,7 @@
         "@adonisjs/redis": "^9.2.0",
         "@adonisjs/transmit": "^2.0.2",
         "@vinejs/vine": "^3.0.1",
+        "pino-pretty": "^13.0.0",
         "file-type": "^21.0.0",
         "luxon": "^3.6.1",
         "mime-types": "^3.0.1",

@@ -8,7 +8,7 @@ services:
         env_file: ./back/.env
         working_dir: /app
         ports:
-            - "${PORT:-3333}:3333"
+            - "${PORT}:3333"
         volumes:
             - ./back/static:/app/static
 
