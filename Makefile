@@ -50,4 +50,4 @@ prune:
 	docker system prune -f
 
 build:
-	docker compose -f docker-compose.prod.yml up --build -d
+	${MAKE} stop && set -a && source back/.env && set +a && PORT=$$PORT docker compose -f docker-compose.prod.yml up --build -d

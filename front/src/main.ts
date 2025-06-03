@@ -67,7 +67,7 @@ axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL;
 initializeLanguage();
 
 // I18n configuration
-await initI148nLanguages();
+initI148nLanguages();
 
 // Theme configuration
 const theme: string | null = localStorage.getItem('theme');
@@ -78,7 +78,7 @@ if (theme !== 'light' && theme !== 'dark') {
 // Session token configuration
 const token: string | null = localStorage.getItem('apiToken');
 if (token) {
-    await logInformations(token);
+    logInformations(token);
 }
 
 const app = mount(App, { target: document.getElementById('app')! });
