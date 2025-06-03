@@ -79,6 +79,6 @@ migrate-prod:
 	cd back && node ace migration:run && node ace migration:run --connection=logs
 
 start-prod:
-	pm2 start back/build/bin/server.js --name colonizadar -f
+	pm2 describe colonizadar > /dev/null && pm2 restart colonizadar || pm2 start back/build/bin/server.js --name colonizadar
 
 deploy: install-prod build-prod migrate-prod start-prod
