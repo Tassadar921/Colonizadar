@@ -11,9 +11,6 @@ services:
             - "${PORT:-3333}:3333"
         volumes:
             - ./back/static:/app/static
-        depends_on:
-            - db
-            - redis
 
     frontend:
         build:
