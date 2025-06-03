@@ -49,5 +49,36 @@ start: install rm up db
 prune:
 	docker system prune -f
 
-build:
-	docker compose -f docker-compose.prod.yml up --build -d
+install-prod:
+	cd back && npm install --production
+	cd front && npm install
+
+build-prod:
+	# Temporary persisted directories creation
+	mkdir -p back/.persist
+	if [ -d back/build/public ]; then cp -r back/build/public back/.persist/public; fi
+	if [ -d back/build/static ]; then cp -r back/build/static back/.persist/static; fi
+
+	# Backend build
+	cd back && npm run build && cd build && npm install --omit=dev
+
+	# Persisted directories restoration
+	if [ -d back/.persist/public ]; then cp -r back/.persist/public back/build/; fi
+	if [ -d back/.persist/static ]; then cp -r back/.persist/static/* back/build/static/ || true; fi
+
+	# Fixture clearing
+	mkdir -p back/build/static && cp -r back/static/* back/build/static/
+
+	# Clear temporary persisted directories
+	rm -rf back/.persist
+
+	# Frontend build
+	cd front && npm run build
+
+migrate-prod:
+	cd back && node ace migration:run
+
+start-prod:
+	pm2 start back/build/bin/server.js --name colonizadar
+
+deploy: install-prod build-prod migrate-prod start-prod
