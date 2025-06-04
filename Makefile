@@ -51,7 +51,7 @@ prune:
 
 install-prod:
 	cd back && npm install --production
-	cd front && npm install
+	cd front && npm install --production
 
 build-prod:
 	# Temporary persisted directories creation
