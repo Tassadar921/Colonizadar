@@ -30,7 +30,6 @@ import GameTerritory from '#models/game_territory';
 import TerritoryService from '#services/territory_service';
 import { BattleResult } from '#types/BattleResult';
 import RoomStatusEnum from '#types/enum/room_status_enum';
-import GameRepository from '#repositories/game_repository';
 
 @inject()
 export default class GameController {
@@ -39,8 +38,7 @@ export default class GameController {
         private readonly warRepository: WarRepository,
         private readonly pendingPeaceRepository: PendingPeaceRepository,
         private readonly peaceRepository: PeaceRepository,
-        private readonly territoryService: TerritoryService,
-        private readonly gameRepository: GameRepository
+        private readonly territoryService: TerritoryService
     ) {}
 
     public async get({ response, user, language, game }: HttpContext): Promise<void> {
@@ -176,8 +174,6 @@ export default class GameController {
                     await sentPendingPeace.delete();
                 }
             });
-
-            game = await this.gameRepository.getFromFrontId(game.frontId);
 
             transmit.broadcast(`notification/play/game/${game.frontId}/turn/new`);
         }
