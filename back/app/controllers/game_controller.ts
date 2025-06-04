@@ -30,6 +30,7 @@ import GameTerritory from '#models/game_territory';
 import TerritoryService from '#services/territory_service';
 import { BattleResult } from '#types/BattleResult';
 import RoomStatusEnum from '#types/enum/room_status_enum';
+import GameRepository from '#repositories/game_repository';
 
 @inject()
 export default class GameController {
@@ -38,7 +39,8 @@ export default class GameController {
         private readonly warRepository: WarRepository,
         private readonly pendingPeaceRepository: PendingPeaceRepository,
         private readonly peaceRepository: PeaceRepository,
-        private readonly territoryService: TerritoryService
+        private readonly territoryService: TerritoryService,
+        private readonly gameRepository: GameRepository
     ) {}
 
     public async get({ response, user, language, game }: HttpContext): Promise<void> {
@@ -162,7 +164,20 @@ export default class GameController {
                     currentPlayer.gold += currentPlayer.territories.reduce((acc: number, territory: GameTerritory): number => acc + territory.value, 0);
                 }
                 await currentPlayer.save();
+
+                for (const peaces of currentPlayer.peaces) {
+                    if (peaces.expirationYear < game.year || (peaces.expirationYear === game.year && peaces.expirationSeason <= game.season)) {
+                        peaces.status = PeaceStatusEnum.FINISHED;
+                        await peaces.save();
+                    }
+                }
+
+                for (const sentPendingPeace of currentPlayer.sentPendingPeaces) {
+                    await sentPendingPeace.delete();
+                }
             });
+
+            game = await this.gameRepository.getFromFrontId(game.frontId);
 
             transmit.broadcast(`notification/play/game/${game.frontId}/turn/new`);
         }
