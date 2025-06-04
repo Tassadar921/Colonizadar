@@ -82,13 +82,13 @@ build-prod:
 	rm -rf back/.persist
 
 	# Frontend build
-	cd front
-	npm install
+	cd front && \
+	npm install && \
 	npm run build
 
 migrate-prod:
-	cd back
-	node ace migration:run
+	cd back && \
+	node ace migration:run && \
 	node ace migration:run --connection=logs
 
 start-prod:
