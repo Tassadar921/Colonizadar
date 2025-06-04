@@ -63,13 +63,15 @@ export default class FileService {
         const __dirname: string = path.dirname(__filename);
         const folderPath: string = path.join(__dirname, '../../static/profile-picture');
 
+        await fsPromises.mkdir(folderPath, { recursive: true });
+
         const filePath: string = path.join(folderPath, filename);
 
-        fs.writeFile(filePath, buffer, (error: any): void => {
-            if (error) {
-                throw new Error('Failed to save the avatar from URL');
-            }
-        });
+        try {
+            await fsPromises.writeFile(filePath, buffer);
+        } catch {
+            throw new Error('Failed to save the avatar from URL');
+        }
 
         return `static/profile-picture/${filename}`;
     }
