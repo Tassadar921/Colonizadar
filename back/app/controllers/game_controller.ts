@@ -162,6 +162,17 @@ export default class GameController {
                     currentPlayer.gold += currentPlayer.territories.reduce((acc: number, territory: GameTerritory): number => acc + territory.value, 0);
                 }
                 await currentPlayer.save();
+
+                for (const peaces of currentPlayer.peaces) {
+                    if (peaces.expirationYear < game.year || (peaces.expirationYear === game.year && peaces.expirationSeason <= game.season)) {
+                        peaces.status = PeaceStatusEnum.FINISHED;
+                        await peaces.save();
+                    }
+                }
+
+                for (const sentPendingPeace of currentPlayer.sentPendingPeaces) {
+                    await sentPendingPeace.delete();
+                }
             });
 
             transmit.broadcast(`notification/play/game/${game.frontId}/turn/new`);
