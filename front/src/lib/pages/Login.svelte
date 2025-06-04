@@ -38,11 +38,11 @@
     languageAlternates={[
         {
             hrefLang: 'en',
-            href: `${import.meta.env.VITE_FRONT_URI}/en/social/blocked`,
+            href: `${import.meta.env.VITE_FRONT_URI}/en/login`,
         },
         {
             hrefLang: 'fr',
-            href: `${import.meta.env.VITE_FRONT_URI}/fr/social/blocked`,
+            href: `${import.meta.env.VITE_FRONT_URI}/fr/login`,
         },
     ]}
 />
