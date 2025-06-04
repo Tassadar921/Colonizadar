@@ -11,6 +11,7 @@ tmp
 
 # Assets & compiled code
 static/profile-picture
+.persist
 
 # Build tools specific
 npm-debug.log
