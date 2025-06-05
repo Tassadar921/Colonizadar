@@ -1,7 +1,5 @@
 import { BaseSchema } from '@adonisjs/lucid/schema';
 import { Knex } from 'knex';
-import LogRouteMethodEnum from '#types/enum/log_route_method_enum';
-import LogResponseStatusEnum from '#types/enum/log_response_status_enum';
 
 export default class extends BaseSchema {
     protected tableName: string = 'logs';
@@ -11,11 +9,11 @@ export default class extends BaseSchema {
             table.uuid('id').primary().defaultTo(this.raw('uuid_generate_v4()'));
             table.specificType('front_id', 'serial').notNullable();
             table.string('route', 255).notNullable();
-            table.enum('route_method', Object.values(LogRouteMethodEnum)).notNullable();
+            table.string('route_method').notNullable();
             table.jsonb('query_string').notNullable().defaultTo('{}');
             table.jsonb('params').nullable();
             table.jsonb('body').nullable();
-            table.enum('response_status', Object.values(LogResponseStatusEnum)).notNullable();
+            table.string('response_status').notNullable();
             table.jsonb('response_body').notNullable().defaultTo('{}');
             table.timestamp('start_time', { useTz: true }).notNullable();
             table.timestamp('end_time', { useTz: true }).notNullable();

@@ -12,6 +12,7 @@ import UserRoleEnum from '#types/enum/user_role_enum';
 import env from '#start/env';
 import UserRepository from '#repositories/user_repository';
 import { I18n } from '@adonisjs/i18n';
+import FileTypeEnum from '#types/enum/file_type_enum';
 
 @inject()
 export default class OauthController {
@@ -134,6 +135,7 @@ export default class OauthController {
             extension,
             mimeType,
             size,
+            type: FileTypeEnum.PROFILE_PICTURE,
         });
 
         return await profilePicture.refresh();

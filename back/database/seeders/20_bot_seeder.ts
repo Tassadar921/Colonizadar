@@ -4,6 +4,7 @@ import BotRepository from '#repositories/bot_repository';
 import File from '#models/file';
 import app from '@adonisjs/core/services/app';
 import FileService from '#services/file_service';
+import FileTypeEnum from '#types/enum/file_type_enum';
 
 export default class extends BaseSeeder {
     async run(): Promise<void> {
@@ -74,12 +75,13 @@ export default class extends BaseSeeder {
         for (const bot of bots) {
             if (!(await botRepository.findOneBy({ englishName: bot.english }))) {
                 const { size, mimeType, extension, name } = await fileService.getFileInfo(app.makePath(`static/bot-picture/${bot.image}`));
-                const file: File | null = await File.create({
+                const file: File = await File.create({
                     name,
                     path: `static/bot-picture/${bot.image}`,
                     extension,
                     mimeType,
                     size,
+                    type: FileTypeEnum.BOT_PICTURE,
                 });
                 await file.refresh();
 

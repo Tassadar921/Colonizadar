@@ -6,6 +6,7 @@ import MapRepository from '#repositories/map_repository';
 import app from '@adonisjs/core/services/app';
 import File from '#models/file';
 import FileService from '#services/file_service';
+import FileTypeEnum from '#types/enum/file_type_enum';
 
 export default class extends BaseSeeder {
     async run(): Promise<void> {
@@ -23,14 +24,15 @@ export default class extends BaseSeeder {
 
                 const flagPath: string = `static/map/neutral/${map.neutralFlagName}`;
                 const { size: flagSize, mimeType: flagMimeType, extension: flagExtension, name: flagName } = await fileService.getFileInfo(app.makePath(flagPath));
-                const flag: File = await File.create({
+                const neutralFlag: File = await File.create({
                     name: flagName,
                     path: flagPath,
                     extension: flagExtension,
                     mimeType: flagMimeType,
                     size: flagSize,
+                    type: FileTypeEnum.NEUTRAL_FLAG,
                 });
-                await flag.refresh();
+                await neutralFlag.refresh();
 
                 const fortifiedIconPath: string = `static/map/fortified/${map.fortifiedIconName}`;
                 const {
@@ -45,6 +47,7 @@ export default class extends BaseSeeder {
                     extension: fortifiedIconExtension,
                     mimeType: fortifiedIconMimeType,
                     size: fortifiedIconSize,
+                    type: FileTypeEnum.FORTIFIED_ICON,
                 });
                 await fortifiedIcon.refresh();
 
@@ -56,13 +59,14 @@ export default class extends BaseSeeder {
                     extension: factoryIconExtension,
                     mimeType: factoryIconMimeType,
                     size: factoryIconSize,
+                    type: FileTypeEnum.FACTORY_ICON,
                 });
                 await factoryIcon.refresh();
 
                 await Map.create({
                     name: map.name,
                     createdById: createdBy.id,
-                    neutralFlagId: flag.id,
+                    neutralFlagId: neutralFlag.id,
                     fortifiedIconId: fortifiedIcon.id,
                     factoryIconId: factoryIcon.id,
                     mainSeason: 1,

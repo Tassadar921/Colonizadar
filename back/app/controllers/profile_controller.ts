@@ -15,6 +15,7 @@ import SlugifyService from '#services/slugify_service';
 import { resetPasswordParamsValidator, resetPasswordValidator, sendResetPasswordEmailValidator, updateProfileValidator } from '#validators/profile';
 import path from 'node:path';
 import env from '#start/env';
+import FileTypeEnum from '#types/enum/file_type_enum';
 
 @inject()
 export default class ProfileController {
@@ -115,6 +116,7 @@ export default class ProfileController {
                 extension: path.extname(profilePicture.clientName),
                 mimeType: `${profilePicture.type}/${profilePicture.subtype}`,
                 size: profilePicture.size,
+                type: FileTypeEnum.PROFILE_PICTURE,
             });
             await file.refresh();
             user.profilePictureId = file.id;
