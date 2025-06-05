@@ -6,6 +6,7 @@ import File from '#models/file';
 import FileService from '#services/file_service';
 import MapRepository from '#repositories/map_repository';
 import Map from '#models/map';
+import FileTypeEnum from '#types/enum/file_type_enum';
 
 export default class extends BaseSeeder {
     async run(): Promise<void> {
@@ -132,6 +133,7 @@ export default class extends BaseSeeder {
                     extension,
                     mimeType,
                     size,
+                    type: FileTypeEnum.COUNTRY_FLAG,
                 });
                 await flag.refresh();
 
