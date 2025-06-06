@@ -42,7 +42,7 @@ export default class Room extends BaseModel {
     declare owner: BelongsTo<typeof User>;
 
     @column()
-    declare gameId: string | null;
+    declare gameId: string;
 
     @belongsTo((): typeof Game => Game)
     declare game: BelongsTo<typeof Game>;
