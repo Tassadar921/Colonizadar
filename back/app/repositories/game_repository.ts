@@ -20,8 +20,7 @@ export default class GameRepository extends BaseRepository<typeof Game> {
         return this.Model.query()
             .select('games.*')
             .leftJoin('rooms', 'rooms.id', 'games.room_id')
-            .where('rooms.status', RoomStatusEnum.PLAYING)
-            .orWhere('rooms.status', RoomStatusEnum.WAITING)
+            .whereIn('rooms.status', [RoomStatusEnum.PLAYING, RoomStatusEnum.WAITING])
             .andWhere('games.front_id', gameId)
             .preload('room', (roomQuery): void => {
                 roomQuery.preload('owner').preload('players', (playersQuery): void => {
@@ -106,13 +105,11 @@ export default class GameRepository extends BaseRepository<typeof Game> {
     public async getPaginatedForGameHeartbeatChecks(page: number) {
         return this.Model.query()
             .leftJoin('rooms', 'rooms.id', 'games.room_id')
-            .where('rooms.status', RoomStatusEnum.PLAYING)
-            .orWhere('rooms.status', RoomStatusEnum.WAITING)
+            .whereIn('rooms.status', [RoomStatusEnum.PLAYING, RoomStatusEnum.WAITING])
             .preload('room', (roomQuery): void => {
-                roomQuery
-                    .preload('players', (playersQuery): void => {
-                        playersQuery.andWhereNotNull('user_id');
-                    })
+                roomQuery.preload('players', (playersQuery): void => {
+                    playersQuery.andWhereNotNull('user_id');
+                });
             })
             .paginate(page, 50);
     }

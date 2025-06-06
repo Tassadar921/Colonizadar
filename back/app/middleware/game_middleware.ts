@@ -19,7 +19,7 @@ export default class GameMiddleware {
             ctx.game = await this.gameRepository.getFromFrontId(gameId);
             await next();
         } catch (error: any) {
-            return ctx.response.badRequest({ error: 'Game id is required' });
+            return ctx.response.badRequest({ error: 'A valid game id is required' });
         }
     }
 }

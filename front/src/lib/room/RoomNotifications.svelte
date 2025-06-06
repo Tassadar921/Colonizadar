@@ -72,7 +72,9 @@
 
         playerLeftNotification.onMessage(({ player }: { player: SerializedRoomPlayer }): void => {
             if (player.bot || (player && player.user.id !== $profile!.id)) {
-                room = { ...room, players: room.players.filter((player: SerializedRoomPlayer) => player.id === player.id) };
+                room = { ...room, players: room.players.filter((roomPlayer: SerializedRoomPlayer) => roomPlayer.id !== player.id) };
+            } else if (player.user.id === $profile!.id) {
+                navigate('/play');
             }
         });
 
