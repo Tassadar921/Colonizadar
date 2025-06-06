@@ -1,6 +1,6 @@
 <script lang="ts">
     import Map from '../game/Map.svelte';
-    import { onMount } from 'svelte';
+    import { onDestroy, onMount } from 'svelte';
     import axios from 'axios';
     import { showToast } from '../../services/toastService';
     import { navigate } from '../../stores/locationStore';
@@ -20,6 +20,7 @@
     export let gameId: string;
 
     let game: SerializedGame;
+    let heartbeat: NodeJS.Timeout;
     let currentPlayer: SerializedRoomPlayer;
     let selectedTerritoryOwner: SerializedRoomPlayer;
     let selectedTerritory: SerializedGameTerritory;
@@ -29,6 +30,13 @@
             const { data } = await axios.get(`/api/game/${gameId}`);
             game = data;
             await updateGameOnLoad(game);
+            heartbeat = setInterval(async () => {
+                try {
+                    await axios.patch(`/api/game/${gameId}/heartbeat`);
+                } catch (e) {
+                    // navigate('/play');
+                }
+            }, 2000);
         } catch (error: any) {
             showToast(error.response.data.error, 'error');
             navigate('/play');
@@ -41,6 +49,12 @@
             selectedTerritoryOwner = event.detail.owner;
         }
     };
+
+    onDestroy((): void => {
+        if (heartbeat) {
+            clearInterval(heartbeat);
+        }
+    });
 
     $: if (game) {
         currentPlayer = game.players.find((player: SerializedRoomPlayer) => player.user?.id === $profile!.id);

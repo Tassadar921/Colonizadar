@@ -63,11 +63,11 @@ export default class RoomRepository extends BaseRepository<typeof Room> {
         return room;
     }
 
-    public async getPaginatedForHeartbeatChecks(page: number) {
+    public async getPaginatedForRoomHeartbeatChecks(page: number) {
         return this.Model.query()
             .where('rooms.status', RoomStatusEnum.OPENED)
             .preload('players', (playersQuery): void => {
-                playersQuery.andWhereNotNull('user_id').preload('user');
+                playersQuery.andWhereNotNull('user_id');
             })
             .paginate(page, 50);
     }

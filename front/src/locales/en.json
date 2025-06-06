@@ -306,6 +306,10 @@
                 "description": "Play Colonizadar in real-time! Manage your empire, strategize with or against others, and conquer the map in this multiplayer experience.",
                 "keywords": "gameplay, online game, Colonizadar game, multiplayer strategy, empire building, real-time game"
             },
+            "players-left": {
+                "title": "Some players have left the game",
+                "description": "If one of those players does not return before the end of its countdown, the game will be over."
+            },
             "score": "Score",
             "territories": "Territories",
             "gold": "Gold",
@@ -360,7 +364,8 @@
                 "title": "Finance player"
             },
             "declared-war": "declared war on",
-            "declared-war-on-you": "declared war on you"
+            "declared-war-on-you": "declared war on you",
+            "closed": "Game closed"
         }
     }
 }

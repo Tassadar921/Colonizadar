@@ -8,11 +8,11 @@ import RoomPlayer from '#models/room_player';
 import TerritoryService from '#services/territory_service';
 import PeaceStatusEnum from '#types/enum/peace_status_enum';
 import WarStatusEnum from '#types/enum/war_status_enum';
-import { inject } from '@adonisjs/core';
 
-@inject()
 export default class GameRepository extends BaseRepository<typeof Game> {
-    constructor(private readonly territoryService: TerritoryService) {
+    private readonly territoryService: TerritoryService = new TerritoryService();
+
+    constructor() {
         super(Game);
     }
 
@@ -101,5 +101,19 @@ export default class GameRepository extends BaseRepository<typeof Game> {
         await game.refresh();
 
         return game;
+    }
+
+    public async getPaginatedForGameHeartbeatChecks(page: number) {
+        return this.Model.query()
+            .leftJoin('rooms', 'rooms.id', 'games.room_id')
+            .where('rooms.status', RoomStatusEnum.PLAYING)
+            .orWhere('rooms.status', RoomStatusEnum.WAITING)
+            .preload('room', (roomQuery): void => {
+                roomQuery
+                    .preload('players', (playersQuery): void => {
+                        playersQuery.andWhereNotNull('user_id');
+                    })
+            })
+            .paginate(page, 50);
     }
 }

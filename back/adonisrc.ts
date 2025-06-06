@@ -33,11 +33,12 @@ export default defineConfig({
         () => import('@adonisjs/lucid/database_provider'),
         () => import('@adonisjs/auth/auth_provider'),
         () => import('@adonisjs/transmit/transmit_provider'),
-        () => import('#providers/room_provider'),
         () => import('@adonisjs/cache/cache_provider'),
         () => import('@adonisjs/redis/redis_provider'),
         () => import('@adonisjs/i18n/i18n_provider'),
         () => import('@adonisjs/ally/ally_provider'),
+        () => import('#providers/room_provider'),
+        () => import('#providers/game_provider'),
     ],
 
     /*

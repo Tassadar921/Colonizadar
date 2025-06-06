@@ -11,11 +11,15 @@ export default class GameMiddleware {
     public async handle(ctx: HttpContext, next: NextFn): Promise<void> {
         const { gameId } = await gameMiddlewareValidator.validate(ctx.request.params());
 
-        if (!gameId) {
+        try {
+            if (!gameId) {
+                throw new Error();
+            }
+
+            ctx.game = await this.gameRepository.getFromFrontId(gameId);
+            await next();
+        } catch (error: any) {
             return ctx.response.badRequest({ error: 'Game id is required' });
         }
-
-        ctx.game = await this.gameRepository.getFromFrontId(gameId);
-        await next();
     }
 }

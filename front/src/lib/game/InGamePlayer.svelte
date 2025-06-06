@@ -5,7 +5,7 @@
     import type SerializedRoomPlayer from 'colonizadar-backend/app/types/serialized/serialized_room_player';
     import Icon from '../shared/Icon.svelte';
 
-    export let game: SerializedGame;
+    export let game: SerializedGame | null = null;
     export let player: SerializedRoomPlayer;
 </script>
 
@@ -29,7 +29,7 @@
                     <img alt={player.user.username} src={import.meta.env.VITE_DEFAULT_IMAGE} class="max-h-10 rounded-full" />
                 {/if}
                 <p class="flex gap-1 {player.user.id === $profile?.id ? 'font-bold' : ''}">
-                    {#if game.owner.id === player.user.id}
+                    {#if game && game.owner.id === player.user.id}
                         <span class="text-orange-500">
                             <Icon name="crown" />
                         </span>

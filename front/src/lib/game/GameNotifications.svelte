@@ -13,6 +13,14 @@
     import { getAllMoves, clearMoves } from '../../stores/dbStore';
     import Loader from '../shared/Loader.svelte';
     import { navigate } from '../../stores/locationStore';
+    import Modal from '../shared/Modal.svelte';
+    import Subtitle from '../shared/Subtitle.svelte';
+    import InGamePlayer from './InGamePlayer.svelte';
+
+    interface LeftPlayer {
+        player: SerializedRoomPlayer;
+        secondsLeft: number;
+    }
 
     const dispatch = createEventDispatcher();
 
@@ -21,6 +29,9 @@
 
     let isLoading: boolean = false;
     let isInitialized: boolean = false;
+
+    let leftPlayers: LeftPlayer[] = [];
+    let countdownInterval: NodeJS.Timeout | null = null;
 
     let newTurnNotification: Subscription;
     let playerUpdateNotification: Subscription;
@@ -34,6 +45,8 @@
     let financedNotification: Subscription;
     let playerReadyNotification: Subscription;
     let nextTurnNotification: Subscription;
+    let playerLeftNotification: Subscription;
+    let gameClosedNotification: Subscription;
 
     const getCurrentPlayer = async (): Promise<SerializedRoomPlayer> => {
         try {
@@ -95,6 +108,8 @@
         financedNotification = $transmit.subscription(`notification/play/game/${game.id}/${currentPlayer.id}/financed`);
         playerReadyNotification = $transmit.subscription(`notification/play/game/${game.id}/player/ready`);
         nextTurnNotification = $transmit.subscription(`notification/play/game/${game.id}/turn/next`);
+        playerLeftNotification = $transmit.subscription(`notification/play/game/${game.id}/player/left`);
+        gameClosedNotification = $transmit.subscription(`notification/play/game/${game.id}/closed`);
 
         await Promise.all([
             newTurnNotification.create(),
@@ -109,6 +124,8 @@
             financedNotification.create(),
             playerReadyNotification.create(),
             nextTurnNotification.create(),
+            playerLeftNotification.create(),
+            gameClosedNotification.create(),
         ]);
     };
 
@@ -236,6 +253,18 @@
                 moves: await getAllMoves(),
             });
         });
+
+        playerLeftNotification.onMessage(async ({ player }: { player: SerializedRoomPlayer }): Promise<void> => {
+            const existingLeftPlayer: LeftPlayer | undefined = leftPlayers.find((leftPlayer: LeftPlayer): boolean => leftPlayer.player.id === player.id);
+            if (!existingLeftPlayer) {
+                leftPlayers = [...leftPlayers, { player, secondsLeft: 60 }];
+            }
+        });
+
+        gameClosedNotification.onMessage(async (): Promise<void> => {
+            showToast($t('play.game.closed'), 'warning');
+            navigate('/play');
+        });
     };
 
     const cleanupTransmits = async (): Promise<void> => {
@@ -253,21 +282,54 @@
                 financedNotification?.delete().then(() => console.log('financedNotification deleted')),
                 playerReadyNotification?.delete().then(() => console.log('playerReadyNotification deleted')),
                 nextTurnNotification?.delete().then(() => console.log('nextTurnNotification deleted')),
+                playerLeftNotification?.delete().then(() => console.log('playerLeftNotification deleted')),
+                gameClosedNotification?.delete().then(() => console.log('gameClosedNotification deleted')),
             ]);
         } catch (error: any) {
             console.error('Error during cleanup:', error);
         }
     };
 
+    onDestroy((): void => {
+        cleanupTransmits();
+        if (countdownInterval) {
+            clearInterval(countdownInterval);
+        }
+    });
+
     $: {
-        if (game.id !== undefined) {
+        if (game.id) {
             setup();
         }
     }
 
-    onDestroy(() => {
-        cleanupTransmits();
-    });
+    $: {
+        if (leftPlayers.length > 0 && countdownInterval === null) {
+            countdownInterval = setInterval(() => {
+                leftPlayers = leftPlayers
+                    .map((leftPlayer: LeftPlayer): LeftPlayer => ({ ...leftPlayer, secondsLeft: leftPlayer.secondsLeft - 1 }))
+                    .filter((leftPlayer: LeftPlayer): boolean => leftPlayer.secondsLeft > 0);
+            }, 1000);
+        }
+
+        if (leftPlayers.length === 0 && countdownInterval !== null) {
+            clearInterval(countdownInterval);
+            countdownInterval = null;
+        }
+    }
 </script>
+
+<Modal showModal={!!leftPlayers.length}>
+    <Subtitle slot="header">{$t('play.game.players-left.title')}</Subtitle>
+    <p>{$t('play.game.players-left.description')}</p>
+    <div class="flex gap-3 mt-3">
+        {#each leftPlayers as leftPlayer}
+            <div>
+                <InGamePlayer player={leftPlayer.player} />
+                <p>{leftPlayer.secondsLeft}</p>
+            </div>
+        {/each}
+    </div>
+</Modal>
 
 <Loader {isLoading} />

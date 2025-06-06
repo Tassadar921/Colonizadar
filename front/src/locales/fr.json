@@ -306,6 +306,10 @@
                 "description": "Jouez à Colonizadar en temps réel ! Développez votre empire, élaborez des stratégies avec ou contre les autres, et conquérez la carte dans ce jeu multijoueur.",
                 "keywords": "jeu en ligne, gameplay, Colonizadar partie, stratégie multijoueur, construction empire, jeu temps réel"
             },
+            "players-left": {
+                "title": "Des joueurs ont quitté la partie",
+                "description": "Si l'un de ces joueurs ne revient pas avant la fin de son compte à rebours, la partie sera terminée."
+            },
             "score": "Score",
             "territories": "Territoires",
             "gold": "Or",
@@ -360,7 +364,8 @@
                 "title": "Financer un joueur"
             },
             "declared-war": "a déclaré la guerre à",
-            "declared-war-on-you": "vous a déclaré la guerre"
+            "declared-war-on-you": "vous a déclaré la guerre",
+            "closed": "Partie fermée"
         }
     }
 }
