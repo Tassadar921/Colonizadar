@@ -153,6 +153,7 @@ router
                         router
                             .group((): void => {
                                 router.get('/', [GameController, 'get']);
+                                router.patch('/heartbeat', [GameController, 'heartbeat']);
                                 router.patch('/ready', [GameController, 'ready']);
                                 router.post('/actions', [GameController, 'nextTurnActions']);
                                 router.get('player', [GameController, 'getPlayer']);

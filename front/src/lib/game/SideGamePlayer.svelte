@@ -25,32 +25,37 @@
     $: currentPeace = currentPlayer.peaces?.find(({ enemy }: { enemy: SerializedRoomPlayer }) => enemy.id === player.id);
 </script>
 
-<div class="mb-3 flex gap-5">
-    <!--    Player country    -->
-    <div class="flex justify-center items-center">
-        <img alt={player.country.name} src={`${import.meta.env.VITE_API_BASE_URL}/api/static/country-flag/${player.country.id}?token=${localStorage.getItem('apiToken')}`} class="max-h-10" />
-    </div>
-
+<div class="my-3 h-64">
     <!--    Player name & profile picture    -->
-    <div class="flex flex-col gap-1 flex-wrap items-center">
+    <div class="flex flex-col gap-1">
         {#if player.user}
-            {#if player.user.profilePicture}
-                <img
-                    class="size-10 rounded-full z-10 border-4"
-                    class:border-green-500={player.isReady}
-                    class:border-red-500={!player.isReady}
-                    src={`${import.meta.env.VITE_API_BASE_URL}/api/static/profile-picture/${player.user.id}?token=${localStorage.getItem('apiToken')}`}
-                    alt={player.user.username}
-                />
-            {:else}
-                <img
-                    class="size-10 rounded-full z-10 border-4"
-                    class:border-green-500={player.isReady}
-                    class:border-red-500={!player.isReady}
-                    src={import.meta.env.VITE_DEFAULT_IMAGE}
-                    alt={player.user.username}
-                />
-            {/if}
+            <div class="flex gap-3">
+                <!--    Player country    -->
+                <div class="flex justify-center items-center">
+                    <img
+                        alt={player.country.name}
+                        src={`${import.meta.env.VITE_API_BASE_URL}/api/static/country-flag/${player.country.id}?token=${localStorage.getItem('apiToken')}`}
+                        class="max-h-10"
+                    />
+                </div>
+                {#if player.user.profilePicture}
+                    <img
+                        class="size-10 rounded-full z-10 border-4"
+                        class:border-green-500={player.isReady}
+                        class:border-red-500={!player.isReady}
+                        src={`${import.meta.env.VITE_API_BASE_URL}/api/static/profile-picture/${player.user.id}?token=${localStorage.getItem('apiToken')}`}
+                        alt={player.user.username}
+                    />
+                {:else}
+                    <img
+                        class="size-10 rounded-full z-10 border-4"
+                        class:border-green-500={player.isReady}
+                        class:border-red-500={!player.isReady}
+                        src={import.meta.env.VITE_DEFAULT_IMAGE}
+                        alt={player.user.username}
+                    />
+                {/if}
+            </div>
             <p class="flex gap-1 {player.user.id === $profile?.id ? 'font-bold' : ''}">
                 {#if game.owner.id === player.user.id}
                     <span class="text-orange-500">
@@ -60,7 +65,21 @@
                 {player.user.username}
             </p>
         {:else if player.bot}
-            <img alt={player.bot.name} src={`${import.meta.env.VITE_API_BASE_URL}/api/static/bot-picture/${player.bot.id}?token=${localStorage.getItem('apiToken')}`} class="size-10 rounded-full" />
+            <div class="flex gap-3">
+                <!--    Player country    -->
+                <div class="flex justify-center items-center">
+                    <img
+                        alt={player.country.name}
+                        src={`${import.meta.env.VITE_API_BASE_URL}/api/static/country-flag/${player.country.id}?token=${localStorage.getItem('apiToken')}`}
+                        class="max-h-10"
+                    />
+                </div>
+                <img
+                    alt={player.bot.name}
+                    src={`${import.meta.env.VITE_API_BASE_URL}/api/static/bot-picture/${player.bot.id}?token=${localStorage.getItem('apiToken')}`}
+                    class="size-10 rounded-full"
+                />
+            </div>
             <div class="flex flex-col">
                 <p class="flex gap-1">
                     <span class="text-green-500">
@@ -72,7 +91,6 @@
             </div>
         {/if}
         <div class="flex flex-col">
-            <p>{$t('play.game.score')}: {formatGameNumbers(player.score)}</p>
             <p>{$t('play.game.gold')}: {player.gold ? formatGameNumbers(player.gold) : '?'}</p>
             <p>
                 {$t('play.game.territories')}: {formatGameNumbers(

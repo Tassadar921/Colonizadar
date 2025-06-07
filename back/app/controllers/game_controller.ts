@@ -30,6 +30,7 @@ import GameTerritory from '#models/game_territory';
 import TerritoryService from '#services/territory_service';
 import { BattleResult } from '#types/BattleResult';
 import RoomStatusEnum from '#types/enum/room_status_enum';
+import { DateTime } from 'luxon';
 
 @inject()
 export default class GameController {
@@ -51,6 +52,13 @@ export default class GameController {
 
     public async getGameTerritory({ response, gameTerritory, user, language }: HttpContext): Promise<void> {
         return response.send(gameTerritory.apiSerialize(language, user));
+    }
+
+    public async heartbeat({ response, player }: HttpContext): Promise<void> {
+        player.lastHeartbeat = DateTime.now();
+        await player.save();
+
+        return response.send({ message: 'Heartbeat updated' });
     }
 
     public async ready({ response, player, game }: HttpContext): Promise<void> {

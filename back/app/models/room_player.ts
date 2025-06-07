@@ -105,7 +105,13 @@ export default class RoomPlayer extends BaseModel {
     @beforeFind()
     @beforeFetch()
     public static preloadDefaults(query: any): void {
-        query.preload('user').preload('bot').preload('country').preload('difficulty');
+        query
+            .preload('user', (userQuery: any): void => {
+                userQuery.preload('profilePicture');
+            })
+            .preload('bot')
+            .preload('country')
+            .preload('difficulty');
     }
 
     public apiSerialize(language: Language, user?: User, isSpied = false): SerializedRoomPlayer {

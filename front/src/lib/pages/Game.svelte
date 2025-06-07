@@ -1,6 +1,6 @@
 <script lang="ts">
     import Map from '../game/Map.svelte';
-    import { onMount } from 'svelte';
+    import { onDestroy, onMount } from 'svelte';
     import axios from 'axios';
     import { showToast } from '../../services/toastService';
     import { navigate } from '../../stores/locationStore';
@@ -20,6 +20,7 @@
     export let gameId: string;
 
     let game: SerializedGame;
+    let heartbeat: NodeJS.Timeout;
     let currentPlayer: SerializedRoomPlayer;
     let selectedTerritoryOwner: SerializedRoomPlayer;
     let selectedTerritory: SerializedGameTerritory;
@@ -29,6 +30,13 @@
             const { data } = await axios.get(`/api/game/${gameId}`);
             game = data;
             await updateGameOnLoad(game);
+            heartbeat = setInterval(async () => {
+                try {
+                    await axios.patch(`/api/game/${gameId}/heartbeat`);
+                } catch (e) {
+                    // navigate('/play');
+                }
+            }, 2000);
         } catch (error: any) {
             showToast(error.response.data.error, 'error');
             navigate('/play');
@@ -41,6 +49,12 @@
             selectedTerritoryOwner = event.detail.owner;
         }
     };
+
+    onDestroy((): void => {
+        if (heartbeat) {
+            clearInterval(heartbeat);
+        }
+    });
 
     $: if (game) {
         currentPlayer = game.players.find((player: SerializedRoomPlayer) => player.user?.id === $profile!.id);
@@ -70,8 +84,7 @@
     <div class="flex gap-3 justify-between">
         <div class="w-1/3">
             <p>{$t('play.game.gold')}: {formatGameNumbers(currentPlayer.gold ?? 0)}</p>
-            <p>{$t('play.game.year')}: {game.year}</p>
-            <p>{$t('play.game.season')}: {$t(`play.game.${formatSeasonFromNumber(game.season)}`)}</p>
+            <p>{$t(`play.game.${formatSeasonFromNumber(game.season)}`)}: {game.year}</p>
         </div>
         <div class="w-1/3 flex justify-center items-center">
             <GameReady {game} {currentPlayer} />
@@ -83,14 +96,18 @@
 <!-- Do not include in the if game, to load the svg in parallel of the back request to get the data -->
 <div class="flex gap-5 justify-center items-center">
     <div class="flex flex-col">
-        {#each game?.players.slice(0, game?.players.length / 2) as player (player.id)}
-            <SideGamePlayer bind:game {currentPlayer} {player} />
+        {#each game?.players.slice(0, game?.players.length / 2) as player, index (player.id)}
+            <div class:border-b={index < game.players.length / 2 - 1} class="border-b-gray-500">
+                <SideGamePlayer bind:game {currentPlayer} {player} />
+            </div>
         {/each}
     </div>
     <Map bind:game {currentPlayer} bind:selectedTerritory bind:selectedTerritoryOwner />
     <div class="flex flex-col">
-        {#each game?.players.slice(game?.players.length / 2) as player (player.id)}
-            <SideGamePlayer bind:game {currentPlayer} {player} />
+        {#each game?.players.slice(game?.players.length / 2) as player, index (player.id)}
+            <div class:border-b={index < game.players.length / 2 - 1} class="border-b-gray-500">
+                <SideGamePlayer bind:game {currentPlayer} {player} />
+            </div>
         {/each}
     </div>
 </div>
