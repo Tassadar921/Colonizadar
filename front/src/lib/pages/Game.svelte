@@ -84,8 +84,7 @@
     <div class="flex gap-3 justify-between">
         <div class="w-1/3">
             <p>{$t('play.game.gold')}: {formatGameNumbers(currentPlayer.gold ?? 0)}</p>
-            <p>{$t('play.game.year')}: {game.year}</p>
-            <p>{$t('play.game.season')}: {$t(`play.game.${formatSeasonFromNumber(game.season)}`)}</p>
+            <p>{$t(`play.game.${formatSeasonFromNumber(game.season)}`)}: {game.year}</p>
         </div>
         <div class="w-1/3 flex justify-center items-center">
             <GameReady {game} {currentPlayer} />
@@ -97,14 +96,18 @@
 <!-- Do not include in the if game, to load the svg in parallel of the back request to get the data -->
 <div class="flex gap-5 justify-center items-center">
     <div class="flex flex-col">
-        {#each game?.players.slice(0, game?.players.length / 2) as player (player.id)}
-            <SideGamePlayer bind:game {currentPlayer} {player} />
+        {#each game?.players.slice(0, game?.players.length / 2) as player, index (player.id)}
+            <div class:border-b={index < game.players.length / 2 - 1} class="border-b-gray-500">
+                <SideGamePlayer bind:game {currentPlayer} {player} />
+            </div>
         {/each}
     </div>
     <Map bind:game {currentPlayer} bind:selectedTerritory bind:selectedTerritoryOwner />
     <div class="flex flex-col">
-        {#each game?.players.slice(game?.players.length / 2) as player (player.id)}
-            <SideGamePlayer bind:game {currentPlayer} {player} />
+        {#each game?.players.slice(game?.players.length / 2) as player, index (player.id)}
+            <div class:border-b={index < game.players.length / 2 - 1} class="border-b-gray-500">
+                <SideGamePlayer bind:game {currentPlayer} {player} />
+            </div>
         {/each}
     </div>
 </div>
