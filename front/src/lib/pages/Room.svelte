@@ -63,7 +63,6 @@
             isLoading = false;
         } catch (error: any) {
             showToast(error.response.data.error, 'error');
-            await unloadCleanup();
             navigate('/play');
         }
     }
@@ -84,14 +83,13 @@
             try {
                 await axios.patch(`/api/room/${roomId}/heartbeat`);
             } catch (e) {
-                await unloadCleanup();
                 navigate('/play');
             }
         }, 2000);
     });
 
-    onDestroy(async (): Promise<void> => {
-        await unloadCleanup();
+    onDestroy((): void => {
+        clearInterval(heartbeat);
     });
 
     $: if (roomId) {
