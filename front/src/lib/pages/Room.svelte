@@ -46,6 +46,7 @@
 
     let maps: SerializedMap[];
     let heartbeat: NodeJS.Timeout;
+    let hasLastHeartbeatFailed: boolean = false;
 
     async function fetchRoomData(): Promise<void> {
         try {
@@ -82,8 +83,13 @@
         heartbeat = setInterval(async () => {
             try {
                 await axios.patch(`/api/room/${roomId}/heartbeat`);
+                hasLastHeartbeatFailed = false;
             } catch (e) {
-                navigate('/play');
+                if (hasLastHeartbeatFailed) {
+                    navigate('/play');
+                } else {
+                    hasLastHeartbeatFailed = true;
+                }
             }
         }, 2000);
     });
