@@ -12,12 +12,17 @@
 | `make db-fresh`     | Run a fresh migration on both app & logs databases. **/!\\** **This call clear the previous databases**. |
 | `make db-migrate`   | Run pending migrations on both app & logs databases.                                                     |
 | `make db-seed`      | Seed both app & logs databases with initial data using Docker.                                           |
+| `make init-logs-db` | Initialize the logs database by running the init-logs-db.sh script.                                      |
 | `make db`           | Runs `db-fresh` and `db-seed`.                                                                           |
 | `make stop`         | Stops all Docker containers and removes orphans.                                                         |
 | `make up`           | Stops containers and then builds and starts them in detached mode.                                       |
 | `make rm`           | Fully stops and resets app Docker containers and volumes.                                                |
 | `make start`        | Runs `make install`, `make rm`, `make up` and `make db`                                                  |
 | `make prune`        | **/!\\** Stops containers and prunes Docker system resources.                                            |
+| `make build-prod`   | Builds production-ready backend and frontend, preserving static directories.                             |
+| `make migrate-prod` | Runs production database migrations on both app & logs databases.                                        |
+| `make start-prod`   | Starts or restarts the production backend using PM2.                                                     |
+| `make deploy`       | 	Runs `make build-prod`, `make migrate-prod`, and `make start-prod` to deploy the application.           |
 
 ---
 
