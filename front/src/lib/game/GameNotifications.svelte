@@ -257,7 +257,7 @@
             });
         });
 
-        playerLeftNotification.onMessage(async ({ player, secondsLeft }: { player: SerializedRoomPlayer, secondsLeft: number }): Promise<void> => {
+        playerLeftNotification.onMessage(async ({ player, secondsLeft }: { player: SerializedRoomPlayer; secondsLeft: number }): Promise<void> => {
             if (player.user.id === $profile!.id) {
                 return;
             }
