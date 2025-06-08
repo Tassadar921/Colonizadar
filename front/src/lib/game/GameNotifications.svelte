@@ -324,9 +324,9 @@
     <p>{$t('play.game.players-left.description')}</p>
     <div class="flex flex-col gap-5">
         {#each leftPlayers as leftPlayer}
-            <div class="flex gap-3 mt-3">
+            <div class="flex gap-3 mt-3 items-center">
                 <InGamePlayer player={leftPlayer.player} />
-                <p>{leftPlayer.secondsLeft}</p>
+                <span class="text-primary-500">{leftPlayer.secondsLeft}</span>
             </div>
         {/each}
     </div>

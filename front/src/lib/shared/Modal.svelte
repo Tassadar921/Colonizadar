@@ -48,7 +48,10 @@
     bind:this={dialog}
     on:close={() => (showModal = false)}
     on:cancel|preventDefault={() => {
-        if (!closable) return;
+        if (!closable) {
+            requestAnimationFrame(() => dialog.showModal());
+            return;
+        }
         handleClose();
     }}
     style={`width: ${fullWidth ? '90%' : '50%'}`}
