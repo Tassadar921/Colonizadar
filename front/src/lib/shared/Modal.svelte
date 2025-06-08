@@ -38,7 +38,7 @@
         if (showModal) {
             dialog.showModal();
             dispatch('open');
-        } else if (closable) {
+        } else {
             dialog.close();
         }
     }

@@ -46,6 +46,7 @@
 
     let maps: SerializedMap[];
     let heartbeat: NodeJS.Timeout;
+    let hasLastHeartbeatFailed: boolean = false;
 
     async function fetchRoomData(): Promise<void> {
         try {
@@ -63,7 +64,6 @@
             isLoading = false;
         } catch (error: any) {
             showToast(error.response.data.error, 'error');
-            await unloadCleanup();
             navigate('/play');
         }
     }
@@ -83,15 +83,19 @@
         heartbeat = setInterval(async () => {
             try {
                 await axios.patch(`/api/room/${roomId}/heartbeat`);
+                hasLastHeartbeatFailed = false;
             } catch (e) {
-                await unloadCleanup();
-                navigate('/play');
+                if (hasLastHeartbeatFailed) {
+                    navigate('/play');
+                } else {
+                    hasLastHeartbeatFailed = true;
+                }
             }
         }, 2000);
     });
 
-    onDestroy(async (): Promise<void> => {
-        await unloadCleanup();
+    onDestroy((): void => {
+        clearInterval(heartbeat);
     });
 
     $: if (roomId) {

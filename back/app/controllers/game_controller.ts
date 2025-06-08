@@ -54,9 +54,11 @@ export default class GameController {
         return response.send(gameTerritory.apiSerialize(language, user));
     }
 
-    public async heartbeat({ response, player }: HttpContext): Promise<void> {
+    public async heartbeat({ response, player, game, language, user }: HttpContext): Promise<void> {
         player.lastHeartbeat = DateTime.now();
         await player.save();
+
+        transmit.broadcast(`notification/play/game/${game.frontId}/player/joined`, { player: player.apiSerialize(language, user) });
 
         return response.send({ message: 'Heartbeat updated' });
     }

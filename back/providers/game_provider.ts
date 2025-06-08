@@ -49,16 +49,14 @@ export default class gameProvider {
         const now: DateTime = DateTime.now();
         for (const game of games) {
             for (const player of game.room.players) {
-                if (player.userId) {
-                    console.log(now.diff(player.lastHeartbeat, 'seconds').seconds);
-                }
-                if (player.userId && now.diff(player.lastHeartbeat, 'seconds').seconds > 30) {
+                const lastHeartbeat: number = now.diff(player.lastHeartbeat, 'seconds').seconds;
+                if (player.userId && lastHeartbeat > 10) {
                     game.room.status = RoomStatusEnum.WAITING;
                     await game.room.save();
 
-                    transmit.broadcast(`notification/play/game/${game.frontId}/player/left`, { player: player.apiSerialize(english) });
+                    transmit.broadcast(`notification/play/game/${game.frontId}/player/left`, { player: player.apiSerialize(english), secondsLeft: 90 - Math.floor(lastHeartbeat) });
 
-                    if (now.diff(player.lastHeartbeat, 'seconds').seconds > 90) {
+                    if (lastHeartbeat > 90) {
                         game.room.status = RoomStatusEnum.CLOSED;
                         await game.room.save();
 

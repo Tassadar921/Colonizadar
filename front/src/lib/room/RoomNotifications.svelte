@@ -96,12 +96,12 @@
     const cleanupTransmits = async (): Promise<void> => {
         try {
             await Promise.all([
-                roomClosedNotification?.delete().then(() => console.log('roomClosedNotification deleted')),
-                playerJoinedNotification?.delete().then(() => console.log('playerJoinedNotification deleted')),
-                playerLeftNotification?.delete().then(() => console.log('playerLeftNotification deleted')),
-                playerUpdateNotification?.delete().then(() => console.log('playerUpdateNotification deleted')),
-                roomStartingNotification?.delete().then(() => console.log('roomStartingNotification deleted')),
-                roomStartNotification?.delete().then(() => console.log('roomStartNotification deleted')),
+                roomClosedNotification?.delete(),
+                playerJoinedNotification?.delete(),
+                playerLeftNotification?.delete(),
+                playerUpdateNotification?.delete(),
+                roomStartingNotification?.delete(),
+                roomStartNotification?.delete(),
             ]);
         } catch (error: any) {
             console.error('Error during cleanup:', error);

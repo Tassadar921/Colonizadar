@@ -16,6 +16,7 @@
     import Modal from '../shared/Modal.svelte';
     import Subtitle from '../shared/Subtitle.svelte';
     import InGamePlayer from './InGamePlayer.svelte';
+    import { profile } from '../../stores/profileStore';
 
     interface LeftPlayer {
         player: SerializedRoomPlayer;
@@ -31,7 +32,6 @@
     let isInitialized: boolean = false;
 
     let leftPlayers: LeftPlayer[] = [];
-    let countdownInterval: NodeJS.Timeout | null = null;
 
     let newTurnNotification: Subscription;
     let playerUpdateNotification: Subscription;
@@ -46,6 +46,7 @@
     let playerReadyNotification: Subscription;
     let nextTurnNotification: Subscription;
     let playerLeftNotification: Subscription;
+    let playerJoinedNotification: Subscription;
     let gameClosedNotification: Subscription;
 
     const getCurrentPlayer = async (): Promise<SerializedRoomPlayer> => {
@@ -109,6 +110,7 @@
         playerReadyNotification = $transmit.subscription(`notification/play/game/${game.id}/player/ready`);
         nextTurnNotification = $transmit.subscription(`notification/play/game/${game.id}/turn/next`);
         playerLeftNotification = $transmit.subscription(`notification/play/game/${game.id}/player/left`);
+        playerJoinedNotification = $transmit.subscription(`notification/play/game/${game.id}/player/joined`);
         gameClosedNotification = $transmit.subscription(`notification/play/game/${game.id}/closed`);
 
         await Promise.all([
@@ -125,6 +127,7 @@
             playerReadyNotification.create(),
             nextTurnNotification.create(),
             playerLeftNotification.create(),
+            playerJoinedNotification.create(),
             gameClosedNotification.create(),
         ]);
     };
@@ -254,11 +257,25 @@
             });
         });
 
-        playerLeftNotification.onMessage(async ({ player }: { player: SerializedRoomPlayer }): Promise<void> => {
-            const existingLeftPlayer: LeftPlayer | undefined = leftPlayers.find((leftPlayer: LeftPlayer): boolean => leftPlayer.player.id === player.id);
-            if (!existingLeftPlayer) {
-                leftPlayers = [...leftPlayers, { player, secondsLeft: 60 }];
+        playerLeftNotification.onMessage(async ({ player, secondsLeft }: { player: SerializedRoomPlayer; secondsLeft: number }): Promise<void> => {
+            if (player.user.id === $profile!.id) {
+                return;
             }
+
+            if (leftPlayers.some((leftPlayer: LeftPlayer): boolean => leftPlayer.player.id === player.id)) {
+                leftPlayers = leftPlayers.map((leftPlayer: LeftPlayer): LeftPlayer => {
+                    if (leftPlayer.player.id === player.id) {
+                        return { ...leftPlayer, secondsLeft };
+                    }
+                    return leftPlayer;
+                });
+            } else {
+                leftPlayers = [...leftPlayers, { player, secondsLeft }];
+            }
+        });
+
+        playerJoinedNotification.onMessage(async ({ player }: { player: SerializedRoomPlayer }): Promise<void> => {
+            leftPlayers = leftPlayers.filter((leftPlayer: LeftPlayer): boolean => leftPlayer.player.id !== player.id);
         });
 
         gameClosedNotification.onMessage(async (): Promise<void> => {
@@ -270,20 +287,21 @@
     const cleanupTransmits = async (): Promise<void> => {
         try {
             await Promise.all([
-                newTurnNotification?.delete().then(() => console.log('newTurnNotification deleted')),
-                playerUpdateNotification?.delete().then(() => console.log('playerUpdateNotification deleted')),
-                territoryUpdateNotification?.delete().then(() => console.log('territoryUpdateNotification deleted')),
-                spiedNotification?.delete().then(() => console.log('spiedNotification deleted')),
-                warNotification?.delete().then(() => console.log('warNotification deleted')),
-                askPeaceNotification?.delete().then(() => console.log('askPeaceNotification deleted')),
-                refusePeaceNotification?.delete().then(() => console.log('refusePeaceNotification deleted')),
-                cancelPendingPeaceNotification?.delete().then(() => console.log('cancelPendingPeaceNotification deleted')),
-                peaceNotification?.delete().then(() => console.log('peaceNotification deleted')),
-                financedNotification?.delete().then(() => console.log('financedNotification deleted')),
-                playerReadyNotification?.delete().then(() => console.log('playerReadyNotification deleted')),
-                nextTurnNotification?.delete().then(() => console.log('nextTurnNotification deleted')),
-                playerLeftNotification?.delete().then(() => console.log('playerLeftNotification deleted')),
-                gameClosedNotification?.delete().then(() => console.log('gameClosedNotification deleted')),
+                newTurnNotification?.delete(),
+                playerUpdateNotification?.delete(),
+                territoryUpdateNotification?.delete(),
+                spiedNotification?.delete(),
+                warNotification?.delete(),
+                askPeaceNotification?.delete(),
+                refusePeaceNotification?.delete(),
+                cancelPendingPeaceNotification?.delete(),
+                peaceNotification?.delete(),
+                financedNotification?.delete(),
+                playerReadyNotification?.delete(),
+                nextTurnNotification?.delete(),
+                playerLeftNotification?.delete(),
+                playerJoinedNotification?.delete(),
+                gameClosedNotification?.delete(),
             ]);
         } catch (error: any) {
             console.error('Error during cleanup:', error);
@@ -292,9 +310,6 @@
 
     onDestroy((): void => {
         cleanupTransmits();
-        if (countdownInterval) {
-            clearInterval(countdownInterval);
-        }
     });
 
     $: {
@@ -302,29 +317,14 @@
             setup();
         }
     }
-
-    $: {
-        if (leftPlayers.length > 0 && countdownInterval === null) {
-            countdownInterval = setInterval(() => {
-                leftPlayers = leftPlayers
-                    .map((leftPlayer: LeftPlayer): LeftPlayer => ({ ...leftPlayer, secondsLeft: leftPlayer.secondsLeft - 1 }))
-                    .filter((leftPlayer: LeftPlayer): boolean => leftPlayer.secondsLeft > 0);
-            }, 1000);
-        }
-
-        if (leftPlayers.length === 0 && countdownInterval !== null) {
-            clearInterval(countdownInterval);
-            countdownInterval = null;
-        }
-    }
 </script>
 
-<Modal showModal={!!leftPlayers.length}>
+<Modal showModal={!!leftPlayers.length} closable={false}>
     <Subtitle slot="header">{$t('play.game.players-left.title')}</Subtitle>
     <p>{$t('play.game.players-left.description')}</p>
-    <div class="flex gap-3 mt-3">
+    <div class="flex flex-col gap-5">
         {#each leftPlayers as leftPlayer}
-            <div>
+            <div class="flex gap-3 mt-3">
                 <InGamePlayer player={leftPlayer.player} />
                 <p>{leftPlayer.secondsLeft}</p>
             </div>

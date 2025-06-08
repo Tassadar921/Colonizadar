@@ -104,6 +104,7 @@ export default class GameRepository extends BaseRepository<typeof Game> {
 
     public async getPaginatedForGameHeartbeatChecks(page: number) {
         return this.Model.query()
+            .select('games.*')
             .leftJoin('rooms', 'rooms.id', 'games.room_id')
             .whereIn('rooms.status', [RoomStatusEnum.PLAYING, RoomStatusEnum.WAITING])
             .preload('room', (roomQuery): void => {
