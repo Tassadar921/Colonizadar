@@ -13,7 +13,7 @@
     <div class="ml-3 flex gap-5">
         <!--    Player country    -->
         <div class="flex justify-center items-center">
-            <img alt={player.country.name} src={`${import.meta.env.VITE_API_BASE_URL}/api/static/country-flag/${player.country.id}?token=${localStorage.getItem('apiToken')}`} class="max-h-10" />
+            <img alt={player.country.name} src={`${import.meta.env.VITE_API_BASE_URI}/api/static/country-flag/${player.country.id}?token=${localStorage.getItem('apiToken')}`} class="max-h-10" />
         </div>
 
         <!--    Player name & profile picture    -->
@@ -22,7 +22,7 @@
                 {#if player.user.profilePicture}
                     <img
                         alt={player.user.username}
-                        src={`${import.meta.env.VITE_API_BASE_URL}/api/static/profile-picture/${player.user.id}?token=${localStorage.getItem('apiToken')}`}
+                        src={`${import.meta.env.VITE_API_BASE_URI}/api/static/profile-picture/${player.user.id}?token=${localStorage.getItem('apiToken')}`}
                         class="size-10 rounded-full"
                     />
                 {:else}
@@ -37,7 +37,7 @@
                     {player.user.username}
                 </p>
             {:else if player.bot}
-                <img alt={player.bot.name} src={`${import.meta.env.VITE_API_BASE_URL}/api/static/bot-picture/${player.bot.id}?token=${localStorage.getItem('apiToken')}`} class="w-10 rounded-full" />
+                <img alt={player.bot.name} src={`${import.meta.env.VITE_API_BASE_URI}/api/static/bot-picture/${player.bot.id}?token=${localStorage.getItem('apiToken')}`} class="w-10 rounded-full" />
                 <p class="flex gap-1">
                     <span class="text-green-500">
                         <Icon name="bot" />

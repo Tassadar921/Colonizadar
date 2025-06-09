@@ -3,6 +3,8 @@
 The icons are stored in `front/src/lib/icons` and are imported in `front/src/lib/shared/Icon.svelte`.
 The icons are in SVG format and are used in the frontend of Colonizadar.
 
+---
+
 ## Steps to create a new icon
 
 1. Find your icon on [Iconify](https://icon-sets.iconify.design/).
@@ -25,6 +27,8 @@ The icons are in SVG format and are used in the frontend of Colonizadar.
     Caution, replace the above viewbox with the one from the SVG code you copied.
 
 7. Add your file name to `iconNames` array located into `front/src/lib/shared/Icon.svelte` directory.
+
+---
 
 ## Usage
 

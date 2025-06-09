@@ -59,7 +59,7 @@
             playableCountriesOptions = playableCountriesData.map((playableCountry: SerializedPlayableCountry) => ({
                 value: playableCountry.id,
                 label: playableCountry.name,
-                uri: `${import.meta.env.VITE_API_BASE_URL}/api/static/country-flag/${playableCountry.id}?token=${localStorage.getItem('apiToken')}`,
+                uri: `${import.meta.env.VITE_API_BASE_URI}/api/static/country-flag/${playableCountry.id}?token=${localStorage.getItem('apiToken')}`,
             }));
             isLoading = false;
         } catch (error: any) {

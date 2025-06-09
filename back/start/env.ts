@@ -66,6 +66,7 @@ export default await Env.create(new URL('../', import.meta.url), {
     GOOGLE_CLIENT_ID: Env.schema.string(),
     GOOGLE_CLIENT_SECRET: Env.schema.string(),
 
+    LANDING_URI: Env.schema.string(),
     FRONT_URI: Env.schema.string(),
     API_URI: Env.schema.string(),
     ACCOUNT_SENDER_EMAIL: Env.schema.string(),

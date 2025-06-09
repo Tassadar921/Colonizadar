@@ -195,7 +195,7 @@
                             {#if user.profilePicture}
                                 <img
                                     alt={user.username}
-                                    src={`${import.meta.env.VITE_API_BASE_URL}/api/static/profile-picture/${user.id}?token=${localStorage.getItem('apiToken')}`}
+                                    src={`${import.meta.env.VITE_API_BASE_URI}/api/static/profile-picture/${user.id}?token=${localStorage.getItem('apiToken')}`}
                                     class="w-10 rounded-full"
                                 />
                             {:else}

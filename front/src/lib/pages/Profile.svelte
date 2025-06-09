@@ -28,7 +28,7 @@
         };
 
         if ($profile!.profilePicture) {
-            path = `${import.meta.env.VITE_API_BASE_URL}/api/static/profile-picture/${$profile!.id}?token=${localStorage.getItem('apiToken')}`;
+            path = `${import.meta.env.VITE_API_BASE_URI}/api/static/profile-picture/${$profile!.id}?token=${localStorage.getItem('apiToken')}`;
         }
     });
 

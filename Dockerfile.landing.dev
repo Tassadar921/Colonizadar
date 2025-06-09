@@ -1,0 +1,23 @@
+FROM node:22
+
+WORKDIR /app
+
+# Copy landing dependencies
+COPY landing/package*.json ./
+
+# Install landing deps
+RUN npm install
+
+# Copy landing app code
+COPY landing /app
+
+# Also copy root-level shared tools (optional)
+COPY package*.json /shared/
+
+RUN chown -R node:node /app
+
+EXPOSE 5174
+
+USER node
+
+CMD ["npm", "run", "dev"]

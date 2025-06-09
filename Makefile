@@ -8,18 +8,21 @@ endef
 format:
 	cd back && npx prettier --write "**/*.{js,ts,json,yml}"
 	cd front && npx prettier --write "**/*.{js,ts,svelte,html,css,json,yml}"
+	cd landing && npx prettier --write "**/*.{js,ts,svelte,html,css,json,yml}"
 
 format-check:
 	cd back && npx prettier --check "**/*.{js,ts,json,yml}"
 	cd front && npx prettier --check "**/*.{js,ts,svelte,html,css,json,yml}"
+	cd landing && npx prettier --check "**/*.{js,ts,svelte,html,css,json,yml}"
 
 install:
-	rm -rf .vite node_modules package-lock.json back/node_modules front/node_modules
+	rm -rf .vite node_modules package-lock.json back/node_modules front/node_modules landing/node_modules
 	npm install
 
 upgrade:
 	cd back && npx ncu -u
 	cd front && npx ncu -u
+	cd landing && npx ncu -u
 	${MAKE} install
 
 list-routes:
@@ -63,12 +66,7 @@ build-prod:
 	[ -d back/build/static ] && cp -r back/build/static back/.persist/static || true
 
 	# Backend build
-	cd back && \
-	npm install && \
-	npm run build && \
-	cp .env build/.env && \
-	cd build && \
-	npm install --omit=dev
+	cd back && npm install && npm run build && cp .env build/.env && cd build && npm install --omit=dev
 
 	# Persisted directories restoration
 	[ -d back/.persist/public ] && cp -r back/.persist/public back/build/ || true
@@ -82,14 +80,14 @@ build-prod:
 	rm -rf back/.persist
 
 	# Frontend build
-	cd front && \
-	npm install && \
-	npm run build
+	cd front && npm install && npm run build
+
+	# Landing build
+	cd landing && npm install && npm run build
 
 migrate-prod:
 	cd back && \
-	node ace migration:run && \
-	node ace migration:run --connection=logs
+	node ace migration:run && node ace migration:run --connection=logs
 
 start-prod:
 	pm2 describe colonizadar > /dev/null

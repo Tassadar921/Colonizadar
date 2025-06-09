@@ -58,9 +58,9 @@ const setGameTerritoryIcons = (game: SerializedGame, gameTerritory: SerializedGa
     flag.classList.add('flag-icon');
 
     if (gameTerritory.owner) {
-        flag.setAttribute('href', `${import.meta.env.VITE_API_BASE_URL}/api/static/country-flag/${gameTerritory.owner.country.id}?token=${localStorage.getItem('apiToken')}`);
+        flag.setAttribute('href', `${import.meta.env.VITE_API_BASE_URI}/api/static/country-flag/${gameTerritory.owner.country.id}?token=${localStorage.getItem('apiToken')}`);
     } else {
-        flag.setAttribute('href', `${import.meta.env.VITE_API_BASE_URL}/api/static/country-flag/${game.map.id}/neutral-flag?token=${localStorage.getItem('apiToken')}`);
+        flag.setAttribute('href', `${import.meta.env.VITE_API_BASE_URI}/api/static/country-flag/${game.map.id}/neutral-flag?token=${localStorage.getItem('apiToken')}`);
     }
 
     const flagSize = 8;
@@ -87,7 +87,7 @@ const setGameTerritoryIcons = (game: SerializedGame, gameTerritory: SerializedGa
 const setIcon = (game: SerializedGame, pointInGroup: SVGPoint, svgGroup: SVGGElement, iconName: string): void => {
     const icon: SVGImageElement = document.createElementNS('http://www.w3.org/2000/svg', 'image');
     icon.classList.add(iconName);
-    icon.setAttribute('href', `${import.meta.env.VITE_API_BASE_URL}/api/static/${game.map.id}/${iconName}?token=${localStorage.getItem('apiToken')}`);
+    icon.setAttribute('href', `${import.meta.env.VITE_API_BASE_URI}/api/static/${game.map.id}/${iconName}?token=${localStorage.getItem('apiToken')}`);
     icon.setAttribute('width', '4');
     icon.setAttribute('height', '4');
     icon.setAttribute('x', String(pointInGroup.x));

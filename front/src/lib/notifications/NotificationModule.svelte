@@ -22,7 +22,7 @@
                         {#if notificationObject.notification.from.profilePicture}
                             <img
                                 alt={notificationObject.notification.from.username}
-                                src={`${import.meta.env.VITE_API_BASE_URL}/api/static/profile-picture/${notificationObject.notification.from.id}?token=${localStorage.getItem('apiToken')}`}
+                                src={`${import.meta.env.VITE_API_BASE_URI}/api/static/profile-picture/${notificationObject.notification.from.id}?token=${localStorage.getItem('apiToken')}`}
                                 class="w-10 rounded-full"
                             />
                         {:else}

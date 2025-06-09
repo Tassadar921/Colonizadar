@@ -10,7 +10,7 @@ import env from '#start/env';
  */
 const corsConfig: CorsConfig = defineConfig({
     enabled: true,
-    origin: env.get('FRONT_URI'),
+    origin: [env.get('FRONT_URI'), env.get('LANDING_URI')],
     methods: ['OPTIONS', 'GET', 'HEAD', 'POST', 'PUT', 'PATCH', 'DELETE'],
     headers: true,
     exposeHeaders: [],

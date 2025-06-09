@@ -5,11 +5,10 @@ import { mount } from 'svelte';
 import axios from 'axios';
 import { setLanguage } from './stores/languageStore';
 import { locale } from 'svelte-i18n';
-import { navigate } from './stores/locationStore';
+import { navigate, location } from './stores/locationStore';
 import { updateProfile } from './stores/profileStore';
 import { showToast } from './services/toastService';
 import { get } from 'svelte/store';
-import { location } from './stores/locationStore';
 import { t } from 'svelte-i18n';
 
 const supportedLanguages: string[] = ['en', 'fr'];
@@ -61,7 +60,7 @@ const logInformations = async (token: string): Promise<void> => {
 };
 
 // Axios configuration
-axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL;
+axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URI;
 
 // Language configuration
 initializeLanguage();
