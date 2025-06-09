@@ -4,6 +4,8 @@
 
 ### Development backend .env (back/.env)
 
+Note that `API_URI` is injected by Docker with backend's `PORT` environment variable.
+
 ```
 PORT=3333
 HOST=0.0.0.0
@@ -34,8 +36,8 @@ GITHUB_CLIENT_SECRET=
 GOOGLE_CLIENT_ID=
 GOOGLE_CLIENT_SECRET=
 
+LANDING_URI=http://localhost:5174
 FRONT_URI=http://localhost:5173
-API_URI=http://localhost:3333
 ACCOUNT_SENDER_EMAIL=account@colonizadar.fr
 BREVO_API_KEY=
 ADMIN_EMAIL=
@@ -67,8 +69,8 @@ FRIEND_EMAILS=[]
 | `GITHUB_CLIENT_SECRET`  | **`A valid GitHub client secret`**                                          |
 | `GOOGLE_CLIENT_ID`      | **`A valid Google client ID`**                                              |
 | `GOOGLE_CLIENT_SECRET`  | **`A valid Google client secret`**                                          |
+| `LANDING_URI`           | http://localhost:5174                                                       |
 | `FRONT_URI`             | http://localhost:5173                                                       |
-| `API_URI`               | http://localhost:3333                                                       |
 | `ACCOUNT_SENDER_EMAIL`  | account@colonizadar.fr                                                      |
 | `BREVO_API_KEY`         | **`A valid Brevo API key`**                                                 |
 | `ADMIN_EMAIL`           | **`Put your email here`**                                                   |
@@ -78,8 +80,9 @@ FRIEND_EMAILS=[]
 
 ### Development frontend .env (front/.env)
 
+Note that `VITE_API_BASE_URL` is injected by Docker with backend's `PORT` environment variable.
+
 ```
-VITE_API_BASE_URL=http://localhost:3333
 VITE_FRONT_URI=http://localhost:5173
 VITE_GITHUB_REPOSITORY=https://github.com/Tassadar921/Colonizadar
 VITE_DEFAULT_IMAGE=/assets/default/image.png
@@ -87,7 +90,6 @@ VITE_DEFAULT_IMAGE=/assets/default/image.png
 
 | Variable                 | Value                                      |
 |--------------------------|--------------------------------------------|
-| `VITE_API_BASE_URL`      | http://localhost:3333                      |
 | `VITE_FRONT_URI`         | http://localhost:5173                      |
 | `VITE_GITHUB_REPOSITORY` | https://github.com/Tassadar921/Colonizadar |
 | `VITE_DEFAULT_IMAGE`     | /assets/default/image.png                  |

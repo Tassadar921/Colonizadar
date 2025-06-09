@@ -18,7 +18,7 @@
 
     let acceptedFormats: string = '';
     let isDragging: boolean = false;
-    let previewSrc: string = `${import.meta.env.VITE_API_BASE_URL}/api/static/${pathPrefix}/${id}?token=${localStorage.getItem('apiToken')}`;
+    let previewSrc: string = `${import.meta.env.VITE_API_BASE_URI}/api/static/${pathPrefix}/${id}?token=${localStorage.getItem('apiToken')}`;
     let inputRef: HTMLInputElement;
     let isLoading: boolean = false;
 

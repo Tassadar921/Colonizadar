@@ -68,7 +68,7 @@
                         <div class="absolute inset-0 flex justify-center items-center mt-10">
                             <img
                                 class="w-1/3 object-cover opacity-20"
-                                src={`${import.meta.env.VITE_API_BASE_URL}/api/static/country-flag/${playableCountries[currentIndex].id}?token=${localStorage.getItem('apiToken')}`}
+                                src={`${import.meta.env.VITE_API_BASE_URI}/api/static/country-flag/${playableCountries[currentIndex].id}?token=${localStorage.getItem('apiToken')}`}
                                 alt="Country Flag"
                             />
                         </div>

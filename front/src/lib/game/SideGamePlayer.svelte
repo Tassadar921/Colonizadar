@@ -34,7 +34,7 @@
                 <div class="flex justify-center items-center">
                     <img
                         alt={player.country.name}
-                        src={`${import.meta.env.VITE_API_BASE_URL}/api/static/country-flag/${player.country.id}?token=${localStorage.getItem('apiToken')}`}
+                        src={`${import.meta.env.VITE_API_BASE_URI}/api/static/country-flag/${player.country.id}?token=${localStorage.getItem('apiToken')}`}
                         class="max-h-10"
                     />
                 </div>
@@ -43,7 +43,7 @@
                         class="size-10 rounded-full z-10 border-4"
                         class:border-green-500={player.isReady}
                         class:border-red-500={!player.isReady}
-                        src={`${import.meta.env.VITE_API_BASE_URL}/api/static/profile-picture/${player.user.id}?token=${localStorage.getItem('apiToken')}`}
+                        src={`${import.meta.env.VITE_API_BASE_URI}/api/static/profile-picture/${player.user.id}?token=${localStorage.getItem('apiToken')}`}
                         alt={player.user.username}
                     />
                 {:else}
@@ -70,13 +70,13 @@
                 <div class="flex justify-center items-center">
                     <img
                         alt={player.country.name}
-                        src={`${import.meta.env.VITE_API_BASE_URL}/api/static/country-flag/${player.country.id}?token=${localStorage.getItem('apiToken')}`}
+                        src={`${import.meta.env.VITE_API_BASE_URI}/api/static/country-flag/${player.country.id}?token=${localStorage.getItem('apiToken')}`}
                         class="max-h-10"
                     />
                 </div>
                 <img
                     alt={player.bot.name}
-                    src={`${import.meta.env.VITE_API_BASE_URL}/api/static/bot-picture/${player.bot.id}?token=${localStorage.getItem('apiToken')}`}
+                    src={`${import.meta.env.VITE_API_BASE_URI}/api/static/bot-picture/${player.bot.id}?token=${localStorage.getItem('apiToken')}`}
                     class="size-10 rounded-full"
                 />
             </div>

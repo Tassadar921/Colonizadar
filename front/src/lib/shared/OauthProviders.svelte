@@ -4,7 +4,7 @@
 
     const handleOauthClick = async (provider: 'google' | 'github' | 'discord'): Promise<void> => {
         try {
-            window.location.href = `${import.meta.env.VITE_API_BASE_URL}/api/auth/${provider}`;
+            window.location.href = `${import.meta.env.VITE_API_BASE_URI}/api/auth/${provider}`;
         } catch (error: any) {
             showToast(error.response.data.error, 'error');
         }

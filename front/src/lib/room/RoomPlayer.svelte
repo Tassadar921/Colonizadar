@@ -49,7 +49,7 @@
         selectedCountry = {
             value: player.country.id,
             label: player.country.name,
-            uri: `${import.meta.env.VITE_API_BASE_URL}/api/static/country-flag/${player.country.id}?token=${localStorage.getItem('apiToken')}`,
+            uri: `${import.meta.env.VITE_API_BASE_URI}/api/static/country-flag/${player.country.id}?token=${localStorage.getItem('apiToken')}`,
         };
         invalidCountry =
             room.players.reduce((acc, player) => {
@@ -76,7 +76,7 @@
             {#if player.user.profilePicture}
                 <img
                     alt={player.user.username}
-                    src={`${import.meta.env.VITE_API_BASE_URL}/api/static/profile-picture/${player.user.id}?token=${localStorage.getItem('apiToken')}`}
+                    src={`${import.meta.env.VITE_API_BASE_URI}/api/static/profile-picture/${player.user.id}?token=${localStorage.getItem('apiToken')}`}
                     class="size-10 rounded-full"
                 />
             {:else}
@@ -91,7 +91,7 @@
                 {player.user.username}
             </p>
         {:else if player.bot}
-            <img alt={player.bot.name} src={`${import.meta.env.VITE_API_BASE_URL}/api/static/bot-picture/${player.bot.id}?token=${localStorage.getItem('apiToken')}`} class="w-10 rounded-full" />
+            <img alt={player.bot.name} src={`${import.meta.env.VITE_API_BASE_URI}/api/static/bot-picture/${player.bot.id}?token=${localStorage.getItem('apiToken')}`} class="w-10 rounded-full" />
             <p class="flex gap-1">
                 <span class="text-green-500">
                     <Icon name="bot" />
@@ -109,7 +109,7 @@
             </div>
         {:else}
             <div class="flex gap-1.5 items-center">
-                <img alt={player.country.name} src={`${import.meta.env.VITE_API_BASE_URL}/api/static/country-flag/${player.country.id}?token=${localStorage.getItem('apiToken')}`} class="max-h-10" />
+                <img alt={player.country.name} src={`${import.meta.env.VITE_API_BASE_URI}/api/static/country-flag/${player.country.id}?token=${localStorage.getItem('apiToken')}`} class="max-h-10" />
                 <p>{player.country.name}</p>
             </div>
         {/if}

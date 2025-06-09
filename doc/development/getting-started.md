@@ -60,7 +60,7 @@ This command will build and start the application in detached mode. It will also
 
 ### 7) Access the application
 
-You can access the application at http://localhost:5173.
+You can access the application at http://localhost:5173 and to landing page at http://localhost:5174.
 
 ---
 

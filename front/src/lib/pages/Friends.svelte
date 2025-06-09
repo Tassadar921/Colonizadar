@@ -156,7 +156,7 @@
                             {#if friendObject.friend.profilePicture}
                                 <img
                                     alt={friendObject.friend.username}
-                                    src={`${import.meta.env.VITE_API_BASE_URL}/api/static/profile-picture/${friendObject.friend.id}?token=${localStorage.getItem('apiToken')}`}
+                                    src={`${import.meta.env.VITE_API_BASE_URI}/api/static/profile-picture/${friendObject.friend.id}?token=${localStorage.getItem('apiToken')}`}
                                     class="w-10 rounded-full"
                                 />
                             {:else}

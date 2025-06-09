@@ -7,6 +7,7 @@
 | Adminer  | http://localhost:8080 |
 | Backend  | http://localhost:3333 |
 | Frontend | http://localhost:5173 |
+| Landing  | http://localhost:5174 |
 
 ### Common management commands
 
@@ -23,4 +24,5 @@
 - [Adminer &rarr;](adminer.md)
 - [Environment variables &rarr;](environment.md)
 - [Commands &rarr;](commands.md)
-- [Icons &rarr;](commands.md)
+- [Frontend icons &rarr;](commands.md)
+- [Landing &rarr;](commands.md)
