@@ -54,9 +54,9 @@ export default class gameProvider {
                     game.room.status = RoomStatusEnum.WAITING;
                     await game.room.save();
 
-                    transmit.broadcast(`notification/play/game/${game.frontId}/player/left`, { player: player.apiSerialize(english), secondsLeft: 90 - Math.floor(lastHeartbeat) });
+                    transmit.broadcast(`notification/play/game/${game.frontId}/player/left`, { player: player.apiSerialize(english), secondsLeft: 70 - Math.floor(lastHeartbeat) });
 
-                    if (lastHeartbeat > 90) {
+                    if (lastHeartbeat > 70) {
                         game.room.status = RoomStatusEnum.CLOSED;
                         await game.room.save();
 
