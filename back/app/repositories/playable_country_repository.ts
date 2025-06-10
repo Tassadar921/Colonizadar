@@ -7,29 +7,19 @@ export default class PlayableCountryRepository extends BaseRepository<typeof Pla
         super(PlayableCountry);
     }
 
-    public async getFirst(): Promise<PlayableCountry> {
-        const country: PlayableCountry | null = await this.Model.query().first();
-        if (!country) {
-            throw new Error('No playable country found');
-        }
-        return country;
+    public async getAllFromMapForSeeder(map: Map): Promise<Record<string, PlayableCountry>> {
+        const countries: PlayableCountry[] = await this.Model.query().where('map_id', map.id);
+
+        return countries.reduce(
+            (acc: Record<string, PlayableCountry>, country: PlayableCountry): Record<string, PlayableCountry> => {
+                acc[country.code] = country;
+                return acc;
+            },
+            {} as Record<string, PlayableCountry>
+        );
     }
 
     public async getAllFromMapForRoom(map: Map): Promise<PlayableCountry[]> {
         return this.Model.query().where('map_id', map.id);
-    }
-
-    public async getAllFromMapForSeeder(map: Map) {
-        switch (map.name) {
-            case 'World Map':
-                return {
-                    us: await this.Model.query().where('map_id', map.id).where('english_name', 'United States').firstOrFail(),
-                    gb: await this.Model.query().where('map_id', map.id).where('english_name', 'United Kingdom').firstOrFail(),
-                    fr: await this.Model.query().where('map_id', map.id).where('english_name', 'France').firstOrFail(),
-                    de: await this.Model.query().where('map_id', map.id).where('english_name', 'German Empire').firstOrFail(),
-                    ru: await this.Model.query().where('map_id', map.id).where('english_name', 'Russia').firstOrFail(),
-                    jp: await this.Model.query().where('map_id', map.id).where('english_name', 'Japan').firstOrFail(),
-                };
-        }
     }
 }

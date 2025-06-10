@@ -5,6 +5,7 @@ import SerializedPlayableCountry from '#types/serialized/serialized_playable_cou
 import File from '#models/file';
 import type { BelongsTo } from '@adonisjs/lucid/types/relations';
 import Map from '#models/map';
+import { translation, Translation } from '@stouder-io/adonis-translatable';
 
 export default class PlayableCountry extends BaseModel {
     @column({ isPrimary: true })
@@ -14,10 +15,10 @@ export default class PlayableCountry extends BaseModel {
     declare frontId: number;
 
     @column()
-    declare frenchName: string;
+    declare code: string;
 
-    @column()
-    declare englishName: string;
+    @translation()
+    declare name: Translation;
 
     @column()
     declare color: string;
@@ -98,21 +99,10 @@ export default class PlayableCountry extends BaseModel {
     @column.dateTime({ autoCreate: true, autoUpdate: true })
     declare updatedAt: DateTime;
 
-    public translate(language: Language): string {
-        switch (language.code) {
-            case 'fr':
-                return this.frenchName;
-            case 'en':
-                return this.englishName;
-            default:
-                return this.englishName;
-        }
-    }
-
     public apiSerialize(language: Language): SerializedPlayableCountry {
         return {
             id: this.frontId,
-            name: this.translate(language),
+            name: this.name.get(language.code) ?? this.name.get('en') ?? '',
             color: this.color,
             infantryAttackFactor: this.infantryAttackFactor,
             infantryDefenseFactor: this.infantryDefenseFactor,

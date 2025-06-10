@@ -10,6 +10,11 @@ export default class BrevoMailService {
         email: env.get('ACCOUNT_SENDER_EMAIL'),
     };
 
+    private readonly replyTo: object = {
+        email: env.get('ACCOUNT_SENDER_EMAIL'),
+        name: 'Colonizadar Support',
+    };
+
     private headers: object = {
         'Api-Key': `${env.get('BREVO_API_KEY')}`,
         'Content-Type': 'application/json',
@@ -34,6 +39,7 @@ export default class BrevoMailService {
                         email: user.email,
                     },
                 ],
+                replyTo: this.replyTo,
                 templateId: 7,
                 subject: 'Reset your password',
                 params: {
@@ -64,6 +70,7 @@ export default class BrevoMailService {
                         email: email,
                     },
                 ],
+                replyTo: this.replyTo,
                 templateId: 2,
                 subject: 'Account creation',
                 params: {

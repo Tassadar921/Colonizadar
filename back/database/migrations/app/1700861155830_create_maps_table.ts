@@ -8,6 +8,7 @@ export default class extends BaseSchema {
         this.schema.createTable(this.tableName, (table: Knex.CreateTableBuilder): void => {
             table.uuid('id').primary().defaultTo(this.raw('uuid_generate_v4()'));
             table.specificType('front_id', 'serial').notNullable();
+            table.string('code').notNullable().unique();
             table.string('name', 255).nullable();
             table.integer('main_season').notNullable().defaultTo(1);
             table.integer('starting_players_gold').notNullable();

@@ -7,6 +7,7 @@ import app from '@adonisjs/core/services/app';
 import File from '#models/file';
 import FileService from '#services/file_service';
 import FileTypeEnum from '#types/enum/file_type_enum';
+import { Translation } from '@stouder-io/adonis-translatable';
 
 export default class extends BaseSeeder {
     async run(): Promise<void> {
@@ -14,12 +15,20 @@ export default class extends BaseSeeder {
         const mapRepository: MapRepository = new MapRepository();
         const fileService: FileService = new FileService();
 
-        const maps: { name: string; createdByEmail: string; neutralFlagName: string; fortifiedIconName: string; factoryIconName: string }[] = [
-            { name: 'World Map', createdByEmail: 'paul.lecuisinier@gmail.com', neutralFlagName: 'white.svg', fortifiedIconName: 'castle-tower.svg', factoryIconName: 'factory.svg' },
+        const maps: { code: string; englishName: string; frenchName: string; createdByEmail: string; neutralFlagName: string; fortifiedIconName: string; factoryIconName: string }[] = [
+            {
+                code: 'wm',
+                englishName: 'World Map',
+                frenchName: 'Carte mondiale',
+                createdByEmail: 'paul.lecuisinier@gmail.com',
+                neutralFlagName: 'white.svg',
+                fortifiedIconName: 'castle-tower.svg',
+                factoryIconName: 'factory.svg',
+            },
         ];
 
         for (const map of maps) {
-            if (!(await mapRepository.findOneBy({ name: map.name }))) {
+            if (!(await mapRepository.findOneBy({ code: map.code }))) {
                 const createdBy: User | null = await userRepository.firstOrFail({ email: map.createdByEmail });
 
                 const flagPath: string = `static/map/neutral/${map.neutralFlagName}`;
@@ -64,7 +73,11 @@ export default class extends BaseSeeder {
                 await factoryIcon.refresh();
 
                 await Map.create({
-                    name: map.name,
+                    code: map.code,
+                    name: Translation.from({
+                        en: map.englishName,
+                        fr: map.frenchName,
+                    }),
                     createdById: createdBy.id,
                     neutralFlagId: neutralFlag.id,
                     fortifiedIconId: fortifiedIcon.id,

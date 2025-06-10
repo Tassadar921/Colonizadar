@@ -7,6 +7,7 @@ import FileService from '#services/file_service';
 import MapRepository from '#repositories/map_repository';
 import Map from '#models/map';
 import FileTypeEnum from '#types/enum/file_type_enum';
+import { Translation } from '@stouder-io/adonis-translatable';
 
 export default class extends BaseSeeder {
     async run(): Promise<void> {
@@ -14,9 +15,10 @@ export default class extends BaseSeeder {
         const fileService: FileService = new FileService();
         const mapRepository: MapRepository = new MapRepository();
 
-        const worldMap: Map | null = await mapRepository.firstOrFail({ name: 'World Map' });
+        const worldMap: Map | null = await mapRepository.firstOrFail({ code: 'wm' });
 
         const playableCountries: {
+            code: string;
             french: string;
             english: string;
             color: string;
@@ -32,6 +34,7 @@ export default class extends BaseSeeder {
             map: Map;
         }[] = [
             {
+                code: 'us',
                 french: 'États-Unis',
                 english: 'United States',
                 color: '#0dcfff',
@@ -47,6 +50,7 @@ export default class extends BaseSeeder {
                 map: worldMap,
             },
             {
+                code: 'uk',
                 french: 'Royaume-Uni',
                 english: 'United Kingdom',
                 color: '#ff0d0d',
@@ -62,6 +66,7 @@ export default class extends BaseSeeder {
                 map: worldMap,
             },
             {
+                code: 'de',
                 french: 'Empire Allemand',
                 english: 'German Empire',
                 color: '#818181',
@@ -77,6 +82,7 @@ export default class extends BaseSeeder {
                 map: worldMap,
             },
             {
+                code: 'fr',
                 french: 'France',
                 english: 'France',
                 color: '#001fd6',
@@ -92,6 +98,7 @@ export default class extends BaseSeeder {
                 map: worldMap,
             },
             {
+                code: 'ru',
                 french: 'Russie',
                 english: 'Russia',
                 color: '#0a7510',
@@ -107,6 +114,7 @@ export default class extends BaseSeeder {
                 map: worldMap,
             },
             {
+                code: 'jp',
                 french: 'Japon',
                 english: 'Japan',
                 color: '#fdbb47',
@@ -124,7 +132,7 @@ export default class extends BaseSeeder {
         ];
 
         for (const country of playableCountries) {
-            if (!(await playableCountryRepository.findOneBy({ englishName: country.english, mapId: country.map.id }))) {
+            if (!(await playableCountryRepository.findOneBy({ code: `${country.map.code}-${country.code}` }))) {
                 const path: string = `static/map/country-flag/${country.flagFileName}`;
                 const { size, mimeType, extension, name } = await fileService.getFileInfo(app.makePath(path));
                 const flag: File = await File.create({
@@ -138,8 +146,11 @@ export default class extends BaseSeeder {
                 await flag.refresh();
 
                 await PlayableCountry.create({
-                    frenchName: country.french,
-                    englishName: country.english,
+                    code: `${country.map.code}-${country.code}`,
+                    name: Translation.from({
+                        fr: country.french,
+                        en: country.english,
+                    }),
                     color: country.color,
                     infantryAttackFactor: country.infantryAttackFactor,
                     infantryDefenseFactor: country.infantryDefenseFactor,

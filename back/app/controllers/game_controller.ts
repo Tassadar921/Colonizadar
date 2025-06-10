@@ -202,7 +202,7 @@ export default class GameController {
         return response.send({
             territory: gameTerritory.apiSerialize(language, user, true),
             player: player.apiSerialize(language, user),
-            message: `Successfully spied ${gameTerritory.territory.translate(language)}`,
+            message: `Successfully spied ${gameTerritory.territory.name.get(language.code)}`,
         });
     }
 
@@ -229,7 +229,7 @@ export default class GameController {
         return response.send({
             player: player.apiSerialize(language, user),
             targetPlayer: targetPlayer.apiSerialize(language, user, true),
-            message: `Successfully spied ${targetPlayer.user?.username || targetPlayer.bot?.translate(language)}`,
+            message: `Successfully spied ${targetPlayer.user?.username || targetPlayer.bot?.name.get(language.code)}`,
         });
     }
 
@@ -264,7 +264,7 @@ export default class GameController {
 
         return response.send({
             player: player.apiSerialize(language, user),
-            message: `Successfully sent ${this.regexService.formatGameNumbers(amount)} to ${targetPlayer.user?.username || targetPlayer.bot?.translate(language)}`,
+            message: `Successfully sent ${this.regexService.formatGameNumbers(amount)} to ${targetPlayer.user?.username || targetPlayer.bot?.name.get(language.code)}`,
         });
     }
 
@@ -286,7 +286,7 @@ export default class GameController {
 
         return response.send({
             player: player.apiSerialize(language, user),
-            message: `Successfully sent ${this.regexService.formatGameNumbers(amount)} to ${gameTerritory.territory.translate(language)}`,
+            message: `Successfully sent ${this.regexService.formatGameNumbers(amount)} to ${gameTerritory.territory.name.get(language.code)}`,
         });
     }
 
@@ -316,7 +316,7 @@ export default class GameController {
 
             return response.send({
                 player: player.apiSerialize(language, user),
-                message: `Successfully subverted ${gameTerritory.territory.translate(language)}`,
+                message: `Successfully subverted ${gameTerritory.territory.name.get(language.code)}`,
             });
         }
 
@@ -343,7 +343,7 @@ export default class GameController {
 
         return response.send({
             player: player.apiSerialize(language, user),
-            message: `Fortified ${gameTerritory.territory.translate(language)}`,
+            message: `Fortified ${gameTerritory.territory.name.get(language.code)}`,
         });
     }
 
@@ -441,7 +441,7 @@ export default class GameController {
         transmit.broadcast(`notification/play/game/${game.frontId}/war`, { player: player.apiSerialize(language, user), targetPlayer: targetPlayer.apiSerialize(language, user) });
 
         return response.send({
-            message: `Declared war on ${targetPlayer.user?.username || targetPlayer.bot?.translate(language)}`,
+            message: `Declared war on ${targetPlayer.user?.username || targetPlayer.bot?.name.get(language.code)}`,
         });
     }
 
@@ -477,7 +477,7 @@ export default class GameController {
         });
 
         return response.send({
-            message: `Asked peace to ${targetPlayer.user?.username || targetPlayer.bot?.translate(language)}`,
+            message: `Asked peace to ${targetPlayer.user?.username || targetPlayer.bot?.name.get(language.code)}`,
         });
     }
 
@@ -540,7 +540,7 @@ export default class GameController {
         transmit.broadcast(`notification/play/game/${game.frontId}/peace`, { player: player.apiSerialize(language, user), targetPlayer: targetPlayer.apiSerialize(language, user) });
 
         return response.send({
-            message: `Made peace with ${targetPlayer.user?.username || targetPlayer.bot?.translate(language)}`,
+            message: `Made peace with ${targetPlayer.user?.username || targetPlayer.bot?.name.get(language.code)}`,
         });
     }
 
@@ -576,7 +576,7 @@ export default class GameController {
         });
 
         return response.send({
-            message: `Peace proposal from ${targetPlayer.user?.username || targetPlayer.bot?.translate(language)} refused`,
+            message: `Peace proposal from ${targetPlayer.user?.username || targetPlayer.bot?.name.get(language.code)} refused`,
         });
     }
 
@@ -612,7 +612,7 @@ export default class GameController {
         });
 
         return response.send({
-            message: `Peace proposal from ${targetPlayer.user?.username || targetPlayer.bot?.translate(language)} cancelled`,
+            message: `Peace proposal from ${targetPlayer.user?.username || targetPlayer.bot?.name.get(language.code)} cancelled`,
         });
     }
 }

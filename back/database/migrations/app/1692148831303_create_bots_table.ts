@@ -8,8 +8,8 @@ export default class extends BaseSchema {
         this.schema.createTable(this.tableName, (table: Knex.CreateTableBuilder): void => {
             table.uuid('id').primary().defaultTo(this.raw('uuid_generate_v4()'));
             table.specificType('front_id', 'serial').notNullable();
-            table.string('english_name', 255).notNullable();
-            table.string('french_name', 255).notNullable();
+            table.string('code').notNullable().unique();
+            table.json('name').notNullable();
             table.uuid('picture_id').nullable().references('id').inTable('files');
             table.timestamp('created_at', { useTz: true });
             table.timestamp('updated_at', { useTz: true });

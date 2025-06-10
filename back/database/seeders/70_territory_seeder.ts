@@ -5,6 +5,7 @@ import MapRepository from '#repositories/map_repository';
 import Map from '#models/map';
 import PlayableCountry from '#models/playable_country';
 import PlayableCountryRepository from '#repositories/playable_country_repository';
+import { Translation } from '@stouder-io/adonis-translatable';
 
 export default class extends BaseSeeder {
     async run(): Promise<void> {
@@ -12,17 +13,9 @@ export default class extends BaseSeeder {
         const mapRepository: MapRepository = new MapRepository();
         const playableCountryRepository: PlayableCountryRepository = new PlayableCountryRepository();
 
-        const worldMap: Map | null = await mapRepository.findOneBy({ name: 'World Map' });
-        if (!worldMap) {
-            console.error('World map not found');
-            return;
-        }
+        const worldMap: Map = await mapRepository.firstOrFail({ code: 'wm' });
 
-        const worldMapPlayableCountries = await playableCountryRepository.getAllFromMapForSeeder(worldMap);
-        if (!worldMapPlayableCountries) {
-            console.error('World map playable countries not found');
-            return;
-        }
+        const worldMapPlayableCountries: Record<string, PlayableCountry> = await playableCountryRepository.getAllFromMapForSeeder(worldMap);
 
         const territories: {
             code: string;
@@ -240,8 +233,10 @@ export default class extends BaseSeeder {
         for (const territory of territories) {
             if (!(await territoryRepository.findOneBy({ code: territory.code, mapId: territory.map.id }))) {
                 await Territory.create({
-                    frenchName: territory.french,
-                    englishName: territory.english,
+                    name: Translation.from({
+                        fr: territory.french,
+                        en: territory.english,
+                    }),
                     code: territory.code,
                     isCoastal: territory.isCoastal,
                     isFactory: territory.isFactory,
