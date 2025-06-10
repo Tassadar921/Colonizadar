@@ -15,11 +15,11 @@
     languageAlternates={[
         {
             hrefLang: 'en',
-            href: `${import.meta.env.VITE_FRONT_URI}/en`,
+            href: `${import.meta.env.VITE_LANDING_URI}/en`,
         },
         {
             hrefLang: 'fr',
-            href: `${import.meta.env.VITE_FRONT_URI}/fr`,
+            href: `${import.meta.env.VITE_LANDING_URI}/fr`,
         },
     ]}
 />

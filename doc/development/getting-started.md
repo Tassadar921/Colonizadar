@@ -38,7 +38,14 @@ We strongly recommend using [nvm](https://github.com/nvm-sh/nvm) to manage your 
 
 ---
 
-### 5) Make sure you have `make` installed
+### 5) Make `.sh` files executable
+
+```bash
+    chmod +x ./*.sh
+```
+---
+
+### 6) Make sure you have `make` installed
 
 ```bash
     which make
@@ -48,7 +55,7 @@ If you don't have `make` installed, you can follow the official [GNU Make instal
 
 ---
 
-### 6) Start the application
+### 7) Start the application
 
 ```bash
     make start
@@ -58,7 +65,7 @@ This command will build and start the application in detached mode. It will also
 
 ---
 
-### 7) Access the application
+### 8) Access the application
 
 You can access the application at http://localhost:5173 and to landing page at http://localhost:5174.
 

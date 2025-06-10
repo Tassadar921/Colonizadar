@@ -2,17 +2,13 @@
 
 ## Environment Variables
 
-Note that `VITE_API_BASE_URL` is injected by Docker with backend's `PORT` environment variable.
+Note that `VITE_LANDING_URI` and `VITE_API_BASE_URI` are automatically generated from `FRONT_PORT` and `PORT` backend environment variables respectively by Docker.
 
-```
-VITE_FRONT_URI=http://localhost:5174
-VITE_GITHUB_REPOSITORY=https://github.com/Tassadar921/Colonizadar
-```
+`VITE_LANDING_PORT` is also injected from backend environment variables.Add commentMore actions
 
-| Variable                 | Value                                      |
-|--------------------------|--------------------------------------------|
-| `VITE_FRONT_URI`         | http://localhost:5173                      |
-| `VITE_GITHUB_REPOSITORY` | https://github.com/Tassadar921/Colonizadar |
+`VITE_GITHUB_REPOSITORY` is also injected from backend environment variables.
+
+/!\ Create the `landing/.env` file even if it's empty, otherwise the build will fail.
 
 ---
 

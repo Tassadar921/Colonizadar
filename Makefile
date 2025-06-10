@@ -1,10 +1,5 @@
 SHELL := /bin/bash
 
-# Helper for sourcing back/.env
-define SOURCE_ENV
-set -a && source back/.env && set +a
-endef
-
 format:
 	cd back && npx prettier --write "**/*.{js,ts,json,yml}"
 	cd front && npx prettier --write "**/*.{js,ts,svelte,html,css,json,yml}"
@@ -29,15 +24,15 @@ list-routes:
 	cd back && node ace list:routes
 
 db-fresh:
-	$(SOURCE_ENV) && docker compose exec -T backend node ace migration:fresh
-	$(SOURCE_ENV) && docker compose exec -T backend node ace migration:fresh --connection=logs
+	./compose-env.sh exec -T backend node ace migration:fresh
+	./compose-env.sh exec -T backend node ace migration:fresh --connection=logs
 
 db-migrate:
-	$(SOURCE_ENV) && docker compose exec -T backend node ace migration:run
-	$(SOURCE_ENV) && docker compose exec -T backend node ace migration:run --connection=logs
+	./compose-env.sh exec -T backend node ace migration:run
+	./compose-env.sh exec -T backend node ace migration:run --connection=logs
 
 db-seed:
-	$(SOURCE_ENV) && docker compose exec -T backend node ace db:seed
+	./compose-env.sh exec -T backend node ace db:seed
 
 init-logs-db:
 	./init-logs-db.sh
@@ -45,14 +40,14 @@ init-logs-db:
 db: init-logs-db db-fresh db-seed
 
 stop:
-	$(SOURCE_ENV) && docker compose down --remove-orphans
+	./compose-env.sh down --remove-orphans
 
 up:
 	${MAKE} stop
-	$(SOURCE_ENV) && docker compose up -d --build
+	./compose-env.sh up -d --build
 
 rm:
-	$(SOURCE_ENV) && docker compose down --volumes --remove-orphans
+	./compose-env.sh down --volumes --remove-orphans
 
 start: install rm up db
 
