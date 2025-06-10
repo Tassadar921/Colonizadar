@@ -55,14 +55,15 @@
         "@adonisjs/lucid": "^21.6.1",
         "@adonisjs/redis": "^9.2.0",
         "@adonisjs/transmit": "^2.0.2",
+        "@stouder-io/adonis-translatable": "^1.1.0",
         "@vinejs/vine": "^3.0.1",
-        "pino-pretty": "^13.0.0",
+        "axios": "^1.9.0",
         "file-type": "^21.0.0",
         "luxon": "^3.6.1",
         "mime-types": "^3.0.1",
         "pg": "^8.16.0",
+        "pino-pretty": "^13.0.0",
         "reflect-metadata": "^0.2.2",
-        "axios": "^1.9.0",
         "ts-node-maintained": "^10.9.5"
     },
     "hotHook": {

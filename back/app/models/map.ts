@@ -9,6 +9,7 @@ import Language from '#models/language';
 import File from '#models/file';
 import SerializedMapLight from '#types/serialized/serialized_map_light';
 import PlayableCountry from '#models/playable_country';
+import { Translation, translation } from '@stouder-io/adonis-translatable';
 
 export default class Map extends BaseModel {
     @column({ isPrimary: true })
@@ -18,7 +19,10 @@ export default class Map extends BaseModel {
     declare frontId: number;
 
     @column()
-    declare name: string;
+    declare code: string;
+
+    @translation()
+    declare name: Translation;
 
     @column()
     declare mainSeason: number;
@@ -174,7 +178,7 @@ export default class Map extends BaseModel {
     public async apiSerialize(language: Language): Promise<SerializedMap> {
         return {
             id: this.frontId,
-            name: this.name,
+            name: this.name.get(language.code) ?? this.name.get('en') ?? '',
             mainSeason: this.mainSeason,
             baseInfantryCost: this.baseInfantryCost,
             baseShipCost: this.baseShipCost,
@@ -194,10 +198,10 @@ export default class Map extends BaseModel {
         };
     }
 
-    public apiSerializeLight(): SerializedMapLight {
+    public apiSerializeLight(language: Language): SerializedMapLight {
         return {
             id: this.frontId,
-            name: this.name,
+            name: this.name.get(language.code) ?? this.name.get('en') ?? '',
             mainSeason: this.mainSeason,
             baseInfantryCost: this.baseInfantryCost,
             baseShipCost: this.baseShipCost,

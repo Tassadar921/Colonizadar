@@ -1,7 +1,5 @@
 import { BaseSeeder } from '@adonisjs/lucid/seeders';
 import TerritoryRepository from '#repositories/territory_repository';
-import MapRepository from '#repositories/map_repository';
-import Map from '#models/map';
 import Territory from '#models/territory';
 import TerritoryNeighbourRepository from '#repositories/territory_neighbour_repository';
 import TerritoryNeighbour from '#models/territory_neighbour';
@@ -9,14 +7,7 @@ import TerritoryNeighbour from '#models/territory_neighbour';
 export default class extends BaseSeeder {
     async run(): Promise<void> {
         const territoryRepository: TerritoryRepository = new TerritoryRepository();
-        const mapRepository: MapRepository = new MapRepository();
         const territoryNeighbourRepository: TerritoryNeighbourRepository = new TerritoryNeighbourRepository();
-
-        const worldMap: Map | null = await mapRepository.findOneBy({ name: 'World Map' });
-        if (!worldMap) {
-            console.error('World map not found');
-            return;
-        }
 
         const neighbourhoods: { territoryCode: string; neighbourCode: string }[] = [
             // ******************** North America ********************

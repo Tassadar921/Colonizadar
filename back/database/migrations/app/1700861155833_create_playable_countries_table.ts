@@ -8,8 +8,8 @@ export default class extends BaseSchema {
         this.schema.createTable(this.tableName, (table: Knex.CreateTableBuilder): void => {
             table.uuid('id').primary().defaultTo(this.raw('uuid_generate_v4()'));
             table.specificType('front_id', 'serial').notNullable();
-            table.string('english_name', 255).notNullable();
-            table.string('french_name', 255).notNullable();
+            table.string('code').notNullable().unique();
+            table.json('name').notNullable();
             table.string('color', 255).notNullable();
             table.decimal('infantry_attack_factor', 16, 10).notNullable();
             table.decimal('infantry_defense_factor', 16, 10).notNullable();

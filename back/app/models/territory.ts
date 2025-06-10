@@ -6,6 +6,7 @@ import type { BelongsTo, HasMany } from '@adonisjs/lucid/types/relations';
 import Map from '#models/map';
 import PlayableCountry from '#models/playable_country';
 import TerritoryNeighbour from '#models/territory_neighbour';
+import { Translation, translation } from '@stouder-io/adonis-translatable';
 
 export default class Territory extends BaseModel {
     @column({ isPrimary: true })
@@ -14,11 +15,8 @@ export default class Territory extends BaseModel {
     @column()
     declare code: string;
 
-    @column()
-    declare frenchName: string;
-
-    @column()
-    declare englishName: string;
+    @translation()
+    declare name: Translation;
 
     @column()
     declare isCoastal: boolean;
@@ -55,21 +53,10 @@ export default class Territory extends BaseModel {
     @column.dateTime({ autoCreate: true, autoUpdate: true })
     declare updatedAt: DateTime;
 
-    public translate(language: Language): string {
-        switch (language.code) {
-            case 'fr':
-                return this.frenchName;
-            case 'en':
-                return this.englishName;
-            default:
-                return this.englishName;
-        }
-    }
-
     public apiSerialize(language: Language, isMain: boolean = true): SerializedTerritory {
         return {
             code: this.code,
-            name: this.translate(language),
+            name: this.name.get(language.code) ?? this.name.get('en') ?? '',
             isCoastal: this.isCoastal,
             isFactory: this.isFactory,
             neighbours: isMain ? this.neighbours?.map((territoryNeighbour: TerritoryNeighbour): SerializedTerritory => territoryNeighbour.neighbour.apiSerialize(language, false)) : undefined,

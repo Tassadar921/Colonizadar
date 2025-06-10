@@ -4,6 +4,7 @@ import Language from '#models/language';
 import SerializedBot from '#types/serialized/serialized_bot';
 import File from '#models/file';
 import type { BelongsTo } from '@adonisjs/lucid/types/relations';
+import { Translation, translation } from '@stouder-io/adonis-translatable';
 
 export default class Bot extends BaseModel {
     @column({ isPrimary: true })
@@ -13,10 +14,10 @@ export default class Bot extends BaseModel {
     declare frontId: number;
 
     @column()
-    declare frenchName: string;
+    declare code: string;
 
-    @column()
-    declare englishName: string;
+    @translation()
+    declare name: Translation;
 
     @column()
     declare pictureId: string | null;
@@ -32,21 +33,10 @@ export default class Bot extends BaseModel {
     @column.dateTime({ autoCreate: true, autoUpdate: true })
     declare updatedAt: DateTime;
 
-    public translate(language: Language): string {
-        switch (language.code) {
-            case 'fr':
-                return this.frenchName;
-            case 'en':
-                return this.englishName;
-            default:
-                return this.englishName;
-        }
-    }
-
     public apiSerialize(language: Language): SerializedBot {
         return {
             id: this.frontId,
-            name: this.translate(language),
+            name: this.name.get(language.code) ?? this.name.get('en') ?? '',
             createdAt: this.createdAt?.toString(),
             updatedAt: this.updatedAt?.toString(),
         };
