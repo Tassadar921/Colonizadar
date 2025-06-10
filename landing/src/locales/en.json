@@ -1,10 +1,21 @@
 {
+    "common": {
+        "back-to-home": "Back to homepage"
+    },
     "home": {
         "title": "Colonizadar",
         "meta": {
             "title": "Colonizadar",
             "description": "Play Colonizadar in real-time! Manage your empire, strategize with or against others, and conquer the map in this multiplayer experience.",
             "keywords": "gameplay, online game, multiplayer strategy, empire building, real-time game, homepage, presentation, strategy game, conquest game"
+        }
+    },
+    "not-found": {
+        "title": "Page not found",
+        "meta": {
+            "title": "Page Not Found – Colonizadar",
+            "description": "The page you are looking for does not exist. Check the URL or return to the homepage of Colonizadar.",
+            "keywords": "404 error, page not found, missing page, Colonizadar"
         }
     }
 }
