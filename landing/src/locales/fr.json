@@ -1,10 +1,21 @@
 {
+    "common": {
+        "back-to-home": "Retour à la page d'accueil"
+    },
     "home": {
         "title": "Colonizadar",
         "meta": {
             "title": "Colonizadar",
             "description": "Jouez à Colonizadar en temps réel ! Développez votre empire, élaborez des stratégies avec ou contre les autres, et conquérez la carte dans ce jeu multijoueur.",
             "keywords": "jeu en ligne, gameplay, stratégie multijoueur, construction empire, jeu temps réel, accueil, présentation, jeu de stratégie, jeu de conquête"
+        }
+    },
+    "not-found": {
+        "title": "Page inexistante",
+        "meta": {
+            "title": "Page non trouvée – Colonizadar",
+            "description": "La page que vous recherchez n’existe pas. Vérifiez l’URL ou retournez à la page d’accueil de Colonizadar.",
+            "keywords": "erreur 404, page non trouvée, page manquante, Colonizadar"
         }
     }
 }
