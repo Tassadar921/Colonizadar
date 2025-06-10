@@ -6,8 +6,8 @@ import tailwindcss from '@tailwindcss/vite';
 export default defineConfig({
     server: {
         host: true,
-        port: 5173,
-        allowedHosts: ['localhost', 'app.colonizadar.fr'],
+        port: Number(process.env.VITE_PORT),
+        allowedHosts: ['localhost', 'app.colonizadar.fr', 'app.colonizadar.dev'],
     },
     plugins: [svelte(), tailwindcss()],
 });

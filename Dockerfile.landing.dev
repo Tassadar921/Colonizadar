@@ -1,6 +1,10 @@
 FROM node:22
 
+# Create app directory
 WORKDIR /app
+
+# Accept the PORT build arg
+ARG PORT
 
 # Copy landing dependencies
 COPY landing/package*.json ./
@@ -14,9 +18,10 @@ COPY landing /app
 # Also copy root-level shared tools (optional)
 COPY package*.json /shared/
 
+# Permissions
 RUN chown -R node:node /app
 
-EXPOSE 5174
+EXPOSE ${PORT}
 
 USER node
 

@@ -4,7 +4,7 @@
 
 ### Development backend .env (back/.env)
 
-Note that `API_URI` is injected by Docker with backend's `PORT` environment variable.
+Note that `LANDING_URI`, `FRONT_URI` and `API_URI` are automatically generated from `LANDING_PORT`, `FRONT_PORT` and `PORT` backend environment variables respectively by Docker.
 
 ```
 PORT=3333
@@ -36,8 +36,9 @@ GITHUB_CLIENT_SECRET=
 GOOGLE_CLIENT_ID=
 GOOGLE_CLIENT_SECRET=
 
-LANDING_URI=http://localhost:5174
-FRONT_URI=http://localhost:5173
+LANDING_PORT=5174
+FRONT_PORT=5173
+GITHUB_REPOSITORY=https://github.com/Tassadar921/Colonizadar
 ACCOUNT_SENDER_EMAIL=account@colonizadar.fr
 BREVO_API_KEY=
 ADMIN_EMAIL=
@@ -69,8 +70,9 @@ FRIEND_EMAILS=[]
 | `GITHUB_CLIENT_SECRET`  | **`A valid GitHub client secret`**                                          |
 | `GOOGLE_CLIENT_ID`      | **`A valid Google client ID`**                                              |
 | `GOOGLE_CLIENT_SECRET`  | **`A valid Google client secret`**                                          |
-| `LANDING_URI`           | http://localhost:5174                                                       |
-| `FRONT_URI`             | http://localhost:5173                                                       |
+| `LANDING_PORT`          | 5174                                                                        |
+| `FRONT_PORT`            | 5173                                                                        |
+| `GITHUB_REPOSITORY`     | https://github.com/Tassadar921/Colonizadar                                  |
 | `ACCOUNT_SENDER_EMAIL`  | account@colonizadar.fr                                                      |
 | `BREVO_API_KEY`         | **`A valid Brevo API key`**                                                 |
 | `ADMIN_EMAIL`           | **`Put your email here`**                                                   |
@@ -80,18 +82,18 @@ FRIEND_EMAILS=[]
 
 ### Development frontend .env (front/.env)
 
-Note that `VITE_API_BASE_URL` is injected by Docker with backend's `PORT` environment variable.
+Note that `VITE_FRONT_URI` and `VITE_API_BASE_URI` are automatically generated from `FRONT_PORT` and `PORT` backend environment variables respectively by Docker.
+
+`VITE_FRONT_PORT` is also injected from backend environment variables.Add commentMore actions
+
+`VITE_GITHUB_REPOSITORY` is also injected from backend environment variables.
 
 ```
-VITE_FRONT_URI=http://localhost:5173
-VITE_GITHUB_REPOSITORY=https://github.com/Tassadar921/Colonizadar
 VITE_DEFAULT_IMAGE=/assets/default/image.png
 ```
 
 | Variable                 | Value                                      |
 |--------------------------|--------------------------------------------|
-| `VITE_FRONT_URI`         | http://localhost:5173                      |
-| `VITE_GITHUB_REPOSITORY` | https://github.com/Tassadar921/Colonizadar |
 | `VITE_DEFAULT_IMAGE`     | /assets/default/image.png                  |
 
 ---
