@@ -51,13 +51,13 @@
         title: $t('logout.meta.title'),
         description: $t('logout.meta.description'),
         images: [
-          {
-            url: `${import.meta.env.VITE_FRONT_URI}/assets/logo-1200x1200.webp`,
-            width: 1200,
-            height: 1200,
-            alt: `open-graph.logo.alt`
-          },
-        ]
+            {
+                url: `${import.meta.env.VITE_FRONT_URI}/assets/logo-1200x1200.webp`,
+                width: 1200,
+                height: 1200,
+                alt: `open-graph.logo.alt`,
+            },
+        ],
     }}
 />
 
