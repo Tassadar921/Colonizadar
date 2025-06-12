@@ -2,6 +2,11 @@
     "common": {
         "back-to-home": "Back to homepage"
     },
+    "open-graph": {
+        "logo": {
+            "alt": "Colonizadar's logo"
+        }
+    },
     "home": {
         "title": "Colonizadar",
         "meta": {

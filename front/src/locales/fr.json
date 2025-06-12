@@ -48,6 +48,14 @@
         },
         "consent": "J'accepte les termes et conditions"
     },
+    "open-graph": {
+        "logo": {
+            "alt": "Logo de Colonizadar"
+        },
+        "profile-picture": {
+            "alt": "Photo de profil de"
+        }
+    },
     "toast": {
         "copy": {
             "success": "Copié dans le presse-papier"

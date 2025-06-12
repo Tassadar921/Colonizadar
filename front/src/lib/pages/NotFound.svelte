@@ -7,7 +7,24 @@
 </script>
 
 <meta name="robots" content="noindex, nofollow" />
-<MetaTags title={$t('not-found.meta.title')} description={$t('not-found.meta.description')} keywords={$t('not-found.meta.keywords').split(', ')} />
+<MetaTags
+    title={$t('not-found.meta.title')}
+    description={$t('not-found.meta.description')}
+    keywords={$t('not-found.meta.keywords').split(', ')}
+    openGraph={{
+        type: 'website',
+        title: $t('not-found.meta.title'),
+        description: $t('not-found.meta.description'),
+        images: [
+          {
+            url: `${import.meta.env.VITE_FRONT_URI}/assets/logo-1200x1200.webp`,
+            width: 1200,
+            height: 1200,
+            alt: `open-graph.logo.alt`
+          },
+        ]
+    }}
+/>
 
 <Breadcrumbs hasBackground items={[{ label: $t('home.title'), path: '/' }, { label: $t('not-found.title') }]} />
 

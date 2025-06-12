@@ -58,6 +58,19 @@
             href: `${import.meta.env.VITE_FRONT_URI}/fr/play`,
         },
     ]}
+    openGraph={{
+        type: 'website',
+        title: $t('play.meta.title'),
+        description: $t('play.meta.description'),
+        images: [
+          {
+            url: `${import.meta.env.VITE_FRONT_URI}/assets/logo-1200x1200.webp`,
+            width: 1200,
+            height: 1200,
+            alt: `open-graph.logo.alt`
+          },
+        ]
+    }}
 />
 
 <Loader {isLoading} />

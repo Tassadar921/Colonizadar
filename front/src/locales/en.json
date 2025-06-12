@@ -48,6 +48,14 @@
         },
         "consent": "I agree to the terms and conditions"
     },
+    "open-graph": {
+        "logo": {
+            "alt": "Colonizadar's logo"
+        },
+        "profile-picture": {
+            "alt": "Profile picture of"
+        }
+    },
     "toast": {
         "copy": {
             "success": "Copied to clipboard"
