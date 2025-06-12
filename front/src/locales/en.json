@@ -121,6 +121,8 @@
     },
     "login": {
         "title": "Login",
+        "forgot-password": "Forgot password ?",
+        "create-account": "No account yet ?",
         "meta": {
             "title": "Login – Colonizadar",
             "description": "Log in to Colonizadar using your email and password, or quickly via Google, GitHub, or Discord OAuth.",

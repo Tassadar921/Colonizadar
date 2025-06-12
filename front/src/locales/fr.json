@@ -121,6 +121,8 @@
     },
     "login": {
         "title": "Connexion",
+        "forgot-password": "Mot de passe oublié ?",
+        "create-account": "Pas encore inscrit ?",
         "meta": {
             "title": "Connexion – Colonizadar",
             "description": "Connectez-vous à Colonizadar avec votre email et mot de passe, ou rapidement via OAuth Google, GitHub ou Discord.",
