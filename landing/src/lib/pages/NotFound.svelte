@@ -4,6 +4,8 @@
     import Title from '../shared/Title.svelte';
     import { ArrowLeft } from '@lucide/svelte';
     import { Button } from '$lib/components/ui/button';
+    import { location } from '../../stores/locationStore';
+    import { language } from '../../stores/languageStore';
 </script>
 
 <meta name="robots" content="noindex, nofollow" />
@@ -23,6 +25,9 @@
                 alt: `open-graph.logo.alt`,
             },
         ],
+        url: `${import.meta.env.VITE_FRONT_URI}${$location}`,
+        locale: $language,
+        siteName: 'Colonizadar',
     }}
 />
 

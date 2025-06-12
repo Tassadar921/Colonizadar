@@ -9,6 +9,8 @@
     import Switch from '../shared/Switch.svelte';
     import OauthProviders from '../shared/OauthProviders.svelte';
     import { MetaTags } from 'svelte-meta-tags';
+    import { location } from '../../stores/locationStore';
+    import { language } from '../../stores/languageStore';
 
     let username: string = '';
     let email: string = '';
@@ -57,6 +59,9 @@
                 alt: `open-graph.logo.alt`,
             },
         ],
+        url: `${import.meta.env.VITE_FRONT_URI}${$location}`,
+        locale: $language,
+        siteName: 'Colonizadar',
     }}
 />
 

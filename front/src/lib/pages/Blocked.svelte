@@ -16,6 +16,8 @@
     import type PaginatedBlockedUsers from 'colonizadar-backend/app/types/paginated/paginated_blocked_users';
     import type SerializedUser from 'colonizadar-backend/app/types/serialized/serialized_user';
     import type SerializedBlockedUser from 'colonizadar-backend/app/types/serialized/serialized_blocked_user';
+    import { location } from '../../stores/locationStore';
+    import { language } from '../../stores/languageStore';
 
     let isLoading: boolean = false;
     let paginatedBlockedUsers: PaginatedBlockedUsers;
@@ -87,6 +89,9 @@
                 alt: `open-graph.logo.alt`,
             },
         ],
+        url: `${import.meta.env.VITE_FRONT_URI}${$location}`,
+        locale: $language,
+        siteName: 'Colonizadar',
     }}
 />
 

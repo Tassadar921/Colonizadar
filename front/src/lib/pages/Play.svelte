@@ -14,6 +14,8 @@
     import { showToast } from '../../services/toastService';
     import { navigate } from '../../stores/locationStore';
     import { MetaTags } from 'svelte-meta-tags';
+    import { location } from '../../stores/locationStore';
+    import { language } from '../../stores/languageStore';
 
     let showJoinModal: boolean = false;
     let showCreateModal: boolean = false;
@@ -70,6 +72,9 @@
                 alt: `open-graph.logo.alt`,
             },
         ],
+        url: `${import.meta.env.VITE_FRONT_URI}${$location}`,
+        locale: $language,
+        siteName: 'Colonizadar',
     }}
 />
 

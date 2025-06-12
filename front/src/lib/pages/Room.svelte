@@ -24,6 +24,8 @@
     import { MetaTags } from 'svelte-meta-tags';
     import type SerializedRoomPlayer from 'colonizadar-backend/app/types/serialized/serialized_room_player';
     import { profile } from '../../stores/profileStore';
+    import { location } from '../../stores/locationStore';
+    import { language } from '../../stores/languageStore';
 
     export let roomId: string;
 
@@ -131,6 +133,9 @@
                 alt: `open-graph.logo.alt`,
             },
         ],
+        url: `${import.meta.env.VITE_FRONT_URI}${$location}`,
+        locale: $language,
+        siteName: 'Colonizadar',
     }}
 />
 

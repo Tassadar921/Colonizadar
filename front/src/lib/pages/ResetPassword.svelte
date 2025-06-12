@@ -9,6 +9,8 @@
     import { isValidEmail } from '../../services/checkStringService';
     import Breadcrumbs from '../shared/Breadcrumbs.svelte';
     import { MetaTags } from 'svelte-meta-tags';
+    import { location } from '../../stores/locationStore';
+    import { language } from '../../stores/languageStore';
 
     let email: string = '';
     let readonly: boolean = false;
@@ -54,6 +56,9 @@
                 alt: `open-graph.logo.alt`,
             },
         ],
+        url: `${import.meta.env.VITE_FRONT_URI}${$location}`,
+        locale: $language,
+        siteName: 'Colonizadar',
     }}
 />
 

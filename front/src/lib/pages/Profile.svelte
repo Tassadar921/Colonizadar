@@ -9,8 +9,10 @@
     import { onMount } from 'svelte';
     import FileUpload from '../shared/FileUpload.svelte';
     import Breadcrumbs from '../shared/Breadcrumbs.svelte';
-    import type SerializedUser from 'adonis-svelte-starter-kit-backend/app/types/serialized/serialized_user';
     import { MetaTags } from 'svelte-meta-tags';
+    import type SerializedUser from 'colonizadar-backend/app/types/serialized/serialized_user';
+    import { location } from '../../stores/locationStore';
+    import { language } from '../../stores/languageStore';
 
     let formValues: { username: string; email: string } = {
         username: '',
@@ -85,6 +87,9 @@
         title: $t('profile.meta.title'),
         description: $t('profile.meta.description'),
         images: ogImages,
+        url: `${import.meta.env.VITE_FRONT_URI}${$location}`,
+        locale: $language,
+        siteName: 'Colonizadar',
     }}
 />
 
