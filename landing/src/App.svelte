@@ -3,14 +3,17 @@
     import Homepage from './lib/pages/Home.svelte';
     import NotFound from './lib/pages/NotFound.svelte';
     import DarkMode from '$lib/shared/DarkMode.svelte';
+    import AppLayout from '$lib/layouts/AppLayout.svelte';
 </script>
 
 <main class="flex flex-col w-screen h-screen">
     <DarkMode />
-    <div class="px-3.5 min-h-screen">
-        <Router>
-            <Route path="/:language"><Homepage /></Route>
-            <Route path="*"><NotFound /></Route>
-        </Router>
-    </div>
+    <Router>
+        <Route path="/:language">
+            <AppLayout component={Homepage} />
+        </Route>
+        <Route path="*">
+            <AppLayout component={NotFound} />
+        </Route>
+    </Router>
 </main>

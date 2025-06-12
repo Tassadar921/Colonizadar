@@ -29,6 +29,12 @@
             <Icon name="userRemove" slot="iconLeft" />
             {$t('logout.title')}
         </MenuItem>
+        {#if $profile.role === 'admin'}
+            <MenuItem {footer} href="/admin" on:click>
+                <Icon name="admin" slot="iconLeft" />
+                {$t('admin.title')}
+            </MenuItem>
+        {/if}
     {:else}
         <MenuItem {footer} href="/login" on:click>
             <Icon name="user" slot="iconLeft" />
