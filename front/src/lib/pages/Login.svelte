@@ -68,7 +68,8 @@
     <OauthProviders />
     <Input type="email" name="email" placeholder={$t('common.email.placeholder')} label={$t('common.email.label')} bind:value={email} />
     <PasswordInput bind:value={password} />
-    <div class="w-full mb-3">
-        <Link href="/reset-password" className="text-primary-500 hover:text-white duration-300 transition-colors">Forgot password ?</Link>
+    <div class="w-full mb-3 flex justify-between">
+        <Link href="/reset-password" className="text-primary-500 hover:text-white duration-300 transition-colors">{$t('login.forgot-password')}</Link>
+        <Link href="/create-account" className="text-primary-500 hover:text-white duration-300 transition-colors">{$t('login.create-account')}</Link>
     </div>
 </Form>

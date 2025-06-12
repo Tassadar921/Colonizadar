@@ -2,7 +2,6 @@
     import { Router } from 'svelte-routing';
     import { profile } from './stores/profileStore';
     import { isLoading } from 'svelte-i18n';
-    import Footer from './lib/shared/Footer.svelte';
     import Loader from './lib/shared/Loader.svelte';
     import NotificationsSetup from './lib/notifications/NotificationsSetup.svelte';
     import AuthenticatedRoutes from './lib/routes/AuthenticatedRoutes.svelte';
@@ -26,5 +25,4 @@
     {:else}
         <Loader isLoading />
     {/if}
-    <Footer />
 </main>
