@@ -59,7 +59,7 @@
                 height: 1200,
                 alt: `open-graph.logo.alt`,
             },
-        ]
+        ],
         url: `${import.meta.env.VITE_FRONT_URI}${$location}`,
         locale: $language,
         siteName: 'Colonizadar',

@@ -27,7 +27,7 @@
         ],
         url: `${import.meta.env.VITE_FRONT_URI}${$location}`,
         locale: $language,
-        siteName: 'Colonizadar'
+        siteName: 'Colonizadar',
     }}
 />
 
