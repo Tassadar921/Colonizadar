@@ -48,6 +48,14 @@
         },
         "consent": "J'accepte les termes et conditions"
     },
+    "open-graph": {
+        "logo": {
+            "alt": "Logo de Colonizadar"
+        },
+        "profile-picture": {
+            "alt": "Photo de profil de"
+        }
+    },
     "toast": {
         "copy": {
             "success": "Copié dans le presse-papier"
@@ -238,6 +246,25 @@
             "modal": {
                 "title": "Débloquer l'utilisateur",
                 "text": "sera débloqué"
+            }
+        }
+    },
+    "admin": {
+        "title": "Admin",
+        "dashboard": {
+            "title": "Tableau de bord admin",
+            "meta": {
+                "title": "Tableau de bord Admin – Adonis & Svelte Starter Kit",
+                "description": "Accédez au tableau de bord admin pour gérer les utilisateurs, les contenus et les paramètres de l'application. Contrôlez votre application avec Adonis & Svelte Starter Kit.",
+                "keywords": "statistiques, tableau de bord admin, gestion des utilisateurs, gestion des contenus, paramètres admin, Adonis & Svelte Starter Kit"
+            }
+        },
+        "users": {
+            "title": "Utilisateurs",
+            "meta": {
+                "title": "Gérer les utilisateurs – Adonis & Svelte Starter Kit",
+                "description": "Consultez, modifiez et gérez les utilisateurs de votre application. Gérez les rôles, les permissions et les informations des utilisateurs facilement.",
+                "keywords": "gérer utilisateurs, modifier utilisateurs, rôles utilisateurs, permissions utilisateurs, Adonis & Svelte Starter Kit"
             }
         }
     },

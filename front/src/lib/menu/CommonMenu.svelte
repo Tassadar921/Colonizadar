@@ -29,10 +29,20 @@
             <Icon name="userRemove" slot="iconLeft" />
             {$t('logout.title')}
         </MenuItem>
+        {#if $profile.role === 'admin'}
+            <MenuItem {footer} href="/admin" on:click>
+                <Icon name="admin" slot="iconLeft" />
+                {$t('admin.title')}
+            </MenuItem>
+        {/if}
     {:else}
         <MenuItem {footer} href="/login" on:click>
             <Icon name="user" slot="iconLeft" />
             {$t('login.title')}
+        </MenuItem>
+        <MenuItem {footer} href="/create-account" on:click>
+            <Icon name="user" slot="iconLeft" />
+            {$t('create-account.title')}
         </MenuItem>
     {/if}
 </ul>

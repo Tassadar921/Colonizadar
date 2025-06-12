@@ -65,6 +65,7 @@
         'Google',
         'Github',
         'Discord',
+        'Admin',
     ] as const;
 
     type PascalCase = (typeof iconNames)[number];

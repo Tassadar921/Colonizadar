@@ -52,6 +52,19 @@
             href: `${import.meta.env.VITE_FRONT_URI}/fr/notifications`,
         },
     ]}
+    openGraph={{
+        type: 'website',
+        title: $t('notifications.meta.title'),
+        description: $t('notifications.meta.description'),
+        images: [
+            {
+                url: `${import.meta.env.VITE_FRONT_URI}/assets/logo-1200x1200.webp`,
+                width: 1200,
+                height: 1200,
+                alt: `open-graph.logo.alt`,
+            },
+        ],
+    }}
 />
 
 <Loader {isLoading} />

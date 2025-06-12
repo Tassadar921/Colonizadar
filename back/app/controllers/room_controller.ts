@@ -48,7 +48,7 @@ export default class RoomController {
 
         const { name, password } = await request.validateUsing(createRoomValidator);
 
-        const map: Map = await this.mapRepository.firstOrFail({ name: 'World Map' });
+        const map: Map = await this.mapRepository.firstOrFail({ code: 'wm' });
 
         const room: Room = await Room.create({
             name,
