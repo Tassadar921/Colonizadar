@@ -20,6 +20,8 @@
     import Icon from '../shared/Icon.svelte';
     import { MetaTags } from 'svelte-meta-tags';
     import type SerializedFriend from 'colonizadar-backend/app/types/serialized/serialized_friend';
+    import { location } from '../../stores/locationStore';
+    import { language } from '../../stores/languageStore';
 
     let isLoading: boolean = false;
     let paginatedFriends: PaginatedFriends;
@@ -129,6 +131,9 @@
                 alt: `open-graph.logo.alt`,
             },
         ],
+        url: `${import.meta.env.VITE_FRONT_URI}${$location}`,
+        locale: $language,
+        siteName: 'Colonizadar',
     }}
 />
 

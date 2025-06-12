@@ -4,6 +4,8 @@
     import BackTo from '../shared/BackTo.svelte';
     import Breadcrumbs from '../shared/Breadcrumbs.svelte';
     import { MetaTags } from 'svelte-meta-tags';
+    import { location } from '../../stores/locationStore';
+    import { language } from '../../stores/languageStore';
 </script>
 
 <meta name="robots" content="noindex, nofollow" />
@@ -23,6 +25,9 @@
                 alt: `open-graph.logo.alt`,
             },
         ],
+        url: `${import.meta.env.VITE_FRONT_URI}${$location}`,
+        locale: $language,
+        siteName: 'Colonizadar',
     }}
 />
 

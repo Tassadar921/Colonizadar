@@ -2,6 +2,8 @@
     import { t } from 'svelte-i18n';
     import { MetaTags } from 'svelte-meta-tags';
     import { Button } from '$lib/components/ui/button/index.js';
+    import { location } from '../../stores/locationStore';
+    import { language } from '../../stores/languageStore';
 
     const handleClick = () => {
         console.log('clicked');
@@ -34,6 +36,9 @@
                 alt: `open-graph.logo.alt`,
             },
         ],
+        url: `${import.meta.env.VITE_FRONT_URI}${$location}`,
+        locale: $language,
+        siteName: 'Colonizadar'
     }}
 />
 

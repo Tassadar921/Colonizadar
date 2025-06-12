@@ -16,6 +16,8 @@
     import { updateGameOnLoad } from '../../stores/dbStore';
     import { MetaTags } from 'svelte-meta-tags';
     import GameReady from '../game/GameReady.svelte';
+    import { location } from '../../stores/locationStore';
+    import { language } from '../../stores/languageStore';
 
     export let gameId: string;
 
@@ -87,6 +89,9 @@
                 alt: `open-graph.logo.alt`,
             },
         ],
+        url: `${import.meta.env.VITE_FRONT_URI}${$location}`,
+        locale: $language,
+        siteName: 'Colonizadar',
     }}
 />
 
